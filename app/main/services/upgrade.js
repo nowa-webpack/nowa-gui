@@ -61,7 +61,7 @@ const getLatest = (visible, window, newVersion) => {
 
 
 const checkLatest = (visible = true, window = null) => {
-  request(`https://registry.npmjs.org/nowa-gui-version/latest?${new Date()}`)
+  request(`https://registry.npm.taobao.org/nowa-gui-version/latest?${new Date()}`)
     .then(({ data }) => {
       const newVersion = data.version;
 

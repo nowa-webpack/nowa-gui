@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const ejs = require('ejs');
 const co = require('co');
+const parallel = require('co-parallel');
 const semver = require('semver');
 const download = require('download');
 const { join } = require('path');
@@ -11,21 +12,19 @@ const { getWin } = require('./window');
 const { setTemplateVersion, getTemplateVersion, clear } = require('../config');
 const { APP_PATH, TEMPLATES_DIR } = require('../constants');
 
-// const BASE_DIR = join(os.homedir(), '.nowa', 'init-gui', 'templates');
 
 let templates = [];
-// let manifest = {};
 // clear();
-// console.log(npmRunPath.env())
 // npm_config_cache
 
 const fetchTemplates = (log) => {
   const win = getWin();
   co(function* () {
     const { data: repo } = yield request('https://registry.npmjs.org/nowa-gui-templates/latest?');
-    log.info(repo);
-    const tempv = yield repo.templates.map(function* (tempName) {
-      const { data: pkg } = yield request(`https://registry.npmjs.org/${tempName}`);
+    log.info(repo.templates);
+    yield repo.templates.map(function* (tempName) {
+    // const tempv = repo.templates.map(function* (tempName) {
+      const { data: pkg } = yield request(`https://registry.npm.taobao.org/${tempName}`);
       const tags = Object.keys(pkg['dist-tags']).filter(tag => tag !== 'latest');
       const defaultTag = tags[tags.length - 1];
       const { description, image } = pkg.versions[pkg['dist-tags'][defaultTag]];
@@ -36,7 +35,6 @@ const fetchTemplates = (log) => {
         description,
         image,
       };
-      log.info(obj);
 
       if (!fs.existsSync(join(TEMPLATES_DIR, `${tempName}-${defaultTag}`))) {
         log.info('! exist');
@@ -54,7 +52,6 @@ const fetchTemplates = (log) => {
           return { name: tag, version, update: false };
         });
       } else {
-
         obj.tags = tags.map((tag) => {
           const version = pkg['dist-tags'][tag];
           const name = `${tempName}-${tag}`;
@@ -62,19 +59,95 @@ const fetchTemplates = (log) => {
           return { name: tag, version: oldVersion, update: semver.lt(oldVersion, version) };
         });
       }
-
+      // log.info(obj);
       templates.push(obj);
       return obj;
     });
-    log.info(tempv);
-    log.info(templates);
+    // yield parallel(tempv);
     win.webContents.send('loadingTemplates', templates);
   }).catch((err) => {
     console.log(err);
-    log.infor(err)
+    log.infor(err);
     win.webContents.send('MAIN_ERR', err.message);
   });
 };
+
+
+const updateTemplate = co.wrap(function* (tempName, tag) {
+
+  try {
+    console.time('fetch events');
+    const { data: pkg } = yield request(`https://registry.npmjs.org/${tempName}`);
+    console.timeEnd('fetch events');
+
+    const newVersion = pkg['dist-tags'][tag];
+
+    const curPkg = pkg.versions[newVersion];
+
+    const name = `${tempName}-${tag}`;
+
+    setTemplateVersion(name, newVersion);
+
+    templates = templates.map((item) => {
+      if (item.name === tempName) {
+        item.tags = item.tags.map((_t) => {
+          if (_t.name === tag) {
+            _t.update = false;
+            _t.version = newVersion;
+          }
+          return _t;
+        });
+      }
+      return item;
+    });
+    
+    download(curPkg.dist.tarball, join(TEMPLATES_DIR, name), {
+      extract: true,
+      retries: 0,
+      timeout: 10000
+    });
+
+    // return templates;
+  } catch (err) {
+    const win = getWin();
+    win.webContents.send('MAIN_ERR', err.message);
+    // return { err };
+  }
+  return templates;
+});
+
+module.exports = {
+
+  fetchTemplates,
+
+  updateTemplate,
+  getTemplates() {
+    return templates;
+  },
+
+  getTemplatesManifest() {
+    return manifest;
+  },
+
+  loadConfig(promptConfigPath) {
+    try {
+      return require(promptConfigPath);
+    } catch (err) {
+      // const win = getWin();
+      // win.webContents.send('MAIN_ERR', err.message);
+      return {};
+    }
+  },
+  ejsRender(tpl, data) {
+    return ejs.render(tpl, data);
+  },
+
+  getPackgeJson() {
+    const json = fs.readJsonSync(join(APP_PATH, 'package.json'));
+    return json;
+  }
+};
+
 /*
 const fetchTemplates = () => {
   const win = getWin();
@@ -150,41 +223,7 @@ const fetchTemplates = () => {
   }).catch(err => win.webContents.send('MAIN_ERR', err.message));
 };*/
 
-const updateTemplate = co.wrap(function* (tempName, tag) {
-
-  try {
-    console.time('fetch events');
-    const { data: pkg } = yield request(`https://registry.npmjs.org/${tempName}`);
-    console.timeEnd('fetch events');
-
-    const newVersion = pkg['dist-tags'][tag];
-
-    const curPkg = pkg.versions[newVersion];
-
-    const name = `${tempName}-${tag}`;
-
-    setTemplateVersion(name, newVersion);
-
-    templates = templates.map((item) => {
-      if (item.name === tempName) {
-        item.tags = item.tags.map((_t) => {
-          if (_t.name === tag) {
-            _t.update = false;
-            _t.version = newVersion;
-          }
-          return _t;
-        });
-      }
-      return item;
-    });
-    
-    download(curPkg.dist.tarball, join(TEMPLATES_DIR, name), {
-      extract: true,
-      retries: 0,
-      timeout: 10000
-    });
-
-    /*console.time('fetch events');
+ /*console.time('fetch events');
     const ev = yield request(`${item.events}?access_token=e6636013dd0ac9657a95710a5bbdb63449785cea`);
     console.timeEnd('fetch events');
 
@@ -203,44 +242,3 @@ const updateTemplate = co.wrap(function* (tempName, tag) {
         timeout: 10000
       })
     );*/
-
-    // return templates;
-  } catch (err) {
-    const win = getWin();
-    win.webContents.send('MAIN_ERR', err.message);
-    // return { err };
-  }
-  return templates;
-});
-
-module.exports = {
-
-  fetchTemplates,
-
-  updateTemplate,
-  getTemplates() {
-    return templates;
-  },
-
-  getTemplatesManifest() {
-    return manifest;
-  },
-
-  loadConfig(promptConfigPath) {
-    try {
-      return require(promptConfigPath);
-    } catch (err) {
-      // const win = getWin();
-      // win.webContents.send('MAIN_ERR', err.message);
-      return {};
-    }
-  },
-  ejsRender(tpl, data) {
-    return ejs.render(tpl, data);
-  },
-
-  getPackgeJson() {
-    const json = fs.readJsonSync(join(APP_PATH, 'package.json'));
-    return json;
-  }
-};
