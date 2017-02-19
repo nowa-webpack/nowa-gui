@@ -1,0 +1,117 @@
+.welcome{
+	background: #fff;
+	padding-left: 5px;
+
+	.welcome-header{
+		position: relative;
+		height: 40px;
+		margin-left: 4px;
+		padding: 10px 15px;
+		background: #fff;
+	}
+
+	.welcome-title{
+		font-size: 16px;
+		line-height: 20px;
+	}
+
+	.template-wrap{
+		min-height: 300px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+
+		.card{
+			height: 220px;
+			flex: 0 0 225px;
+			margin: 10px;
+			text-align: center;
+			border: 1px solid #e1eefb;
+
+			&:hover{
+				box-shadow: 0 1px 10px #e1eefb;
+				transition: all .3s;
+			}
+
+			img{
+				width: 100%;
+				height: 140px;
+				padding: 5px;
+				background-color: #e1eefb;
+			}
+
+			.description{
+				color: #0c60aa;
+				margin: 5px 10px 15px;
+			}
+
+			.card-foot{
+				text-align: left;
+				padding: 0 5px;
+
+				.create-btn{
+					float: right;
+				}
+
+				.update-btn{
+					margin-left: 2px;
+
+					i{
+						font-size: 12px;
+					}
+				}
+			}
+
+			label{
+				margin-right: 4px; 
+			}
+		}
+	}
+
+
+	.form-inline{
+		padding: 10px 40px 0;
+
+		.addon{
+			margin-left: 2px;
+			padding: 0 4px;
+			i{
+				font-size: 10px;
+				line-height: 1;
+			}
+			
+		}
+
+		.path{
+			display: inline-block;
+			max-width: 290px;
+	    vertical-align: top;
+	    word-break: break-all;
+		}
+	}
+
+	.extends-form{
+		width: 380px;
+		margin-top: 20px;
+		padding: 10px 20px 0 0;
+		text-align: right;
+		border: 1px dashed #ddd;
+	}
+	.form-btns{
+		text-align: center;
+		margin-top: 20px;
+		
+		button{
+			margin-right: 10px;
+		}
+	}
+
+	.terminal-wrap{
+		padding: 20px;
+
+		.term-container{
+			height: 400px;
+		}
+	}
+
+}

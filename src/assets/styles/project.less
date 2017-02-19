@@ -1,0 +1,75 @@
+.project-list{
+	box-shadow: 0 0 5px #ddd;
+	header{
+		position: relative;
+		padding: 10px;
+		/*background-color: #fff;*/
+
+		h2{
+			color: #999;
+			font-size: 20px;
+		}
+
+		.btn-grp{
+			position: absolute;
+			right: 10px;
+			top: 16px;
+		}
+	}
+
+	.empty{
+		text-align: center;
+		font-size: 16px;
+		margin: 50px 0;
+		color: #aaa;
+
+		.add-cnt{
+			width: 100px;
+			height: 100px;
+			margin: 10px auto;
+			line-height: 2;
+			border: 4px dotted #eee;
+			color: #eee;
+
+		}
+
+		i{
+			font-size: 50px;
+		}
+	}
+
+	.item{
+		position: relative;
+		padding: 4px 16px 4px 28px;
+		border-bottom: 1px solid #fafafa;
+	    cursor: pointer;
+
+	    &.item-active,
+		&:hover{
+			background-color: #ecf6fd;
+		}
+
+		&.item-start{
+			&::before{
+				position: absolute;
+			    width: 6px;
+			    height: 6px;
+			    background-color: #17c717;
+			    content: "";
+			    border-radius: 50%;
+			    box-shadow: 0 0 1px #0f980f;
+			    top: 22px;
+			    left: 8px;
+			}
+		}
+
+	}
+
+	.name{
+		font-size: 14px;
+	    line-height: 1.8;
+	    padding: 0 8px;
+	}
+	
+}
+

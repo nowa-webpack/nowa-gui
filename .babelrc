@@ -1,0 +1,22 @@
+{
+  "env": {
+    "production": {
+      "presets": ["babili", "react", "stage-2"]
+    },
+    "development":{
+      "presets": [
+
+        //["es2015", {"modules": false}],
+        "babili",
+        "stage-2",
+
+        "react"
+      ],
+      "plugins": [
+        "react-hot-loader/babel"
+        
+        // Enables React code to work with HMR.
+      ],
+    }
+  }
+}
