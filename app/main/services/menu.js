@@ -11,10 +11,6 @@ const getTemplate = () => {
       label: 'NowaIDE',
       submenu: [
         {
-          label: 'About NowaIDE',
-          role: 'about',
-        },
-        {
           label: 'Check Latest Version',
           click: () => {
             upgrade.checkLatest();

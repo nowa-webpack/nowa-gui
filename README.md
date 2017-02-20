@@ -8,11 +8,17 @@ npm run dev
 
 in another terminal
 
+if you first run this project, please run it at first.
+```bash
+npm run prepack
+```
+
+then run
+
 ```bash
 npm start
 
 ```
-
 
 ## packer app
 

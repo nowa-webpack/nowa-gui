@@ -61,10 +61,9 @@ const getLatest = (visible, window, newVersion) => {
 
 
 const checkLatest = (visible = true, window = null) => {
-  request(`https://registry.npm.taobao.org/nowa-gui-version/latest?${new Date()}`)
+  request('https://registry.npm.taobao.org/nowa-gui-version/latest')
     .then(({ data }) => {
       const newVersion = data.version;
-
       if (semver.lt(getPackgeJson().version, newVersion)) {
         if (process.platform === 'win32') {
           newRealse = 'http://t.cn/RJQv8uj';

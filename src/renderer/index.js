@@ -9,7 +9,7 @@ import task from './models/task';
 import init from './models/init';
 
 import 'antd/dist/antd.min.css';
-import 'uxcore/assets/blue.css';
+// import 'uxcore/assets/blue.css';
 
 import '../assets/styles/base.css';
 import '../assets/styles/animation.css';

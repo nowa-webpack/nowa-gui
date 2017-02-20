@@ -20,7 +20,7 @@ let templates = [];
 const fetchTemplates = (log) => {
   const win = getWin();
   co(function* () {
-    const { data: repo } = yield request('https://registry.npmjs.org/nowa-gui-templates/latest?');
+    const { data: repo } = yield request('https://registry.npm.taobao.org/nowa-gui-templates/latest');
     log.info(repo.templates);
     yield repo.templates.map(function* (tempName) {
     // const tempv = repo.templates.map(function* (tempName) {
@@ -77,7 +77,7 @@ const updateTemplate = co.wrap(function* (tempName, tag) {
 
   try {
     console.time('fetch events');
-    const { data: pkg } = yield request(`https://registry.npmjs.org/${tempName}`);
+    const { data: pkg } = yield request(`https://registry.npm.taobao.org/${tempName}`);
     console.timeEnd('fetch events');
 
     const newVersion = pkg['dist-tags'][tag];
