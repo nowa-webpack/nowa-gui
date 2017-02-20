@@ -15,7 +15,7 @@ const options = {
   out: 'release',
   platform: 'win32',
   overwrite: true,
-  icon: './build/icon.ico'
+  icon: './static/icon.ico'
 };
 
 packager(options, (err, appPaths) => {
