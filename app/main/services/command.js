@@ -8,10 +8,12 @@ const isDev = require('electron-is-dev');
 const { getWin } = require('./window');
 const { APP_PATH, NOWA, TEMPLATES_DIR, NPM } = require('../constants');
 
-const platform = process.platform;
+// const platform = process.platform;
 
 // const NODE_EXEC = platform === 'win32' ? 'win/node.exe' : platform === 'darwin' ? 'mac/node' : 'linux/node';
-const NODE_PATH = path.join(APP_PATH, 'nodes', 'node');
+const NODE_PATH = process.platform === 'win32' 
+  ? path.join(APP_PATH, 'nodes', 'node.exe')
+  : path.join(APP_PATH, 'nodes', 'node');
 
 
 module.exports = {
