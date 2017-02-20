@@ -6,6 +6,7 @@ import { shell } from 'electron';
 import Tooltip from 'antd/lib/tooltip';
 import Popconfirm from 'antd/lib/popconfirm';
 import i18n from 'i18n';
+import { join } from 'path';
 
 const ButtonGroup = Button.Group;
 
@@ -41,7 +42,9 @@ const Operation = ({ project, dispatch }) => {
       { startBtn }
       { project.start &&
         <Tooltip placement="bottom" title={i18n('project-item.browser.btn')}>
-          <Button type="ghost" size="small">
+          <Button type="ghost" size="small"
+            onClick={() => shell.openExternal(`http://localhost:${project.port}`)}
+          >
           <i className="iconfont icon-browse" />
           </Button>
         </Tooltip>
@@ -59,7 +62,7 @@ const Operation = ({ project, dispatch }) => {
       <Tooltip placement="bottom" title={i18n('project-item.folder.btn')}>
         <Button
           type="ghost" size="small"
-          onClick={() => shell.showItemInFolder(project.path)}
+          onClick={() => shell.showItemInFolder(join(project.path, 'abc.json'))}
         ><i className="iconfont icon-folder" />
         </Button>
       </Tooltip>
