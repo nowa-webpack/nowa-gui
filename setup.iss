@@ -7,8 +7,8 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{0C9F8A94-7AD2-4826-A913-3AAE61500394}
 AppName=NowaGUI
-AppVersion=0.0.6
-;AppVerName=NowaGUI 0.0.6
+AppVersion=0.0.7
+AppVerName=NowaGUI version 0.0.7
 AppPublisher=My Company, Inc.
 AppPublisherURL=https://github.com/nowa-webpack/nowa-gui
 AppSupportURL=https://github.com/nowa-webpack/nowa-gui
@@ -20,6 +20,7 @@ OutputBaseFilename=NowaGUI_setup
 SetupIconFile=C:\project\nowa-gui-master\build\icon.ico
 Compression=lzma
 SolidCompression=yes
+Uninstallable=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -41,3 +42,17 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\NowaGUI"; Filename
 [Run]
 Filename: "{app}\NowaGUI.exe"; Description: "{cm:LaunchProgram,NowaGUI}"; Flags: nowait postinstall skipifsilent
 
+
+[Code]
+function InitializeSetup(): boolean;
+var
+  ResultStr: String;
+  ResultCode: Integer;
+begin
+  if RegQueryStringValue(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\NowaGUI_is1', 'UninstallString', ResultStr) then
+    begin
+      ResultStr := RemoveQuotes(ResultStr);
+      Exec(ResultStr, '/silent', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    end;
+    result := true;
+end;
