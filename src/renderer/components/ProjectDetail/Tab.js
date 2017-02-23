@@ -27,7 +27,10 @@ const Tab = ({ config, activeTab, dispatch, name, termBuild, termStart }) => {
   };
 
   return (
-    <Tabs size="small" className="detail-tabs" defaultActiveKey="1"
+    <Tabs
+      type="card"
+      className="detail-tabs"
+      defaultActiveKey="1"
       activeKey={activeTab}
       onTabClick={index => dispatch({
         type: 'layout/changeStatus',

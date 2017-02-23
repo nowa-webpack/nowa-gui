@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import Button from 'antd/lib/button';
 import ansiHTML from 'ansi-html';
 
-ansiHTML.setColors({
+/*ansiHTML.setColors({
   // reset: ['555', '666'], // FOREGROUND-COLOR or [FOREGROUND-COLOR] or [, BACKGROUND-COLOR] or [FOREGROUND-COLOR, BACKGROUND-COLOR]
   black: '000', // String
   red: 'f98677',
@@ -15,7 +15,7 @@ ansiHTML.setColors({
   // lightgrey: 'bbb',
   lightgrey: 'f98677',
   darkgrey: '000'
-});
+});*/
 
 
 class Terminal extends Component {
@@ -112,7 +112,11 @@ class Terminal extends Component {
       <div className="terminal-wrap">
         <div className="term-container" dangerouslySetInnerHTML={{ __html: logs }} />
         {
-          showClear && <Button type="ghost" size="small" onClick={() => this.clearTerm()}>
+          showClear && 
+          <Button
+            className="clear-btn"
+            type="ghost"
+            size="small" onClick={() => this.clearTerm()}>
             <i className="iconfont icon-eraser" />
           </Button>
         }

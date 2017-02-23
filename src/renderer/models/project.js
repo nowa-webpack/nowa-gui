@@ -77,7 +77,7 @@ export default {
         const storeProjects = getLocalProjects();
 
         const filter = storeProjects.filter(item => item.path === filePath);
-        console.log(filter);
+        // console.log(filter);
 
         if (filter.length) {
           Message.info('Already existed!');
@@ -112,7 +112,7 @@ export default {
           yield put({
             type: 'layout/changeStatus',
             payload: {
-              showConfig: true
+              showNewProject: false
             }
           });
 
@@ -160,9 +160,10 @@ export default {
         yield put({
           type: 'layout/changeStatus',
           payload: {
-            showConfig: false,
-            showCreateForm: false,
-            showInstallLog: false,
+            showNewProject: true
+            // showConfig: false,
+            // showCreateForm: false,
+            // showInstallLog: false,
           }
         });
       }
@@ -211,16 +212,18 @@ export default {
     },
 
     * refresh({ payload: { projects: storeProjects } }, { put, select }) {
-      const { projects } = yield select(state => state.project);
+      const { projects, current } = yield select(state => state.project);
       if (storeProjects.length) {
         if (storeProjects.length < projects.length) {
           const newProjects = storeProjects.map(item =>
             projects.filter(_item => _item.path === item.path)[0]
-            );
+          );
+          const changeCur = newProjects.filter(item => item.path === current.path);
           yield put({
             type: 'changeStatus',
             payload: {
-              projects: newProjects
+              projects: newProjects,
+              current: changeCur.length ? current : newProjects[0]
             }
           });
         }
@@ -228,7 +231,7 @@ export default {
         yield put({
           type: 'layout/changeStatus',
           payload: {
-            showConfig: false,
+            showNewProject: true,
             activeTab: '1'
           }
         });

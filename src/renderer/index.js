@@ -8,8 +8,8 @@ import layout from './models/layout';
 import task from './models/task';
 import init from './models/init';
 
+
 import 'antd/dist/antd.min.css';
-// import 'uxcore/assets/blue.css';
 
 import '../assets/styles/base.css';
 import '../assets/styles/animation.css';
@@ -19,16 +19,21 @@ if (process.platform === 'win32') {
   import('../assets/styles/isWin.less');
 }
 
+window.AliMonitor = window.AliMonitor || [];
+AliMonitor.push({
+  url: 'log://uxdata/nowa/',
+  msg: '{"PV":1}'
+});
+
 ipcRenderer.on('MAIN_ERR', (event, msg) => {
-  Message.error(msg, /* duration */1.5);
+  Message.error(msg, /* duration */3);
 });
 
 
 // 1. Initialize
 const app = dva({
   onError(e) {
-    // Message.error(e.message, /* duration */1.5);
-    Message.error(e.stack, /* duration */1.5);
+    Message.error(e.stack, /* duration */3);
   },
 });
 
@@ -40,6 +45,7 @@ app.model(project);
 app.model(layout);
 app.model(task);
 app.model(init);
+// app.model(upgrade);
 
 
 // 4. Router

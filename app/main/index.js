@@ -4,6 +4,7 @@ const command = require('./services/command');
 const application = require('./services/application');
 const win = require('./services/window');
 const menu = require('./services/menu');
+const upgrade = require('./services/upgrade');
 const config = require('./config');
 
 
@@ -41,9 +42,10 @@ app.on('activate', () => {
 
 global.services = {
   locale: app.getLocale(),
-  // pkg: pkg,
   command,
-  application
+  application,
+  win,
+  upgrade
 };
 
 global.configs = {

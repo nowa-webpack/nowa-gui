@@ -20,7 +20,8 @@ const Item = ({ project, current, dispatch }) => {
     dispatch({
       type: 'layout/changeStatus',
       payload: {
-        showConfig: true
+        // showConfig: true
+        showNewProject: false
       }
     });
   };

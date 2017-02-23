@@ -10,14 +10,14 @@ const { getWin } = require('./window');
 let newRealse = null;
 
 
-const downloadNewRelease = () => {
+const downloadNewRelease = (url) => {
   try {
     if (process.platform === 'win32') {
       console.log('[INFO] windows download start');
-      cp.exec(`explorer "${newRealse}"`);
+      cp.exec(`explorer "${url}"`);
     } else {
       console.log('[INFO]mac osx download start');
-      cp.exec(`open "${newRealse}"`);
+      cp.exec(`open "${url}"`);
     }
   } catch (err) {
     const win = getWin();
@@ -41,7 +41,7 @@ const getLatest = (visible, window, newVersion) => {
       ],
     }, (res) => {
       if (res === 0) {
-        downloadNewRelease();
+        downloadNewRelease(newRealse);
       }
     });
   } else {

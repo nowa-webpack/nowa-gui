@@ -23,7 +23,6 @@ const fetchTemplates = (log) => {
     const { data: repo } = yield request('https://registry.npm.taobao.org/nowa-gui-templates/latest');
     log.info(repo.templates);
     yield repo.templates.map(function* (tempName) {
-    // const tempv = repo.templates.map(function* (tempName) {
       const { data: pkg } = yield request(`https://registry.npm.taobao.org/${tempName}`);
       const tags = Object.keys(pkg['dist-tags']).filter(tag => tag !== 'latest');
       const defaultTag = tags[tags.length - 1];

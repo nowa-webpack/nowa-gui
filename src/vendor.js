@@ -1,6 +1,4 @@
 
-// polyfills and vendors
-
 require('react');
 require('react-dom');
 require('react-redux');
@@ -25,6 +23,11 @@ require('antd/lib/spin');
 require('antd/lib/select');
 require('antd/lib/switch');
 require('antd/lib/popconfirm');
+require('antd/lib/modal');
+require('antd/lib/steps');
+require('antd/lib/card');
+require('antd/lib/row');
+require('antd/lib/col');
 
 
 

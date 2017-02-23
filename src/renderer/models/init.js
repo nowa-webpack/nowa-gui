@@ -133,13 +133,13 @@ export default {
       }*/
     },
     * getAnswserArgs({ payload }, { put, select }) {
-      yield put({
-        type: 'layout/changeStatus',
-        payload: {
-          showCreateForm: false,
-          showInstallLog: true,
-        }
-      });
+      // yield put({
+      //   type: 'layout/changeStatus',
+      //   payload: {
+      //     showCreateForm: false,
+      //     showInstallLog: true,
+      //   }
+      // });
 
       const { extendsProj, sltTemp, sltTag } = yield select(state => state.init);
 

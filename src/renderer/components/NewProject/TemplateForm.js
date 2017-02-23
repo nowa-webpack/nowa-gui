@@ -7,9 +7,10 @@ import Select from 'antd/lib/select';
 import Switch from 'antd/lib/switch';
 import { join } from 'path';
 import fs from 'fs-extra';
-const { Header, Content } = Layout;
-
 import i18n from 'i18n';
+
+const { Header, Content } = Layout;
+const ButtonGroup = Button.Group;
 
 
 class Form extends Component {
@@ -20,7 +21,7 @@ class Form extends Component {
     const { basePath, sltTemp, extendsProj } = props.init;
 
     // const name = sltTemp.name + '-demo';
-    const name = `${sltTemp.name}-demo`;
+    const name = `${sltTemp.name.slice(14)}-demo`;
 
     this.registryList = ['https://registry.npm.taobao.org', 'http://registry.npm.alibaba-inc.com', 'https://registry.npmjs.org'];
 
@@ -77,7 +78,7 @@ class Form extends Component {
 
   handleSubmit() {
     const { extendsArgs, ...others } = this.state;
-    const { dispatch, init } = this.props;
+    const { dispatch, init, next } = this.props;
     const { sltTemp, sltTag, basePath } = init;
 
     const isExisted = fs.existsSync(join(basePath, others.name));
@@ -94,17 +95,17 @@ class Form extends Component {
 
     const args = { ...others, ...extendsArgs };
 
-    // args.template = sltTemp.branch.filter(item => item.name === sltTag)[0].zipfile;
-
-    console.log(args)
+    console.log(args);
+    next();
 
     dispatch({
       type: 'init/getAnswserArgs',
       payload: args
     });
+    
   }
+
   resetForm() {
-    // console.log(this.old)
 
     const { extendsProj } = this.props.init;
     const extendsArgs = {};
@@ -115,7 +116,7 @@ class Form extends Component {
     }
 
     this.old = { ...this.old, extendsArgs };
-    // console.log(this.old)
+
     this.props.dispatch({
       type: 'init/selectBaseProjectPath',
       payload: {
@@ -126,19 +127,11 @@ class Form extends Component {
     this.setState(this.old);
   }
 
-  backToHome() {
-    const { dispatch } = this.props;
+ 
 
-    dispatch({
-      type: 'layout/changeStatus',
-      payload: {
-        showCreateForm: false
-      }
-    });
-  }
   render() {
     const { projPath, name, description, author, version, homepage, registry, repository, extendsArgs } = this.state;
-    const { extendsProj } = this.props.init;
+    const { init: { extendsProj }, prev } = this.props;
 
     const extendsHtml = Object.keys(extendsProj).length > 0 ?
         (<div className="extends-form">
@@ -163,80 +156,72 @@ class Form extends Component {
         : null;
 
     return (
-      <Layout className="welcome" style={{ background: '#fff' }}>
-        <Header className="welcome-header">
-          <h2 className="welcome-title">Init Form</h2>
-        </Header>
-        <Content>
-        <form className="form-inline" >
+      <form className="form-inline" >
 
-          <div className="form-item">
-            <label>Project Path</label>
-            <div className="path">{projPath}
-              <Button
-                type="default"
-                className="addon"
-                size="small"
-                onClick={() => this.selectPath()}
-              >
-                <i className="iconfont icon-folder" />
-              </Button>
-            </div>
-          </div>
-
-          <div className="form-item">
-            <label>Project Name</label>
-            <input type="text" onChange={e => this.changeName(e.target.value)} value={name} />
-          </div>
-
-          <div className="form-item">
-            <label>Project Description</label>
-            <input type="text" onChange={e => this.setState({ description: e.target.value })} value={description}/>
-          </div>
-
-          <div className="form-item">
-            <label>Author Name</label>
-            <input type="text" onChange={e => this.setState({ author: e.target.value })} value={author} />
-          </div>
-
-          <div className="form-item">
-            <label>Project Version</label>
-            <input type="text" onChange={e => this.setState({ version: e.target.value })} value={version} />
-          </div>
-
-          <div className="form-item">
-            <label>Project Homepage</label>
-            <input type="text" onChange={e => this.setState({ homepage: e.target.value })} value={homepage} />
-          </div>
-
-          <div className="form-item">
-            <label>Project Repository</label>
-            <input type="text" onChange={e => this.setState({ repository: e.target.value })} value={repository} />
-          </div>
-
-          <div className="form-item">
-            <label>Npm Registry</label>
-            <Select
-              style={{ width: 250 }}
-              defaultValue={registry}
-              onChange={this.changeRegistry}
+        <div className="form-item">
+          <label>Project Path</label>
+          <div className="path">{projPath}
+            <Button
+              type="default"
+              className="addon"
+              size="small"
+              onClick={() => this.selectPath()}
             >
-              { this.registryList.map(item =>
-                <Select.Option key={item} value={item}>{ item }</Select.Option>)
-              }
-            </Select>
+              <i className="iconfont icon-folder" />
+            </Button>
           </div>
+        </div>
 
-          { extendsHtml }
+        <div className="form-item">
+          <label>Project Name</label>
+          <input type="text" onChange={e => this.changeName(e.target.value)} value={name} />
+        </div>
 
-          <div className="form-btns">
-            <Button type="primary" size="large" onClick={() => this.handleSubmit()}>Submit</Button>
-            <Button type="default" size="large" onClick={() => this.resetForm()}>Reset</Button>
-            <Button type="default" size="large" onClick={() => this.backToHome()}>Back</Button>
-          </div>
-        </form>
-        </Content>
-      </Layout>
+        <div className="form-item">
+          <label>Project Description</label>
+          <input type="text" onChange={e => this.setState({ description: e.target.value })} value={description}/>
+        </div>
+
+        <div className="form-item">
+          <label>Author Name</label>
+          <input type="text" onChange={e => this.setState({ author: e.target.value })} value={author} />
+        </div>
+
+        <div className="form-item">
+          <label>Project Version</label>
+          <input type="text" onChange={e => this.setState({ version: e.target.value })} value={version} />
+        </div>
+
+        <div className="form-item">
+          <label>Project Homepage</label>
+          <input type="text" onChange={e => this.setState({ homepage: e.target.value })} value={homepage} />
+        </div>
+
+        <div className="form-item">
+          <label>Project Repository</label>
+          <input type="text" onChange={e => this.setState({ repository: e.target.value })} value={repository} />
+        </div>
+
+        <div className="form-item">
+          <label>Npm Registry</label>
+          <Select
+            style={{ width: 250 }}
+            defaultValue={registry}
+            onChange={(value) => this.setState({ registry: value })}
+          >
+            { this.registryList.map(item =>
+              <Select.Option key={item} value={item}>{ item }</Select.Option>)
+            }
+          </Select>
+        </div>
+
+        { extendsHtml }
+        <ButtonGroup className="form-btns">
+          <Button type="primary" size="large" onClick={() => this.handleSubmit()}>Submit</Button>
+          <Button type="default" size="large" onClick={() => this.resetForm()}>Reset</Button>
+          <Button type="default" size="large" onClick={() => prev()}>Back</Button>
+        </ButtonGroup>
+      </form>
     );
   }
 }

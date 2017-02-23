@@ -15,11 +15,11 @@ class SettingForm extends React.Component {
     this.old = { ...project };
   }
   componentWillReceiveProps(next) {
-    if (next.path !== this.props.path) {
+    if (next.project.path !== this.props.project.path) {
       this.old = { ...next.project };
       this.setState({
-        name: next.name,
-        port: next.port
+        name: next.project.name,
+        port: next.project.port
       });
     }
   }

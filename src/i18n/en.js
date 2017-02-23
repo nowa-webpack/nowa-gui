@@ -4,7 +4,7 @@ module.exports = {
   'welcome.create.btn': 'create project',
 
   'project-main.header.text': 'Project',
-  'project-main.empty.text': 'No project yet.',
+  'project-main.empty.text': 'Drag File here',
 
   'project-item.start.btn': 'Start',
   'project-item.listen.btn': 'Listening',

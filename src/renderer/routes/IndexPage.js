@@ -2,15 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
-// import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { remote } from 'electron';
+
 import ProjectList from './ProjectList';
 import ProjectDetail from './ProjectDetail';
-import Welcome from './Welcome';
+import NewProject from './NewProject';
+import SettingFoot from './SettingFoot';
 
-const { Sider } = Layout;
+const { Sider, Content } = Layout;
+const { win } = remote.getGlobal('services');
 
 class IndexPage extends Component {
-
+  constructor(props) {
+    super(props);
+  }
   componentDidMount() {
     const { dispatch } = this.props;
     const holder = this.refs.container;
@@ -29,48 +34,58 @@ class IndexPage extends Component {
     };
   }
   render() {
-    const { layout: { showConfig }, dispatch } = this.props;
-    const rightSide = showConfig ? <ProjectDetail /> : <Welcome />;
-    const toNewPane = () => {
-      dispatch({
-        type: 'layout/changeStatus',
-        payload: {
-          showConfig: false,
-          showCreateForm: false,
-          showInstallLog: false
-        }
-      });
-      dispatch({
-        type: 'project/changeStatus',
-        payload: {
-          current: {}
-        }
-      });
-    };
+    const { showNewProject, dispatch } = this.props;
+    const rightSide = showNewProject ? <NewProject /> : <ProjectDetail /> ;
 
     return (
       <div ref="container" style={{ height: '100%' }}>
-      <Layout className="container">
-        <Sider className="project-list">
-        <header>
-          <h2>Projects</h2>
-          <div className="btn-grp">
-            <Button type="ghost" size="small" onClick={toNewPane}>New Project</Button>
-          </div>
-        </header>
-        <ProjectList />
-        </Sider>
-        { rightSide }
-      </Layout>
+        <Layout className="container">
+          <Sider className="left-side">
+            <ProjectList />
+            <SettingFoot />
+          </Sider>
+          <Content className="right-side">
+            <div className="app-opt">
+              <i className="iconfont icon-close" onClick={() => win.close()} />
+              <i className="iconfont icon-subtract" onClick={() => win.minimize()} />
+            </div>
+            { rightSide }
+          </Content>
+        </Layout>
+        
       </div>
     );
   }
 }
 
-export default connect(({ layout }) => ({ layout }))(IndexPage);
+export default connect(({ layout }) => ({ showNewProject: layout.showNewProject }))(IndexPage);
+// <SetDialog 
+//           visible={showSettingModal} 
+//           hideDialog={() => {
+//             this.setState({ showSettingModal: false });
+//           }}
+//         />
+// <Layout className="container">
+//           <Sider 
+//             collapsible
+//             collapsed={collapsed}
+//             trigger={null}
+//             className="left-side"
+//           >
+//             <header className="main-menu">
+//               <div className="btn-grp">
+//                 <Button type="ghost" size="small" 
+//                   onClick={() => this.setState({ showDialog: true })}
+//                 >
+//                   <i className="iconfont icon-set" />
+//                 </Button>
+//               </div>
+//             </header>
+//             <ProjectList />
+//           </Sider>
+//           { rightSide }
+//         </Layout>
 
-// <Layout style={{ background: '#fff'}}>
-          // </Layout>
 
 // <ReactCSSTransitionGroup
 //           component="div"
