@@ -5,8 +5,6 @@ import Tabs from 'antd/lib/tabs';
 import i18n from 'i18n';
 
 import Form from './Form';
-// import CompileTerm from '../Xterm/CompileTerm';
-// import ListenTerm from '../Xterm/ListenTerm';
 import Terminal from './Terminal';
 
 const TabPane = Tabs.TabPane;
@@ -39,13 +37,13 @@ const Tab = ({ config, activeTab, dispatch, name, termBuild, termStart }) => {
         }
       })}
     >
-      <TabPane tab={i18n('project-item.log.text')} key="1">
+      <TabPane tab={i18n('project.tab.listen_log')} key="1">
         <Terminal {...startProps} />
       </TabPane>
-      <TabPane tab={i18n('project-item.compile.text')} key="2">
+      <TabPane tab={i18n('project.tab.compile_log')} key="2">
         <Terminal {...buildProps} />
       </TabPane>
-      <TabPane tab={i18n('project-item.setting.text')} key="3">
+      <TabPane tab={i18n('project.tab.setting')} key="3">
         <Form {...config} dispatch={dispatch} />
       </TabPane>
     </Tabs>

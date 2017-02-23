@@ -70,27 +70,3 @@ class Log extends Component {
 
 export default Log;
 
-// this.term = new Xterm({
-    //   rows: 20,
-    //   cols: 61
-    // });
-    // this.term.open(this.container);
-    // term.on('data', (data) => {
-          
-    //   this.term.write(data);
-    //   this.logs += data;
-    // });
-
-    // term.on('exit', (code) => {
-    //   // console.log('exit', name)
-    //   Message.success('Installed Success!');
-    //   dispatch({
-    //     type: 'init/finishedInstall',
-    //   });
-    //   dispatch({
-    //     type: 'layout/changeStatus',
-    //     payload:{
-    //       showInstallLog: false
-    //     }
-    //   });
-    // });

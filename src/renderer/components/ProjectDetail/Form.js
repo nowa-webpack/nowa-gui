@@ -51,15 +51,15 @@ class SettingForm extends React.Component {
     return (
       <form className="form" >
         <div className="form-item">
-          <label>Project Name</label>
+          <label>{i18n('project.meta.name')}</label>
           <input type="text" onChange={e => this.setState({ name: e.target.value })} value={name} />
         </div>
         <div className="form-item">
-        <label>Project Port</label>
+        <label>{i18n('project.meta.port')}</label>
         <input type="text" onChange={e => this.changePort(e.target.value)} value={port} />
         </div>
-        <Button type="primary" size="large" onClick={() => this.handleSubmit()}>Submit</Button>
-        <Button type="default" size="large" onClick={() => this.resetForm()}>Reset</Button>
+        <Button type="primary" size="large" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+        <Button type="default" size="large" onClick={() => this.resetForm()}>{i18n('form.reset')}</Button>
       </form>
     );
   }

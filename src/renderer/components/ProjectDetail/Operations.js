@@ -12,7 +12,7 @@ const ButtonGroup = Button.Group;
 
 const Operation = ({ project, dispatch }) => {
   const startBtn = project.start
-  ? <Tooltip placement="bottom" title={i18n('project-item.stop.btn')} >
+  ? <Tooltip placement="bottom" title={i18n('task.stop')} >
       <Button
         type="primay"
         size="small"
@@ -24,7 +24,7 @@ const Operation = ({ project, dispatch }) => {
         <i className="iconfont icon-stop" />
       </Button>
     </Tooltip>
-  : <Tooltip placement="bottom" title={i18n('project-item.start.btn')} >
+  : <Tooltip placement="bottom" title={i18n('task.start')} >
       <Button
         type="ghost"
         size="small"
@@ -41,7 +41,7 @@ const Operation = ({ project, dispatch }) => {
     <ButtonGroup className="btn-grp">
       { startBtn }
       { project.start &&
-        <Tooltip placement="bottom" title={i18n('project-item.browser.btn')}>
+        <Tooltip placement="bottom" title={i18n('task.browser')}>
           <Button type="ghost" size="small"
             onClick={() => shell.openExternal(`http://localhost:${project.port}`)}
           >
@@ -49,7 +49,7 @@ const Operation = ({ project, dispatch }) => {
           </Button>
         </Tooltip>
       }
-      <Tooltip placement="bottom" title={i18n('project-item.compile.btn')}>
+      <Tooltip placement="bottom" title={i18n('task.compile')}>
         <Button type="ghost" size="small"
           onClick={() => dispatch({
             type: 'task/build',
@@ -59,7 +59,7 @@ const Operation = ({ project, dispatch }) => {
           <i className="iconfont icon-compare" />
         </Button>
       </Tooltip>
-      <Tooltip placement="bottom" title={i18n('project-item.folder.btn')}>
+      <Tooltip placement="bottom" title={i18n('task.folder')}>
         <Button
           type="ghost" size="small"
           onClick={() => shell.showItemInFolder(join(project.path, 'abc.json'))}
