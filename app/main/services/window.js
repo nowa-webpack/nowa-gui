@@ -13,7 +13,7 @@ module.exports = {
         width: 700,
         height: 500,
         frame: false,
-        show: false,
+        show: true,
         resizable: false,
         fullscreenable: false,
         maximizable: false,
@@ -26,7 +26,7 @@ module.exports = {
         width: 700,
         height: 500,
         frame: false,
-        show: false,
+        show: true,
         resizable: false,
         fullscreenable: false,
         maximizable: false,
@@ -46,7 +46,7 @@ module.exports = {
 
     win.webContents.on('did-finish-load', () => {
         // 支持无界面启动
-        win.show();
+        //win.show();
     });
 
     win.on('closed', () => {

@@ -45,6 +45,8 @@ module.exports = {
   'foot.set': 'Setting',
   'foot.import': 'Import Project',
   'foot.add': 'New Project',
+  'foot.feedback': 'Feedback',
+  'foot.help': 'Help',
 
 
   'welcome.import.btn': 'import project',

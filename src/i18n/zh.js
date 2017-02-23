@@ -46,7 +46,8 @@ module.exports = {
   'foot.set': '工具设置',
   'foot.import': '导入项目',
   'foot.add': '新建项目',
-
+  'foot.feedback': '反馈',
+  'foot.help': '帮助',
 
   'welcome.import.btn': '导入已有项目',
   'welcome.create.btn': '创建新项目',

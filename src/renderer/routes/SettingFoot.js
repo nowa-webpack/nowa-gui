@@ -3,6 +3,8 @@ import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import Tooltip from 'antd/lib/tooltip';
 import i18n from 'i18n';
+import { shell } from 'electron';
+
 
 import SetDialog from '../components/ProjectList/SetDialog';
 
@@ -44,20 +46,30 @@ class Footer extends Component {
     const { showModal } = this.state;
     return (
       <div className="setting-foot">
-        <Tooltip placement="bottom" title={i18n('foot.add')} >
-        <Button type="default" size="small" shape="circle" onClick={() => this.toNewPane()}>
-          <i className="iconfont icon-add" />
-        </Button>
+        <Tooltip placement="bottom" title={i18n('foot.help')} >
+          <Button type="default" size="small" shape="circle" onClick={() => shell.openExternal('https://github.com/nowa-webpack/nowa-gui/wiki')} >
+            <i className="iconfont icon-help" />
+          </Button>
         </Tooltip>
-        <Tooltip placement="bottom" title={i18n('foot.import')} >
-        <Button type="default" size="small" shape="circle" onClick={() => this.handleImport()}>
-          <i className="iconfont icon-folder" />
-        </Button>
+        <Tooltip placement="bottom" title={i18n('foot.feedback')} >
+          <Button type="default" size="small" shape="circle" onClick={() => shell.openExternal('https://github.com/nowa-webpack/nowa-gui/issues/new')}>
+            <i className="iconfont icon-survey" />
+          </Button>
         </Tooltip>
         <Tooltip placement="bottom" title={i18n('foot.set')} >
-        <Button type="default" size="small" shape="circle" onClick={() => this.setState({ showModal: true })}>
-          <i className="iconfont icon-set" />
-        </Button>
+          <Button type="default" size="small" shape="circle" onClick={() => this.setState({ showModal: true })}>
+            <i className="iconfont icon-set" />
+          </Button>
+        </Tooltip>
+        <Tooltip placement="bottom" title={i18n('foot.import')} >
+          <Button type="default" size="small" shape="circle" onClick={() => this.handleImport()}>
+            <i className="iconfont icon-folder" />
+          </Button>
+        </Tooltip>
+        <Tooltip placement="bottom" title={i18n('foot.add')} >
+          <Button type="default" size="small" shape="circle" onClick={() => this.toNewPane()}>
+            <i className="iconfont icon-add" />
+          </Button>
         </Tooltip>
         <SetDialog 
           visible={showModal} 

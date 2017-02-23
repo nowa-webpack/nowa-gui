@@ -68,7 +68,8 @@ class NewProject extends React.Component {
 
     return (
       <div className="new-project">
-        <Steps current={current} size="small">
+        <h2 className="title">New Porject</h2>
+        <Steps current={current} size="small" >
           {steps.map(item => <Step key={item.title} title={item.title} />)}
         </Steps>
         <div className="steps-content">{component}</div>
