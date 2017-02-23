@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
-import Message from 'antd/lib/message';
 import Tooltip from 'antd/lib/tooltip';
 import i18n from 'i18n';
 
@@ -45,17 +44,17 @@ class Footer extends Component {
     const { showModal } = this.state;
     return (
       <div className="setting-foot">
-        <Tooltip placement="bottom" title="New Project" >
+        <Tooltip placement="bottom" title={i18n('foot.add')} >
         <Button type="default" size="small" shape="circle" onClick={() => this.toNewPane()}>
           <i className="iconfont icon-add" />
         </Button>
         </Tooltip>
-        <Tooltip placement="bottom" title="Import Project" >
+        <Tooltip placement="bottom" title={i18n('foot.import')} >
         <Button type="default" size="small" shape="circle" onClick={() => this.handleImport()}>
           <i className="iconfont icon-folder" />
         </Button>
         </Tooltip>
-        <Tooltip placement="bottom" title="Setting" >
+        <Tooltip placement="bottom" title={i18n('foot.set')} >
         <Button type="default" size="small" shape="circle" onClick={() => this.setState({ showModal: true })}>
           <i className="iconfont icon-set" />
         </Button>

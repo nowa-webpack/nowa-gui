@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { connect } from 'dva';
 import { remote } from 'electron';
-import i18n from 'i18n';
 import Steps from 'antd/lib/steps';
 import Button from 'antd/lib/button';
+import i18n from 'i18n';
 
 
 import TemplateCards from '../components/NewProject/TemplateCards';
@@ -13,11 +13,11 @@ import InstallLog from '../components/NewProject/InstallLog';
 const Step = Steps.Step;
 
 const steps = [{
-  title: 'Select Template',
+  title: i18n('template.step1'),
 }, {
-  title: 'Template Form',
+  title: i18n('template.step2'),
 }, {
-  title: 'Installing',
+  title: i18n('template.step3'),
 }];
 
 class NewProject extends React.Component {
@@ -84,52 +84,4 @@ export default connect(({ init }) => ({
 }))(NewProject);
 
 
-// <div className="steps-action">
-//           {
-//             this.state.current < steps.length - 1
-//             &&
-//             <Button type="primary" onClick={() => this.next()}>Next</Button>
-//           }
-//           {
-//             this.state.current === steps.length - 1
-//             &&
-//             <Button type="primary" onClick={() => message.success('Processing complete!')}>Done</Button>
-//           }
-//           {
-//             this.state.current > 0
-//             &&
-//             <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
-//               Previous
-//             </Button>
-//           }
-//         </div>
 
-/*const Welcome = ({ init: { templates, loading, term }, showForm, showLog, dispatch }) => {
-  const listProps = {
-    templates,
-    loading,
-    dispatch
-  };
-
-  const logProps = {
-    dispatch,
-    term
-  };
-
-  let html;
-  if (showForm) {
-    html = <TemplateForm />;
-  } else if (showLog) {
-    html = <InstallLog {...logProps} />;
-  } else {
-    html = <TemplateList {...listProps} />;
-  }
-
-  return html;
-};
-
-export default connect(({ init, layout }) => ({
-  init,
-  showForm: layout.showCreateForm,
-  showLog: layout.showInstallLog
-}))(Welcome);*/

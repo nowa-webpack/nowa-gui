@@ -10,7 +10,7 @@ const ProjectList = ({ project: { projects, current }, dispatch }) => {
   const emptyDIV = (
       <div className="empty">
         <div className="add-cnt"><i className="iconfont icon-add" /></div>
-        { i18n('project-main.empty.text') }
+        {i18n('project.list.empty')}
       </div>
     );
 
@@ -26,31 +26,10 @@ const ProjectList = ({ project: { projects, current }, dispatch }) => {
     
   return (
     <div className="project-list">
-      <h2 className="title">Project List</h2>
+      <h2 className="title">{i18n('project.list.title')}</h2>
       <div className="project-body">{ list }</div>
     </div>
   );
 };
 
 export default connect(({ project }) => ({ project }))(ProjectList);
-
-// <Button type="ghost" size="small" onClick={toNewPane}>
-//           <i className="iconfont icon-add" />
-//         </Button>
-
-// const toNewPane = () => {
-//     dispatch({
-//       type: 'layout/changeStatus',
-//       payload: {
-//         showConfig: false,
-//         showCreateForm: false,
-//         showInstallLog: false
-//       }
-//     });
-//     dispatch({
-//       type: 'project/changeStatus',
-//       payload: {
-//         current: {}
-//       }
-//     });
-//   };

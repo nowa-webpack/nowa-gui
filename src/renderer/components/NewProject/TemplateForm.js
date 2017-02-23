@@ -9,7 +9,6 @@ import { join } from 'path';
 import fs from 'fs-extra';
 import i18n from 'i18n';
 
-const { Header, Content } = Layout;
 const ButtonGroup = Button.Group;
 
 
@@ -159,7 +158,7 @@ class Form extends Component {
       <form className="form-inline" >
 
         <div className="form-item">
-          <label>Project Path</label>
+          <label>{i18n('project.meta.path')}</label>
           <div className="path">{projPath}
             <Button
               type="default"
@@ -173,37 +172,37 @@ class Form extends Component {
         </div>
 
         <div className="form-item">
-          <label>Project Name</label>
+          <label>{i18n('project.meta.name')}</label>
           <input type="text" onChange={e => this.changeName(e.target.value)} value={name} />
         </div>
 
         <div className="form-item">
-          <label>Project Description</label>
+          <label>{i18n('project.meta.description')}</label>
           <input type="text" onChange={e => this.setState({ description: e.target.value })} value={description}/>
         </div>
 
         <div className="form-item">
-          <label>Author Name</label>
+          <label>{i18n('project.meta.author')}</label>
           <input type="text" onChange={e => this.setState({ author: e.target.value })} value={author} />
         </div>
 
         <div className="form-item">
-          <label>Project Version</label>
+          <label>{i18n('project.meta.version')}</label>
           <input type="text" onChange={e => this.setState({ version: e.target.value })} value={version} />
         </div>
 
         <div className="form-item">
-          <label>Project Homepage</label>
+          <label>{i18n('project.meta.homepage')}</label>
           <input type="text" onChange={e => this.setState({ homepage: e.target.value })} value={homepage} />
         </div>
 
         <div className="form-item">
-          <label>Project Repository</label>
+          <label>{i18n('project.meta.repo')}</label>
           <input type="text" onChange={e => this.setState({ repository: e.target.value })} value={repository} />
         </div>
 
         <div className="form-item">
-          <label>Npm Registry</label>
+          <label>{i18n('project.meta.npm_registry')}</label>
           <Select
             style={{ width: 250 }}
             defaultValue={registry}
@@ -217,9 +216,9 @@ class Form extends Component {
 
         { extendsHtml }
         <ButtonGroup className="form-btns">
-          <Button type="primary" size="large" onClick={() => this.handleSubmit()}>Submit</Button>
-          <Button type="default" size="large" onClick={() => this.resetForm()}>Reset</Button>
-          <Button type="default" size="large" onClick={() => prev()}>Back</Button>
+          <Button type="primary" size="large" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+          <Button type="default" size="large" onClick={() => this.resetForm()}>{i18n('form.reset')}</Button>
+          <Button type="default" size="large" onClick={() => prev()}>{i18n('form.back')}</Button>
         </ButtonGroup>
       </form>
     );

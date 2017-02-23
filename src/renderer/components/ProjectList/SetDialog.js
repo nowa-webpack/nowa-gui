@@ -5,7 +5,6 @@ import Message from 'antd/lib/message';
 import Modal from 'antd/lib/modal';
 import Select from 'antd/lib/select';
 import i18n from 'i18n';
-// import { remote } from 'electron';
 
 const storage = window.localStorage;
 const DEFAULT_LANGUAGE = storage.getItem('LANGUAGE');
@@ -27,27 +26,32 @@ const SetDialog = ({ layout, visible, hideDialog, dispatch }) => {
 
   return (
     <Modal 
-      title="Setting Modal" 
+      title={i18n('setting.modal.title')}
       visible={visible}
       onOk={handleOk} 
       onCancel={hideDialog}
       wrapClassName="set-modal"
+      okText={i18n('form.ok')}
+      cancelText={i18n('form.cancel')}
     >
       <form className="form-inline" >
         <div className="form-item">
-          <label>Language</label>
+          <label>{i18n('setting.language')}</label>
           <Select
             style={{ width: 250 }}
             defaultValue={language}
             onChange={changeLanguage}
           >
-            <Select.Option value={'en'}>English</Select.Option>
-            <Select.Option value={'zh'}>Chinese</Select.Option>
+            <Select.Option value={'en'}>{i18n('setting.language.en')}</Select.Option>
+            <Select.Option value={'zh'}>{i18n('setting.language.zh')}</Select.Option>
           </Select>
         </div>
         <div className="form-item">
-          <label>Version</label>
-          <span className="version">{layout.version}</span>
+          <label>{i18n('setting.version')}</label>
+          <span className="version">
+            {layout.version} 
+            {!layout.shouldAppUpdate && ` (${i18n('setting.version.newest.tip')})`}
+          </span>
           {
             layout.shouldAppUpdate && 
             <Button type="ghost" size="small" shape="circle"

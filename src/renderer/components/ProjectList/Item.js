@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-// import { connect } from 'dva';
 import classnames from 'classnames';
-import Button from 'antd/lib/button';
 import Badge from 'antd/lib/badge';
 import i18n from 'i18n';
 

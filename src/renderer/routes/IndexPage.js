@@ -59,32 +59,7 @@ class IndexPage extends Component {
 }
 
 export default connect(({ layout }) => ({ showNewProject: layout.showNewProject }))(IndexPage);
-// <SetDialog 
-//           visible={showSettingModal} 
-//           hideDialog={() => {
-//             this.setState({ showSettingModal: false });
-//           }}
-//         />
-// <Layout className="container">
-//           <Sider 
-//             collapsible
-//             collapsed={collapsed}
-//             trigger={null}
-//             className="left-side"
-//           >
-//             <header className="main-menu">
-//               <div className="btn-grp">
-//                 <Button type="ghost" size="small" 
-//                   onClick={() => this.setState({ showDialog: true })}
-//                 >
-//                   <i className="iconfont icon-set" />
-//                 </Button>
-//               </div>
-//             </header>
-//             <ProjectList />
-//           </Sider>
-//           { rightSide }
-//         </Layout>
+
 
 
 // <ReactCSSTransitionGroup

@@ -33,12 +33,6 @@ class Item extends Component {
   handleCreate() {
     const { dispatch, data, next} = this.props;
     const { tag } = this.state;
-    // dispatch({
-    //   type: 'layout/changeStatus',
-    //   payload: {
-    //     showCreateForm: true,
-    //   }
-    // });
     dispatch({
       type: 'init/selectTemplate',
       payload: {
@@ -50,7 +44,7 @@ class Item extends Component {
   }
   render() {
     const { dispatch, data } = this.props;
-    const { shouldUpdate, tag } = this.state;
+    const { shouldUpdate } = this.state;
 
     return (
       <Card 
@@ -62,7 +56,7 @@ class Item extends Component {
           <p className="description">{data.description}</p>
         </div>
         <div className="version">
-          <label>Version:</label>
+          <label>{i18n('template.version')}:</label>
           <Select
             size="small"
             defaultValue={data.defaultTag}
@@ -94,7 +88,7 @@ class Item extends Component {
             size="small"
             className="create-btn"
             onClick={() => this.handleCreate()}
-          >Create</Button>
+          >{i18n('template.create')}</Button>
         </div>
       </Card>
     );

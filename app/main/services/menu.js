@@ -10,12 +10,12 @@ const getTemplate = () => {
     {
       label: 'NowaIDE',
       submenu: [
-        {
-          label: 'Check Latest Version',
-          click: () => {
-            upgrade.checkLatest();
-          },
-        },
+        // {
+        //   label: 'Check Latest Version',
+        //   click: () => {
+        //     upgrade.checkLatest();
+        //   },
+        // },
         { type: 'separator' },
         { role: 'hide' },
         { role: 'hideothers' },
