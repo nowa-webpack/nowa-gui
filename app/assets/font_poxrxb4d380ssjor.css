@@ -1,0 +1,53 @@
+
+@font-face {font-family: "iconfont";
+  src: url('font_poxrxb4d380ssjor.woff') format('woff');
+}
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-spinner:before { content: "\e614"; }
+
+.icon-eraser:before { content: "\e618"; }
+
+.icon-folder:before { content: "\e61f"; }
+
+.icon-more:before { content: "\e633"; }
+
+.icon-close:before { content: "\e69a"; }
+
+.icon-delete:before { content: "\e69d"; }
+
+.icon-project:before { content: "\e6a1"; }
+
+.icon-help:before { content: "\e6a3"; }
+
+.icon-set:before { content: "\e6ae"; }
+
+.icon-add:before { content: "\e6b9"; }
+
+.icon-stop:before { content: "\e669"; }
+
+.icon-browse:before { content: "\e6e6"; }
+
+.icon-start2:before { content: "\e60f"; }
+
+.icon-editor:before { content: "\e6ee"; }
+
+.icon-subtract:before { content: "\e6fe"; }
+
+.icon-custom-update:before { content: "\e602"; }
+
+.icon-survey:before { content: "\e662"; }
+
+.icon-update:before { content: "\e6c5"; }
+
+.icon-start:before { content: "\e619"; }
+
+.icon-build:before { content: "\e61e"; }
+

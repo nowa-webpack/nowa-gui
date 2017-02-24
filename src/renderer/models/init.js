@@ -8,16 +8,13 @@ import { join, dirname } from 'path';
 
 const { application, command } = remote.getGlobal('services');
 const { config } = remote.getGlobal('configs');
-// const BASEDIR = join(osHomedir(), '.nowa', 'init-gui', 'templates');
 const TEMPLATES_DIR = join(osHomedir(), '.nowa', 'templates');
 
 const writeFile = (source, target, data) => {
   try {
-    // console.log('Generate file : ' + target);
     const tpl = fs.readFileSync(source);
     let content;
     try {
-      // content = ejs.render(tpl.toString(), data);
       content = application.ejsRender(tpl.toString(), data);
     } catch (e) {
       content = tpl;

@@ -12,6 +12,8 @@ require('fs-extra');
 require('mkdirp');
 require('glob');
 require('ansi-html');
+// require('semver');
+require('os-homedir');
 require('antd/lib/message');
 require('antd/lib/menu');
 require('antd/lib/button');
@@ -26,8 +28,7 @@ require('antd/lib/popconfirm');
 require('antd/lib/modal');
 require('antd/lib/steps');
 require('antd/lib/card');
-require('antd/lib/row');
-require('antd/lib/col');
+
 
 
 

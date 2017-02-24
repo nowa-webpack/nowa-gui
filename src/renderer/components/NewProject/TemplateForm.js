@@ -155,72 +155,74 @@ class Form extends Component {
         : null;
 
     return (
-      <form className="form-inline" >
+      <div className="template-form">
+        <form className="form-inline" >
 
-        <div className="form-item">
-          <label>{i18n('project.meta.path')}</label>
-          <div className="path">{projPath}
-            <Button
-              type="default"
-              className="addon"
-              size="small"
-              onClick={() => this.selectPath()}
-            >
-              <i className="iconfont icon-folder" />
-            </Button>
+          <div className="form-item">
+            <label>{i18n('project.meta.path')}</label>
+            <div className="path">{projPath}
+              <Button
+                type="default"
+                className="addon"
+                size="small"
+                onClick={() => this.selectPath()}
+              >
+                <i className="iconfont icon-folder" />
+              </Button>
+            </div>
           </div>
-        </div>
 
-        <div className="form-item">
-          <label>{i18n('project.meta.name')}</label>
-          <input type="text" onChange={e => this.changeName(e.target.value)} value={name} />
-        </div>
+          <div className="form-item">
+            <label>{i18n('project.meta.name')}</label>
+            <input type="text" onChange={e => this.changeName(e.target.value)} value={name} />
+          </div>
 
-        <div className="form-item">
-          <label>{i18n('project.meta.description')}</label>
-          <input type="text" onChange={e => this.setState({ description: e.target.value })} value={description}/>
-        </div>
+          <div className="form-item">
+            <label>{i18n('project.meta.description')}</label>
+            <input type="text" onChange={e => this.setState({ description: e.target.value })} value={description}/>
+          </div>
 
-        <div className="form-item">
-          <label>{i18n('project.meta.author')}</label>
-          <input type="text" onChange={e => this.setState({ author: e.target.value })} value={author} />
-        </div>
+          <div className="form-item">
+            <label>{i18n('project.meta.author')}</label>
+            <input type="text" onChange={e => this.setState({ author: e.target.value })} value={author} />
+          </div>
 
-        <div className="form-item">
-          <label>{i18n('project.meta.version')}</label>
-          <input type="text" onChange={e => this.setState({ version: e.target.value })} value={version} />
-        </div>
+          <div className="form-item">
+            <label>{i18n('project.meta.version')}</label>
+            <input type="text" onChange={e => this.setState({ version: e.target.value })} value={version} />
+          </div>
 
-        <div className="form-item">
-          <label>{i18n('project.meta.homepage')}</label>
-          <input type="text" onChange={e => this.setState({ homepage: e.target.value })} value={homepage} />
-        </div>
+          <div className="form-item">
+            <label>{i18n('project.meta.homepage')}</label>
+            <input type="text" onChange={e => this.setState({ homepage: e.target.value })} value={homepage} />
+          </div>
 
-        <div className="form-item">
-          <label>{i18n('project.meta.repo')}</label>
-          <input type="text" onChange={e => this.setState({ repository: e.target.value })} value={repository} />
-        </div>
+          <div className="form-item">
+            <label>{i18n('project.meta.repo')}</label>
+            <input type="text" onChange={e => this.setState({ repository: e.target.value })} value={repository} />
+          </div>
 
-        <div className="form-item">
-          <label>{i18n('project.meta.npm_registry')}</label>
-          <Select
-            style={{ width: 250 }}
-            defaultValue={registry}
-            onChange={(value) => this.setState({ registry: value })}
-          >
-            { this.registryList.map(item =>
-              <Select.Option key={item} value={item}>{ item }</Select.Option>)
-            }
-          </Select>
-        </div>
+          <div className="form-item">
+            <label>{i18n('project.meta.npm_registry')}</label>
+            <Select
+              style={{ width: 250 }}
+              defaultValue={registry}
+              onChange={(value) => this.setState({ registry: value })}
+            >
+              { this.registryList.map(item =>
+                <Select.Option key={item} value={item}>{ item }</Select.Option>)
+              }
+            </Select>
+          </div>
 
-        { extendsHtml }
+          { extendsHtml }
+        </form>
         <ButtonGroup className="form-btns">
-          <Button type="primary" size="large" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
-          <Button type="default" size="large" onClick={() => this.resetForm()}>{i18n('form.reset')}</Button>
-          <Button type="default" size="large" onClick={() => prev()}>{i18n('form.back')}</Button>
+          <Button type="primary" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+          <Button type="default" onClick={() => this.resetForm()}>{i18n('form.reset')}</Button>
+          <Button type="default" onClick={() => prev()}>{i18n('form.back')}</Button>
         </ButtonGroup>
-      </form>
+      </div>
     );
   }
 }

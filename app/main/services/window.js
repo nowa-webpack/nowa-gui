@@ -1,36 +1,36 @@
-const { BrowserWindow, globalShortcut } = require('electron');
+const { BrowserWindow, globalShortcut, app } = require('electron');
 const isDev = require('electron-is-dev');
 const url = require('url');
 const path = require('path');
 
 let win;
+let forceQuit = false;
+
 
 module.exports = {
 
   create() {
+    const options = {
+      width: 700,
+      height: 500,
+      frame: false,
+      show: process.platform === 'win32',
+      resizable: false,
+      fullscreenable: false,
+      maximizable: false,
+      backgroundColor: '#aaa'
+    }
     if (isDev) {
-      win = new BrowserWindow({
-        width: 700,
-        height: 500,
-        frame: false,
-        show: true,
-        resizable: false,
-        fullscreenable: false,
-        maximizable: false,
-      });
+      win = new BrowserWindow(options);
       win.loadURL('http://localhost:8080/index.html');
-
+      // win.loadURL(url.format({
+      //   pathname: path.join(__dirname, '..', '..', 'dist', 'index.html'),
+      //   protocol: 'file:',
+      //   slashes: true,
+      // }));
       win.webContents.openDevTools();
     } else {
-      win = new BrowserWindow({
-        width: 700,
-        height: 500,
-        frame: false,
-        show: true,
-        resizable: false,
-        fullscreenable: false,
-        maximizable: false,
-      });
+      win = new BrowserWindow(options);
       win.loadURL(url.format({
         pathname: path.join(__dirname, '..', '..', 'dist', 'index.html'),
         protocol: 'file:',
@@ -44,12 +44,16 @@ module.exports = {
       win.webContents.toggleDevTools();
     });
 
-    win.webContents.on('did-finish-load', () => {
+    // win.webContents.on('did-finish-load', () => {
+    win.once('ready-to-show', () => {
         // 支持无界面启动
-        //win.show();
+        if ( process.platform !== 'win32') {
+          win.show();
+        }
     });
 
     win.on('closed', () => {
+      console.log('closed');
       // Dereference the window object, usually you would store windows
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
@@ -64,10 +68,22 @@ module.exports = {
   },
 
   close() {
-    win.close();
+    if (process.platform === 'win32') {
+      win.close();
+    } else {
+      win.hide();
+    }
   },
 
-  minimize(){
+  show() {
+    win.show();
+  },
+
+  minimize() {
     win.minimize();
+  },
+
+  isVisible() {
+    return win.isVisible();
   }
 };

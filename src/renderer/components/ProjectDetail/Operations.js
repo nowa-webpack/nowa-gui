@@ -56,7 +56,7 @@ const Operation = ({ project, dispatch }) => {
             payload: { project }
           })}
         >
-          <i className="iconfont icon-compare" />
+          <i className="iconfont icon-build" />
         </Button>
       </Tooltip>
       <Tooltip placement="bottom" title={i18n('task.folder')}>

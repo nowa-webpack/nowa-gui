@@ -25,6 +25,7 @@ AliMonitor.push({
   msg: '{"PV":1}'
 });
 
+
 ipcRenderer.on('MAIN_ERR', (event, msg) => {
   Message.error(msg, /* duration */3);
 });
@@ -45,8 +46,6 @@ app.model(project);
 app.model(layout);
 app.model(task);
 app.model(init);
-// app.model(upgrade);
-
 
 // 4. Router
 app.router(RouterConfig);

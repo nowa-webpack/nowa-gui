@@ -1,13 +1,8 @@
 const cp = require('child_process');
 const semver = require('semver');
-const { join } = require('path');
-const { dialog, BrowserWindow } = require('electron');
 const request = require('./request');
 const { getPackgeJson } = require('./application');
-const { APP_PATH } = require('../constants');
 const { getWin } = require('./window');
-
-let newRealse = null;
 
 
 const downloadNewRelease = (url) => {
@@ -25,64 +20,25 @@ const downloadNewRelease = (url) => {
   }
 };
 
-const getLatest = (visible, window, newVersion) => {
-  const parentWindow = window || BrowserWindow.getFocusedWindow();
-
-  if (newRealse) {
-    dialog.showMessageBox(parentWindow, {
-      type: 'info',
-      title: 'Update NowaGUI',
-      message: 'New Release!',
-      detail: `Version ${newVersion}`,
-      icon: join(APP_PATH, 'assets', 'nowa256.png'),
-      buttons: [
-        'Update Now',
-        'Update Later',
-      ],
-    }, (res) => {
-      if (res === 0) {
-        downloadNewRelease(newRealse);
-      }
-    });
-  } else {
-    if (!visible) return;
-    dialog.showMessageBox(parentWindow, {
-      type: 'info',
-      title: 'Update NowaGUI',
-      message: 'No New Release.',
-      detail: `Current Version ${newVersion}`,
-      icon: join(APP_PATH, 'assets', 'nowa256.png'),
-      buttons: [
-        'Close',
-      ],
-    });
-  }
-};
-
-
-const checkLatest = (visible = true, window = null) => {
+const checkLatest = () => {
+  const win = getWin();
   request('https://registry.npm.taobao.org/nowa-gui-version/latest')
     .then(({ data }) => {
       const newVersion = data.version;
+      // const newVersion = '2.0.1';
       if (semver.lt(getPackgeJson().version, newVersion)) {
-        if (process.platform === 'win32') {
-          newRealse = 'http://t.cn/RJQv8uj';
-        } else {
-          newRealse = 'http://t.cn/RJQPL3J';
-        }
-
-        // todo linux version
+        win.webContents.send('checkLatest', newVersion);
       }
 
-      getLatest(visible, window, newVersion);
     }).catch((err) => {
-      const win = getWin();
+      
       win.webContents.send('MAIN_ERR', err.message);
     });
 };
 
 module.exports = {
   downloadNewRelease,
-  getLatest,
   checkLatest,
 };
+
+

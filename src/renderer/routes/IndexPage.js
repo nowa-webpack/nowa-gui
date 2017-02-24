@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
+import { remote } from 'electron';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
-import { remote } from 'electron';
+import Modal from 'antd/lib/modal';
 
 import ProjectList from './ProjectList';
 import ProjectDetail from './ProjectDetail';
 import NewProject from './NewProject';
 import SettingFoot from './SettingFoot';
 
+const confirm = Modal.confirm;
 const { Sider, Content } = Layout;
-const { win } = remote.getGlobal('services');
+const { win, upgrade } = remote.getGlobal('services');
 
 class IndexPage extends Component {
   constructor(props) {
@@ -19,6 +21,7 @@ class IndexPage extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     const holder = this.refs.container;
+
     holder.ondragover = () => false;
     holder.ondragleave = holder.ondragend = () => false;
     holder.ondrop = (e) => {
@@ -32,6 +35,23 @@ class IndexPage extends Component {
       }
       return false;
     };
+    upgrade.checkLatest();
+  }
+
+  componentWillReceiveProps(next) {
+    if (next.newVersion !== this.props.newVersion) {
+      confirm({
+        title: 'Want to update to new release?',
+        content: <div><p>Current Version {this.props.newVersion}</p>
+              <p>Next Version {next.newVersion}</p></div>,
+        onOk() {
+          dispatch({
+            type: 'layout/upgrade',
+          });
+        },
+        onCancel() {},
+      });
+    }
   }
   render() {
     const { showNewProject, dispatch } = this.props;
@@ -58,7 +78,11 @@ class IndexPage extends Component {
   }
 }
 
-export default connect(({ layout }) => ({ showNewProject: layout.showNewProject }))(IndexPage);
+export default connect(({ layout }) => ({ 
+  showNewProject: layout.showNewProject,
+  newVersion: layout.newVersion,
+  shouldAppUpdate: layout.shouldAppUpdate
+}))(IndexPage);
 
 
 

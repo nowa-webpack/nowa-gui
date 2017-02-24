@@ -36,6 +36,13 @@ export default {
       const projects = getProjects();
 
       dispatch({
+        type: 'layout/changeStatus',
+        payload: {
+          showNewProject: projects.length === 0
+        }
+      });
+
+      dispatch({
         type: 'changeStatus',
         payload: {
           projects,
