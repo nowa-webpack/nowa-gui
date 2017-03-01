@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { connect } from 'dva';
-// import { hashHistory } from 'react-router';
 import Button from 'antd/lib/button';
 import { shell } from 'electron';
 import Tooltip from 'antd/lib/tooltip';
@@ -55,8 +54,7 @@ const Operation = ({ project, dispatch }) => {
             type: 'task/build',
             payload: { project }
           })}
-        >
-          <i className="iconfont icon-build" />
+        ><i className="iconfont icon-build" />
         </Button>
       </Tooltip>
       <Tooltip placement="bottom" title={i18n('task.folder')}>
@@ -66,6 +64,7 @@ const Operation = ({ project, dispatch }) => {
         ><i className="iconfont icon-folder" />
         </Button>
       </Tooltip>
+      
       <Popconfirm
         placement="bottomRight"
         title={'Are you sure remove this project?'}
@@ -75,12 +74,21 @@ const Operation = ({ project, dispatch }) => {
         })}
         okText="Yes"
         cancelText="No"
-      >
-       <Button type="ghost" size="small"><i className="iconfont icon-delete" /></Button>
+      ><Button type="ghost" size="small"><i className="iconfont icon-delete" /></Button>
       </Popconfirm>
     </ButtonGroup>
   );
 };
 
 export default connect()(Operation);
-// export default connect(({ project  }) => ({ config: project.current  }))(Operation);
+
+// <Tooltip placement="bottom" title={i18n('task.folder')}>
+//         <Button
+//           type="ghost" size="small"
+//           onClick={() => dispatch({
+//             type: 'task/openEditor',
+//             payload: { project }
+//           })}
+//         ><i className="iconfont icon-editor" />
+//         </Button>
+//       </Tooltip>

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { connect } from 'dva';
-// import { hashHistory } from 'react-router';
 import Button from 'antd/lib/button';
 import i18n from 'i18n';
 

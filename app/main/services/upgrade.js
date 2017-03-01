@@ -1,4 +1,4 @@
-const cp = require('child_process');
+const { exec } = require('child_process');
 const semver = require('semver');
 const request = require('./request');
 const { getPackgeJson } = require('./application');
@@ -9,10 +9,10 @@ const downloadNewRelease = (url) => {
   try {
     if (process.platform === 'win32') {
       console.log('[INFO] windows download start');
-      cp.exec(`explorer "${url}"`);
+      exec(`explorer "${url}"`);
     } else {
       console.log('[INFO]mac osx download start');
-      cp.exec(`open "${url}"`);
+      exec(`open "${url}"`);
     }
   } catch (err) {
     const win = getWin();

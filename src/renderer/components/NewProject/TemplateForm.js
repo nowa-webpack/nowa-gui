@@ -133,7 +133,7 @@ class Form extends Component {
     const { init: { extendsProj }, prev } = this.props;
 
     const extendsHtml = Object.keys(extendsProj).length > 0 ?
-        (<div className="extends-form">
+        <div className="extends-form">
           {extendsProj.prompts.map((item) => {
             if (item.type === 'confirm') {
               return (
@@ -151,7 +151,7 @@ class Form extends Component {
               );
             }
           })}
-        </div>)
+        </div>
         : null;
 
     return (

@@ -16,6 +16,7 @@ const getProjects = () => {
     return {
       ...project,
       start: false,
+      taskErr: false,
       port: abc.options.port || 3000
     };
   });
@@ -32,21 +33,23 @@ export default {
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {
+    setup({ dispatch }) {
       const projects = getProjects();
 
       dispatch({
         type: 'layout/changeStatus',
         payload: {
-          showNewProject: projects.length === 0
+          showPage: projects.length === 0 ? 0 : 2
         }
       });
+
+      const current = projects.filter(item => item.current);
 
       dispatch({
         type: 'changeStatus',
         payload: {
           projects,
-          current: projects[0] || {}
+          current: current.length > 0 ? current[0] : (projects[0] || {})
         }
       });
 
@@ -84,7 +87,6 @@ export default {
         const storeProjects = getLocalProjects();
 
         const filter = storeProjects.filter(item => item.path === filePath);
-        // console.log(filter);
 
         if (filter.length) {
           Message.info('Already existed!');
@@ -98,6 +100,7 @@ export default {
 
           const current = {
             start: false,
+            taskErr: false,
             name: projectName,
             path: filePath,
             port: abc.options.port || 3000
@@ -115,11 +118,10 @@ export default {
             }
           });
 
-
           yield put({
             type: 'layout/changeStatus',
             payload: {
-              showNewProject: false
+              showPage: 2
             }
           });
 
@@ -168,9 +170,6 @@ export default {
           type: 'layout/changeStatus',
           payload: {
             showNewProject: true
-            // showConfig: false,
-            // showCreateForm: false,
-            // showInstallLog: false,
           }
         });
       }
@@ -217,7 +216,6 @@ export default {
         Message.success('Update success!', 1.5);
       }
     },
-
     * refresh({ payload: { projects: storeProjects } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
       if (storeProjects.length) {
@@ -238,7 +236,7 @@ export default {
         yield put({
           type: 'layout/changeStatus',
           payload: {
-            showNewProject: true,
+            showPage: 0,
             activeTab: '1'
           }
         });
@@ -251,6 +249,25 @@ export default {
           }
         });
       }
+    },
+    * taskErr({ payload: { type, filePath } }, { put, select }) {
+      const { projects, current } = yield select(state => state.project);
+      const { activeTab } = yield select(state => state.layout); 
+
+      if (current.path !== filePath || 
+        (current.path === filePath && activeTab != '2')) {
+        projects.map((item) => {
+          if (item.path === filePath) {
+            item.taskErr = true;
+          }
+          return item;
+        });
+        yield put({
+          type: 'changeStatus',
+          payload: { projects }
+        });
+      }
+      
     }
   },
 

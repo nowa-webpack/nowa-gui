@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { connect } from 'dva';
-import { remote } from 'electron';
-import Steps from 'antd/lib/steps';
+import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
+import Steps from 'antd/lib/steps';
 import i18n from 'i18n';
-
 
 import TemplateCards from '../components/NewProject/TemplateCards';
 import TemplateForm from '../components/NewProject/TemplateForm';
-import InstallLog from '../components/NewProject/InstallLog';
+// import InstallLog from '../components/NewProject/InstallLog';
 
+const { Content } = Layout;
 const Step = Steps.Step;
 
 const steps = [{
@@ -20,7 +20,7 @@ const steps = [{
   title: i18n('template.step3'),
 }];
 
-class NewProject extends React.Component {
+class NewProjectPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,6 +50,8 @@ class NewProject extends React.Component {
       component = <TemplateCards {...compProps} />;
     }
 
+    /*
+
     if (current === 1) {
       const compProps = {
         next: this.next.bind(this),
@@ -64,16 +66,16 @@ class NewProject extends React.Component {
         term
       };
       component = <InstallLog {...compProps} />;
-    }
+    }*/
 
     return (
-      <div className="new-project">
-        <h2 className="title">New Porject</h2>
-        <Steps current={current} size="small" >
+      <Content className="ui-content new-proj">
+        <h2 className="title">创建新项目</h2>
+        <Steps current={current} >
           {steps.map(item => <Step key={item.title} title={item.title} />)}
         </Steps>
         <div className="steps-content">{component}</div>
-      </div>
+      </Content>
     );
   }
 }
@@ -82,7 +84,15 @@ export default connect(({ init }) => ({
   templates: init.templates,
   loading: init.loading,
   term: init.term,
-}))(NewProject);
+}))(NewProjectPage);
 
+/*const NewProjectPage = ({ showPage }) => {
+  
+  return (
+    <Content className="ui-content new-proj">
+      <h2 className="title">创建新项目</h2>
+    </Content>
+  );
+};
 
-
+export default NewProjectPage;*/

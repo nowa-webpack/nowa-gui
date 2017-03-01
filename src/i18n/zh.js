@@ -25,8 +25,8 @@ module.exports = {
   'template.version': '版本',
   'template.create': '新建',
   'template.step1': '选择模板',
-  'template.step2': '填写模板表单',
-  'template.step3': '安装依赖',
+  'template.step2': '填写信息',
+  'template.step3': '依赖安装',
 
   'form.submit': '提交',
   'form.reset': '重置',

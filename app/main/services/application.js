@@ -4,17 +4,13 @@ const co = require('co');
 const semver = require('semver');
 const download = require('download');
 const { join } = require('path');
-// const log = require('electron-log');
 
 const request = require('./request');
 const { getWin } = require('./window');
-const { setTemplateVersion, getTemplateVersion, clear } = require('../config');
+const { setTemplateVersion, getTemplateVersion } = require('../config');
 const { APP_PATH, TEMPLATES_DIR } = require('../constants');
 
-
 let templates = [];
-// clear();
-// npm_config_cache
 
 const fetchTemplates = (log) => {
   const win = getWin();
@@ -103,11 +99,9 @@ const updateTemplate = co.wrap(function* (tempName, tag) {
       timeout: 10000
     });
 
-    // return templates;
   } catch (err) {
     const win = getWin();
     win.webContents.send('MAIN_ERR', err.message);
-    // return { err };
   }
   return templates;
 });
@@ -125,8 +119,6 @@ module.exports = {
     try {
       return require(promptConfigPath);
     } catch (err) {
-      // const win = getWin();
-      // win.webContents.send('MAIN_ERR', err.message);
       return {};
     }
   },

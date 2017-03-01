@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
+import { shell } from 'electron';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import Tooltip from 'antd/lib/tooltip';
 import i18n from 'i18n';
-import { shell } from 'electron';
-
 
 import SetDialog from '../components/ProjectList/SetDialog';
-
 
 class Footer extends Component {
   constructor(props) {

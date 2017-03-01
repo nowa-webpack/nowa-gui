@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'dva';
-// import { hashHistory } from 'react-router';
 import Button from 'antd/lib/button';
 import Tooltip from 'antd/lib/tooltip';
 import i18n from 'i18n';
@@ -28,11 +27,4 @@ export default connect(({ project, layout }) => ({
   activeTab: layout.activeTab,
 }))(ProjectDetail);
 
-// <Layout className="project-detail" style={{ background: '#fff' }}>
-//       <Header className="detail-bg">
-//         <div className="port">Listen at : <span>{ config.port }</span></div>
-//         <Operations project={config} />
-//         <div className="path">Path : <Tooltip title={config.path} >{ config.path }</Tooltip></div>
-//       </Header>
-//       <Tab activeTab={activeTab} />
-//     </Layout>
+

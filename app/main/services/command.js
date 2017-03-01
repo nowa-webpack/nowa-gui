@@ -1,26 +1,22 @@
-const { spawn, spawnSync } = require('child_process');
+const { spawn, exec } = require('child_process');
 const path = require('path');
 const log = require('electron-log');
 const npmRunPath = require('npm-run-path');
 const isDev = require('electron-is-dev');
-// const fs = require('fs-extra');
 
 const { getWin } = require('./window');
 const { APP_PATH, NOWA, TEMPLATES_DIR, NPM } = require('../constants');
 
-// const platform = process.platform;
-
-// const NODE_EXEC = platform === 'win32' ? 'win/node.exe' : platform === 'darwin' ? 'mac/node' : 'linux/node';
 const NODE_PATH = process.platform === 'win32' 
   ? path.join(APP_PATH, 'nodes', 'node.exe')
   : path.join(APP_PATH, 'nodes', 'node');
 
+const isWin = process.platform === 'win32';
 
 module.exports = {
 
   build(projectPath) {
     return spawn(NODE_PATH, [NOWA, 'build'], {
-    // return spawn('node', [NOWA, 'build'], {
       cwd: projectPath,
       env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
     });
@@ -28,26 +24,38 @@ module.exports = {
 
   start(projectPath) {
     return spawn(NODE_PATH, [NOWA, 'server', '-o'], {
-    // return spawn('node', [NOWA, 'server', '-o'], {
-    // return spawn(NOWA, ['server', '-o'], {
       cwd: projectPath,
       env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
     });
   },
 
   lib(projectPath) {
-    // return spawn(NOWA, ['lib'], {
-    // return spawn('node', [NOWA, 'lib'], {
     return spawn(NODE_PATH, [NOWA, 'lib'], {
       cwd: projectPath,
       env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
     });
   },
 
+  openSublime(projectPath, editor, basePath) {
+    let editorPath = '';
+
+    if (editor === 'Sublime') {
+      editorPath = path.join(basePath, isWin ? 'subl.exe' : '/Contents/SharedSupport/bin/subl')
+    }
+
+    if (editor === 'VScode') {
+      editorPath = path.join(basePath, isWin ? 'VC/bin/cmd.exe' : '/Contents/Resources/app/bin/code')
+    }
+
+    return spawn(editorPath,
+      ['./'], {
+        cwd: projectPath,
+      });
+  },
+
   nodeInstall(options) {
     const targetPath = path.join(APP_PATH, 'task', 'install.js');
     try {
-      // return spawn('node', [targetPath], {
       return spawn(NODE_PATH, [targetPath], {
         cwd: APP_PATH,
         execArgv: ['--harmony'],
@@ -60,8 +68,6 @@ module.exports = {
   },
 
   installTemplate(name) {
-    // const win = getWin();
-    // const term = spawn(NODE_PATH, [NPM, 'install', name,
     return spawnSync(NODE_PATH, [NPM, 'install', name,
       '--prefix', TEMPLATES_DIR,
       '--registry=https://registry.npm.taobao.org',
@@ -71,13 +77,6 @@ module.exports = {
         shell: true,
         env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
       });
-    // console.log(term)
-    // term.stdout.on('data', data => console.log(`${data}`))
-    // term.stderr.on('data', data => {
-    //   console.log(`${data}`)
-    //   win.webContents.send('MAIN_ERR', `${data}`)
-    // })
-    // return term;
   }
 };
 

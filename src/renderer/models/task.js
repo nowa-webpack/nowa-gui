@@ -12,6 +12,19 @@ export default {
     build: {}
   },
 
+  subscriptions: {
+    setup({ dispatch }) {
+
+      window.onbeforeunload = (e) => {
+        // alert('ssss')
+
+        dispatch({
+          type: 'dispose'
+        });
+      };
+    },
+  },
+
   effects: {
     * start({ payload: { project } }, { put, select }) {
       const { start } = yield select(state => state.task);
@@ -83,7 +96,6 @@ export default {
 
       const { start } = yield select(state => state.task);
 
-      // start[project.path].term.kill();
       start[project.path].kill();
 
       projects.map((item) => {
@@ -103,8 +115,9 @@ export default {
         }
       });
     },
-    * exit({ payload: { type, name } }, { put, call, select }) {
+    * exit({ payload: { type, name } }, { put, select }) {
       const { build, start } = yield select(state => state.task);
+      const { projects } = yield select(state => state.project);
 
       if (type === 'start') {
         // start[name].term.kill();
@@ -113,7 +126,12 @@ export default {
 
       if (type === 'build') {
         delete build[name];
-        Message.success('Build Finished!');
+        /*const pj = projects.filter(item => item.path === name)[0];
+        if (pj.taskErr) {
+          Message.error(`${pj.name} Build Failed!`);
+        } else {
+          Message.success(`${pj.name} Build Finished!`);
+        }*/
       }
       console.log('exit', type);
 
@@ -129,7 +147,6 @@ export default {
       const { build, start } = yield select(state => state.task);
 
       if (type === 'build') {
-        // build[name].term.kill();
         build[name].kill();
         delete build[name];
 
@@ -142,7 +159,6 @@ export default {
       }
 
       if (type === 'start') {
-        // start[name].log = '';
 
         yield put({
           type: 'changeStatus',
@@ -151,6 +167,18 @@ export default {
           }
         });
       }
+    },
+    * dispose({}, { select }) {
+      const { start, build } = yield select(state => state.task);
+      Object.keys(start).map((item) => {
+        start[item].kill();
+      });
+      Object.keys(build).map((item) => {
+        build[item].kill();
+      });
+    },
+    * openEditor({ payload: { project } }, { put, select}) {
+      command.openSublime(project.path);
     }
   },
 

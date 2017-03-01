@@ -6,7 +6,7 @@ import i18n from 'i18n';
 
 const Item = ({ project, current, dispatch }) => {
 
-  const { name, start } = project;
+  const { name, start, taskErr } = project;
 
   const handleClick = () => {
     dispatch({
@@ -18,11 +18,18 @@ const Item = ({ project, current, dispatch }) => {
     dispatch({
       type: 'layout/changeStatus',
       payload: {
-        // showConfig: true
-        showNewProject: false
+        showPage: 2
       }
     });
   };
+
+  let status;
+
+  if (taskErr) {
+    status = <Badge status="warning" />;
+  } else if (start) {
+    status = <Badge status="processing" />;
+  }
 
   return (
     <div className={classnames({
@@ -31,8 +38,7 @@ const Item = ({ project, current, dispatch }) => {
     })}
       onClick={handleClick}
     >
-      { start && <Badge status="success" /> }
-      <i className="iconfont icon-project" />
+      { status }
       <span className="name">{ name }</span>
     </div>
   );

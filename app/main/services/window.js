@@ -4,17 +4,18 @@ const url = require('url');
 const path = require('path');
 
 let win;
-let forceQuit = false;
 
 
 module.exports = {
 
   create() {
     const options = {
-      width: 700,
-      height: 500,
+      width: 900,
+      height: 550,
+      // width: 700,
+      // height: 500,
       frame: false,
-      show: process.platform === 'win32',
+      show: false,
       resizable: false,
       fullscreenable: false,
       maximizable: false,
@@ -23,11 +24,11 @@ module.exports = {
     if (isDev) {
       win = new BrowserWindow(options);
       win.loadURL('http://localhost:8080/index.html');
-      // win.loadURL(url.format({
-      //   pathname: path.join(__dirname, '..', '..', 'dist', 'index.html'),
-      //   protocol: 'file:',
-      //   slashes: true,
-      // }));
+      /*win.loadURL(url.format({
+        pathname: path.join(__dirname, '..', '..', 'dist', 'index.html'),
+        protocol: 'file:',
+        slashes: true,
+      }));*/
       win.webContents.openDevTools();
     } else {
       win = new BrowserWindow(options);
@@ -37,7 +38,6 @@ module.exports = {
         slashes: true,
       }));
 
-      // win.webContents.openDevTools();
     }
     globalShortcut.register('CmdOrCtrl+Shift+8', () => {
       // Do stuff when Y and either Command/Control is pressed.
@@ -47,9 +47,9 @@ module.exports = {
     // win.webContents.on('did-finish-load', () => {
     win.once('ready-to-show', () => {
         // 支持无界面启动
-        if ( process.platform !== 'win32') {
+        //if ( process.platform !== 'win32') {
           win.show();
-        }
+        //}
     });
 
     win.on('closed', () => {
@@ -58,6 +58,7 @@ module.exports = {
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
       win = null;
+
     });
 
     win.webContents.on('crashed', () => win.reload());

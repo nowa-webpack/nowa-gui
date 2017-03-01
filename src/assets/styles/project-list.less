@@ -1,4 +1,56 @@
-.project-list{
+.proj-list{
+
+	header{
+		flex: 1;
+		padding: 0 10px 0 16px;
+		font-size: 18px;
+		height: 50px;
+		line-height: 50px;
+
+		.ant-btn-sm{
+			float: right;
+			width: 18px;
+			height: 18px;
+			margin-top: 16px;
+		}
+	}
+
+	.item-list{
+		min-height: 426px;
+		overflow-y: auto;
+	}
+
+	.item{
+		height: 36px;
+		padding-left: 16px;
+		line-height: 36px;
+		cursor: pointer;
+
+		.name{
+			margin-left: 18px;
+			font-size: 12px;
+			color: #666;
+		}
+
+		.ant-badge{
+			position: absolute;
+		}
+
+		&:hover{
+			.name{
+				color: #108ee9;
+			}
+		}
+		
+		&.item-active{
+			background-color: #eaf7fe;
+			border-right: 2px solid #2db7fa;
+			/*transition: background-color .5s;*/
+			transform: translateZ(0);
+		}
+	}
+}
+/*.project-list{
 	position: relative;
 
 	.title{
@@ -52,7 +104,7 @@
     line-height: 1.5;
     padding: 0 8px;
 	}
-}
+}*/
 
 
 

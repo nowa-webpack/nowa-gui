@@ -12,11 +12,13 @@ import init from './models/init';
 import 'antd/dist/antd.min.css';
 
 import '../assets/styles/base.css';
-import '../assets/styles/animation.css';
 import '../assets/styles/site.less';
 
 if (process.platform === 'win32') {
+// if (true) {
   import('../assets/styles/isWin.less');
+} else {
+  import('../assets/styles/isMac.less');
 }
 
 window.AliMonitor = window.AliMonitor || [];

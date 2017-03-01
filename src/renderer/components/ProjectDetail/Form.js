@@ -49,17 +49,20 @@ class SettingForm extends React.Component {
   render() {
     const { name, port } = this.state;
     return (
-      <form className="form" >
+      <form className="ui-form" >
         <div className="form-item">
-          <label>{i18n('project.meta.name')}</label>
-          <input type="text" onChange={e => this.setState({ name: e.target.value })} value={name} />
+          <label>{i18n('project.meta.name')}:</label>
+          <input type="text" className="lg"
+            onChange={e => this.setState({ name: e.target.value })} value={name} />
         </div>
         <div className="form-item">
-        <label>{i18n('project.meta.port')}</label>
-        <input type="text" onChange={e => this.changePort(e.target.value)} value={port} />
+          <label>{i18n('project.meta.port')}:</label>
+          <input type="text" className="sm"
+            onChange={e => this.changePort(e.target.value)} value={port} />
         </div>
-        <Button type="primary" size="large" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
-        <Button type="default" size="large" onClick={() => this.resetForm()}>{i18n('form.reset')}</Button>
+        <div className="form-btns">
+          <Button type="primary" size="large" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+        </div>
       </form>
     );
   }

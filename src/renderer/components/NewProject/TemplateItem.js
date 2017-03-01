@@ -49,9 +49,20 @@ class Item extends Component {
     return (
       <Card 
         className="template-card"
-        bordered={true} 
+        bordered={true}
+        title={data.name}
+        extra={data.description}
       >
-        <div className="card-head">
+        sss
+      </Card>
+    );
+  }
+}
+
+export default Item;
+
+/*
+<div className="card-head">
           <h3>{data.name}</h3>
           <p className="description">{data.description}</p>
         </div>
@@ -90,64 +101,4 @@ class Item extends Component {
             onClick={() => this.handleCreate()}
           >{i18n('template.create')}</Button>
         </div>
-      </Card>
-    );
-  }
-}
-
-export default Item;
-/*
-<div className="card">
-        <img src={data.image} alt="template" />
-        <div className="description">{data.description}</div>
-        <div className="card-foot">
-          <label>Version:</label>
-          <Select
-            size="small"
-            defaultValue={data.defaultTag}
-            onChange={value => this.changeTag(value)}
-          >
-            { data.tags.map(item =>
-                <Select.Option
-                  key={item.name}
-                  value={item.name}
-                >
-                  { item.name }
-                </Select.Option>)}
-            </Select>
-          {
-            shouldUpdate && 
-            <Button
-              type="default"
-              size="small"
-              className="update-btn"
-              onClick={() => this.updateTemplate()}
-            >
-              <i className="iconfont icon-custom-update" />
-            </Button>
-          }
-          
-          <Button
-            type="primary"
-            size="small"
-            className="create-btn"
-            onClick={() => this.handleCreate()}
-          >
-            Create
-          </Button>
-        </div>
-      </div>*/
-
-/*<Button
-  type="primary"
-  size="small"
-  className="create-btn"
-  onClick={() => dispatch({
-    type: 'init/testTemplate',
-    payload: {
-      name: `${data.name}-${tag}`,
-    }
-  })}
->
-  test
-</Button>*/
+*/

@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-// import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import ansiHTML from 'ansi-html';
 
@@ -51,10 +50,8 @@ class Terminal extends Component {
 
   componentWillReceiveProps({ term, name, dispatch, type }) {
     const { term: oldTerm, name: oldName } = this.props;
-    // const { logs, showClear } = this.state;
 
     if (!oldTerm && term) {
-      console.log('componentWillReceiveProps');
       if (oldName === name) {
         term.stdout.on('data', (data) => {
           this.writeData(data, name);
@@ -85,7 +82,7 @@ class Terminal extends Component {
     const { name } = this.props;
     if (name === wname) {
       const { logs } = this.state;
-      const newLogs = logs + ansiHTML(data.toString().replace(/\n/g, '<br>'));
+      const newLogs = (logs || '' ) + ansiHTML(data.toString().replace(/\n/g, '<br>'));
       this.mainLogs[wname] = newLogs;
       this.setState({
         logs: newLogs,
@@ -133,9 +130,3 @@ Terminal.propTypes = {
 };
 
 export default Terminal;
-
-// export default connect(({ task, project  }) => ({ 
-//   name: project.current.path, 
-//   term: task.build[project.current.path]
-// }))(Terminal);
-

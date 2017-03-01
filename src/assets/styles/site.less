@@ -1,11 +1,81 @@
-
 .container{
 	height: 100%;
-	max-width: 700px;
-  overflow-x: hidden;
+	background-color: #fff;
 }
 
+.ui-sider{
+	height: 100%;
+	width: 175px;
+	border-right: 1px solid #eee;
+	background-color: #fff;
+}
 
+.ui-content{
+	background-color: #fff;
+}
+
+.ui-foot{
+	text-align: right;
+	height: 34px;
+
+	.ant-btn{
+		font-size: 18px;
+		border-color: transparent;
+		margin-right: 6px;
+	}
+}
+
+.top-bar{
+	-webkit-app-region: drag;
+	position: relative;
+	background-color: #fff;
+	height: 40px;
+	line-height: 40px;
+
+	.bar-bd{
+		position: absolute;
+		width: 175px;
+		height: 40px;
+		top: 0;
+		left: 0;
+		border-right: 1px solid #eee;
+		border-bottom: 1px solid #eee;
+	}
+
+	.proj-path{
+		position: absolute;
+		left: 192px;
+		font-size:14px;
+		color:#666;
+
+		span{
+			font-size:12px;
+			color:#c6c6c6;
+			margin-left: 8px;
+		}
+	}
+
+	.logo{
+		-webkit-app-region: no-drag;
+		position: absolute;
+		display: block;
+    top: 8px;
+		width: 24px;
+		height: 24px;
+		background-image: url('../images/gray-logo.png');
+		background-size: 24px 24px;
+		background-repeat: no-repeat;
+		cursor: pointer;
+	}
+}
+
+@import './form.less';
+@import './welcome.less';
+@import './project-list.less';
+@import './new-project.less';
+@import './project-detail.less';
+
+/*
 .form{
 
 	.form-item{
@@ -81,7 +151,6 @@
 	height: 30px;
 	width: 100%;
 	bottom: 0;
-	/*background-color: #eee;*/
 	padding: 3px 10px;
 
 	button{
@@ -133,11 +202,6 @@
 }
 
 .set-modal{
-	/*.ant-modal-content{
-		width: 400px;
-		margin: 0 auto;
-	}*/
-
 	.form-item{
 		i{
 			font-size: 12px;
@@ -157,7 +221,6 @@
 .ant-tabs.ant-tabs-card>.ant-tabs-bar {
 
 	.ant-tabs-nav-container{
-		/*margin-bottom: -4px;*/
 	}
 	.ant-tabs-tab{
 		border-color: #fafafa;
@@ -169,9 +232,6 @@
 
 .ant-steps .ant-steps-head-inner>.ant-steps-icon{
 	line-height: 18px;
-}
+}*/
 
 
-@import './project-list.less';
-@import './new-project.less';
-@import './project-detail.less';

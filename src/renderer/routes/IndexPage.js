@@ -1,40 +1,30 @@
 import React, { Component } from 'react';
-import { remote } from 'electron';
+import { remote, shell } from 'electron';
+import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
-import Button from 'antd/lib/button';
 import Modal from 'antd/lib/modal';
 
-import ProjectList from './ProjectList';
-import ProjectDetail from './ProjectDetail';
-import NewProject from './NewProject';
-import SettingFoot from './SettingFoot';
+
+import WelcomePage from './WelcomePage';
+import DragPage from './DragPage';
+import MainPage from './MainPage';
+import { hidePathString } from '../util';
 
 const confirm = Modal.confirm;
-const { Sider, Content } = Layout;
+const { Header } = Layout;
 const { win, upgrade } = remote.getGlobal('services');
+const isWin = process.platform === 'win32';
 
 class IndexPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showDrag: false
+    };
+    this.onDrop = this.onDrop.bind(this);
   }
   componentDidMount() {
-    const { dispatch } = this.props;
-    const holder = this.refs.container;
-
-    holder.ondragover = () => false;
-    holder.ondragleave = holder.ondragend = () => false;
-    holder.ondrop = (e) => {
-      e.preventDefault();
-      for (let f of e.dataTransfer.files) {
-        // console.log('File(s) you dragged here: ', f.path);
-        dispatch({
-          type: 'project/importProj',
-          payload: { filePath: f.path }
-        });
-      }
-      return false;
-    };
     upgrade.checkLatest();
   }
 
@@ -53,36 +43,103 @@ class IndexPage extends Component {
       });
     }
   }
+
+  onDrop(acceptedFiles, rejectedFiles) {
+    const { dispatch } = this.props;
+
+    this.props.dispatch({
+      type: 'project/importProj',
+      payload: { filePath: acceptedFiles[0].path }
+    });
+    this.onDragLeave();
+  }
+
+  onDragOver() {
+    document.getElementById('main-ctn').style.display = 'none';
+    document.getElementById('drag-ctn').style.display = '';
+  }
+  onDragLeave() {
+    document.getElementById('main-ctn').style.display = '';
+    document.getElementById('drag-ctn').style.display = 'none';
+  }
+
   render() {
-    const { showNewProject, dispatch } = this.props;
-    const rightSide = showNewProject ? <NewProject /> : <ProjectDetail /> ;
+    const { showPage, dispatch, version, current } = this.props;
+    const { showDrag } = this.state;
+
+    const closeBtn = <div className="icn icn-x" key="0" onClick={() => win.close()}>
+      <i className="iconfont icon-x" /></div>;
+    const minimizeBtn = <div className="icn icn-min" key="1" onClick={() => win.minimize()}>
+      <i className="iconfont icon-msnui-minimize" /></div>;
+    const maximizeBtn = <div className="icn icn-max" key="2">
+      <i className="iconfont icon-msnui-maximize" /></div>;
+
+
+    const mainbody = showPage 
+      ? <MainPage showPage={showPage} /> 
+      : <WelcomePage version={version} dispatch={dispatch} />;
 
     return (
-      <div ref="container" style={{ height: '100%' }}>
-        <Layout className="container">
-          <Sider className="left-side">
-            <ProjectList />
-            <SettingFoot />
-          </Sider>
-          <Content className="right-side">
+      <Dropzone className="container" 
+        onDrop={this.onDrop} 
+        onDragOver={this.onDragOver}
+        onDragLeave={this.onDragLeave}
+        onClick={e => { e.preventDefault();}}>
+        <Layout className="ui-layout" id="main-ctn">
+          <Header className="top-bar">
+            { showPage > 0 && <div className="bar-bd" /> }
+            <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
+            { showPage == 2 && <div className="proj-path">
+              {current.name}
+              <span>({hidePathString(current.path)})</span>
+            </div>}
+
             <div className="app-opt">
-              <i className="iconfont icon-close" onClick={() => win.close()} />
-              <i className="iconfont icon-subtract" onClick={() => win.minimize()} />
+              { isWin ? [closeBtn, maximizeBtn, minimizeBtn] : [closeBtn, minimizeBtn, maximizeBtn]}
             </div>
-            { rightSide }
-          </Content>
+          </Header>
+          { mainbody }
         </Layout>
-        
-      </div>
+        <DragPage />
+      </Dropzone>
     );
   }
 }
 
-export default connect(({ layout }) => ({ 
-  showNewProject: layout.showNewProject,
+export default connect(({ layout, project }) => ({
+  showPage: layout.showPage,
   newVersion: layout.newVersion,
-  shouldAppUpdate: layout.shouldAppUpdate
+  version: layout.version,
+  shouldAppUpdate: layout.shouldAppUpdate,
+  current: project.current 
 }))(IndexPage);
+
+
+
+   /* switch (showPage) {
+      case 0:
+        mainbody = <WelcomePage version={version} dispatch={dispatch} />;
+        break;
+      case 1:
+        mainbody = <NewProjectPage />;
+        break;
+      case 2:
+        mainbody = <ProjectDetailPage />;
+        break;
+      default:
+        mainbody = <WelcomePage version={version} dispatch={dispatch} />;
+    }*/
+// <Sider className="left-side">
+//             <ProjectList />
+//             <SettingFoot />
+//           </Sider>
+//           <Content className="right-side">
+//             <div className="app-opt">
+//               <i className="iconfont icon-close" onClick={() => win.close()} />
+//               <i className="iconfont icon-subtract" onClick={() => win.minimize()} />
+//             </div>
+//             { rightSide }
+//           </Content>
 
 
 
