@@ -16,8 +16,6 @@ export default {
     setup({ dispatch }) {
 
       window.onbeforeunload = (e) => {
-        // alert('ssss')
-
         dispatch({
           type: 'dispose'
         });

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { join } from 'path';
+import fs from 'fs-extra';
 import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Select from 'antd/lib/select';
 import Switch from 'antd/lib/switch';
-import { join } from 'path';
-import fs from 'fs-extra';
+import Input from 'antd/lib/input';
 import i18n from 'i18n';
 
 const ButtonGroup = Button.Group;
@@ -126,8 +127,6 @@ class Form extends Component {
     this.setState(this.old);
   }
 
- 
-
   render() {
     const { projPath, name, description, author, version, homepage, registry, repository, extendsArgs } = this.state;
     const { init: { extendsProj }, prev } = this.props;
@@ -154,58 +153,28 @@ class Form extends Component {
         </div>
         : null;
 
+    const pathIcon = <i className="iconfont icon-folder" />;
+
     return (
       <div className="template-form">
-        <form className="form-inline" >
-
-          <div className="form-item">
-            <label>{i18n('project.meta.path')}</label>
-            <div className="path">{projPath}
-              <Button
-                type="default"
-                className="addon"
-                size="small"
-                onClick={() => this.selectPath()}
-              >
-                <i className="iconfont icon-folder" />
-              </Button>
-            </div>
-          </div>
+        <form className="ui-form" >
 
           <div className="form-item">
             <label>{i18n('project.meta.name')}</label>
-            <input type="text" onChange={e => this.changeName(e.target.value)} value={name} />
+            <input type="text" className="lg" onChange={e => this.changeName(e.target.value)} value={name} />
           </div>
 
           <div className="form-item">
-            <label>{i18n('project.meta.description')}</label>
-            <input type="text" onChange={e => this.setState({ description: e.target.value })} value={description}/>
-          </div>
-
-          <div className="form-item">
-            <label>{i18n('project.meta.author')}</label>
-            <input type="text" onChange={e => this.setState({ author: e.target.value })} value={author} />
-          </div>
-
-          <div className="form-item">
-            <label>{i18n('project.meta.version')}</label>
-            <input type="text" onChange={e => this.setState({ version: e.target.value })} value={version} />
-          </div>
-
-          <div className="form-item">
-            <label>{i18n('project.meta.homepage')}</label>
-            <input type="text" onChange={e => this.setState({ homepage: e.target.value })} value={homepage} />
-          </div>
-
-          <div className="form-item">
-            <label>{i18n('project.meta.repo')}</label>
-            <input type="text" onChange={e => this.setState({ repository: e.target.value })} value={repository} />
+            <label>{i18n('project.meta.path')}</label>
+            <div className="form-item-grp">
+            <Input addonAfter={pathIcon} defaultValue={projPath} />
+            </div>
           </div>
 
           <div className="form-item">
             <label>{i18n('project.meta.npm_registry')}</label>
             <Select
-              style={{ width: 250 }}
+              style={{ width: 300 }}
               defaultValue={registry}
               onChange={(value) => this.setState({ registry: value })}
             >
@@ -216,15 +185,25 @@ class Form extends Component {
           </div>
 
           { extendsHtml }
+          <div className="form-btns">
+            <Button type="primary" size="large" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+            <Button type="default" size="large" onClick={() => prev()}>{i18n('form.back')}</Button>
+          </div>
         </form>
-        <ButtonGroup className="form-btns">
-          <Button type="primary" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
-          <Button type="default" onClick={() => this.resetForm()}>{i18n('form.reset')}</Button>
-          <Button type="default" onClick={() => prev()}>{i18n('form.back')}</Button>
-        </ButtonGroup>
       </div>
     );
   }
 }
 
 export default connect(({ init }) => ({ init }))(Form);
+
+/*<div className="path">{projPath}
+              <Button
+                type="default"
+                className="addon"
+                size="small"
+                onClick={() => this.selectPath()}
+              >
+                <i className="iconfont icon-folder" />
+              </Button>
+            </div>*/

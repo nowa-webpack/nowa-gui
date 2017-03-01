@@ -92,11 +92,9 @@ export default {
     },
     * selectTemplate({ payload }, { put }) {
       const { sltTemp, sltTag } = payload;
-
       const name = `${sltTemp.name}-${sltTag}`;
-
       const filePath = join(TEMPLATES_DIR, name, 'package');
-      console.log(filePath)
+      
       if (fs.existsSync(filePath)) {
         const proj = application.loadConfig(join(filePath, 'proj.js'));
         yield put({

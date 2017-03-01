@@ -16,9 +16,14 @@
 	float: left;
 	width: 288px;
 	margin: 20px 16px;
+	border-radius: 0;
 
 	.ant-card-head{
 		height: 80px;
+		border: 1px solid #d9d9d9;
+		border-bottom: none;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
 	}
 
 	.ant-card-head-title{
@@ -36,6 +41,50 @@
 		padding: 0;
 		height: 35px;
 	}
+
+	.opt{
+		width: 33.3%;
+    height: 35px;
+	}
+
+	.ant-input-group.ant-input-group-compact{
+		>:first-child{
+			border-top-left-radius: 0px;
+		}
+
+		>:last-child{
+			border-top-right-radius: 0px;
+		}
+	}
+	.ant-select-selection__rendered{
+		line-height: 32px;
+	}
+
+	.ant-select-selection--single{
+		height: 35px;
+	}
+
+	
+	/*.ant-select-selection--single{
+		box-shadow: none;
+		height: 35px;
+		border-radius: 0;
+		background-color: transparent;
+		border-color: #d9d9d9;
+		border-left-color: transparent;
+    border-right-color: transparent;
+	}
+	.ant-select-open .ant-select-selection{
+		box-shadow: none;
+		border-top-color: #d9d9d9;
+		border-bottom-color: #d9d9d9;
+	}
+
+
+	.ant-select-selection-selected-value{
+		text-align: center;
+    width: 100%;
+	}*/
 }
 
 /*.new-project{

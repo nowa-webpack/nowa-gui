@@ -14,6 +14,7 @@ let templates = [];
 
 const fetchTemplates = (log) => {
   const win = getWin();
+
   co(function* () {
     const { data: repo } = yield request('https://registry.npm.taobao.org/nowa-gui-templates/latest');
     log.info(repo.templates);
@@ -22,12 +23,13 @@ const fetchTemplates = (log) => {
       const tags = Object.keys(pkg['dist-tags']).filter(tag => tag !== 'latest');
       const defaultTag = tags[tags.length - 1];
       const { description, image } = pkg.versions[pkg['dist-tags'][defaultTag]];
-
+      const homepage = pkg.repository.url;
       const obj = {
         name: tempName,
         defaultTag,
         description,
         image,
+        homepage: homepage.slice(4, homepage.length - 4)
       };
 
       if (!fs.existsSync(join(TEMPLATES_DIR, `${tempName}-${defaultTag}`))) {
@@ -65,7 +67,6 @@ const fetchTemplates = (log) => {
     win.webContents.send('MAIN_ERR', err.message);
   });
 };
-
 
 const updateTemplate = co.wrap(function* (tempName, tag) {
 
@@ -111,6 +112,7 @@ module.exports = {
   fetchTemplates,
 
   updateTemplate,
+
   getTemplates() {
     return templates;
   },
@@ -122,6 +124,7 @@ module.exports = {
       return {};
     }
   },
+
   ejsRender(tpl, data) {
     return ejs.render(tpl, data);
   },

@@ -50,8 +50,6 @@ class NewProjectPage extends React.Component {
       component = <TemplateCards {...compProps} />;
     }
 
-    /*
-
     if (current === 1) {
       const compProps = {
         next: this.next.bind(this),
@@ -59,6 +57,8 @@ class NewProjectPage extends React.Component {
       };
       component = <TemplateForm {...compProps} />;
     }
+    /*
+
 
     if (current === 2) {
       const compProps = {

@@ -75,7 +75,8 @@ class IndexPage extends Component {
       <i className="iconfont icon-msnui-maximize" /></div>;
 
 
-    const mainbody = showPage 
+    // const mainbody = showPage 
+    const mainbody = true 
       ? <MainPage showPage={showPage} /> 
       : <WelcomePage version={version} dispatch={dispatch} />;
 
