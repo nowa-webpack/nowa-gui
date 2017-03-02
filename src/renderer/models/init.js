@@ -199,19 +199,22 @@ export default {
         term.kill();
       }
 
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          term: null
-        }
-      });
-
       yield delay(1000);
 
       yield put({
         type: 'project/importProj',
         payload: {
           filePath: projPath
+        }
+      });
+
+      yield delay(1000);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          term: null,
+          installOptions: {}
         }
       });
     },
@@ -237,9 +240,8 @@ export default {
     },
     * retryInstall({}, { put, select }) {
       const { installOptions } = yield select(state => state.init);
-      console.log(installOptions)
       const term = yield command.nodeInstall(installOptions);
-       console.log('installing');
+      console.log('installing');
       yield put({
         type: 'changeStatus',
         payload: {

@@ -23,6 +23,7 @@ const { Header, Content } = Layout;
 //   darkgrey: '444'
 // });
 
+const newLog = (oldLog, str) => oldLog + (ansiHTML(str) + '<br>');
 
 class Log extends Component {
 
@@ -34,41 +35,27 @@ class Log extends Component {
       progress: 0,
       expand: false
     };
+    // this.exit = this.exit.bind(this);
   }
 
   componentDidMount() {
     const { term, dispatch } = this.props;
 
     term.stdout.on('data', (data) => {
-      const { logs, err, progress } = this.state;
-
       const str = data.toString();
 
-      const position = [str.indexOf('['), str.indexOf(']')];
-
-      const num = str.slice(position[0] + 1, position[1]).split('/');
-
-      let newProgress = progress;
-
-      if (num.length > 1 && !err) {
-        newProgress = (num[0] / num[1] * 100).toFixed(0);
-      }
-
       this.setState({
-        logs: logs + (ansiHTML(str) + '<br>'),
-        progress: newProgress,
+        logs: newLog(this.state.logs, str),
+        progress: this.getProcess(str),
       });
-
     });
 
     term.stderr.on('data', (data) => {
-      const { logs } = this.state;
-      const str = data.toString();
       this.setState({
-        logs: logs + (ansiHTML(data.toString()) + '<br>'),
+        logs: newLog(this.state.logs, data.toString()),
       });
     });
-    
+
     term.on('exit', (code) => {
       if (code) {
         Message.error('Installed Failed!');
@@ -83,36 +70,22 @@ class Log extends Component {
   }
 
   componentWillReceiveProps(next) {
-    const { term } = next;
-    if (term.pid !== this.props.term.pid) {
+    const { term, dispatch } = next;
+    if (!this.props.term || term.pid !== this.props.term.pid) {
       
       term.stdout.on('data', (data) => {
-        const { logs, err, progress } = this.state;
-
         const str = data.toString();
 
-        const position = [str.indexOf('['), str.indexOf(']')];
-
-        const num = str.slice(position[0] + 1, position[1]).split('/');
-
-        let newProgress = progress;
-
-        if (num.length > 1 && !err) {
-          newProgress = (num[0] / num[1] * 100).toFixed(0);
-        }
-
         this.setState({
-          logs: logs + (ansiHTML(str) + '<br>'),
-          progress: newProgress,
+          logs: newLog(this.state.logs, str),
+          progress: this.getProcess(str),
         });
 
       });
 
       term.stderr.on('data', (data) => {
-        const { logs } = this.state;
-        const str = data.toString();
         this.setState({
-          logs: logs + (ansiHTML(data.toString()) + '<br>'),
+          logs: newLog(this.state.logs, data.toString()),
         });
       });
       
@@ -130,12 +103,25 @@ class Log extends Component {
     }
   }
 
+  getProcess(str) {
+    const position = [str.indexOf('['), str.indexOf(']')];
+
+    const num = str.slice(position[0] + 1, position[1]).split('/');
+
+    let newProgress = this.state.progress;
+
+    if (num.length === 2 && !this.state.err) {
+      newProgress = (num[0] / num[1] * 100).toFixed(0);
+    }
+
+    return newProgress;
+  }
+
   clearTerm() {
     this.setState({
       logs: '',
       err: false,
       progress: 0,
-      // expand: false
     });
   }
 
@@ -156,7 +142,6 @@ class Log extends Component {
         <Button type="primary" onClick={() => this.retryInstall()}>Retry</Button>
         <Button type="default" onClick={() => prev()}>Back</Button>
       </div> : <div className="detail">依赖安装中 请耐心等待</div>;
-
     return (
       <div className="progress-wrap" >
         <Progress type="circle" 
