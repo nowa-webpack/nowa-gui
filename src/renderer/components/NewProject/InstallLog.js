@@ -6,7 +6,6 @@ import Progress from 'antd/lib/progress';
 import Icon from 'antd/lib/icon';
 import i18n from 'i18n';
 import ansiHTML from 'ansi-html';
-// import chalk from 'chalk';
 
 const { Header, Content } = Layout;
 

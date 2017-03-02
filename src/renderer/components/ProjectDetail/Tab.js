@@ -1,15 +1,11 @@
 import React, {Component} from 'react';
-import { connect } from 'dva';
-import Button from 'antd/lib/button';
 import Tabs from 'antd/lib/tabs';
 import i18n from 'i18n';
-// import UXTabs from 'uxcore-tabs';
 
 import Form from './Form';
 import Term from './Term';
 
 const TabPane = Tabs.TabPane;
-// const UXTabPane = UXTabs.TabPane;
 
 
 const Tab = ({ current, termBuild, termStart, activeTab, dispatch }) => {

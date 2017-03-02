@@ -133,11 +133,12 @@ class Terminal extends Component {
         <div className="term-container" dangerouslySetInnerHTML={{ __html: logs }} />
         {
           showClear && 
-          <Button
+          <Button ghost
+            size="small" shape="circle"
             className="clear-btn"
-            type="ghost"
-            size="small" onClick={() => this.clearTerm()}>
-            <i className="iconfont icon-eraser" />
+            onClick={() => this.clearTerm()}
+          >
+            <i className="iconfont icon-clear" />
           </Button>
         }
       </div>

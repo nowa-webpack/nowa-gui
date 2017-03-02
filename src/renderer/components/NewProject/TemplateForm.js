@@ -205,16 +205,3 @@ class Form extends Component {
 }
 
 export default connect(({ init }) => ({ init }))(Form);
-
-
-
-/*<div className="path">{projPath}
-              <Button
-                type="default"
-                className="addon"
-                size="small"
-                onClick={() => this.selectPath()}
-              >
-                <i className="iconfont icon-folder" />
-              </Button>
-            </div>*/
