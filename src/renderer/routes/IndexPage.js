@@ -75,8 +75,8 @@ class IndexPage extends Component {
       <i className="iconfont icon-msnui-maximize" /></div>;
 
 
-    // const mainbody = showPage 
-    const mainbody = true 
+    const mainbody = showPage 
+    // const mainbody = true 
       ? <MainPage showPage={showPage} /> 
       : <WelcomePage version={version} dispatch={dispatch} />;
 
@@ -92,7 +92,7 @@ class IndexPage extends Component {
             <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
             { showPage == 2 && <div className="proj-path">
               {current.name}
-              <span>({hidePathString(current.path)})</span>
+              <span>({hidePathString((current.path || ''))})</span>
             </div>}
 
             <div className="app-opt">

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import fs from 'fs-extra';
 import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
@@ -8,8 +8,11 @@ import Message from 'antd/lib/message';
 import Select from 'antd/lib/select';
 import Switch from 'antd/lib/switch';
 import Input from 'antd/lib/input';
+import Checkbox from 'antd/lib/checkbox';
 import i18n from 'i18n';
 
+
+import { hidePathString } from '../../util';
 const ButtonGroup = Button.Group;
 
 
@@ -20,8 +23,7 @@ class Form extends Component {
 
     const { basePath, sltTemp, extendsProj } = props.init;
 
-    // const name = sltTemp.name + '-demo';
-    const name = `${sltTemp.name.slice(14)}-demo`;
+    const name = 'untitled';
 
     this.registryList = ['https://registry.npm.taobao.org', 'http://registry.npm.alibaba-inc.com', 'https://registry.npmjs.org'];
 
@@ -47,6 +49,7 @@ class Form extends Component {
 
     this.old = this.state;
   }
+  
   componentWillReceiveProps({ init }) {
 
     const { basePath } = this.props.init;
@@ -70,6 +73,7 @@ class Form extends Component {
 
   changeName(name) {
     const { basePath } = this.props.init;
+
     this.setState({
       projPath: name ? join(basePath, name) : basePath,
       name
@@ -102,7 +106,6 @@ class Form extends Component {
       type: 'init/getAnswserArgs',
       payload: args
     });
-    
   }
 
   resetForm() {
@@ -130,49 +133,55 @@ class Form extends Component {
   render() {
     const { projPath, name, description, author, version, homepage, registry, repository, extendsArgs } = this.state;
     const { init: { extendsProj }, prev } = this.props;
+    let extendsHtml;
 
-    const extendsHtml = Object.keys(extendsProj).length > 0 ?
-        <div className="extends-form">
-          {extendsProj.prompts.map((item) => {
-            if (item.type === 'confirm') {
-              return (
-                <div className="form-item" key={item.name}>
-                  <label className="switch-label">{item.message}</label>
-                  <Switch
+    if (Object.keys(extendsProj).length) {
+      extendsHtml = (
+        <div className="form-item">
+          <label>Others:</label>
+          <div className="checkbox-grp">
+            {
+              extendsProj.prompts.map((item) => {
+                // if (item.type === 'confirm') {
+                return (
+                  <Checkbox
+                    key={item.name}
                     defaultChecked={item.default}
                     checked={extendsArgs[item.name]}
-                    onChange={(checked) => {
-                      extendsArgs[item.name] = checked;
+                    onChange={(e) => {
+                      // extendsArgs[item.name] = e.target.checked;
+                      extendsArgs[item.name] = !extendsArgs[item.name];
                       this.setState({ extendsArgs });
                     }}
-                  />
-                </div>
-              );
+                  >{item.message}</Checkbox>
+                );
+                // }
+              })
             }
-          })}
-        </div>
-        : null;
+          </div>
+        </div>);
+    }
 
-    const pathIcon = <i className="iconfont icon-folder" />;
+    const pathIcon = <i className="iconfont icon-folder" onClick={() => this.selectPath()}/>;
 
     return (
       <div className="template-form">
         <form className="ui-form" >
 
           <div className="form-item">
-            <label>{i18n('project.meta.name')}</label>
+            <label>{i18n('project.meta.name')}:</label>
             <input type="text" className="lg" onChange={e => this.changeName(e.target.value)} value={name} />
           </div>
 
           <div className="form-item">
-            <label>{i18n('project.meta.path')}</label>
+            <label>{i18n('project.meta.path')}:</label>
             <div className="form-item-grp">
-            <Input addonAfter={pathIcon} defaultValue={projPath} />
+            <Input addonAfter={pathIcon} value={hidePathString(projPath, 45)} disabled />
             </div>
           </div>
 
           <div className="form-item">
-            <label>{i18n('project.meta.npm_registry')}</label>
+            <label>{i18n('project.meta.npm_registry')}:</label>
             <Select
               style={{ width: 300 }}
               defaultValue={registry}
@@ -196,6 +205,8 @@ class Form extends Component {
 }
 
 export default connect(({ init }) => ({ init }))(Form);
+
+
 
 /*<div className="path">{projPath}
               <Button

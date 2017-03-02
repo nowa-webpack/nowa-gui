@@ -55,19 +55,20 @@ module.exports = {
 
   nodeInstall(options) {
     const targetPath = path.join(APP_PATH, 'task', 'install.js');
-    try {
+    // try {
       return spawn(NODE_PATH, [targetPath], {
         cwd: APP_PATH,
         execArgv: ['--harmony'],
         env: Object.assign(npmRunPath.env(), { params: JSON.stringify(options), FORCE_COLOR: 1 }),
       });
-    } catch (err) {
-      log.error(err);
-      return null;
-    }
+    // } catch (err) {
+    //   log.error(err);
+    //   console.log(err)
+    //   return null;
+    // }
   },
 
-  installTemplate(name) {
+  /*installTemplate(name) {
     return spawnSync(NODE_PATH, [NPM, 'install', name,
       '--prefix', TEMPLATES_DIR,
       '--registry=https://registry.npm.taobao.org',
@@ -77,6 +78,6 @@ module.exports = {
         shell: true,
         env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
       });
-  }
+  }*/
 };
 

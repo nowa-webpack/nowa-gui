@@ -8,6 +8,7 @@ const TemplateCards = ({ templates, loading, dispatch, next }) => {
 
   return (
     <Spin spinning={loading}>
+      <div className="cards-wrap">
       { templates.map(item =>
         <TemplateItem
           key={item.name}
@@ -16,6 +17,7 @@ const TemplateCards = ({ templates, loading, dispatch, next }) => {
           next={next}
         />)
       }
+      </div>
     </Spin>
   );
 };

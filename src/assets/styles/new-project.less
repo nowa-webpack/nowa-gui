@@ -1,5 +1,5 @@
 .new-proj{
-	padding: 20px 40px;
+	padding: 20px 0 0;
 
 	.title{
 		font-size: 18px;
@@ -10,9 +10,57 @@
 		width: 500px;
 		margin: 20px auto;
 	}
+
+	.cards-wrap{
+		padding: 0 40px;
+	}
+
+	.progress-wrap{
+		position: relative;
+		text-align: center;
+		height: 395px;
+		padding-top: 20px;
+
+		.detail{
+			margin-top: 10px;
+    	line-height: 30px;
+			color: #c6c6c6;
+
+			button{
+				margin: 0 5px;
+			}
+		}
+	}
+
+	.terminal-wrap{
+		position: fixed;
+		bottom: 0;
+		width: 725px;
+		padding: 10px 20px 10px 10px;
+		text-align: left;
+		background-color: #282828;
+		
+		color: #fff;
+		
+
+		.clear-btn{
+			position: absolute;
+			right: 2px;
+			top: 2px;
+	    cursor: pointer;
+	    font-size: 14px;
+			color: #999;
+		}
+
+		.term-container{
+			overflow-y: auto;
+			transition: height .5s;
+		}
+	}
 }
 
 .template-card{
+	position: relative;
 	float: left;
 	width: 288px;
 	margin: 20px 16px;
@@ -64,27 +112,25 @@
 		height: 35px;
 	}
 
-	
-	/*.ant-select-selection--single{
-		box-shadow: none;
-		height: 35px;
-		border-radius: 0;
-		background-color: transparent;
-		border-color: #d9d9d9;
-		border-left-color: transparent;
-    border-right-color: transparent;
-	}
-	.ant-select-open .ant-select-selection{
-		box-shadow: none;
-		border-top-color: #d9d9d9;
-		border-bottom-color: #d9d9d9;
-	}
-
-
 	.ant-select-selection-selected-value{
 		text-align: center;
     width: 100%;
-	}*/
+	}
+
+	.update-btn{
+		position: absolute;
+		position: absolute;
+    top: 12px;
+    right: 12px;
+    border-radius: 10px;
+    background-color: #ff5500;
+    border-color: #f15000;
+
+    i{
+    	font-weight: bold;
+    }
+	}
+	
 }
 
 /*.new-project{

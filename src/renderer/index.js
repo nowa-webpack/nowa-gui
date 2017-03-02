@@ -15,7 +15,6 @@ import '../assets/styles/base.css';
 import '../assets/styles/site.less';
 
 if (process.platform === 'win32') {
-// if (true) {
   import('../assets/styles/isWin.less');
 } else {
   import('../assets/styles/isMac.less');

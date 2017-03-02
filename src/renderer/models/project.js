@@ -169,7 +169,7 @@ export default {
         yield put({
           type: 'layout/changeStatus',
           payload: {
-            showNewProject: true
+            showPage: 0
           }
         });
       }
@@ -218,6 +218,7 @@ export default {
     },
     * refresh({ payload: { projects: storeProjects } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
+      const { showPage } = yield select(state => state.layout);
       if (storeProjects.length) {
         if (storeProjects.length < projects.length) {
           const newProjects = storeProjects.map(item =>
@@ -236,7 +237,7 @@ export default {
         yield put({
           type: 'layout/changeStatus',
           payload: {
-            showPage: 0,
+            showPage: showPage === 1 ? 1 : 0,
             activeTab: '1'
           }
         });

@@ -7,7 +7,7 @@ import i18n from 'i18n';
 
 import TemplateCards from '../components/NewProject/TemplateCards';
 import TemplateForm from '../components/NewProject/TemplateForm';
-// import InstallLog from '../components/NewProject/InstallLog';
+import InstallLog from '../components/NewProject/InstallLog';
 
 const { Content } = Layout;
 const Step = Steps.Step;
@@ -35,6 +35,9 @@ class NewProjectPage extends React.Component {
     const current = this.state.current - 1;
     this.setState({ current });
   }
+  componentWillRreceiveProps(){
+    console.log(1111)
+  }
   render() {
     const { templates, loading, term, dispatch } = this.props;
     const { current } = this.state;
@@ -57,16 +60,15 @@ class NewProjectPage extends React.Component {
       };
       component = <TemplateForm {...compProps} />;
     }
-    /*
-
 
     if (current === 2) {
       const compProps = {
         dispatch,
-        term
+        term,
+        prev: this.prev.bind(this),
       };
       component = <InstallLog {...compProps} />;
-    }*/
+    }
 
     return (
       <Content className="ui-content new-proj">
@@ -86,13 +88,3 @@ export default connect(({ init }) => ({
   term: init.term,
 }))(NewProjectPage);
 
-/*const NewProjectPage = ({ showPage }) => {
-  
-  return (
-    <Content className="ui-content new-proj">
-      <h2 className="title">创建新项目</h2>
-    </Content>
-  );
-};
-
-export default NewProjectPage;*/

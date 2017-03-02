@@ -5,6 +5,7 @@ import Select from 'antd/lib/select';
 import Card from 'antd/lib/card';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
+import Badge from 'antd/lib/badge';
 import i18n from 'i18n';
 
 const InputGroup = Input.Group;
@@ -49,8 +50,7 @@ class Item extends Component {
   }
   render() {
     const { dispatch, data } = this.props;
-    const { shouldUpdate } = this.state;
-
+    const { shouldUpdate, tag } = this.state;
     return (
       <Card 
         className="template-card"
@@ -58,6 +58,16 @@ class Item extends Component {
         title={data.name}
         extra={<span>data.description</span>}
       >
+      {
+        shouldUpdate && 
+        <Button
+          type="danger"
+          size="small"
+          icon="download"
+          className="update-btn"
+          onClick={() => this.updateTemplate()}
+        >{tag.replace('_', '').toUpperCase()}</Button>
+      }
       <InputGroup compact>
         <Button icon="link" className="opt"
           onClick={() => shell.openExternal(data.homepage)}>了解更多</Button>
@@ -72,7 +82,7 @@ class Item extends Component {
               key={item.name}
               value={item.name}
             >
-              { `Ver: ${item.name.replace('_', '')}` }
+              { `VER: ${item.name.replace('_', '').toUpperCase()}` }
             </Select.Option>)
         }
         </Select>
@@ -86,29 +96,6 @@ class Item extends Component {
 
 export default Item;
 
-/*
-
-<Button icon="link" className="opt" 
-          onClick={() => shell.openExternal(data.homepage)}>了解更多</Button>
-        <Select
-          className="opt"
-          size="large"
-          defaultValue={data.defaultTag}
-          onChange={value => this.changeTag(value)}
-        >
-        { data.tags.map(item =>
-            <Select.Option
-              key={item.name}
-              value={item.name}
-            >
-              { `Ver: ${item.name.replace('_', '')}` }
-            </Select.Option>)
-        }
-        </Select>
-        <Button className="opt" ghost type="primary"
-          onClick={() => this.handleCreate()}>Create</Button>
-
-*/
 
 /*
 <div className="card-head">

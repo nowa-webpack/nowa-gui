@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
+import Popconfirm from 'antd/lib/popconfirm';
+
 import i18n from 'i18n';
 
 class SettingForm extends React.Component {
@@ -46,6 +48,13 @@ class SettingForm extends React.Component {
       Message.error('Invalid Port!');
     }
   }
+  removeProj() {
+    const { dispatch, project } = this.props;
+    dispatch({
+      type: 'project/remove',
+      payload: { project }
+    });
+  }
   render() {
     const { name, port } = this.state;
     return (
@@ -62,6 +71,15 @@ class SettingForm extends React.Component {
         </div>
         <div className="form-btns">
           <Button type="primary" size="large" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+           <Popconfirm
+            placement="bottomRight"
+            title={'Are you sure remove this project?'}
+            onConfirm={() => this.removeProj()}
+            okText="Yes"
+            cancelText="No"
+          >
+          <Button type="danger" size="large" icon="delete" onClick={() => this.handleSubmit()}>Delete</Button>
+          </Popconfirm>
         </div>
       </form>
     );

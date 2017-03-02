@@ -37,10 +37,11 @@ export default {
     loading: true,
     sltTemp: '',
     sltTag: '',
-    basePath: osHomedir(),
+    basePath: join(osHomedir(), 'NowaProject'),
     extendsProj: {},
     term: null,
-    projPath: ''
+    projPath: '',
+    installOptions: {}
   },
 
   subscriptions: {
@@ -107,7 +108,6 @@ export default {
       } else {
         Message.error('Template Files haven\'t been downloaded. Please try later.', 3);
       }
-
     },
     * getAnswserArgs({ payload }, { put, select }) {
      
@@ -135,13 +135,10 @@ export default {
           return false;
         }
 
-        // real target file
         const target = join(answers.projPath, source.replace(/__(\w+)__/g, (match, offset) => answers[offset]));
 
-        // ensure target dir exists
         mkdirp.sync(dirname(target));
 
-        // real source file
         source = join(sourceDir, source);
 
         writeFile(source, target, answers);
@@ -158,7 +155,7 @@ export default {
         });
       }
 
-      const options = {
+      const installOptions = {
         root: answers.projPath,
         registry: answers.registry,
         targetDir: answers.projPath,
@@ -168,16 +165,33 @@ export default {
         pkgs,
       };
 
-      const term = yield command.nodeInstall(options);
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          installOptions,
+          projPath: answers.projPath, 
+        }
+      });
+
+      yield put({
+        type: 'retryInstall',
+        payload: {
+          installOptions,
+          projPath: answers.projPath, 
+        }
+      });
+
+      /*const term = yield command.nodeInstall(installOptions);
       console.log('installing', term);
 
       yield put({
         type: 'changeStatus',
         payload: {
           term,
-          projPath: answers.projPath
+          projPath: answers.projPath,
+          installOptions
         }
-      });
+      });*/
     },
     * finishedInstall({ payload }, { put, select }) {
       const { term, projPath } = yield select(state => state.init);
@@ -218,6 +232,18 @@ export default {
         payload: {
           templates,
           loading: false
+        }
+      });
+    },
+    * retryInstall({}, { put, select }) {
+      const { installOptions } = yield select(state => state.init);
+      console.log(installOptions)
+      const term = yield command.nodeInstall(installOptions);
+       console.log('installing');
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          term,
         }
       });
     },
