@@ -85,15 +85,18 @@ class Form extends Component {
     const { dispatch, init, next } = this.props;
     const { sltTemp, sltTag, basePath } = init;
 
-    const isExisted = fs.existsSync(join(basePath, others.name));
+    if (fs.existsSync(join(basePath, others.name))) {
+      Message.error(i18n('msg.existed'));
+      return false;
+    }
 
-    if (isExisted) {
-      Message.error('The project path is already existed!');
+    if (!(/^[A-Za-z0-9_-]+$/.test(others.name))) {
+      Message.error(i18n('msg.invalidName'));
       return false;
     }
 
     if (!(/^\d+\.\d+\.\d+([\.\-\w])*$/.test(others.version))) {
-      Message.error('Invalid Version!');
+      Message.error(i18n('msg.invalidVersion'));
       return false;
     }
 
@@ -138,7 +141,7 @@ class Form extends Component {
     if (Object.keys(extendsProj).length) {
       extendsHtml = (
         <div className="form-item">
-          <label>Others:</label>
+          <label>{i18n('project.meta.others')}:</label>
           <div className="checkbox-grp">
             {
               extendsProj.prompts.map((item) => {

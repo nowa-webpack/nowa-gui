@@ -1,22 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ansiHTML from 'ansi-html';
 import Button from 'antd/lib/button';
-import Message from 'antd/lib/message';
-
-
-/*ansiHTML.setColors({
-  // reset: ['555', '666'], // FOREGROUND-COLOR or [FOREGROUND-COLOR] or [, BACKGROUND-COLOR] or [FOREGROUND-COLOR, BACKGROUND-COLOR]
-  black: '000', // String
-  red: 'f98677',
-  green: '79cc66',
-  yellow: 'efe594',
-  blue: '8ec4ec',
-  magenta: 'ff96fa',
-  cyan: '969cff',
-  // lightgrey: 'bbb',
-  lightgrey: 'f98677',
-  darkgrey: '000'
-});*/
 
 
 class Terminal extends Component {
@@ -132,13 +116,12 @@ class Terminal extends Component {
       <div className="terminal-wrap">
         <div className="term-container" dangerouslySetInnerHTML={{ __html: logs }} />
         {
-          showClear && 
+          showClear &&
           <Button ghost
             size="small" shape="circle"
             className="clear-btn"
             onClick={() => this.clearTerm()}
-          >
-            <i className="iconfont icon-clear" />
+          ><i className="iconfont icon-clear" />
           </Button>
         }
       </div>
@@ -148,9 +131,9 @@ class Terminal extends Component {
 
 Terminal.propTypes = {
   term: PropTypes.object,
-  name: PropTypes.string,
-  type: PropTypes.string,
-  dispatch: PropTypes.func,
+  name: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default Terminal;

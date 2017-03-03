@@ -3,6 +3,7 @@ import { remote } from 'electron';
 import fs from 'fs-extra';
 import path from 'path';
 import Message from 'antd/lib/message';
+import i18n from 'i18n';
 
 import { getLocalProjects, setLocalProjects } from '../services/localStorage';
 
@@ -77,7 +78,7 @@ export default {
         const isExisted = fs.existsSync(path.join(filePath, 'abc.json'));
 
         if (!isExisted) {
-          Message.error('Invalied Project!');
+          Message.error(i18n('msg.invalidProject'));
           return false;
         }
 
@@ -89,7 +90,7 @@ export default {
         const filter = storeProjects.filter(item => item.path === filePath);
 
         if (filter.length) {
-          Message.info('Already existed!');
+          Message.info(i18n('msg.existed'));
         } else {
           storeProjects.push({
             name: projectName,
@@ -125,7 +126,7 @@ export default {
             }
           });
 
-          Message.success('Import Success!');
+          Message.success(i18n('msg.importSuccess'));
         }
       } catch (e) {
         console.log(e);
@@ -213,7 +214,7 @@ export default {
           payload
         });
 
-        Message.success('Update success!', 1.5);
+        Message.success(i18n('msg.updateSuccess'), 1.5);
       }
     },
     * refresh({ payload: { projects: storeProjects } }, { put, select }) {
@@ -268,7 +269,19 @@ export default {
           payload: { projects }
         });
       }
-      
+    },
+    * saveCurrent({}, { select }) {
+      const { current } = yield select(state => state.project);
+
+      const projects = getProjects().map(item => {
+        if (item.path === current.path) {
+          item.current = true;
+        }
+        return item;
+      });
+
+      setLocalProjects(projects);
+
     }
   },
 

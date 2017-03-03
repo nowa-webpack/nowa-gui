@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import Spin from 'antd/lib/spin';
 
@@ -20,6 +20,13 @@ const TemplateCards = ({ templates, loading, dispatch, next }) => {
       </div>
     </Spin>
   );
+};
+
+TemplateCards.propTypes = {
+  templates: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
+  next: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default TemplateCards;

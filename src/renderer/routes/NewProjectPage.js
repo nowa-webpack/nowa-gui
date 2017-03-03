@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
-import Button from 'antd/lib/button';
 import Steps from 'antd/lib/steps';
 import i18n from 'i18n';
 
@@ -13,14 +12,14 @@ const { Content } = Layout;
 const Step = Steps.Step;
 
 const steps = [{
-  title: i18n('template.step1'),
+  title: i18n('project.new.step1'),
 }, {
-  title: i18n('template.step2'),
+  title: i18n('project.new.step2'),
 }, {
-  title: i18n('template.step3'),
+  title: i18n('project.new.step3'),
 }];
 
-class NewProjectPage extends React.Component {
+class NewProjectPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -34,9 +33,6 @@ class NewProjectPage extends React.Component {
   prev() {
     const current = this.state.current - 1;
     this.setState({ current });
-  }
-  componentWillRreceiveProps(){
-    console.log(1111)
   }
   render() {
     const { templates, loading, term, dispatch } = this.props;
@@ -72,7 +68,7 @@ class NewProjectPage extends React.Component {
 
     return (
       <Content className="ui-content new-proj">
-        <h2 className="title">创建新项目</h2>
+        <h2 className="title">{i18n('project.new.title')}</h2>
         <Steps current={current} >
           {steps.map(item => <Step key={item.title} title={item.title} />)}
         </Steps>
@@ -81,6 +77,13 @@ class NewProjectPage extends React.Component {
     );
   }
 }
+
+NewProjectPage.propTypes = {
+  templates: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
+  term: PropTypes.object,
+  dispatch: PropTypes.func.isRequired,
+};
 
 export default connect(({ init }) => ({
   templates: init.templates,

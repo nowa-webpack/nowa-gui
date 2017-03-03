@@ -1,26 +1,11 @@
-import React, {Component} from 'react';
-import Layout from 'antd/lib/layout';
+import React, { Component, PropTypes } from 'react';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Progress from 'antd/lib/progress';
 import Icon from 'antd/lib/icon';
-import i18n from 'i18n';
 import ansiHTML from 'ansi-html';
+import i18n from 'i18n';
 
-const { Header, Content } = Layout;
-
-// ansiHTML.setColors({
-//   // reset: ['555', '666'], // FOREGROUND-COLOR or [FOREGROUND-COLOR] or [, BACKGROUND-COLOR] or [FOREGROUND-COLOR, BACKGROUND-COLOR]
-//   black: '000', // String
-//   red: 'f98677',
-//   green: '79cc66',
-//   yellow: 'efe594',
-//   blue: '8ec4ec',
-//   magenta: 'ff96fa',
-//   cyan: '969cff',
-//   lightgrey: 'f98677',
-//   darkgrey: '444'
-// });
 
 const newLog = (oldLog, str) => oldLog + (ansiHTML(str) + '<br>');
 
@@ -34,7 +19,6 @@ class Log extends Component {
       progress: 0,
       expand: false
     };
-    // this.exit = this.exit.bind(this);
   }
 
   componentDidMount() {
@@ -57,10 +41,10 @@ class Log extends Component {
 
     term.on('exit', (code) => {
       if (code) {
-        Message.error('Installed Failed!');
+        Message.error(i18n('msg.installFail'));
         this.setState({ err: true });
       } else {
-        Message.success('Installed Success!');
+        Message.success(i18n('msg.installSuccess'));
         dispatch({
           type: 'init/finishedInstall',
         });
@@ -90,10 +74,10 @@ class Log extends Component {
       
       term.on('exit', (code) => {
         if (code) {
-          Message.error('Installed Failed!');
+          Message.error(i18n('msg.installFail'));
           this.setState({ err: true });
         } else {
-          Message.success('Installed Success!');
+          Message.success(i18n('msg.installSuccess'));
           dispatch({
             type: 'init/finishedInstall',
           });
@@ -137,10 +121,10 @@ class Log extends Component {
     const { prev } = this.props;
 
     const detailHtml = err ?
-      <div className="detail">安装过程中出现错误, 如有需要请查看下方日志或返回重试<br />
-        <Button type="primary" onClick={() => this.retryInstall()}>Retry</Button>
-        <Button type="default" onClick={() => prev()}>Back</Button>
-      </div> : <div className="detail">依赖安装中 请耐心等待</div>;
+      <div className="detail">{i18n('project.new.log.error')}<br />
+        <Button type="primary" onClick={() => this.retryInstall()}>{i18n('project.new.log.retry')}</Button>
+        <Button type="default" onClick={() => prev()}>{i18n('project.new.log.back')}</Button>
+      </div> : <div className="detail">{i18n('project.new.log.wait')}</div>;
     return (
       <div className="progress-wrap" >
         <Progress type="circle" 
@@ -158,7 +142,14 @@ class Log extends Component {
       </div>
     );
   }
-
 }
 
+Log.propTypes = {
+  term: PropTypes.object,
+  prev: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
+
 export default Log;
+
+

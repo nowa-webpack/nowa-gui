@@ -1,6 +1,6 @@
 
 @font-face {font-family: "iconfont";
-  src: url('font_poxrxb4d380ssjor.woff') format('woff');
+  src: url('font_poxrxb4d380ssjor.ttf?t=1488444530504');
 }
 
 .iconfont {
@@ -11,43 +11,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-spinner:before { content: "\e614"; }
+.icon-folder:before { content: "\e6a1"; }
 
-.icon-eraser:before { content: "\e618"; }
+.icon-msnui-maximize:before { content: "\e6d6"; }
 
-.icon-folder:before { content: "\e61f"; }
+.icon-msnui-minimize:before { content: "\e6d7"; }
 
-.icon-more:before { content: "\e633"; }
+.icon-x:before { content: "\e62d"; }
 
-.icon-close:before { content: "\e69a"; }
+.icon-code:before { content: "\e773"; }
 
-.icon-delete:before { content: "\e69d"; }
+.icon-similarproduct:before { content: "\e6f6"; }
 
-.icon-project:before { content: "\e6a1"; }
+.icon-compass:before { content: "\e71b"; }
 
-.icon-help:before { content: "\e6a3"; }
+.icon-import:before { content: "\e611"; }
 
-.icon-set:before { content: "\e6ae"; }
+.icon-clear:before { content: "\e6d1"; }
 
-.icon-add:before { content: "\e6b9"; }
+.icon-play:before { content: "\e6b0"; }
 
-.icon-stop:before { content: "\e669"; }
+.icon-success:before { content: "\e6b3"; }
 
-.icon-browse:before { content: "\e6e6"; }
-
-.icon-start2:before { content: "\e60f"; }
-
-.icon-editor:before { content: "\e6ee"; }
-
-.icon-subtract:before { content: "\e6fe"; }
-
-.icon-custom-update:before { content: "\e602"; }
-
-.icon-survey:before { content: "\e662"; }
-
-.icon-update:before { content: "\e6c5"; }
-
-.icon-start:before { content: "\e619"; }
-
-.icon-build:before { content: "\e61e"; }
+.icon-stop:before { content: "\e6b5"; }
 

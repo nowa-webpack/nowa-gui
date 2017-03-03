@@ -9,7 +9,7 @@ const APP_PATH = isDev ? join(process.cwd(), 'app') : app.getAppPath();
 
 const NOWA = join(APP_PATH, 'node_modules', 'nowa');
 // const NPM = join(APP_PATH, 'node_modules', 'npm', 'bin', 'npm-cli.js');
-
+// Microsoft VS Code/bin/code.cmd
 module.exports = {
   APP_PATH,
   NOWA,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import i18n from 'i18n';
@@ -10,7 +10,7 @@ const List = ({ current, projects, dispatch }) => {
   return (
     <div className="proj-list">
       <header>
-        项目
+        {i18n('project.list.title')}
         <Button type="default"
           shape="circle"
           size="small"
@@ -33,7 +33,15 @@ const List = ({ current, projects, dispatch }) => {
       }
       </div>
     </div>
-    );
+  );
+};
+
+List.propTypes = {
+  current: PropTypes.shape({
+    name: PropTypes.string,
+  }).isRequired,
+  projects: PropTypes.array,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(({ project, task, layout }) => ({ 
@@ -41,4 +49,4 @@ export default connect(({ project, task, layout }) => ({
   projects: project.projects,
   task,
   layout
- }))(List);
+}))(List);

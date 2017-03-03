@@ -14,6 +14,7 @@
     "electron-is-dev": "^0.1.2",
     "electron-log": "^1.3.0",
     "fs-extra": "^2.0.0",
+    "getmac": "^1.2.1",
     "node-fetch": "^1.6.3",
     "nowa": "^1.1.0",
     "nowa-build": "^1.12.0",

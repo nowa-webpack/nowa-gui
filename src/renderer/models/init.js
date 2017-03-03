@@ -1,10 +1,11 @@
 import { ipcRenderer, remote } from 'electron';
 import osHomedir from 'os-homedir';
+import { join, dirname } from 'path';
 import fs from 'fs-extra';
 import mkdirp from 'mkdirp';
 import glob from 'glob';
 import Message from 'antd/lib/message';
-import { join, dirname } from 'path';
+import i18n from 'i18n';
 
 const { application, command } = remote.getGlobal('services');
 const { config } = remote.getGlobal('configs');
@@ -106,7 +107,7 @@ export default {
           }
         });
       } else {
-        Message.error('Template Files haven\'t been downloaded. Please try later.', 3);
+        Message.error(i18n('msg.templateErr'), 3);
       }
     },
     * getAnswserArgs({ payload }, { put, select }) {

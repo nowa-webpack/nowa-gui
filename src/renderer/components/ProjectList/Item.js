@@ -1,7 +1,6 @@
-import React, {Component} from 'react';
+import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 import Badge from 'antd/lib/badge';
-import i18n from 'i18n';
 
 
 const Item = ({ project, current, dispatch }) => {
@@ -32,16 +31,23 @@ const Item = ({ project, current, dispatch }) => {
   }
 
   return (
-    <div className={classnames({
-      item: true,
-      'item-active': current === name
-    })}
+    <div
+      className={classnames({
+        item: true,
+        'item-active': current === name
+      })}
       onClick={handleClick}
     >
       { status }
       <span className="name">{ name }</span>
     </div>
   );
+};
+
+Item.propTypes = {
+  current: PropTypes.string.isRequired,
+  project: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default Item;

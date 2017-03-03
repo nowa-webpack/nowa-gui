@@ -1,5 +1,5 @@
 import dva from 'dva';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import Message from 'antd/lib/message';
 
 import RouterConfig from './router';
@@ -10,7 +10,6 @@ import init from './models/init';
 
 
 import 'antd/dist/antd.min.css';
-
 import '../assets/styles/base.css';
 import '../assets/styles/site.less';
 
@@ -21,9 +20,13 @@ if (process.platform === 'win32') {
 }
 
 window.AliMonitor = window.AliMonitor || [];
-AliMonitor.push({
-  url: 'log://uxdata/nowa/',
-  msg: '{"PV":1}'
+
+remote.require('getmac').getMac((err, macAddress) => {
+    if (err) Message.error(err, 3);
+    AliMonitor.push({
+      url: 'log://uxdata/nowa/',
+      msg: `{"MAC": ${macAddress}}`
+    });
 });
 
 

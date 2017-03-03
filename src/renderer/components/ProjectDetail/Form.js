@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Popconfirm from 'antd/lib/popconfirm';
-
 import i18n from 'i18n';
 
-class SettingForm extends React.Component {
+class SettingForm extends Component {
   constructor(props) {
     super(props);
     const project = props.project;
@@ -45,7 +44,7 @@ class SettingForm extends React.Component {
     if (/^([1-9]|[1-9]\d{1,3}|[1-6][0-5][0-5][0-3][0-5])$/.test(value)) {
       this.setState({ port: value });
     } else {
-      Message.error('Invalid Port!');
+      Message.error(i18n('msg.invalidPort'));
     }
   }
   removeProj() {
@@ -62,28 +61,39 @@ class SettingForm extends React.Component {
         <div className="form-item">
           <label>{i18n('project.meta.name')}:</label>
           <input type="text" className="lg"
-            onChange={e => this.setState({ name: e.target.value })} value={name} />
+            onChange={e => this.setState({ name: e.target.value })} value={name}
+          />
         </div>
         <div className="form-item">
           <label>{i18n('project.meta.port')}:</label>
           <input type="text" className="sm"
-            onChange={e => this.changePort(e.target.value)} value={port} />
+            onChange={e => this.changePort(e.target.value)} value={port}
+          />
         </div>
         <div className="form-btns">
           <Button type="primary" size="large" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
-           <Popconfirm
+          <Popconfirm
             placement="bottomRight"
-            title={'Are you sure remove this project?'}
+            title={i18n('msg.removeProject')}
             onConfirm={() => this.removeProj()}
-            okText="Yes"
-            cancelText="No"
+            okText={i18n('form.ok')}
+            cancelText={i18n('form.cancel')}
           >
-          <Button type="danger" size="large" icon="delete" onClick={() => this.handleSubmit()}>Delete</Button>
+          <Button type="danger" size="large" icon="delete" onClick={() => this.handleSubmit()}>{i18n('form.delete')}</Button>
           </Popconfirm>
         </div>
       </form>
     );
   }
 }
+
+SettingForm.propTypes = {
+  project: PropTypes.shape({
+    name: PropTypes.string,
+    path: PropTypes.string,
+    port: PropTypes.number
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
 
 export default connect(({ project }) => ({ project: project.current }))(SettingForm);

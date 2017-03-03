@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { remote, shell } from 'electron';
 import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
@@ -19,9 +19,6 @@ const isWin = process.platform === 'win32';
 class IndexPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showDrag: false
-    };
     this.onDrop = this.onDrop.bind(this);
   }
   componentDidMount() {
@@ -44,10 +41,10 @@ class IndexPage extends Component {
     }
   }
 
-  onDrop(acceptedFiles, rejectedFiles) {
+  onDrop(acceptedFiles) {
     const { dispatch } = this.props;
 
-    this.props.dispatch({
+    dispatch({
       type: 'project/importProj',
       payload: { filePath: acceptedFiles[0].path }
     });
@@ -58,6 +55,7 @@ class IndexPage extends Component {
     document.getElementById('main-ctn').style.display = 'none';
     document.getElementById('drag-ctn').style.display = '';
   }
+
   onDragLeave() {
     document.getElementById('main-ctn').style.display = '';
     document.getElementById('drag-ctn').style.display = 'none';
@@ -65,7 +63,6 @@ class IndexPage extends Component {
 
   render() {
     const { showPage, dispatch, version, current } = this.props;
-    const { showDrag } = this.state;
 
     const closeBtn = <div className="icn icn-x" key="0" onClick={() => win.close()}>
       <i className="iconfont icon-x" /></div>;
@@ -75,22 +72,22 @@ class IndexPage extends Component {
       <i className="iconfont icon-msnui-maximize" /></div>;
 
 
-    const mainbody = showPage 
-    // const mainbody = true 
-      ? <MainPage showPage={showPage} /> 
+    const mainbody = showPage
+      ? <MainPage showPage={showPage} dispatch={dispatch} />
       : <WelcomePage version={version} dispatch={dispatch} />;
 
     return (
-      <Dropzone className="container" 
-        onDrop={this.onDrop} 
+      <Dropzone className="container"
+        onDrop={this.onDrop}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
-        onClick={e => { e.preventDefault();}}>
+        onClick={e => e.preventDefault()}
+      >
         <Layout className="ui-layout" id="main-ctn">
           <Header className="top-bar">
             { showPage > 0 && <div className="bar-bd" /> }
             <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
-            { showPage == 2 && <div className="proj-path">
+            { showPage === 2 && <div className="proj-path">
               {current.name}
               <span>({hidePathString((current.path || ''))})</span>
             </div>}
@@ -107,56 +104,20 @@ class IndexPage extends Component {
   }
 }
 
+IndexPage.propTypes = {
+  version: PropTypes.string.isRequired,
+  newVersion: PropTypes.string.isRequired,
+  showPage: PropTypes.number.isRequired,
+  current: PropTypes.shape({
+    name: PropTypes.string,
+    path: PropTypes.string
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
+
 export default connect(({ layout, project }) => ({
   showPage: layout.showPage,
   newVersion: layout.newVersion,
   version: layout.version,
-  shouldAppUpdate: layout.shouldAppUpdate,
   current: project.current 
 }))(IndexPage);
-
-
-
-   /* switch (showPage) {
-      case 0:
-        mainbody = <WelcomePage version={version} dispatch={dispatch} />;
-        break;
-      case 1:
-        mainbody = <NewProjectPage />;
-        break;
-      case 2:
-        mainbody = <ProjectDetailPage />;
-        break;
-      default:
-        mainbody = <WelcomePage version={version} dispatch={dispatch} />;
-    }*/
-// <Sider className="left-side">
-//             <ProjectList />
-//             <SettingFoot />
-//           </Sider>
-//           <Content className="right-side">
-//             <div className="app-opt">
-//               <i className="iconfont icon-close" onClick={() => win.close()} />
-//               <i className="iconfont icon-subtract" onClick={() => win.minimize()} />
-//             </div>
-//             { rightSide }
-//           </Content>
-
-
-
-// <ReactCSSTransitionGroup
-//           component="div"
-//           transitionName="example"
-//           className="tra-container"
-//           transitionAppear={true}
-//           transitionAppearTimeout={500}
-//           transitionEnterTimeout={500}
-//           transitionLeaveTimeout={500}
-//           >
-//             {
-//               // children
-//               React.cloneElement(children, {
-//                 key: history.pathname,
-//               })
-//             }
-//           </ReactCSSTransitionGroup>

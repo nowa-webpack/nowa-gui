@@ -1,11 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { shell } from 'electron';
 import Button from 'antd/lib/button';
 import Select from 'antd/lib/select';
 import Card from 'antd/lib/card';
-import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
-import Badge from 'antd/lib/badge';
 import i18n from 'i18n';
 
 const InputGroup = Input.Group;
@@ -26,7 +24,7 @@ class Item extends Component {
     this.setState({ tag, shouldUpdate });
   }
   updateTemplate() {
-    const { dispatch, data} = this.props;
+    const { dispatch, data } = this.props;
     dispatch({
       type: 'init/updateTemplate',
       payload: {
@@ -37,7 +35,7 @@ class Item extends Component {
     this.setState({ shouldUpdate: false });
   }
   handleCreate() {
-    const { dispatch, data, next} = this.props;
+    const { dispatch, data, next } = this.props;
     const { tag } = this.state;
     dispatch({
       type: 'init/selectTemplate',
@@ -49,17 +47,17 @@ class Item extends Component {
     next();
   }
   render() {
-    const { dispatch, data } = this.props;
+    const { data } = this.props;
     const { shouldUpdate, tag } = this.state;
     return (
-      <Card 
+      <Card
         className="template-card"
         bordered={false}
         title={data.name}
-        extra={<span>data.description</span>}
+        extra={<span>{data.description}</span>}
       >
       {
-        shouldUpdate && 
+        shouldUpdate &&
         <Button
           type="danger"
           size="small"
@@ -70,7 +68,8 @@ class Item extends Component {
       }
       <InputGroup compact>
         <Button icon="link" className="opt"
-          onClick={() => shell.openExternal(data.homepage)}>了解更多</Button>
+          onClick={() => shell.openExternal(data.homepage)}
+        >{i18n('project.new.more')}</Button>
         <Select
           className="opt"
           size="large"
@@ -82,16 +81,23 @@ class Item extends Component {
               key={item.name}
               value={item.name}
             >
-              { `VER: ${item.name.replace('_', '').toUpperCase()}` }
+              {i18n('project.new.version')}: {item.name.replace('_', '').toUpperCase()}
             </Select.Option>)
         }
         </Select>
         <Button className="opt" ghost type="primary"
-          onClick={() => this.handleCreate()}>Create</Button>
-      </InputGroup>  
+          onClick={() => this.handleCreate()}
+        >{i18n('project.new.create')}</Button>
+      </InputGroup>
       </Card>
     );
   }
 }
+
+Item.propTypes = {
+  data: PropTypes.object.isRequired,
+  next: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
 
 export default Item;

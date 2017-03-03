@@ -19,6 +19,10 @@ export default {
         dispatch({
           type: 'dispose'
         });
+
+        dispatch({
+          type: 'project/saveCurrent'
+        });
       };
     },
   },

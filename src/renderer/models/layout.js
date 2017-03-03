@@ -19,8 +19,8 @@ export default {
   namespace: 'layout',
 
   state: {
-    showPage: 0,  // 0 welcome ; 1 new page; 2 project 
-    showNewProject: false,
+    showPage: 0,  // 0 welcome ; 1 new page; 2 project
+    showSetModal: false,
     activeTab: '1',
     version: curVersion,
     newVersion: curVersion,
