@@ -27,7 +27,7 @@ module.exports = {
   'project.tab.setting': '项目设置',
   'project.tab.console': '控制台',
   'project.tab.listen_log': '监听日志',
-  'project.tab.compile_log': '打包日志',
+  'project.tab.compile_log': '编译输出',
 
   'project.new.title': '创建新项目',
   'project.new.version': '版本',
