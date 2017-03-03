@@ -16,6 +16,7 @@ const ProjectDetailPage = ({ current, termBuild, termStart, activeTab, dispatch 
   const startProj = () => dispatch({ type: 'task/start', payload: { project: current } });
   const buildProj = () => dispatch({ type: 'task/build', payload: { project: current } });
   const stopProj = () => dispatch({ type: 'task/stop', payload: { project: current } });
+  const openEditor = () => dispatch({ type: 'task/openEditor', payload: { project: current } });
 
   return (
     <Content className="ui-content proj-detail">
@@ -36,7 +37,7 @@ const ProjectDetailPage = ({ current, termBuild, termStart, activeTab, dispatch 
         <div className="opt" onClick={buildProj}>
           <i className="iconfont icon-similarproduct" /><br />{i18n('task.compile')}
         </div>
-        <div className="opt " onClick={() => {}}>
+        <div className="opt " onClick={openEditor}>
           <i className="iconfont icon-code" /><br />{i18n('task.editor')}
         </div>
         <div className="opt " onClick={() => shell.showItemInFolder(join(path, 'abc.json'))}>

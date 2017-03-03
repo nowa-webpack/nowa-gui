@@ -1,6 +1,8 @@
 import { remote } from 'electron';
 import Message from 'antd/lib/message';
+import i18n from 'i18n';
 
+import { delay } from '../util';
 const { command } = remote.getGlobal('services');
 
 export default {
@@ -170,7 +172,7 @@ export default {
         });
       }
     },
-    * dispose({}, { select }) {
+    * dispose(o, { select }) {
       const { start, build } = yield select(state => state.task);
       Object.keys(start).map((item) => {
         start[item].kill();
@@ -180,7 +182,23 @@ export default {
       });
     },
     * openEditor({ payload: { project } }, { put, select}) {
-      command.openSublime(project.path);
+      // command.openSublime(project.path);
+      const { defaultEditor, editor } = yield select(state => state.layout);
+      console.log(defaultEditor)
+      const editorPath = editor[defaultEditor];
+
+      if (!editorPath) {
+        Message.error(i18n('msg.editorNotExisted'));
+
+        yield delay(1000);
+
+        yield put({
+          type: 'layout/changeStatus',
+          payload: { showSetModal: true }
+        });
+      } else {
+        command.openEditor(project.path, defaultEditor, editorPath);
+      }
     }
   },
 

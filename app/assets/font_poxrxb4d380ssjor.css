@@ -1,6 +1,6 @@
 
 @font-face {font-family: "iconfont";
-  src: url('font_poxrxb4d380ssjor.ttf?t=1488444530504');
+  src: url('./font_poxrxb4d380ssjor.ttf?t=1488444530504'); /* IE9*/
 }
 
 .iconfont {

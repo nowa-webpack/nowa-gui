@@ -4,17 +4,18 @@ import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
 import Modal from 'antd/lib/modal';
+import i18n from 'i18n';
 
 
 import WelcomePage from './WelcomePage';
 import DragPage from './DragPage';
 import MainPage from './MainPage';
 import { hidePathString } from '../util';
+import { IS_WIN, UPGRADE_URL } from '../constants';
 
 const confirm = Modal.confirm;
 const { Header } = Layout;
 const { win, upgrade } = remote.getGlobal('services');
-const isWin = process.platform === 'win32';
 
 class IndexPage extends Component {
   constructor(props) {
@@ -28,15 +29,18 @@ class IndexPage extends Component {
   componentWillReceiveProps(next) {
     if (next.newVersion !== this.props.newVersion) {
       confirm({
-        title: 'Want to update to new release?',
-        content: <div><p>Current Version {this.props.newVersion}</p>
-              <p>Next Version {next.newVersion}</p></div>,
+        title: i18n('msg.updateConfirm'),
+        content: (
+          <div>
+            <p>{i18n('msg.curVersion')} {this.props.newVersion}</p>
+            <p>{i18n('msg.nextVersion')} {next.newVersion}</p>
+          </div>),
         onOk() {
-          dispatch({
-            type: 'layout/upgrade',
-          });
+          shell.openExternal(UPGRADE_URL);
         },
         onCancel() {},
+        okText: i18n('form.ok'),
+        cancelText: i18n('form.cancel'),
       });
     }
   }
@@ -93,7 +97,7 @@ class IndexPage extends Component {
             </div>}
 
             <div className="app-opt">
-              { isWin ? [closeBtn, maximizeBtn, minimizeBtn] : [closeBtn, minimizeBtn, maximizeBtn]}
+              { IS_WIN ? [closeBtn, maximizeBtn, minimizeBtn] : [closeBtn, minimizeBtn, maximizeBtn]}
             </div>
           </Header>
           { mainbody }

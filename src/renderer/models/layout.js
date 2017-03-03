@@ -1,18 +1,14 @@
 import { remote, ipcRenderer } from 'electron';
 import fs from 'fs-extra';
 
+import { VSCODE_BASE_PATH, SUBLIME_BASE_PATH } from '../constants';
+
+import { getLocalEditor, getLocalSublimePath, setLocalSublimePath,
+  getLocalVScodePath, setLocalVScodePath } from '../services/localStorage';
+
 const { application, upgrade } = remote.getGlobal('services');
 
 const curVersion = application.getPackgeJson().version;
-
-const isWin = process.platform === 'win32';
-const VSCODE_BASE_PATH = isWin 
-  ? 'C:/Program Files (x86)/Microsoft VS Code'
-  : '/Applications/Visual Studio Code.app/';
-
-const SUBLIME_BASE_PATH = isWin 
-  ? 'C:/Program Files/Sublime Text 3/'
-  : '/Applications/Sublime Text.app/';
 
 export default {
 
@@ -24,11 +20,11 @@ export default {
     activeTab: '1',
     version: curVersion,
     newVersion: curVersion,
-    shouldAppUpdate: false,
-    defaultEditor: 'Sublime',
+    // defaultEditor: 'Sublime',
+    defaultEditor: getLocalEditor() || 'VScode',
     editor: {
-      Sublime: fs.existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : '',
-      VScode: fs.existsSync(VSCODE_BASE_PATH) ? VSCODE_BASE_PATH : ''
+      Sublime: getLocalSublimePath(),
+      VScode: getLocalVScodePath()
     }
   },
 
@@ -40,34 +36,39 @@ export default {
         dispatch({
           type: 'changeStatus',
           payload: {
-            shouldAppUpdate: true,
+            // shouldAppUpdate: true,
             newVersion
           }
         });
       });
-      
+
+      if (!getLocalSublimePath()) {
+        setLocalSublimePath(fs.existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : '');
+      }
+
+      if (!getLocalVScodePath()) {
+        setLocalVScodePath(fs.existsSync(VSCODE_BASE_PATH) ? VSCODE_BASE_PATH : '');
+      }
+
+      dispatch({
+        type: 'changeStatus',
+        payload: {
+          editor: {
+            Sublime: getLocalSublimePath(),
+            VScode: getLocalVScodePath(),
+          }
+        }
+      });
+
     },
   },
 
   effects: {
-    * upgrade({}, { put, select }) {
-
-      const { newVersion } = yield select(state => state.layout);
-
-      if (process.platform === 'win32') {
-        upgrade.downloadNewRelease('http://lab.onbing.com/nowa-gui.exe')
-        // upgrade.downloadNewRelease('http://t.cn/RJQv8uj');
-      } else {
-        upgrade.downloadNewRelease('http://lab.onbing.com/nowa-gui.dmg')
-
-        // upgrade.downloadNewRelease('http://t.cn/RJQPL3J');
-      }
-    },
-    * changeLogTab({ payload: { activeTab } }, { put, select }){
+    * changeLogTab({ payload: { activeTab } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
-      if (activeTab == '2') {
-        projects.map(item => {
-          if (item.path == current.path) {
+      if (activeTab === '2') {
+        projects.map((item) => {
+          if (item.path === current.path) {
             item.taskErr = false;
           }
         });
@@ -80,7 +81,25 @@ export default {
         type: 'changeStatus',
         payload: { activeTab }
       });
-    }  
+    },
+    * selectEditorPath(o, { select, put }) {
+      const { defaultEditor, editor } = yield select(state => state.layout);
+      
+      try {
+        const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+
+        editor[defaultEditor] = importPath[0];
+
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            editor
+          }
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
   },
   reducers: {
     changeStatus(state, action) {

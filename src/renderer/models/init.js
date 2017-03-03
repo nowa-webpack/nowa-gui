@@ -7,6 +7,8 @@ import glob from 'glob';
 import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
+import { delay } from '../util';
+
 const { application, command } = remote.getGlobal('services');
 const { config } = remote.getGlobal('configs');
 const TEMPLATES_DIR = join(osHomedir(), '.nowa', 'templates');
@@ -26,7 +28,7 @@ const writeFile = (source, target, data) => {
   }
 };
 
-const delay = n => new Promise(resolve => setTimeout(resolve, n));
+// const delay = n => new Promise(resolve => setTimeout(resolve, n));
 
 
 export default {

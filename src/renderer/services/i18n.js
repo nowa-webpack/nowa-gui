@@ -3,23 +3,24 @@ import { remote } from 'electron';
 import _ from 'lodash';
 import { zh, en } from 'language';
 
+import { getLocalLanguage, setLocalLanguage } from './localStorage';
 const { locale } = remote.getGlobal('services');
-const storage = window.localStorage;
+
 
 let i18n;
 
-if (storage.getItem('LANGUAGE')) {
-  if (storage.getItem('LANGUAGE') === 'en') {
+if (getLocalLanguage()) {
+  if (getLocalLanguage() === 'en') {
     i18n = i18nHelper(en);
   } else {
     i18n = i18nHelper(zh);
   }
 } else {
   if (_.startsWith(locale, 'zh')) {
-    storage.setItem('LANGUAGE', 'zh');
+    setLocalLanguage('zh');
     i18n = i18nHelper(zh);
   } else {
-    storage.setItem('LANGUAGE', 'en');
+    setLocalLanguage('en');
     i18n = i18nHelper(en);
 	}
 }

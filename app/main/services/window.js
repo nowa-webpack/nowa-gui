@@ -1,7 +1,9 @@
-const { BrowserWindow, globalShortcut, app } = require('electron');
+const { BrowserWindow, globalShortcut } = require('electron');
 const isDev = require('electron-is-dev');
 const url = require('url');
-const path = require('path');
+const { join } = require('path');
+
+const { IS_WIN } = require('../constants');
 
 let win;
 
@@ -25,7 +27,7 @@ module.exports = {
       win = new BrowserWindow(options);
       win.loadURL('http://localhost:8080/index.html');
       /*win.loadURL(url.format({
-        pathname: path.join(__dirname, '..', '..', 'dist', 'index.html'),
+        pathname: join(__dirname, '..', '..', 'dist', 'index.html'),
         protocol: 'file:',
         slashes: true,
       }));*/
@@ -33,7 +35,7 @@ module.exports = {
     } else {
       win = new BrowserWindow(options);
       win.loadURL(url.format({
-        pathname: path.join(__dirname, '..', '..', 'dist', 'index.html'),
+        pathname: join(__dirname, '..', '..', 'dist', 'index.html'),
         protocol: 'file:',
         slashes: true,
       }));
@@ -69,7 +71,7 @@ module.exports = {
   },
 
   close() {
-    if (process.platform === 'win32') {
+    if (IS_WIN) {
       win.close();
     } else {
       win.hide();

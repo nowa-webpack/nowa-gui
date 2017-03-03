@@ -59,13 +59,13 @@ class SettingForm extends Component {
     return (
       <form className="ui-form" >
         <div className="form-item">
-          <label>{i18n('project.meta.name')}:</label>
+          <label className="form-label">{i18n('project.meta.name')}:</label>
           <input type="text" className="lg"
             onChange={e => this.setState({ name: e.target.value })} value={name}
           />
         </div>
         <div className="form-item">
-          <label>{i18n('project.meta.port')}:</label>
+          <label className="form-label">{i18n('project.meta.port')}:</label>
           <input type="text" className="sm"
             onChange={e => this.changePort(e.target.value)} value={port}
           />

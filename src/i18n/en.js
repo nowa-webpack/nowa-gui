@@ -54,7 +54,8 @@ module.exports = {
   'setting.language.en': 'English',
   'setting.language.zh': '中文',
   'setting.version': 'App Version',
-  'setting.version.newest.tip': 'newest',
+  'setting.editor': 'Editor',
+  'setting.version.newest.tip': 'Newest',
 
   'foot.set': 'Setting',
   'foot.import': 'Import Project',
@@ -74,24 +75,13 @@ module.exports = {
   'msg.removeProject': 'Are you sure remove this project?',
   'msg.templateErr': 'Template Files haven\'t been downloaded. Please try later.',
 
+  'msg.editorPath': 'Please set installation path of default editor!',
+  'msg.editorNotExisted': 'Please go to SET MODAL and set the EDIOTR item.',
 
-  /*'welcome.import.btn': 'import project',
-  'welcome.create.btn': 'create project',
+  'msg.updateConfirm': 'Want to update to new release?',
+  'msg.curVersion': 'Current Version',
+  'msg.nextVersion': 'Next Version',
 
-  'project-main.header.text': 'Project',
-  'project-main.empty.text': 'Drag File here',
 
-  'project-item.start.btn': 'Start',
-  'project-item.listen.btn': 'Listening',
-  'project-item.stop.btn': 'Stop',
-
-  'project-item.browser.btn': 'Open in explorer',
-  'project-item.compile.btn': 'Compile',
-  'project-item.folder.btn': 'Open in folder',
-  'project-item.remove.btn': 'Remove',
-
-  'project-item.setting.text': 'Setting',
-  'project-item.log.text': 'Listener log',
-  'project-item.compile.text': 'Compile log',*/
 
 };

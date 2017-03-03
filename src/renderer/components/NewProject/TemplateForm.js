@@ -141,7 +141,7 @@ class Form extends Component {
     if (Object.keys(extendsProj).length) {
       extendsHtml = (
         <div className="form-item">
-          <label>{i18n('project.meta.others')}:</label>
+          <label className="form-label">{i18n('project.meta.others')}:</label>
           <div className="checkbox-grp">
             {
               extendsProj.prompts.map((item) => {
@@ -165,26 +165,26 @@ class Form extends Component {
         </div>);
     }
 
-    const pathIcon = <i className="iconfont icon-folder" onClick={() => this.selectPath()}/>;
+    const pathIcon = <i className="iconfont icon-folder" onClick={() => this.selectPath()} />;
 
     return (
       <div className="template-form">
         <form className="ui-form" >
 
           <div className="form-item">
-            <label>{i18n('project.meta.name')}:</label>
+            <label className="form-label">{i18n('project.meta.name')}:</label>
             <input type="text" className="lg" onChange={e => this.changeName(e.target.value)} value={name} />
           </div>
 
           <div className="form-item">
-            <label>{i18n('project.meta.path')}:</label>
+            <label className="form-label">{i18n('project.meta.path')}:</label>
             <div className="form-item-grp">
             <Input addonAfter={pathIcon} value={hidePathString(projPath, 45)} disabled />
             </div>
           </div>
 
           <div className="form-item">
-            <label>{i18n('project.meta.npm_registry')}:</label>
+            <label className="form-label">{i18n('project.meta.npm_registry')}:</label>
             <Select
               style={{ width: 300 }}
               defaultValue={registry}

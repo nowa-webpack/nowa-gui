@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { LOCAL_PROJECTS } from '../constants';
+import { LOCAL_PROJECTS, LANGUAGE, EDITOR, SUBMIT_PATH, VSCODE_PATH } from '../constants';
 
 const storage = window.localStorage;
 
@@ -19,7 +19,22 @@ export const getLocalProjects = () => {
   return filter;
 };
 
-
 export const getLocalTemplateUpdate = type => storage.getItem(type);
 
 export const setLocalTemplateUpdate = (type, date) => storage.setItem(type, date);
+
+export const getLocalLanguage = () => storage.getItem(LANGUAGE);
+
+export const setLocalLanguage = language => storage.setItem(LANGUAGE, language);
+
+export const getLocalEditor = () => storage.getItem(EDITOR);
+
+export const setLocalEditor = editor => storage.setItem(EDITOR, editor);
+
+export const getLocalSublimePath = () => storage.getItem(SUBMIT_PATH);
+
+export const setLocalSublimePath = sublimePath => storage.setItem(SUBMIT_PATH, sublimePath);
+
+export const getLocalVScodePath = () => storage.getItem(VSCODE_PATH);
+
+export const setLocalVScodePath = vscodePath => storage.setItem(VSCODE_PATH, vscodePath);

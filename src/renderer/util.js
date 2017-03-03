@@ -10,4 +10,6 @@ export const hidePathString = (filePath, num: 70) => {
 
   return filePath;
 
-}
+};
+
+export const delay = n => new Promise(resolve => setTimeout(resolve, n));

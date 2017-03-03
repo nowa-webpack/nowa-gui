@@ -1,50 +1,44 @@
 const { spawn, exec } = require('child_process');
-const path = require('path');
-const log = require('electron-log');
+const { join } = require('path');
 const npmRunPath = require('npm-run-path');
-const isDev = require('electron-is-dev');
+// const log = require('electron-log');
+// const isDev = require('electron-is-dev');
 
-const { getWin } = require('./window');
-const { APP_PATH, NOWA, TEMPLATES_DIR, NPM } = require('../constants');
+const { APP_PATH, NOWA_PATH, IS_WIN, NODE_PATH } = require('../constants');
 
-const NODE_PATH = process.platform === 'win32' 
-  ? path.join(APP_PATH, 'nodes', 'node.exe')
-  : path.join(APP_PATH, 'nodes', 'node');
-
-const isWin = process.platform === 'win32';
 
 module.exports = {
 
   build(projectPath) {
-    return spawn(NODE_PATH, [NOWA, 'build'], {
+    return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
       cwd: projectPath,
       env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
     });
   },
 
   start(projectPath) {
-    return spawn(NODE_PATH, [NOWA, 'server', '-o'], {
+    return spawn(NODE_PATH, [NOWA_PATH, 'server', '-o'], {
       cwd: projectPath,
       env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
     });
   },
 
   lib(projectPath) {
-    return spawn(NODE_PATH, [NOWA, 'lib'], {
+    return spawn(NODE_PATH, [NOWA_PATH, 'lib'], {
       cwd: projectPath,
       env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
     });
   },
 
-  openSublime(projectPath, editor, basePath) {
+  openEditor(projectPath, editor, basePath) {
     let editorPath = '';
 
     if (editor === 'Sublime') {
-      editorPath = path.join(basePath, isWin ? 'subl.exe' : '/Contents/SharedSupport/bin/subl')
+      editorPath = join(basePath, IS_WIN ? 'subl.exe' : '/Contents/SharedSupport/bin/subl')
     }
 
     if (editor === 'VScode') {
-      editorPath = path.join(basePath, isWin ? 'bin/cmd.exe' : '/Contents/Resources/app/bin/code')
+      editorPath = join(basePath, IS_WIN ? 'bin/code.exe' : '/Contents/Resources/app/bin/code')
     }
 
     return spawn(editorPath,
@@ -54,18 +48,12 @@ module.exports = {
   },
 
   nodeInstall(options) {
-    const targetPath = path.join(APP_PATH, 'task', 'install.js');
-    // try {
-      return spawn(NODE_PATH, [targetPath], {
-        cwd: APP_PATH,
-        execArgv: ['--harmony'],
-        env: Object.assign(npmRunPath.env(), { params: JSON.stringify(options), FORCE_COLOR: 1 }),
-      });
-    // } catch (err) {
-    //   log.error(err);
-    //   console.log(err)
-    //   return null;
-    // }
+    const targetPath = join(APP_PATH, 'task', 'install.js');
+    return spawn(NODE_PATH, [targetPath], {
+      cwd: APP_PATH,
+      execArgv: ['--harmony'],
+      env: Object.assign(npmRunPath.env(), { params: JSON.stringify(options), FORCE_COLOR: 1 }),
+    });
   },
 
   /*installTemplate(name) {

@@ -8,12 +8,13 @@ import layout from './models/layout';
 import task from './models/task';
 import init from './models/init';
 
+import { IS_WIN } from './constants';
 
 import 'antd/dist/antd.min.css';
 import '../assets/styles/base.css';
 import '../assets/styles/site.less';
 
-if (process.platform === 'win32') {
+if (IS_WIN) {
   import('../assets/styles/isWin.less');
 } else {
   import('../assets/styles/isMac.less');
