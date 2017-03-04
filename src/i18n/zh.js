@@ -6,6 +6,7 @@ module.exports = {
 
   'project.list.title': '项目',
   'project.list.empty': '拖入Nowa项目',
+  'project.list.add': '导入项目',
   'project.meta.port': '端口',
   'project.meta.path': '路径',
   'project.meta.name': '项目名称',
@@ -23,6 +24,8 @@ module.exports = {
   'task.editor': '代码',
   'task.compass': '访问',
   'task.folder': '打开',
+  // 'task.clear': '清理',
+
 
   'project.tab.setting': '项目设置',
   'project.tab.console': '控制台',
@@ -59,7 +62,7 @@ module.exports = {
   'setting.version.newest.tip': '最新',
 
   'foot.set': '工具设置',
-  'foot.import': '导入项目',
+  // 'foot.import': '导入项目',
   'foot.add': '新建项目',
   'foot.feedback': '反馈',
   'foot.help': '帮助',

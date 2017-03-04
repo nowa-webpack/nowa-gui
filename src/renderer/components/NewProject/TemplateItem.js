@@ -61,10 +61,9 @@ class Item extends Component {
         <Button
           type="danger"
           size="small"
-          icon="download"
           className="update-btn"
           onClick={() => this.updateTemplate()}
-        >{tag.replace('_', '').toUpperCase()}</Button>
+        >New {tag.replace('_', '').toUpperCase()}</Button>
       }
       <InputGroup compact>
         <Button icon="link" className="opt"

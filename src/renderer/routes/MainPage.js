@@ -1,7 +1,10 @@
 import React from 'react';
+import { shell } from 'electron';
 import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
-import { shell } from 'electron';
+import Tooltip from 'antd/lib/tooltip';
+import i18n from 'i18n';
+
 
 import ProjectList from '../components/ProjectList/List';
 import SettingModal from '../components/SettingModal/Modal';
@@ -16,15 +19,21 @@ const MainPage = ({ showPage, dispatch }) => {
       <Sider className="ui-sider" width={175}>
         <ProjectList />
         <div className="ui-foot">
-          <Button type="default" icon="setting" shape="circle"
-            onClick={() => dispatch({ type: 'layout/changeStatus', payload: { showSetModal: true } })}
-          />
-          <Button type="default" icon="message" shape="circle"
-            onClick={() => shell.openExternal('https://github.com/nowa-webpack/nowa-gui/issues/new')}
-          />
-          <Button type="default" icon="question-circle-o" shape="circle"
-            onClick={() => shell.openExternal('https://github.com/nowa-webpack/nowa-gui/wiki')}
-          />
+          <Tooltip placement="top" title={i18n('foot.set')} >
+            <Button type="default" icon="setting" shape="circle"
+              onClick={() => dispatch({ type: 'layout/changeStatus', payload: { showSetModal: true } })}
+            />
+          </Tooltip>
+          <Tooltip placement="top" title={i18n('foot.feedback')} >
+            <Button type="default" icon="message" shape="circle"
+              onClick={() => shell.openExternal('https://github.com/nowa-webpack/nowa-gui/issues/new')}
+            />
+          </Tooltip>
+          <Tooltip placement="top" title={i18n('foot.help')} >
+            <Button type="default" icon="question-circle-o" shape="circle"
+              onClick={() => shell.openExternal('https://github.com/nowa-webpack/nowa-gui/wiki')}
+            />
+          </Tooltip>
         </div>
       </Sider>
       { showPage === 2 ? <ProjectDetailPage /> : <NewProjectPage />}

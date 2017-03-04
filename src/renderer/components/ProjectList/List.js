@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
+import Tooltip from 'antd/lib/tooltip';
 import i18n from 'i18n';
 
 import Item from './Item';
@@ -11,15 +12,17 @@ const List = ({ current, projects, dispatch }) => {
     <div className="proj-list">
       <header>
         {i18n('project.list.title')}
-        <Button type="default"
-          shape="circle"
-          size="small"
-          icon="plus"
-          onClick={() => dispatch({
-            type: 'layout/changeStatus',
-            payload: { showPage: 1 }
-          })}
-        />
+        <Tooltip placement="bottom" title={i18n('project.list.add')} >
+          <Button type="default"
+            shape="circle"
+            size="small"
+            icon="plus"
+            onClick={() => dispatch({
+              type: 'layout/changeStatus',
+              payload: { showPage: 1 }
+            })}
+          />
+        </Tooltip>
       </header>
       <div className="item-list">
       {

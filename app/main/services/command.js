@@ -38,7 +38,7 @@ module.exports = {
     }
 
     if (editor === 'VScode') {
-      editorPath = join(basePath, IS_WIN ? 'bin/code.exe' : '/Contents/Resources/app/bin/code')
+      editorPath = join(basePath, IS_WIN ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code')
     }
 
     return spawn(editorPath,

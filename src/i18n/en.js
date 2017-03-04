@@ -7,6 +7,7 @@ module.exports = {
 
   'project.list.title': 'Projects',
   'project.list.empty': 'Drag Folder here',
+  'project.list.add': 'Import Project',
   'project.meta.port': 'Port',
   'project.meta.path': 'Path',
   'project.meta.name': 'Name',
@@ -23,6 +24,7 @@ module.exports = {
   'task.compile': 'Compile',
   'task.compass': 'Explorer',
   'task.editor': 'Editor',
+  // 'task.clear': 'Clear',
   'task.folder': process.platform === 'darwin' ? 'Finder' : 'Folder',
 
   'project.tab.setting': 'Setting',
@@ -58,7 +60,7 @@ module.exports = {
   'setting.version.newest.tip': 'Newest',
 
   'foot.set': 'Setting',
-  'foot.import': 'Import Project',
+  // 'foot.import': 'Import Project',
   'foot.add': 'New Project',
   'foot.feedback': 'Feedback',
   'foot.help': 'Help',
