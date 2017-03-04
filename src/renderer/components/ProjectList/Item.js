@@ -17,7 +17,8 @@ const Item = ({ project, current, dispatch }) => {
     dispatch({
       type: 'layout/changeStatus',
       payload: {
-        showPage: 2
+        showPage: 2,
+        activeTab: '1'
       }
     });
   };

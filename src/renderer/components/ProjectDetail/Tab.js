@@ -12,13 +12,13 @@ const Tab = ({ current, termBuild, termStart, activeTab, dispatch }) => {
   const buildProps = {
     name: current.path,
     type: 'build',
-    term: termBuild,
+    terminal: termBuild || {},
     dispatch
   };
   const startProps = {
     name: current.path,
     type: 'start',
-    term: termStart,
+    terminal: termStart || {},
     dispatch
   };
 
@@ -34,6 +34,7 @@ const Tab = ({ current, termBuild, termStart, activeTab, dispatch }) => {
           className="terminal-tabs"
           defaultActiveKey="1"
           activeKey={activeTab}
+          animated={true}
           onChange={index => dispatch({
             type: 'layout/changeLogTab',
             payload: {

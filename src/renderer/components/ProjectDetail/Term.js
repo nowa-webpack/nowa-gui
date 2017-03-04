@@ -6,33 +6,43 @@ import Button from 'antd/lib/button';
 class Terminal extends Component {
   constructor(props) {
     super(props);
+
+    const { terminal, name } = props;
+
     this.mainLogs = {};
+
+    if (terminal.log) {
+      this.mainLogs[name] = terminal.log;
+    }
+
     this.state = {
       showClear: false,
-      logs: ''
+      logs: this.mainLogs[name] || ''
     };
   }
 
   componentDidMount() {
-    const { term, name, dispatch, type } = this.props;
-
-    if (term) {
-      term.stdout.on('data', (data) => {
+    const { terminal, name, dispatch, type } = this.props;
+    this.unMount = false;
+    if (terminal.term) {
+      terminal.term.stdout.on('data', (data) => {
         this.writeData(data, name);
       });
 
-      term.stderr.on('data', (data) => {
+      terminal.term.stderr.on('data', (data) => {
         this.writeData(data, name);
+        console.log('err', type);
+        
         dispatch({
-          type: 'project/taskErr',
+          type: 'task/taskErr',
           payload: {
-            type: 'build',
+            type,
             filePath: name
           }
         });
       });
 
-      term.on('exit', () => {
+      terminal.term.on('exit', () => {
         dispatch({
           type: 'task/exit',
           payload: {
@@ -44,19 +54,18 @@ class Terminal extends Component {
     }
   }
 
-  componentWillReceiveProps({ term, name, dispatch, type }) {
-    const { term: oldTerm, name: oldName } = this.props;
-
-    if (!oldTerm && term) {
+  componentWillReceiveProps({ terminal, name, dispatch, type }) {
+    const { terminal: oldTermimal, name: oldName } = this.props;
+    if (!oldTermimal.term && terminal.term) {
       if (oldName === name) {
-        term.stdout.on('data', (data) => {
+        terminal.term.stdout.on('data', (data) => {
           this.writeData(data, name);
         });
 
-        term.stderr.on('data', (data) => {
+        terminal.term.stderr.on('data', (data) => {
           this.writeData(data, name);
           dispatch({
-            type: 'project/taskErr',
+            type: 'task/taskErr',
             payload: {
               type,
               filePath: name
@@ -64,7 +73,7 @@ class Terminal extends Component {
           });
         });
 
-        term.on('exit', () => {
+        terminal.term.on('exit', () => {
           dispatch({
             type: 'task/exit',
             payload: {
@@ -77,37 +86,75 @@ class Terminal extends Component {
     }
 
     if (oldName !== name) {
-      const newLogs = this.mainLogs[name];
+      let newLogs = this.mainLogs[name];
+
+      if (!newLogs) {
+        newLogs = terminal.log;
+      }
+
       this.setState({
         logs: newLogs,
-        showClear: newLogs && newLogs.length
+        showClear: !!newLogs
       });
+      
     }
   }
 
+  componentWillUnmount() {
+    const { name, dispatch, type } = this.props;
+    this.unMount = true;
+    dispatch({
+      type: 'task/addLog',
+      payload: {
+        logs: this.mainLogs,
+        type,
+      }
+    });
+  }
+
   writeData(data, wname) {
-    const { name } = this.props;
-    if (name === wname) {
-      const { logs } = this.state;
-      const newLogs = (logs || '' ) + ansiHTML(data.toString().replace(/\n/g, '<br>'));
-      this.mainLogs[wname] = newLogs;
-      this.setState({
-        logs: newLogs,
-        showClear: true
-      });
+    const { name, dispatch, type } = this.props;
+    const str = ansiHTML(data.toString().replace(/\n/g, '<br>'));
+    if (!this.unMount) {
+      if (name === wname) {
+        const { logs } = this.state;
+        const newLogs = (logs || '') + str;
+        this.mainLogs[wname] = newLogs;
+        this.setState({
+          logs: newLogs,
+          showClear: true
+        });
+      } else {
+        const newLogs = this.mainLogs[wname] + str;
+        this.mainLogs[wname] = newLogs;
+      }
     } else {
-      const newLogs = this.mainLogs[wname] + ansiHTML(data.toString().replace(/\n/g, '<br>'));
-      this.mainLogs[wname] = newLogs;
+      dispatch({
+        type: 'task/addLog',
+        payload: {
+          logs: this.mainLogs,
+          type,
+        }
+      });
     }
   }
 
   clearTerm() {
+    const { name, type, dispatch } = this.props;
     this.setState({
       logs: '',
       showClear: false
     });
 
-    this.mainLogs[this.props.name] = '';
+    this.mainLogs[name] = '';
+
+    dispatch({
+      type: 'task/clearLog',
+      payload: {
+        name,
+        type
+      }
+    });
   }
 
   render() {
@@ -130,7 +177,7 @@ class Terminal extends Component {
 }
 
 Terminal.propTypes = {
-  term: PropTypes.object,
+  terminal: PropTypes.object,
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,

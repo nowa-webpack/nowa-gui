@@ -56,9 +56,9 @@ ProjectDetailPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-export default connect(({ project, task, layout }) => ({
-  current: project.current,
-  termBuild: task.build[project.current.path],
-  termStart: task.start[project.current.path],
+export default connect(({ project: { current }, task, layout }) => ({
+  current,
+  termBuild: task.build[current.path],
+  termStart: task.start[current.path],
   activeTab: layout.activeTab
 }))(ProjectDetailPage);

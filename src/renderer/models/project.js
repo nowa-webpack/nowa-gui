@@ -54,7 +54,7 @@ export default {
         }
       });
 
-      setInterval(() => {
+      /*setInterval(() => {
         const curProjects = getProjects();
         dispatch({
           type: 'refresh',
@@ -62,7 +62,7 @@ export default {
             projects: curProjects,
           }
         });
-      }, 5000);
+      }, 5000);*/
     },
   },
 
@@ -257,7 +257,7 @@ export default {
       const { activeTab } = yield select(state => state.layout); 
 
       if (current.path !== filePath || 
-        (current.path === filePath && activeTab != '2')) {
+        (current.path === filePath && activeTab !== '2')) {
         projects.map((item) => {
           if (item.path === filePath) {
             item.taskErr = true;

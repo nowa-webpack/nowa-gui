@@ -39,7 +39,7 @@ export default {
 
       console.log('start', term.pid);
 
-      start[project.path] = term;
+      start[project.path] = { term, log: '' };
 
       projects.map((item) => {
         if (item.path === project.path) item.start = true;
@@ -66,7 +66,7 @@ export default {
       });
 
       yield put({
-        type: 'layout/changeStatus',
+        type: 'layout/changeLogTab',
         payload: {
           activeTab: '1'
         }
@@ -80,10 +80,10 @@ export default {
       console.log('build', term.pid);
 
       // build[project.path] = { term };
-      build[project.path] = term;
+      build[project.path] = { term, log: '', err: false };
 
       yield put({
-        type: 'layout/changeStatus',
+        type: 'layout/changeLogTab',
         payload: {
           activeTab: '2'
         }
@@ -100,7 +100,7 @@ export default {
 
       const { start } = yield select(state => state.task);
 
-      start[project.path].kill();
+      start[project.path].term.kill();
 
       projects.map((item) => {
         if (item.path === project.path) item.start = false;
@@ -124,18 +124,21 @@ export default {
       const { projects } = yield select(state => state.project);
 
       if (type === 'start') {
-        // start[name].term.kill();
-        delete start[name];
+        // delete start[name];
+        start[name].term = null;
       }
 
       if (type === 'build') {
-        delete build[name];
-        /*const pj = projects.filter(item => item.path === name)[0];
-        if (pj.taskErr) {
+        const pj = projects.filter(item => item.path === name)[0];
+        
+        if (build[name].err) {
           Message.error(`${pj.name} Build Failed!`);
         } else {
           Message.success(`${pj.name} Build Finished!`);
-        }*/
+        }
+        build[name].term = null;
+        build[name].err = false;
+        // delete build[name];
       }
       console.log('exit', type);
 
@@ -151,23 +154,26 @@ export default {
       const { build, start } = yield select(state => state.task);
 
       if (type === 'build') {
-        build[name].kill();
-        delete build[name];
+        // build[name].kill();
+        // delete build[name];
+        build[name].log = '';
 
         yield put({
           type: 'changeStatus',
           payload: {
-            build: { ...build }
+            // build: { ...build }
+            build
           }
         });
       }
 
       if (type === 'start') {
-
+        start[name].log = '';
         yield put({
           type: 'changeStatus',
           payload: {
-            start: { ...start }
+            start
+            // start: { ...start }
           }
         });
       }
@@ -175,16 +181,18 @@ export default {
     * dispose(o, { select }) {
       const { start, build } = yield select(state => state.task);
       Object.keys(start).map((item) => {
-        start[item].kill();
+        // start[item].kill();
+        if (start[item].term) start[item].term.kill();
+        
       });
       Object.keys(build).map((item) => {
-        build[item].kill();
+        // build[item].kill();
+        if (build[item].term) build[item].term.kill();
       });
     },
     * openEditor({ payload: { project } }, { put, select}) {
-      // command.openSublime(project.path);
       const { defaultEditor, editor } = yield select(state => state.layout);
-      console.log(defaultEditor)
+      // console.log(defaultEditor)
       const editorPath = editor[defaultEditor];
 
       if (!editorPath) {
@@ -199,7 +207,46 @@ export default {
       } else {
         command.openEditor(project.path, defaultEditor, editorPath);
       }
+    },
+    * taskErr({ payload: { type, filePath }}, { select, put }) {
+      const { build } = yield select(state => state.task);
+      if (type === 'build') {
+        build[filePath].err = true;
+        yield put({
+          type: 'project/taskErr',
+          payload: {
+            type,
+            filePath
+          }
+        });
+      }
+    },
+    // * addLog({ payload: { type, name, log } }, { put, select }) {
+    * addLog({ payload: { logs, type } }, { put, select }) {
+      const { start, build } = yield select(state => state.task);
+      if (type === 'start') {
+        // start[name].log += log;
+        Object.keys(start).forEach((name) => {
+          if (start[name]) start[name].log = logs[name];
+        });
+      }
+
+      if (type === 'build') {
+        // build[name].log += log;
+        Object.keys(build).forEach((name) => {
+          if (build[name]) build[name].log = logs[name];
+        });
+      }
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          start,
+          build
+        }
+      });
     }
+
   },
 
   reducers: {
