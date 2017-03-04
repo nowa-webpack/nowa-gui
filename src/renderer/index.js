@@ -15,9 +15,9 @@ import '../assets/styles/base.css';
 import '../assets/styles/site.less';
 
 if (IS_WIN) {
-  import('../assets/styles/isWin.less');
+  import('../assets/styles/is-win.less');
 } else {
-  import('../assets/styles/isMac.less');
+  import('../assets/styles/is-mac.less');
 }
 
 window.AliMonitor = window.AliMonitor || [];

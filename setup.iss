@@ -7,8 +7,8 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{0C9F8A94-7AD2-4826-A913-3AAE61500394}
 AppName=NowaGUI
-AppVersion=0.0.7
-AppVerName=NowaGUI version 0.0.7
+AppVersion=1.0.0
+AppVerName=NowaGUI version 1.0.0
 AppPublisher=My Company, Inc.
 AppPublisherURL=https://github.com/nowa-webpack/nowa-gui
 AppSupportURL=https://github.com/nowa-webpack/nowa-gui
@@ -17,7 +17,7 @@ DefaultDirName={pf}\NowaGUI
 DisableProgramGroupPage=yes
 OutputDir=E:\
 OutputBaseFilename=NowaGUI_setup
-SetupIconFile=C:\project\nowa-gui-master\build\icon.ico
+SetupIconFile=C:\project\nowa-gui-master\static\icon.ico
 Compression=lzma
 SolidCompression=yes
 Uninstallable=yes

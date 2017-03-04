@@ -1,19 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import { join, dirname } from 'path';
+import { join } from 'path';
 import fs from 'fs-extra';
-import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Select from 'antd/lib/select';
-import Switch from 'antd/lib/switch';
 import Input from 'antd/lib/input';
 import Checkbox from 'antd/lib/checkbox';
 import i18n from 'i18n';
 
-
 import { hidePathString } from '../../util';
-const ButtonGroup = Button.Group;
 
 
 class Form extends Component {
@@ -21,9 +17,10 @@ class Form extends Component {
   constructor(props) {
     super(props);
 
-    const { basePath, sltTemp, extendsProj } = props.init;
+    const { basePath, extendsProj } = props.init;
 
-    const name = 'untitled';
+    // const name = 'untitled';
+    const name = '';
 
     this.registryList = ['https://registry.npm.taobao.org', 'http://registry.npm.alibaba-inc.com', 'https://registry.npmjs.org'];
 
@@ -83,7 +80,7 @@ class Form extends Component {
   handleSubmit() {
     const { extendsArgs, ...others } = this.state;
     const { dispatch, init, next } = this.props;
-    const { sltTemp, sltTag, basePath } = init;
+    const { basePath } = init;
 
     if (fs.existsSync(join(basePath, others.name))) {
       Message.error(i18n('msg.existed'));
@@ -112,9 +109,9 @@ class Form extends Component {
   }
 
   resetForm() {
-
     const { extendsProj } = this.props.init;
     const extendsArgs = {};
+
     if (Object.keys(extendsProj).length) {
       extendsProj.prompts.map((item) => {
         extendsArgs[item.name] = item.default || false;
@@ -134,7 +131,7 @@ class Form extends Component {
   }
 
   render() {
-    const { projPath, name, description, author, version, homepage, registry, repository, extendsArgs } = this.state;
+    const { projPath, name, registry, extendsArgs } = this.state;
     const { init: { extendsProj }, prev } = this.props;
     let extendsHtml;
 
@@ -173,7 +170,10 @@ class Form extends Component {
 
           <div className="form-item">
             <label className="form-label">{i18n('project.meta.name')}:</label>
-            <input type="text" className="lg" onChange={e => this.changeName(e.target.value)} value={name} />
+            <input type="text" className="lg"
+              placeholder="untitled"
+              onChange={e => this.changeName(e.target.value)} value={name} 
+            />
           </div>
 
           <div className="form-item">
@@ -206,5 +206,12 @@ class Form extends Component {
     );
   }
 }
+
+Form.propTypes = {
+  init: PropTypes.object.isRequired,
+  prev: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
 
 export default connect(({ init }) => ({ init }))(Form);

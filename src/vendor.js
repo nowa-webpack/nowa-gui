@@ -22,12 +22,14 @@ require('antd/lib/layout');
 require('antd/lib/tabs');
 require('antd/lib/badge');
 require('antd/lib/spin');
-require('antd/lib/select');
-require('antd/lib/switch');
 require('antd/lib/popconfirm');
 require('antd/lib/modal');
 require('antd/lib/steps');
 require('antd/lib/card');
+require('antd/lib/select');
+require('antd/lib/input');
+require('antd/lib/checkbox');
+require('antd/lib/radio');
 
 
 
