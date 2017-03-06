@@ -18,6 +18,7 @@ export default {
     showPage: 0,  // 0 welcome ; 1 new page; 2 project
     showSetModal: false,
     activeTab: '1',
+    // activeSetTab: '1',
     version: curVersion,
     newVersion: curVersion,
     // defaultEditor: 'Sublime',

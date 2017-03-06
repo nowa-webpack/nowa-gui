@@ -40,7 +40,7 @@ const Item = ({ project, current, dispatch }) => {
       onClick={handleClick}
     >
       { status }
-      <span className="name">{ name }</span>
+      <div className="name">{ name }</div>
     </div>
   );
 };

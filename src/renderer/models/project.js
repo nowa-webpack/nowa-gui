@@ -1,24 +1,51 @@
 import { remote } from 'electron';
 // import { hashHistory } from 'react-router';
 import fs from 'fs-extra';
-import path from 'path';
+import { join } from 'path';
 import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
 import { getLocalProjects, setLocalProjects } from '../services/localStorage';
+const { application } = remote.getGlobal('services');
 
+const isNowaProject = filePath => fs.existsSync(join(filePath, 'abc.json'));
+
+const getProjectInfoByPath = (filePath) => {
+  let port = '';
+  let abc = {};
+  const isNowa = isNowaProject(filePath);
+
+  if (isNowa) {
+    abc = application.loadConfig(join(filePath, 'abc.json'));
+    port = abc.options.port || '3000';
+  }
+
+  return {
+    isNowa,
+    port,
+    abc,
+    pkg: application.loadConfig(join(filePath, 'package.json')),
+  };
+};
 
 const getProjects = () => {
   const projects = getLocalProjects();
 
   return projects.map((project) => {
-    const abc = fs.readJsonSync(path.join(project.path, 'abc.json'));
+    /*let port = 3000;
+    const isNowa = isNowaProject(project.path);
+    if (isNowa) {
+      const abc = fs.readJsonSync(join(project.path, 'abc.json'));
+      port = abc.options.port || 3000;
+    }*/
+    const info = getProjectInfoByPath(project.path);
 
     return {
       ...project,
       start: false,
       taskErr: false,
-      port: abc.options.port || 3000
+      port: info.port,
+      isNowa: info.isNowa,
     };
   });
 };
@@ -67,7 +94,7 @@ export default {
   },
 
   effects: {
-    * importProj({ payload: { filePath } }, { put, call, select }) {
+    * importProj({ payload: { filePath } }, { put, select }) {
       try {
         if (!filePath) {
           const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
@@ -75,18 +102,12 @@ export default {
           filePath = importPath[0];
         }
 
-        const isExisted = fs.existsSync(path.join(filePath, 'abc.json'));
+        const projectInfo = getProjectInfoByPath(filePath);
 
-        if (!isExisted) {
-          Message.error(i18n('msg.invalidProject'));
-          return false;
-        }
-
-        const abc = fs.readJsonSync(path.join(filePath, 'abc.json'));
-        const projectName = abc.name;
+        const projectName = projectInfo.pkg.name;
 
         const storeProjects = getLocalProjects();
-
+        
         const filter = storeProjects.filter(item => item.path === filePath);
 
         if (filter.length) {
@@ -94,7 +115,8 @@ export default {
         } else {
           storeProjects.push({
             name: projectName,
-            path: filePath
+            path: filePath,
+            port: projectInfo.port
           });
 
           setLocalProjects(storeProjects);
@@ -104,7 +126,8 @@ export default {
             taskErr: false,
             name: projectName,
             path: filePath,
-            port: abc.options.port || 3000
+            port: projectInfo.port,
+            isNowa: projectInfo.isNowa,
           };
 
           const { projects } = yield select(state => state.project);
@@ -128,6 +151,63 @@ export default {
 
           Message.success(i18n('msg.importSuccess'));
         }
+
+        /* const isNowa = isNowaProject(filePath);
+        const isExisted = fs.existsSync(join(filePath, 'abc.json'));
+
+        if (!isExisted) {
+          Message.error(i18n('msg.invalidProject'));
+          return false;
+        }
+        const pkg = application.loadConfig(join(filePath, 'package.json'));
+        // const abc = fs.readJsonSync(join(filePath, 'abc.json'));
+        const projectName = abc.name;
+
+        const storeProjects = getLocalProjects();
+
+        const filter = storeProjects.filter(item => item.path === filePath);
+
+        if (filter.length) {
+          Message.info(i18n('msg.existed'));
+        } else {
+          storeProjects.push({
+            name: projectName,
+            path: filePath,
+            isNowa
+          });
+
+          setLocalProjects(storeProjects);
+
+          const current = {
+            start: false,
+            taskErr: false,
+            name: projectName,
+            path: filePath,
+            port: abc.options.port || 3000,
+            isNowa,
+          };
+
+          const { projects } = yield select(state => state.project);
+
+          projects.push(current);
+
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              projects,
+              current
+            }
+          });
+
+          yield put({
+            type: 'layout/changeStatus',
+            payload: {
+              showPage: 2
+            }
+          });
+
+          Message.success(i18n('msg.importSuccess'));
+        }*/
       } catch (e) {
         console.log(e);
       }
@@ -179,7 +259,21 @@ export default {
       if (old.name !== project.name || old.port !== project.port) {
         const { projects, current } = yield select(state => state.project);
 
-        const abcPath = path.join(old.path, 'abc.json');
+        const projectInfo = getProjectInfoByPath(old.path);
+
+        if (old.isNowa) {
+          projectInfo.abc.name = project.name;
+          projectInfo.abc.options.port = project.port;
+
+          fs.writeJSONSync(join(old.path, 'abc.json'), projectInfo.abc);
+        }
+
+        projectInfo.pkg.name = project.name;
+
+        fs.writeJSONSync(join(old.path, 'package.json'), projectInfo.pkg);
+
+
+        /*const abcPath = join(old.path, 'abc.json');
 
         const abc = fs.readJsonSync(abcPath);
 
@@ -188,19 +282,23 @@ export default {
         abc.options.port = project.port;
 
         fs.writeJSONSync(abcPath, abc);
+        */
 
-        if (old.name !== project.name) {
+        if (old.name !== project.name || old.port !== project.port) {
           const storeProjects = getLocalProjects();
 
           storeProjects.map((item) => {
-            if (item.name === old.name) item.name = project.name;
+            if (item.path === old.path) {
+              item.name = project.name;
+              item.port = project.port;
+            }
             return item;
           });
 
           setLocalProjects(storeProjects);
 
           projects.map((item) => {
-            if (item.name === old.name) item.name = project.name;
+            if (item.path === old.path) item.name = project.name;
             return item;
           });
         }
@@ -270,10 +368,10 @@ export default {
         });
       }
     },
-    * saveCurrent({}, { select }) {
+    * saveCurrent(o, { select }) {
       const { current } = yield select(state => state.project);
 
-      const projects = getProjects().map(item => {
+      const projects = getProjects().map((item) => {
         if (item.path === current.path) {
           item.current = true;
         }
@@ -281,7 +379,6 @@ export default {
       });
 
       setLocalProjects(projects);
-
     }
   },
 

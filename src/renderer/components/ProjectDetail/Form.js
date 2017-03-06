@@ -16,8 +16,8 @@ class SettingForm extends Component {
     this.old = { ...project };
   }
   componentWillReceiveProps(next) {
+    this.old = { ...next.project };
     if (next.project.path !== this.props.project.path) {
-      this.old = { ...next.project };
       this.setState({
         name: next.project.name,
         port: next.project.port
@@ -41,7 +41,7 @@ class SettingForm extends Component {
     });
   }
   changePort(value) {
-    if (/^([1-9]|[1-9]\d{1,3}|[1-6][0-5][0-5][0-3][0-5])$/.test(value)) {
+    if (/^([1-9]|[1-9]\d{1,3}|[1-6][0-5][0-5][0-3][0-5])$/.test(+value)) {
       this.setState({ port: value });
     } else {
       Message.error(i18n('msg.invalidPort'));
@@ -78,8 +78,7 @@ class SettingForm extends Component {
             onConfirm={() => this.removeProj()}
             okText={i18n('form.ok')}
             cancelText={i18n('form.cancel')}
-          >
-          <Button type="danger" size="large" icon="delete" onClick={() => this.handleSubmit()}>{i18n('form.delete')}</Button>
+          ><Button type="danger" size="large" icon="delete">{i18n('form.delete')}</Button>
           </Popconfirm>
         </div>
       </form>
@@ -91,7 +90,7 @@ SettingForm.propTypes = {
   project: PropTypes.shape({
     name: PropTypes.string,
     path: PropTypes.string,
-    port: PropTypes.number
+    port: PropTypes.string
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
 };
