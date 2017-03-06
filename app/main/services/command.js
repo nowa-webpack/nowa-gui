@@ -1,32 +1,41 @@
-const { spawn, exec } = require('child_process');
+const { spawn, exec, execFile } = require('child_process');
 const { join } = require('path');
 const npmRunPath = require('npm-run-path');
+// const fs = require('fs-extra');
 // const log = require('electron-log');
 // const isDev = require('electron-is-dev');
 
-const { APP_PATH, NOWA_PATH, IS_WIN, NODE_PATH } = require('../constants');
+const { APP_PATH, NOWA_PATH, NOWA_BIN_PATH, IS_WIN, NODE_PATH, NPM_PATH } = require('../constants');
 
+const env = Object.assign(npmRunPath.env(), {
+  FORCE_COLOR: 1,
+  PATH: `${npmRunPath.env().PATH}:${NOWA_BIN_PATH}:${NODE_PATH}`,
+});
+
+// console.log(env)
+// fs.writeJsonSync(join(APP_PATH, 'env.json'), env)
 
 module.exports = {
 
   build(projectPath) {
-    return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
+    // return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
+    return spawn(NODE_PATH, [NPM_PATH, 'run', 'build', '--scripts-prepend-node-path=auto'], {
       cwd: projectPath,
-      env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
+      env,
     });
   },
 
   start(projectPath) {
-    return spawn(NODE_PATH, [NOWA_PATH, 'server', '-o'], {
+    return spawn(NODE_PATH, [NPM_PATH, 'start', '--scripts-prepend-node-path=auto'], {
       cwd: projectPath,
-      env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
+      env,
     });
   },
 
   lib(projectPath) {
     return spawn(NODE_PATH, [NOWA_PATH, 'lib'], {
       cwd: projectPath,
-      env: Object.assign({ FORCE_COLOR: 1 }, npmRunPath.env()),
+      env,
     });
   },
 
@@ -34,11 +43,11 @@ module.exports = {
     let editorPath = '';
 
     if (editor === 'Sublime') {
-      editorPath = join(basePath, IS_WIN ? 'subl.exe' : '/Contents/SharedSupport/bin/subl')
+      editorPath = join(basePath, IS_WIN ? 'subl.exe' : '/Contents/SharedSupport/bin/subl');
     }
 
     if (editor === 'VScode') {
-      editorPath = join(basePath, IS_WIN ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code')
+      editorPath = join(basePath, IS_WIN ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code');
     }
 
     return spawn(editorPath,
@@ -52,7 +61,7 @@ module.exports = {
     return spawn(NODE_PATH, [targetPath], {
       cwd: APP_PATH,
       execArgv: ['--harmony'],
-      env: Object.assign(npmRunPath.env(), { params: JSON.stringify(options), FORCE_COLOR: 1 }),
+      env: Object.assign(env, { params: JSON.stringify(options) }),
     });
   },
 
