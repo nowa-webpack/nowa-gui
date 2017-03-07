@@ -75,7 +75,15 @@ export default {
     * build({ payload: { project } }, { put, select }) {
       const { build } = yield select(state => state.task);
 
-      const term = command.build(project.path);
+      let term;
+
+      if (project.isNowa) {
+        term = command.buildNowa(project.path);
+      } else {
+        term = command.build(project.path);
+      }
+
+      // const term = command.build(project.path);
 
       console.log('build', term.pid);
 
@@ -100,7 +108,9 @@ export default {
 
       const { start } = yield select(state => state.task);
 
-      start[project.path].term.kill();
+      // start[project.path].term.kill();
+      process.kill(-start[project.path].term.pid);
+
 
       projects.map((item) => {
         if (item.path === project.path) item.start = false;

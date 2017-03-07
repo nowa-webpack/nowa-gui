@@ -6,7 +6,7 @@ import { VSCODE_BASE_PATH, SUBLIME_BASE_PATH } from '../constants';
 import { getLocalEditor, getLocalSublimePath, setLocalSublimePath,
   getLocalVScodePath, setLocalVScodePath } from '../services/localStorage';
 
-const { application, upgrade } = remote.getGlobal('services');
+const { application } = remote.getGlobal('services');
 
 const curVersion = application.getPackgeJson().version;
 

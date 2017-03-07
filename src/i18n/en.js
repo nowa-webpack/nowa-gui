@@ -1,13 +1,13 @@
 module.exports = {
   'welcome.import': 'Import Project',
   'welcome.create': 'Create New Project',
-  'welcome.description': 'Drag the project folder and import',
+  'welcome.description': 'Drag your project folder here to import.',
   'welcome.notice': 'Only support NOWA project!',
 
 
   'project.list.title': 'Projects',
   'project.list.empty': 'Drag Folder here',
-  'project.list.add': 'Import Project',
+  'project.list.add': 'New NOWA Project',
   'project.meta.port': 'Port',
   'project.meta.path': 'Path',
   'project.meta.name': 'Name',
@@ -37,8 +37,8 @@ module.exports = {
   'project.new.create': 'Create',
   'project.new.more': 'Get More',
   'project.new.step1': 'Select Template',
-  'project.new.step2': 'Template Form',
-  'project.new.step3': 'Installing',
+  'project.new.step2': 'Settings',
+  'project.new.step3': 'Installing Dependencies',
   'project.new.log.wait': 'Watting to install packages',
   'project.new.log.error': 'Install failed, please see the log below. If necessary please try again',
   'project.new.log.retry': 'Retry',

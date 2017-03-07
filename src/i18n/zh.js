@@ -6,7 +6,7 @@ module.exports = {
 
   'project.list.title': '项目',
   'project.list.empty': '拖入Nowa项目',
-  'project.list.add': '导入项目',
+  'project.list.add': '新建NOWA项目',
   'project.meta.port': '端口',
   'project.meta.path': '路径',
   'project.meta.name': '项目名称',

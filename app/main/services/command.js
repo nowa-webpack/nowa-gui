@@ -25,10 +25,19 @@ module.exports = {
     });
   },
 
+  buildNowa(projectPath) {
+    return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
+    // return spawn(NODE_PATH, [NPM_PATH, 'run', 'build', '--scripts-prepend-node-path=auto'], {
+      cwd: projectPath,
+      env,
+    });
+  },
+
   start(projectPath) {
     return spawn(NODE_PATH, [NPM_PATH, 'start', '--scripts-prepend-node-path=auto'], {
       cwd: projectPath,
       env,
+      detached: true
     });
   },
 

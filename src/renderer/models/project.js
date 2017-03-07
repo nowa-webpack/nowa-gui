@@ -10,13 +10,16 @@ const { application } = remote.getGlobal('services');
 
 const isNowaProject = filePath => fs.existsSync(join(filePath, 'abc.json'));
 
+const readABCJson = filePath => fs.readJsonSync(join(filePath, 'abc.json'));
+const readPkgJson = filePath => fs.readJsonSync(join(filePath, 'package.json'));
+
 const getProjectInfoByPath = (filePath) => {
   let port = '';
   let abc = {};
   const isNowa = isNowaProject(filePath);
 
   if (isNowa) {
-    abc = application.loadConfig(join(filePath, 'abc.json'));
+    abc = readABCJson(filePath);
     port = abc.options.port || '3000';
   }
 
@@ -24,7 +27,7 @@ const getProjectInfoByPath = (filePath) => {
     isNowa,
     port,
     abc,
-    pkg: application.loadConfig(join(filePath, 'package.json')),
+    pkg: readPkgJson(filePath),
   };
 };
 
@@ -32,20 +35,15 @@ const getProjects = () => {
   const projects = getLocalProjects();
 
   return projects.map((project) => {
-    /*let port = 3000;
-    const isNowa = isNowaProject(project.path);
-    if (isNowa) {
-      const abc = fs.readJsonSync(join(project.path, 'abc.json'));
-      port = abc.options.port || 3000;
-    }*/
     const info = getProjectInfoByPath(project.path);
 
     return {
       ...project,
+      ...info,
       start: false,
       taskErr: false,
-      port: info.port,
-      isNowa: info.isNowa,
+      // port: info.port,
+      // isNowa: info.isNowa,
     };
   });
 };

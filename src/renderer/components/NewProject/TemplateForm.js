@@ -11,6 +11,16 @@ import i18n from 'i18n';
 
 import { hidePathString } from '../../util';
 
+const registryList = [{
+  name: 'cnpm',
+  value: 'https://registry.npm.taobao.org'
+}, {
+  name: 'tnpm',
+  value: 'http://registry.npm.alibaba-inc.com'
+}, {
+  name: 'npm',
+  value: 'https://registry.npmjs.org'
+}];
 
 class Form extends Component {
 
@@ -190,8 +200,8 @@ class Form extends Component {
               defaultValue={registry}
               onChange={(value) => this.setState({ registry: value })}
             >
-              { this.registryList.map(item =>
-                <Select.Option key={item} value={item}>{ item }</Select.Option>)
+              { registryList.map(item =>
+                <Select.Option key={item} value={item.value}>{ item.name }</Select.Option>)
               }
             </Select>
           </div>

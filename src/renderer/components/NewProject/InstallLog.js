@@ -123,7 +123,7 @@ class Log extends Component {
     const detailHtml = err ?
       <div className="detail">{i18n('project.new.log.error')}<br />
         <Button type="primary" onClick={() => this.retryInstall()}>{i18n('project.new.log.retry')}</Button>
-        <Button type="default" onClick={() => prev()}>{i18n('project.new.log.back')}</Button>
+        <Button type="default" onClick={() => prev()}>{i18n('form.back')}</Button>
       </div> : <div className="detail">{i18n('project.new.log.wait')}</div>;
     return (
       <div className="progress-wrap" >
