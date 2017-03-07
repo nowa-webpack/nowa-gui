@@ -2,6 +2,7 @@
 export const LOCAL_PROJECTS = 'LOCAL_PROJECTS';
 export const LANGUAGE = 'LANGUAGE';
 export const EDITOR = 'EDITOR';
+export const UPDATE_TIP = 'UPDATE_TIP';
 export const SUBMIT_PATH = 'SUBMIT_PATH';
 export const VSCODE_PATH = 'VSCODE_PATH';
 export const IS_WIN = process.platform === 'win32';

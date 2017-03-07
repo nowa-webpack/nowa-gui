@@ -26,9 +26,9 @@ const checkLatest = () => {
     .then(({ data }) => {
       const newVersion = data.version;
       // const newVersion = '2.0.1';
-      if (semver.lt(getPackgeJson().version, newVersion)) {
-        win.webContents.send('checkLatest', newVersion);
-      }
+      // if (semver.lt(getPackgeJson().version, newVersion)) {
+        win.webContents.send('checkLatest', { newVersion, tip: data.readme });
+      // }
 
     }).catch((err) => {
       

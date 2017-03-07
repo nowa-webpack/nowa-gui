@@ -74,6 +74,7 @@ module.exports = {
   'msg.invalidVersion': '版本号错误!',
   'msg.invalidName': '名称只能为字母数字下划线短横杠',
   'msg.existed': '项目已存在!',
+  'msg.nameRequired': '名称不能为空!',
   'msg.importSuccess': '导入成功',
   'msg.updateSuccess': '修改成功',
   'msg.removeProject': '确认删除项目？',
@@ -85,6 +86,7 @@ module.exports = {
   'msg.updateConfirm': 'NowaGUI有新版本了！',
   'msg.curVersion': '当前版本',
   'msg.nextVersion': '下一个版本',
+  'msg.updateTip': '更新公告',
 
   
 }

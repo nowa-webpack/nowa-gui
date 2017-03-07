@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { LOCAL_PROJECTS, LANGUAGE, EDITOR, SUBMIT_PATH, VSCODE_PATH } from '../constants';
+import { LOCAL_PROJECTS, LANGUAGE, EDITOR, SUBMIT_PATH, VSCODE_PATH, UPDATE_TIP } from '../constants';
 
 const storage = window.localStorage;
 
@@ -38,3 +38,7 @@ export const setLocalSublimePath = sublimePath => storage.setItem(SUBMIT_PATH, s
 export const getLocalVScodePath = () => storage.getItem(VSCODE_PATH);
 
 export const setLocalVScodePath = vscodePath => storage.setItem(VSCODE_PATH, vscodePath);
+
+export const getLocalUpdateFlag = () => storage.getItem(UPDATE_TIP);
+
+export const setLocalUpdateFlag = () => storage.setItem(UPDATE_TIP, 1);

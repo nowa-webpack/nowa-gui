@@ -1,6 +1,7 @@
 import { remote, ipcRenderer } from 'electron';
 import fs from 'fs-extra';
 
+
 import { VSCODE_BASE_PATH, SUBLIME_BASE_PATH } from '../constants';
 
 import { getLocalEditor, getLocalSublimePath, setLocalSublimePath,
@@ -18,30 +19,30 @@ export default {
     showPage: 0,  // 0 welcome ; 1 new page; 2 project
     showSetModal: false,
     activeTab: '1',
-    // activeSetTab: '1',
     version: curVersion,
     newVersion: curVersion,
-    // defaultEditor: 'Sublime',
     defaultEditor: getLocalEditor() || 'VScode',
     editor: {
       Sublime: getLocalSublimePath(),
       VScode: getLocalVScodePath()
-    }
+    },
+    tip: ''
   },
 
   subscriptions: {
     setup({ dispatch }) {
 
-      ipcRenderer.on('checkLatest', (event, newVersion) => {
+      /*ipcRenderer.on('checkLatest', (event, { newVersion, tip }) => {
         console.log(newVersion);
         dispatch({
           type: 'changeStatus',
           payload: {
             // shouldAppUpdate: true,
-            newVersion
+            newVersion,
+            tip,
           }
         });
-      });
+      });*/
 
       if (!getLocalSublimePath()) {
         setLocalSublimePath(fs.existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : '');

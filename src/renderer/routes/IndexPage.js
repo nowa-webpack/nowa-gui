@@ -3,19 +3,23 @@ import { remote, shell } from 'electron';
 import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
-import Modal from 'antd/lib/modal';
+import { info, confirm } from 'antd/lib/modal';
 import i18n from 'i18n';
-
+import semverDiff from 'semver-diff';
+import semver from 'semver';
 
 import WelcomePage from './WelcomePage';
 import DragPage from './DragPage';
 import MainPage from './MainPage';
+import request from '../services/request';
 import { hidePathString } from '../util';
 import { IS_WIN, UPGRADE_URL } from '../constants';
+import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from '../services/localStorage';
 
-const confirm = Modal.confirm;
 const { Header } = Layout;
-const { win, upgrade } = remote.getGlobal('services');
+const { win } = remote.getGlobal('services');
+
+
 
 class IndexPage extends Component {
   constructor(props) {
@@ -23,7 +27,38 @@ class IndexPage extends Component {
     this.onDrop = this.onDrop.bind(this);
   }
   componentDidMount() {
-    upgrade.checkLatest();
+    // upgrade.checkLatest();
+    const { dispatch, version } = this.props;
+    request('https://registry.npm.taobao.org/nowa-gui-version/latest')
+      .then(({ data }) => {
+        const newVersion = data.version;
+        console.log(newVersion);
+
+        if (semver.lt(version, newVersion)) {
+          dispatch({
+            type: 'layout/changeStatus',
+            payload: { newVersion }
+          });
+        }
+
+        if (+getLocalUpdateFlag() !== 1) {
+          const arr = data.readme.split('#').filter(i => !!i).map(i => i.split('*').slice(1));
+
+          const tip = getLocalLanguage() === 'zh' ? arr[0] : arr[1];
+
+          info({
+            title: i18n('msg.updateTip'),
+            content: (
+              <ul className="update-tip">
+                {tip.map(item => <li key={item}>{item}</li>)}
+              </ul>),
+            onOk() {
+              setLocalUpdateFlag();
+            },
+            okText: i18n('form.ok'),
+          });
+        }
+      });
   }
 
   componentWillReceiveProps(next) {

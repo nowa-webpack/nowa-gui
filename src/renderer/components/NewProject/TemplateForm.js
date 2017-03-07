@@ -92,6 +92,11 @@ class Form extends Component {
     const { dispatch, init, next } = this.props;
     const { basePath } = init;
 
+    if (!others.name) {
+      Message.error(i18n('msg.nameRequired'));
+      return false;
+    }
+
     if (fs.existsSync(join(basePath, others.name))) {
       Message.error(i18n('msg.existed'));
       return false;

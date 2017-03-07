@@ -274,36 +274,25 @@ export default {
 
         fs.writeJSONSync(join(old.path, 'package.json'), projectInfo.pkg);
 
+        const storeProjects = getLocalProjects();
 
-        /*const abcPath = join(old.path, 'abc.json');
+        storeProjects.map((item) => {
+          if (item.path === old.path) {
+            item.name = project.name;
+            item.port = project.port;
+          }
+          return item;
+        });
 
-        const abc = fs.readJsonSync(abcPath);
+        setLocalProjects(storeProjects);
 
-        abc.name = project.name;
-
-        abc.options.port = project.port;
-
-        fs.writeJSONSync(abcPath, abc);
-        */
-
-        if (old.name !== project.name || old.port !== project.port) {
-          const storeProjects = getLocalProjects();
-
-          storeProjects.map((item) => {
-            if (item.path === old.path) {
-              item.name = project.name;
-              item.port = project.port;
-            }
-            return item;
-          });
-
-          setLocalProjects(storeProjects);
-
-          projects.map((item) => {
-            if (item.path === old.path) item.name = project.name;
-            return item;
-          });
-        }
+        projects.map((item) => {
+          if (item.path === old.path) {
+            item.name = project.name;
+            item.port = project.port;
+          }
+          return item;
+        });
 
         const payload = { projects };
 
@@ -373,14 +362,14 @@ export default {
     * saveCurrent(o, { select }) {
       const { current } = yield select(state => state.project);
 
-      const projects = getProjects().map((item) => {
+      const storeProjects = getLocalProjects();
+
+      setLocalProjects(storeProjects.map((item) => {
         if (item.path === current.path) {
           item.current = true;
         }
         return item;
-      });
-
-      setLocalProjects(projects);
+      }));
     }
   },
 

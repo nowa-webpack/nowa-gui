@@ -7,6 +7,8 @@ import project from './models/project';
 import layout from './models/layout';
 import task from './models/task';
 import init from './models/init';
+// import semverDiff from 'semver-diff';
+// import semver from 'semver';
 
 import { IS_WIN } from './constants';
 
@@ -20,6 +22,11 @@ if (IS_WIN) {
   import('../assets/styles/is-mac.less');
 }
 
+/*console.log(semverDiff('0.0.1', '0.0.1-foo'))
+console.log(semver.gt('0.0.1', '0.0.1-foo'))
+console.log(semver.lt('0.1.0', '0.1.0-beta'))
+console.log(semver.gt('0.1.0', '0.1.0-beta'))
+*/
 window.AliMonitor = window.AliMonitor || [];
 
 remote.require('getmac').getMac((err, macAddress) => {

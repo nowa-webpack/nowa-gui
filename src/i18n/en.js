@@ -72,17 +72,19 @@ module.exports = {
   'msg.invalidVersion': 'Invalied Version!',
   'msg.invalidName': 'Invalied Name!',
   'msg.existed': 'Already existed!',
+  'msg.nameRequired': 'Name Required!',
   'msg.importSuccess': 'Import Success!',
   'msg.updateSuccess': 'Update Success!',
   'msg.removeProject': 'Are you sure remove this project?',
   'msg.templateErr': 'Template Files haven\'t been downloaded. Please try later.',
 
   'msg.editorPath': 'Please set installation path of default editor!',
-  'msg.editorNotExisted': 'Please go to SET MODAL and set the EDIOTR item.',
+  'msg.editorNotExisted': 'Please go to SET MODAL and set the EDITOR item.',
 
   'msg.updateConfirm': 'Want to update to new release?',
   'msg.curVersion': 'Current Version',
   'msg.nextVersion': 'Next Version',
+  'msg.updateTip': 'Update Announcement',
 
 
 
