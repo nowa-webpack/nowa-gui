@@ -18,7 +18,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "build": {
-    "appId": "com.alibaba-inc.nowa-tool",
+    "appId": "com.alibaba-inc.nowa-gui",
     "asar": false,
     "rebuild": true,
     "dmg": {

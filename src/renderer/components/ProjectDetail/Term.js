@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import ansiHTML from 'ansi-html';
 import Button from 'antd/lib/button';
+// import { findDOMNode } from 'react-dom';
 
 
 class Terminal extends Component {
@@ -101,7 +102,7 @@ class Terminal extends Component {
   }
 
   componentWillUnmount() {
-    const { name, dispatch, type } = this.props;
+    const { dispatch, type } = this.props;
     this.unMount = true;
     dispatch({
       type: 'task/addLog',
@@ -117,12 +118,19 @@ class Terminal extends Component {
     const str = ansiHTML(data.toString().replace(/\n/g, '<br>'));
     if (!this.unMount) {
       if (name === wname) {
+        
         const { logs } = this.state;
         const newLogs = (logs || '') + str;
         this.mainLogs[wname] = newLogs;
         this.setState({
           logs: newLogs,
           showClear: true
+        }, () => {
+          const prt = this.refs.wrap;
+          const ele = this.refs.term;
+          if (ele.offsetHeight > 370) {
+            prt.scrollTop = ele.clientHeight - 370;
+          }
         });
       } else {
         const newLogs = this.mainLogs[wname] + str;
@@ -160,8 +168,11 @@ class Terminal extends Component {
   render() {
     const { showClear, logs } = this.state;
     return (
-      <div className="terminal-wrap">
-        <div className="term-container" dangerouslySetInnerHTML={{ __html: logs }} />
+      <div className="terminal-wrap" ref="wrap">
+        <div className="term-container"
+          ref="term"
+          dangerouslySetInnerHTML={{ __html: logs }} 
+        />
         {
           showClear &&
           <Button ghost

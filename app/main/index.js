@@ -19,6 +19,7 @@ log.info('start nowa gui');
 app.on('ready', () => {
   menu.init();
   win.create();
+  // upgrade.setUpdateUrl();
 });
 
 // Quit when all windows are closed.

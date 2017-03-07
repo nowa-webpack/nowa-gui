@@ -6,7 +6,7 @@ module.exports = {
 
 
   'project.list.title': 'Projects',
-  'project.list.empty': 'Drag Folder here',
+  'project.list.empty': 'Drag NOWA project folder here',
   'project.list.add': 'New NOWA Project',
   'project.meta.port': 'Port',
   'project.meta.path': 'Path',
@@ -22,7 +22,7 @@ module.exports = {
   'task.start': 'Start',
   'task.stop': 'Stop',
   'task.compile': 'Compile',
-  'task.compass': 'Explorer',
+  'task.compass': 'Explore',
   'task.editor': 'Editor',
   // 'task.clear': 'Clear',
   'task.folder': process.platform === 'darwin' ? 'Finder' : 'Folder',
@@ -30,17 +30,17 @@ module.exports = {
   'project.tab.setting': 'Setting',
   'project.tab.console': 'Console',
   'project.tab.listen_log': 'Listener log',
-  'project.tab.compile_log': 'Compile log',
+  'project.tab.compile_log': 'Compiler log',
 
   'project.new.title': 'Create New Project',
   'project.new.version': 'Version',
   'project.new.create': 'Create',
-  'project.new.more': 'Get More',
+  'project.new.more': 'Learn More',
   'project.new.step1': 'Select Template',
-  'project.new.step2': 'Settings',
+  'project.new.step2': 'Configuration',
   'project.new.step3': 'Installing Dependencies',
-  'project.new.log.wait': 'Watting to install packages',
-  'project.new.log.error': 'Install failed, please see the log below. If necessary please try again',
+  'project.new.log.wait': 'Waiting for packages installation',
+  'project.new.log.error': 'Install failed, please check the log below',
   'project.new.log.retry': 'Retry',
 
   'form.submit': 'Submit',
@@ -65,7 +65,7 @@ module.exports = {
   'foot.feedback': 'Feedback',
   'foot.help': 'Help',
 
-  'msg.installSuccess': 'Installed Success!',
+  'msg.installSuccess': 'Installed Successfully!',
   'msg.installFail': 'Installed Failed!',
   'msg.invalidPort': 'Invalid Port!',
   'msg.invalidProject': 'Invalied Project!',
@@ -73,19 +73,16 @@ module.exports = {
   'msg.invalidName': 'Invalied Name!',
   'msg.existed': 'Already existed!',
   'msg.nameRequired': 'Name Required!',
-  'msg.importSuccess': 'Import Success!',
-  'msg.updateSuccess': 'Update Success!',
-  'msg.removeProject': 'Are you sure remove this project?',
-  'msg.templateErr': 'Template Files haven\'t been downloaded. Please try later.',
+  'msg.importSuccess': 'Import Successfully!',
+  'msg.updateSuccess': 'Update Successfully!',
+  'msg.removeProject': 'Are you sure to remove this project?',
+  'msg.templateErr': 'Template Files is downloading. Please try again later.',
 
   'msg.editorPath': 'Please set installation path of default editor!',
-  'msg.editorNotExisted': 'Please go to SET MODAL and set the EDITOR item.',
+  'msg.editorNotExisted': 'Please go to the config pane to set EDITOR path.',
 
-  'msg.updateConfirm': 'Want to update to new release?',
+  'msg.updateConfirm': 'Want to upgrade to a new release?',
   'msg.curVersion': 'Current Version',
   'msg.nextVersion': 'Next Version',
   'msg.updateTip': 'Update Announcement',
-
-
-
 };

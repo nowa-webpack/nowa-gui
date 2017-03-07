@@ -1,9 +1,31 @@
 const { exec } = require('child_process');
 const semver = require('semver');
+const { autoUpdater } = require('electron');
 const request = require('./request');
 const { getPackgeJson } = require('./application');
 const { getWin } = require('./window');
 
+const setUpdateUrl = () => {
+  autoUpdater.setFeedURL('http://alipay-rmsdeploy-image.cn-hangzhou.alipay.aliyun-inc.com/nowa-test/nowa-gui.dmg');
+  autoUpdater.checkForUpdates();
+}
+
+autoUpdater.on('checking-for-update', () => {
+  console.log('正在检查更新');
+})
+.on('update-available', () => {
+console.log('update-available');
+})
+.on('update-not-available', () => {
+console.log('update-not-available');
+
+})
+.on('update-downloaded', (event, releaseNotes, releaseName, releaseDate, updateURL) => {
+    console.log("A new update is ready to install", `Version ${releaseName} is downloaded and will be automatically installed on Quit`);
+    console.log("quitAndInstall");
+    // updater.autoUpdater.quitAndInstall();
+    return true;
+})
 
 const downloadNewRelease = (url) => {
   try {
@@ -39,6 +61,7 @@ const checkLatest = () => {
 module.exports = {
   downloadNewRelease,
   checkLatest,
+  setUpdateUrl
 };
 
 

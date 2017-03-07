@@ -103,12 +103,21 @@ class IndexPage extends Component {
   render() {
     const { showPage, dispatch, version, current } = this.props;
 
-    const closeBtn = <div className="icn icn-x" key="0" onClick={() => win.close()}>
-      <i className="iconfont icon-x" /></div>;
-    const minimizeBtn = <div className="icn icn-min" key="1" onClick={() => win.minimize()}>
-      <i className="iconfont icon-msnui-minimize" /></div>;
-    const maximizeBtn = <div className="icn icn-max" key="2">
-      <i className="iconfont icon-msnui-maximize" /></div>;
+    const closeBtn = (
+      <div className="icn icn-x" key="0" onClick={() => win.close()}>
+        <i className="iconfont icon-x" />
+      </div>
+    );
+    const minimizeBtn = (
+      <div className="icn icn-min" key="1" onClick={() => win.minimize()}>
+        <i className="iconfont icon-msnui-minimize" />
+      </div>
+      );
+    const maximizeBtn = (
+      <div className="icn icn-max" key="2">
+        <i className="iconfont icon-msnui-maximize" />
+      </div>
+      );
 
 
     const mainbody = showPage

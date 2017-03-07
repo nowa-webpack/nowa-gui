@@ -3,6 +3,8 @@ import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
 import { delay } from '../util';
+import { IS_WIN } from '../constants';
+
 const { command } = remote.getGlobal('services');
 
 export default {
@@ -109,8 +111,15 @@ export default {
       const { start } = yield select(state => state.task);
 
       // start[project.path].term.kill();
-      process.kill(-start[project.path].term.pid);
+      const term = start[project.path].term;
 
+      if ('pid' in term) {
+        if (IS_WIN) {
+          term.kill();
+        } else {
+          process.kill(-term.pid);
+        }
+      }
 
       projects.map((item) => {
         if (item.path === project.path) item.start = false;
