@@ -15,10 +15,9 @@ const ProjectDetailPage = ({
   current, termBuild, termStart, activeTab, dispatch
   }) => {
   let buildBtn, startBtn;
-  const { start, port, path } = current;
-  const hasBuildFunc = current.pkg.scripts && current.pkg.scripts.build;
-  const hasStartFunc = current.pkg.scripts && current.pkg.scripts.start;
-
+  const { start, port, path, pkg } = current;
+  const hasBuildFunc = 'scripts' in pkg && 'build' in pkg.scripts;
+  const hasStartFunc = 'scripts' in pkg && 'start' in pkg.scripts;
   const tabProps = { current, termBuild, termStart, activeTab, dispatch };
   const startProj = () => dispatch({ type: 'task/start', payload: { project: current } });
   const buildProj = () => dispatch({ type: 'task/build', payload: { project: current } });
@@ -95,11 +94,3 @@ export default connect(({ project: { current }, task, layout }) => ({
   activeTab: layout.activeTab,
 }))(ProjectDetailPage);
 
-/*{ !start
-  ? <div className="opt start" onClick={startProj}>
-      <i className="iconfont icon-play" /><br />{i18n('task.start')}
-    </div>
-  : <div className="opt" onClick={stopProj}>
-      <i className="iconfont icon-stop" /><br />{i18n('task.stop')}
-    </div>
-}*/

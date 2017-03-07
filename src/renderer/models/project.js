@@ -120,12 +120,13 @@ export default {
           setLocalProjects(storeProjects);
 
           const current = {
+            ...projectInfo,
             start: false,
             taskErr: false,
             name: projectName,
             path: filePath,
-            port: projectInfo.port,
-            isNowa: projectInfo.isNowa,
+            // port: projectInfo.port,
+            // isNowa: projectInfo.isNowa,
           };
 
           const { projects } = yield select(state => state.project);
