@@ -42,8 +42,6 @@ const getProjects = () => {
       ...info,
       start: false,
       taskErr: false,
-      // port: info.port,
-      // isNowa: info.isNowa,
     };
   });
 };
@@ -101,6 +99,11 @@ export default {
         }
 
         const projectInfo = getProjectInfoByPath(filePath);
+
+        if (!projectInfo.isNowa) {
+          Message.error(i18n('msg.invalidProject'));
+          return false;
+        }
 
         const projectName = projectInfo.pkg.name;
 
