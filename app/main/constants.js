@@ -4,13 +4,13 @@ const { join } = require('path');
 const os = require('os');
 const npmRunPath = require('npm-run-path');
 
+const IS_WIN = process.platform === 'win32';
 
 const APP_PATH = isDev ? join(process.cwd(), 'app') : app.getAppPath();
 
 const NOWA_PATH = join(APP_PATH, 'node_modules', 'nowa');
 const NOWA_BIN_PATH = join(NOWA_PATH, 'bin');
 
-const IS_WIN = process.platform === 'win32';
 
 const NODE_PATH = IS_WIN
   ? join(APP_PATH, 'nodes', 'node.exe')

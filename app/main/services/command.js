@@ -1,21 +1,35 @@
 const { spawn, exec, execFile } = require('child_process');
 const { join } = require('path');
 const npmRunPath = require('npm-run-path');
-// const fs = require('fs-extra');
+const fs = require('fs-extra');
 // const log = require('electron-log');
 // const isDev = require('electron-is-dev');
 
 const { APP_PATH, NOWA_PATH, NOWA_BIN_PATH, IS_WIN, NODE_PATH, NPM_PATH } = require('../constants');
 
-const env = Object.assign(npmRunPath.env(), {
+const systemSep = IS_WIN ? ';' : ':';
+
+const npmEnv = npmRunPath.env();
+
+const env = Object.assign(npmEnv, {
   FORCE_COLOR: 1,
-  PATH: `${npmRunPath.env().PATH}:${NOWA_BIN_PATH}:${NODE_PATH}`,
+  PATH: `${npmEnv.PATH ? npmEnv.PATH + systemSep : ''}${NOWA_BIN_PATH}${systemSep}${NODE_PATH}${systemSep}${NPM_PATH}`
+  // PATH: `${npmRunPath.env().PATH}:${NOWA_BIN_PATH}:${NODE_PATH}:{NPM_PATH}`,
 });
+
+
 
 // console.log(env)
 // fs.writeJsonSync(join(APP_PATH, 'env.json'), env)
 
 module.exports = {
+
+  test(){
+    const term = exec('npm bin -g', {env})
+    term.stdout.on('data', (data) => fs.writeFileSync(join(APP_PATH, 'env.text'), data.toString()));
+    term.stderr.on('data', (data) => fs.writeFileSync(join(APP_PATH, 'env.text'), data.toString()));
+
+  },
 
   build(projectPath) {
     // return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
