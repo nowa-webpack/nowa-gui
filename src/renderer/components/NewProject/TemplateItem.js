@@ -66,7 +66,7 @@ class Item extends Component {
         >New {tag.replace('_', '').toUpperCase()}</Button>
       }
       <InputGroup compact>
-        <Button icon="link" className="opt"
+        <Button icon="link" className="opt more"
           onClick={() => shell.openExternal(data.homepage)}
         >{i18n('project.new.more')}</Button>
         <Select
