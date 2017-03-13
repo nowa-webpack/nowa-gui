@@ -1,7 +1,8 @@
 import i18nHelper from 'i18n-helper';
 import { remote } from 'electron';
 import _ from 'lodash';
-import { zh, en } from 'language';
+// import { zh, en } from 'language';
+import { zh, en } from '../../language';
 
 import { getLocalLanguage, setLocalLanguage } from './localStorage';
 const { locale } = remote.getGlobal('services');

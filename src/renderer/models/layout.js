@@ -1,14 +1,11 @@
 import { remote, ipcRenderer } from 'electron';
 import fs from 'fs-extra';
 
-
-import { VSCODE_BASE_PATH, SUBLIME_BASE_PATH } from '../constants';
-
-import { getLocalEditor, getLocalSublimePath, setLocalSublimePath,
-  getLocalVScodePath, setLocalVScodePath } from '../services/localStorage';
+import { SUBLIME, VSCODE} from 'gui-const';
+import { VSCODE_BASE_PATH, SUBLIME_BASE_PATH } from 'gui-const';
+import { getLocalEditor, getLocalEditorPath, setLocalEditorPath } from 'gui-local';
 
 const { application } = remote.getGlobal('services');
-
 const curVersion = application.getPackgeJson().version;
 
 export default {
@@ -23,43 +20,60 @@ export default {
     newVersion: curVersion,
     defaultEditor: getLocalEditor() || 'VScode',
     editor: {
-      Sublime: getLocalSublimePath(),
-      VScode: getLocalVScodePath()
+      Sublime: getLocalEditorPath(SUBLIME),
+      VScode: getLocalEditorPath(VSCODE)
     },
-    tip: ''
+    online: navigator.onLine,
+    // online: false
   },
 
   subscriptions: {
     setup({ dispatch }) {
 
-      /*ipcRenderer.on('checkLatest', (event, { newVersion, tip }) => {
-        console.log(newVersion);
+      if (!getLocalEditorPath(SUBLIME)) {
+        setLocalEditorPath(SUBLIME, fs.existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : '');
+      }
+
+      if (!getLocalEditorPath(VSCODE)) {
+        setLocalEditorPath(VSCODE, fs.existsSync(VSCODE_BASE_PATH) ? VSCODE_BASE_PATH : '');
+      }
+
+     /* const alertOnlineStatus = () => {
+        const online = navigator.onLine;
+        console.log(online ? 'online' : 'offline');
+
         dispatch({
           type: 'changeStatus',
-          payload: {
-            // shouldAppUpdate: true,
-            newVersion,
-            tip,
-          }
+          payload: { online }
         });
-      });*/
 
-      if (!getLocalSublimePath()) {
-        setLocalSublimePath(fs.existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : '');
-      }
+        if (online) {
+          
+          dispatch({
+            type: 'init/fetchOnlineTemplates',
+          });
+        }
 
-      if (!getLocalVScodePath()) {
-        setLocalVScodePath(fs.existsSync(VSCODE_BASE_PATH) ? VSCODE_BASE_PATH : '');
-      }
+        ipcRenderer.send('network-change-status', navigator.onLine);
+      };
+
+      window.addEventListener('online', alertOnlineStatus);
+      window.addEventListener('offline', alertOnlineStatus);
+
+      alertOnlineStatus();*/
 
       dispatch({
         type: 'changeStatus',
         payload: {
           editor: {
-            Sublime: getLocalSublimePath(),
-            VScode: getLocalVScodePath(),
+            Sublime: getLocalEditorPath(SUBLIME),
+            VScode: getLocalEditorPath(VSCODE),
           }
         }
+      });
+
+      dispatch({
+        type: 'init/fetchAllTemplates',
       });
 
     },
@@ -84,7 +98,7 @@ export default {
         payload: { activeTab }
       });
     },
-    * selectEditorPath(o, { select, put }) {
+    /** selectEditorPath(o, { select, put }) {
       const { defaultEditor, editor } = yield select(state => state.layout);
       
       try {
@@ -101,7 +115,7 @@ export default {
       } catch (e) {
         console.log(e);
       }
-    },
+    },*/
   },
   reducers: {
     changeStatus(state, action) {

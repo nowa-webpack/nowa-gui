@@ -3,7 +3,9 @@ import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Popconfirm from 'antd/lib/popconfirm';
+
 import i18n from 'i18n';
+import { PORT_MATCH } from 'gui-const';
 
 class SettingForm extends Component {
   constructor(props) {
@@ -41,7 +43,7 @@ class SettingForm extends Component {
     });
   }
   changePort(value) {
-    if (/^([1-9]|[1-9]\d{1,3}|[1-6][0-5][0-5][0-3][0-5])$/.test(+value)) {
+    if (PORT_MATCH.test(+value)) {
       this.setState({ port: value });
     } else {
       Message.error(i18n('msg.invalidPort'));

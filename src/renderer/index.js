@@ -22,11 +22,16 @@ if (IS_WIN) {
   import('../assets/styles/is-mac.less');
 }
 
-/*console.log(semverDiff('0.0.1', '0.0.1-foo'))
-console.log(semver.gt('0.0.1', '0.0.1-foo'))
-console.log(semver.lt('0.1.0', '0.1.0-beta'))
-console.log(semver.gt('0.1.0', '0.1.0-beta'))
+/*const alertOnlineStatus = () => {
+  console.log(navigator.onLine ? 'online' : 'offline')
+}
+
+window.addEventListener('online',  alertOnlineStatus)
+window.addEventListener('offline',  alertOnlineStatus)
+
+alertOnlineStatus();
 */
+
 window.AliMonitor = window.AliMonitor || [];
 
 remote.require('getmac').getMac((err, macAddress) => {
@@ -38,15 +43,15 @@ remote.require('getmac').getMac((err, macAddress) => {
 });
 
 
-ipcRenderer.on('MAIN_ERR', (event, msg) => {
-  Message.error(msg, /* duration */3);
+ipcRenderer.on('main-err', (event, msg) => {
+  Message.error(msg, /* duration */13);
 });
 
 
 // 1. Initialize
 const app = dva({
   onError(e) {
-    Message.error(e.stack, /* duration */3);
+    Message.error(e.stack, /* duration */13);
   },
 });
 

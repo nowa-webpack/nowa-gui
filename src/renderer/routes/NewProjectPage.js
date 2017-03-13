@@ -35,13 +35,17 @@ class NewProjectPage extends Component {
     this.setState({ current });
   }
   render() {
-    const { templates, loading, term, dispatch } = this.props;
+    const {
+      officalTemplates, localTemplates, remoteTemplates, loading, term, dispatch
+    } = this.props;
     const { current } = this.state;
     let component;
 
     if (current === 0) {
       const compProps = {
-        templates,
+        officalTemplates,
+        localTemplates,
+        remoteTemplates,
         loading,
         dispatch,
         next: this.next.bind(this),
@@ -79,14 +83,18 @@ class NewProjectPage extends Component {
 }
 
 NewProjectPage.propTypes = {
-  templates: PropTypes.array.isRequired,
+  officalTemplates: PropTypes.array.isRequired,
+  localTemplates: PropTypes.array.isRequired,
+  remoteTemplates: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   term: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(({ init }) => ({
-  templates: init.templates,
+  officalTemplates: init.officalTemplates,
+  localTemplates: init.localTemplates,
+  remoteTemplates: init.remoteTemplates,
   loading: init.loading,
   term: init.term,
 }))(NewProjectPage);

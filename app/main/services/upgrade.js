@@ -38,7 +38,7 @@ const downloadNewRelease = (url) => {
     }
   } catch (err) {
     const win = getWin();
-    win.webContents.send('MAIN_ERR', err.message);
+    win.webContents.send('main-err', err.message);
   }
 };
 
@@ -54,7 +54,7 @@ const checkLatest = () => {
 
     }).catch((err) => {
       
-      win.webContents.send('MAIN_ERR', err.message);
+      win.webContents.send('main-err', err.message);
     });
 };
 

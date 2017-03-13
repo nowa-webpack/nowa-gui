@@ -1,33 +1,92 @@
 import React, { Component, PropTypes } from 'react';
-import { remote, shell } from 'electron';
+import { remote, shell, ipcRenderer } from 'electron';
 import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
 import { info, confirm } from 'antd/lib/modal';
-import i18n from 'i18n';
-import semverDiff from 'semver-diff';
 import semver from 'semver';
+import classNames from 'classnames';
+import i18n from 'i18n';
 
 import WelcomePage from './WelcomePage';
 import DragPage from './DragPage';
 import MainPage from './MainPage';
 import request from '../services/request';
-import { hidePathString } from '../util';
-import { IS_WIN, UPGRADE_URL } from '../constants';
-import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from '../services/localStorage';
+import { hidePathString } from 'gui-util';
+import { IS_WIN, UPGRADE_URL } from 'gui-const';
+import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from 'gui-local';
 
 const { Header } = Layout;
-const { win } = remote.getGlobal('services');
+const { win, application } = remote.getGlobal('services');
 
 
 
 class IndexPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      online: props.online,
+    };
     this.onDrop = this.onDrop.bind(this);
+    this.getUpdateVersion = this.getUpdateVersion.bind(this);
   }
+
   componentDidMount() {
-    // upgrade.checkLatest();
+    const { dispatch, online } = this.props;
+    if (online) {
+      this.getUpdateVersion();
+    }
+
+    const alertOnlineStatus = () => {
+      const newOnline = navigator.onLine;
+      console.log(newOnline ? 'online' : 'offline');
+
+      dispatch({
+        type: 'layout/changeStatus',
+        payload: { online: newOnline }
+      });
+
+      if (newOnline !== online && newOnline) {
+        dispatch({
+          type: 'init/fetchOnlineTemplates',
+        });
+      }
+
+      ipcRenderer.send('network-change-status', newOnline);
+    };
+
+    window.addEventListener('online', alertOnlineStatus);
+    window.addEventListener('offline', alertOnlineStatus);
+
+  }
+
+  componentWillReceiveProps({ newVersion, online }) {
+    if (newVersion !== this.props.newVersion) {
+      confirm({
+        title: i18n('msg.updateConfirm'),
+        content: (
+          <div>
+            <p>{i18n('msg.curVersion')} {this.props.newVersion}</p>
+            <p>{i18n('msg.nextVersion')} {newVersion}</p>
+          </div>),
+        onOk() {
+          shell.openExternal(UPGRADE_URL);
+        },
+        onCancel() {},
+        okText: i18n('form.ok'),
+        cancelText: i18n('form.cancel'),
+      });
+    }
+
+    if (online !== this.props.online) {
+      if (online) {
+        this.getUpdateVersion();
+      }
+      this.setState({ online });
+    }
+  }
+
+  getUpdateVersion() {
     const { dispatch, version } = this.props;
     request('https://registry.npm.taobao.org/nowa-gui-version/latest')
       .then(({ data }) => {
@@ -61,25 +120,6 @@ class IndexPage extends Component {
       });
   }
 
-  componentWillReceiveProps(next) {
-    if (next.newVersion !== this.props.newVersion) {
-      confirm({
-        title: i18n('msg.updateConfirm'),
-        content: (
-          <div>
-            <p>{i18n('msg.curVersion')} {this.props.newVersion}</p>
-            <p>{i18n('msg.nextVersion')} {next.newVersion}</p>
-          </div>),
-        onOk() {
-          shell.openExternal(UPGRADE_URL);
-        },
-        onCancel() {},
-        okText: i18n('form.ok'),
-        cancelText: i18n('form.cancel'),
-      });
-    }
-  }
-
   onDrop(acceptedFiles) {
     const { dispatch } = this.props;
 
@@ -102,12 +142,12 @@ class IndexPage extends Component {
 
   render() {
     const { showPage, dispatch, version, current } = this.props;
-
+    const { online } = this.state;
     const closeBtn = (
       <div className="icn icn-x" key="0" onClick={() => win.close()}>
         <i className="iconfont icon-x" />
       </div>
-    );
+      );
     const minimizeBtn = (
       <div className="icn icn-min" key="1" onClick={() => win.minimize()}>
         <i className="iconfont icon-msnui-minimize" />
@@ -118,7 +158,6 @@ class IndexPage extends Component {
         <i className="iconfont icon-msnui-maximize" />
       </div>
       );
-
 
     const mainbody = showPage
       ? <MainPage showPage={showPage} dispatch={dispatch} />
@@ -134,6 +173,11 @@ class IndexPage extends Component {
         <Layout className="ui-layout" id="main-ctn">
           <Header className="top-bar">
             { showPage > 0 && <div className="bar-bd" /> }
+
+            <div className={classNames({
+                wifi: true,
+                online: online
+              })}><i className="iconfont icon-wifi" /></div>
             <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
             { showPage === 2 && <div className="proj-path">
               {current.name}
@@ -160,6 +204,7 @@ IndexPage.propTypes = {
     name: PropTypes.string,
     path: PropTypes.string
   }).isRequired,
+  online: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
@@ -167,5 +212,6 @@ export default connect(({ layout, project }) => ({
   showPage: layout.showPage,
   newVersion: layout.newVersion,
   version: layout.version,
-  current: project.current 
+  current: project.current,
+  online: layout.online,
 }))(IndexPage);

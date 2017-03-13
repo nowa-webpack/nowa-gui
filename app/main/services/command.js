@@ -17,7 +17,7 @@ const env = Object.assign(npmEnv, {
 
 // console.log(env)
 // fs.writeJsonSync(join(APP_PATH, 'env.json'), env)
-
+fs.writeFileSync(join(APP_PATH, 'env.text'), process.execPath)
 module.exports = {
 
   // test(){
@@ -42,7 +42,22 @@ module.exports = {
     });
   },
 
+  link(projectPath){
+    const bins = fs.readdirSync('/usr/local/bin');
+    bins.forEach(item => {
+      spawn(NODE_PATH, [NPM_PATH, 'link', item], {
+        cwd: projectPath,
+        env,
+      });
+    });
+  },
+
   start(projectPath) {
+    /*return spawn(NODE_PATH, [NPM_PATH, 'root', '-g'], {
+       cwd: projectPath,
+        env,
+    });*/
+
     // return spawn(NODE_PATH, [NPM_PATH, 'start', '--scripts-prepend-node-path=auto'], {
     return spawn(NODE_PATH, [NOWA_PATH, 'server'], {
       cwd: projectPath,

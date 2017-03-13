@@ -23,7 +23,6 @@ const ProjectDetailPage = ({
   const buildProj = () => dispatch({ type: 'task/build', payload: { project: current } });
   const stopProj = () => dispatch({ type: 'task/stop', payload: { project: current } });
   const openEditor = () => dispatch({ type: 'task/openEditor', payload: { project: current } });
-
   if (hasStartFunc) {
     startBtn = !start
       ? <div className="opt start" onClick={startProj}>
@@ -87,10 +86,17 @@ ProjectDetailPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-export default connect(({ project: { current }, task, layout }) => ({
+export default connect(({ project, task, layout }) => ({
+  current: project.current,
+  termBuild: task.build[project.current.path],
+  termStart: task.start[project.current.path],
+  activeTab: layout.activeTab,
+}))(ProjectDetailPage);
+
+/*export default connect(({ project: { current }, task, layout }) => ({
   current,
   termBuild: task.build[current.path],
   termStart: task.start[current.path],
   activeTab: layout.activeTab,
-}))(ProjectDetailPage);
+}))(ProjectDetailPage);*/
 

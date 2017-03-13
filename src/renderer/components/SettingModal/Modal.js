@@ -9,12 +9,12 @@ import Radio from 'antd/lib/radio';
 import Input from 'antd/lib/input';
 import i18n from 'i18n';
 
-import { hidePathString } from '../../util';
-import { UPGRADE_URL, IS_WIN } from '../../constants';
+import { hidePathString } from 'gui-util';
+import { UPGRADE_URL, IS_WIN, VSCODE, SUBLIME } from 'gui-const';
 import { 
   getLocalLanguage, setLocalLanguage,
   getLocalEditor, setLocalEditor,
-  setLocalSublimePath, setLocalVScodePath } from '../../services/localStorage';
+  setLocalEditorPath } from 'gui-local';
 
 const RadioGroup = Radio.Group;
 const DEFAULT_LANGUAGE = getLocalLanguage();
@@ -69,13 +69,15 @@ class SetDialog extends Component {
       }
     });
 
-    if (language !== DEFAULT_LANGUAGE) {
-      setLocalLanguage(language);
-      window.location.reload();
-    }
+    setLocalEditorPath(defaultEditor, editor[defaultEditor]);
 
     if (defaultEditor !== getLocalEditor()) {
       setLocalEditor(defaultEditor);
+    }
+
+    if (language !== DEFAULT_LANGUAGE) {
+      setLocalLanguage(language);
+      window.location.reload();
     }
 
     this.hideModal();
@@ -87,15 +89,9 @@ class SetDialog extends Component {
       const importPath = IS_WIN 
         ? remote.dialog.showOpenDialog({ properties: ['openDirectory'] })
         : remote.dialog.showOpenDialog({ properties: ['openFile'] });
+
       editor[defaultEditor] = importPath[0];
 
-      if (defaultEditor === 'Sublime') {
-        setLocalSublimePath(importPath[0]);
-      }
-
-      if (defaultEditor === 'VScode') {
-        setLocalVScodePath(importPath[0]);
-      }
       
       this.setState({ editor });
     } catch (e) {
@@ -150,8 +146,8 @@ class SetDialog extends Component {
             <RadioGroup value={defaultEditor}
               onChange={(e) => this.setState({ defaultEditor: e.target.value })}
             >
-              <Radio value="Sublime">Sublime</Radio>
-              <Radio value="VScode">VScode</Radio>
+              <Radio value={SUBLIME}>Sublime</Radio>
+              <Radio value={VSCODE}>VScode</Radio>
             </RadioGroup>
             <div className="form-item-grp">
               <Input addonAfter={pathIcon} disabled

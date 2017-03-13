@@ -5,8 +5,8 @@ import { join } from 'path';
 import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
-import { getLocalProjects, setLocalProjects } from '../services/localStorage';
-const { application } = remote.getGlobal('services');
+import { getLocalProjects, setLocalProjects } from 'gui-local';
+const { application, command } = remote.getGlobal('services');
 
 const isNowaProject = filePath => fs.existsSync(join(filePath, 'abc.json'));
 
@@ -105,7 +105,7 @@ export default {
           return false;
         }
 
-        const projectName = projectInfo.pkg.name;
+        const projectName = projectInfo.pkg.name || 'UNTITLED';
 
         const storeProjects = getLocalProjects();
         
@@ -128,8 +128,6 @@ export default {
             taskErr: false,
             name: projectName,
             path: filePath,
-            // port: projectInfo.port,
-            // isNowa: projectInfo.isNowa,
           };
 
           const { projects } = yield select(state => state.project);
@@ -152,64 +150,11 @@ export default {
           });
 
           Message.success(i18n('msg.importSuccess'));
+
+          // command.link(filePath);
         }
 
-        /* const isNowa = isNowaProject(filePath);
-        const isExisted = fs.existsSync(join(filePath, 'abc.json'));
-
-        if (!isExisted) {
-          Message.error(i18n('msg.invalidProject'));
-          return false;
-        }
-        const pkg = application.loadConfig(join(filePath, 'package.json'));
-        // const abc = fs.readJsonSync(join(filePath, 'abc.json'));
-        const projectName = abc.name;
-
-        const storeProjects = getLocalProjects();
-
-        const filter = storeProjects.filter(item => item.path === filePath);
-
-        if (filter.length) {
-          Message.info(i18n('msg.existed'));
-        } else {
-          storeProjects.push({
-            name: projectName,
-            path: filePath,
-            isNowa
-          });
-
-          setLocalProjects(storeProjects);
-
-          const current = {
-            start: false,
-            taskErr: false,
-            name: projectName,
-            path: filePath,
-            port: abc.options.port || 3000,
-            isNowa,
-          };
-
-          const { projects } = yield select(state => state.project);
-
-          projects.push(current);
-
-          yield put({
-            type: 'changeStatus',
-            payload: {
-              projects,
-              current
-            }
-          });
-
-          yield put({
-            type: 'layout/changeStatus',
-            payload: {
-              showPage: 2
-            }
-          });
-
-          Message.success(i18n('msg.importSuccess'));
-        }*/
+       
       } catch (e) {
         console.log(e);
       }

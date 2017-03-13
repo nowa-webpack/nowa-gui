@@ -4,6 +4,7 @@ const command = require('./services/command');
 const application = require('./services/application');
 const win = require('./services/window');
 const menu = require('./services/menu');
+const network = require('./services/network');
 const upgrade = require('./services/upgrade');
 const config = require('./config');
 
@@ -19,6 +20,7 @@ log.info('start nowa gui');
 app.on('ready', () => {
   menu.init();
   win.create();
+  network.init();
   // upgrade.setUpdateUrl();
 });
 
@@ -50,7 +52,8 @@ global.services = {
   command,
   application,
   win,
-  upgrade
+  upgrade,
+  network,
 };
 
 global.configs = {

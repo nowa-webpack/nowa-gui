@@ -17,8 +17,11 @@ module.exports = {
     modules: ['node_modules'],
 
     alias: {
-      language: path.join(__dirname, '..', 'src', 'i18n'),
+      // language: path.join(__dirname, '..', 'src', 'i18n'),
       i18n: path.join(__dirname, '..', 'src', 'renderer', 'services', 'i18n'),
+      'gui-util': path.join(__dirname, '..', 'src', 'renderer', 'util'),
+      'gui-local': path.join(__dirname, '..', 'src', 'renderer', 'services', 'localStorage'),
+      'gui-const': path.join(__dirname, '..', 'src', 'renderer', 'constants'),
     }
 
   },

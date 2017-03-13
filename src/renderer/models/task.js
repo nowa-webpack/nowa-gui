@@ -2,8 +2,8 @@ import { remote } from 'electron';
 import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
-import { delay } from '../util';
-import { IS_WIN } from '../constants';
+import { delay } from 'gui-util';
+import { IS_WIN } from 'gui-const';
 
 const { command } = remote.getGlobal('services');
 
@@ -114,37 +114,35 @@ export default {
       const term = start[project.path].term;
 
       if ('pid' in term) {
-        if (IS_WIN) {
-          term.kill();
-        } else {
-          process.kill(-term.pid);
-        }
+        process.kill(-term.pid);
       }
 
-      projects.map((item) => {
-        if (item.path === project.path) item.start = false;
-
-        return item;
-      });
-
-      yield put({
-        type: 'project/changeStatus',
-        payload: {
-          projects,
-          current: {
-            ...project,
-            start: false
-          }
-        }
-      });
     },
     * exit({ payload: { type, name } }, { put, select }) {
       const { build, start } = yield select(state => state.task);
-      const { projects } = yield select(state => state.project);
-
+      const { projects, current } = yield select(state => state.project);
+      console.log('exit', type);
       if (type === 'start') {
         // delete start[name];
         start[name].term = null;
+
+        projects.map((item) => {
+          if (item.path === name) item.start = false;
+
+          return item;
+        });
+
+        current.start = false;
+
+        yield put({
+          type: 'project/changeStatus',
+          payload: {
+            projects,
+            current: {
+              ...current,
+            }
+          }
+        });
       }
 
       if (type === 'build') {
@@ -159,7 +157,6 @@ export default {
         build[name].err = false;
         // delete build[name];
       }
-      console.log('exit', type);
 
       yield put({
         type: 'changeStatus',
@@ -168,6 +165,8 @@ export default {
           build
         }
       });
+
+
     },
     * clearLog({ payload: { name, type } }, { put, select }) {
       const { build, start } = yield select(state => state.task);

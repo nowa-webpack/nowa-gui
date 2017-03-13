@@ -5,9 +5,10 @@ import fs from 'fs-extra';
 import mkdirp from 'mkdirp';
 import glob from 'glob';
 import Message from 'antd/lib/message';
-import i18n from 'i18n';
 
-import { delay } from '../util';
+import i18n from 'i18n';
+import { delay } from 'gui-util';
+import { getLocalCustomTemps, getRemoteTemps, setRemoteTemps } from 'gui-local';
 
 const { application, command } = remote.getGlobal('services');
 const { config } = remote.getGlobal('configs');
@@ -28,41 +29,110 @@ const writeFile = (source, target, data) => {
   }
 };
 
-// const delay = n => new Promise(resolve => setTimeout(resolve, n));
-
 
 export default {
 
   namespace: 'init',
 
   state: {
-    templates: [],
-    loading: true,
+    officalTemplates: [],
+    localTemplates: [],
+    remoteTemplates: [],
+    // loading: true,
+    loading: false,
     sltTemp: '',
     sltTag: '',
     basePath: join(osHomedir(), 'NowaProject'),
     extendsProj: {},
     term: null,
     projPath: '',
-    installOptions: {}
+    installOptions: {},
+    showTemplateModal: false,
   },
 
   subscriptions: {
     setup({ dispatch }) {
-      ipcRenderer.on('loadingTemplates', (event, data) => {
+      ipcRenderer.on('load-offical-templates', (event, officalTemplates) => {
         dispatch({
           type: 'changeStatus',
           payload: {
-            templates: data,
+            officalTemplates,
             loading: false
           }
         });
+      }).on('load-local-templates', (event, localTemplates) => {
+        dispatch({
+          type: 'changeStatus',
+          payload: {
+            localTemplates,
+            loading: false
+          }
+        });
+      }).on('load-remote-templates', (event, remoteTemplates) => {
+        /*const remoteTemps = getRemoteTemps();
+        const filter = remoteTemps.filter((item) => {
+          const _filter = remoteTemplates.filter(_item => _item.name === item.name);
+
+          return _filter.length > 0;
+        });
+        setRemoteTemps(filter);*/
+        dispatch({
+          type: 'changeStatus',
+          payload: {
+            remoteTemplates,
+          }
+        });
+      });
+    },
+  },
+
+  effects: {
+    * fetchAllTemplates(o, { select, put }) {
+      const { online } = yield select(state => state.layout);
+      const manifest = application.getMainifest();
+      console.log(manifest)
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          officalTemplates: manifest.offical || [],
+          localTemplates: manifest.local || [],
+          remoteTemplates: manifest.remote || [],
+        }
       });
 
-      const templates = application.getTemplates();
+      if (online) {
+        yield put({
+          type: 'fetchOnlineTemplates',
+        });
+      }
+    },
+    fetchOnlineTemplates() {
+      // const remoteTemps = getRemoteTemps();
+      application.getOfficalTemplates();
+      // application.getCustomRemoteTemplates(remoteTemps);
+    },
 
-      if (templates.length) {
-        dispatch({
+
+    fetchCustomRemoteTemplates({ payload: { remoteTemps } }) {
+      application.getCustomRemoteTemplates(remoteTemps);
+    },
+    fetchCustomLocalTemplates({ payload: { localTemps } }) {
+      application.getCustomLocalTemplates(localTemps);
+    },
+    * updateTemplate({ payload: { sltTemp, tag } }, { put, select }) {
+      const { online } = yield select(state => state.layout);
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          loading: true
+        }
+      });
+
+      if (online) {
+        console.time('fetch templates');
+        const templates = yield application.updateTemplate(sltTemp.name, tag);
+        console.timeEnd('fetch templates');
+        yield put({
           type: 'changeStatus',
           payload: {
             templates,
@@ -70,12 +140,9 @@ export default {
           }
         });
       } else {
-        application.fetchTemplates(console);
+        i18n('OFFLINE!');
       }
     },
-  },
-
-  effects: {
     * selectBaseProjectPath({ payload: { isInit } }, { put }) {
       try {
         let basePath = osHomedir();
@@ -97,7 +164,7 @@ export default {
     * selectTemplate({ payload }, { put }) {
       const { sltTemp, sltTag } = payload;
       const name = `${sltTemp.name}-${sltTag}`;
-      const filePath = join(TEMPLATES_DIR, name, 'package');
+      const filePath = join(TEMPLATES_DIR, name);
       
       if (fs.existsSync(filePath)) {
         const proj = application.loadConfig(join(filePath, 'proj.js'));
@@ -113,7 +180,6 @@ export default {
       }
     },
     * getAnswserArgs({ payload }, { put, select }) {
-     
       const { extendsProj, sltTemp, sltTag } = yield select(state => state.init);
 
       let answers = payload;
@@ -221,27 +287,7 @@ export default {
         }
       });
     },
-    * updateTemplate({ payload: { sltTemp, tag } }, { put, select }) {
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          loading: true
-        }
-      });
-
-      console.time('fetch templates');
-      const templates = yield application.updateTemplate(sltTemp.name, tag);
-      console.timeEnd('fetch templates');
-
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          templates,
-          loading: false
-        }
-      });
-    },
-    * retryInstall({}, { put, select }) {
+    * retryInstall(o, { put, select }) {
       const { installOptions } = yield select(state => state.init);
       const term = yield command.nodeInstall(installOptions);
       console.log('installing');
@@ -252,7 +298,7 @@ export default {
         }
       });
     },
-    * testTemplate({ payload }, { }) {
+    * testTemplate({ payload }) {
       // const { sltTemp } = payload;
       config.setTemplateVersion(payload.name, '0.0.1');
       // config.clear();

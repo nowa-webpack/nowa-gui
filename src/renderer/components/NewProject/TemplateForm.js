@@ -7,9 +7,10 @@ import Message from 'antd/lib/message';
 import Select from 'antd/lib/select';
 import Input from 'antd/lib/input';
 import Checkbox from 'antd/lib/checkbox';
-import i18n from 'i18n';
 
-import { hidePathString } from '../../util';
+import i18n from 'i18n';
+import { hidePathString } from 'gui-util';
+import { VERSION_MATCH, NAME_MATCH } from 'gui-const';
 
 const registryList = [{
   name: 'cnpm',
@@ -102,12 +103,12 @@ class Form extends Component {
       return false;
     }
 
-    if (!(/^[A-Za-z0-9_-]+$/.test(others.name))) {
+    if (!(NAME_MATCH.test(others.name))) {
       Message.error(i18n('msg.invalidName'));
       return false;
     }
 
-    if (!(/^\d+\.\d+\.\d+([\.\-\w])*$/.test(others.version))) {
+    if (!(VERSION_MATCH.test(others.version))) {
       Message.error(i18n('msg.invalidVersion'));
       return false;
     }
