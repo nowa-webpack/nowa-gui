@@ -4,6 +4,7 @@ import Button from 'antd/lib/button';
 import Select from 'antd/lib/select';
 import Card from 'antd/lib/card';
 import Input from 'antd/lib/input';
+
 import i18n from 'i18n';
 
 const InputGroup = Input.Group;
@@ -26,7 +27,7 @@ class Item extends Component {
   updateTemplate() {
     const { dispatch, data } = this.props;
     dispatch({
-      type: 'init/updateTemplate',
+      type: 'init/updateOfficalTemplate',
       payload: {
         sltTemp: data,
         tag: this.state.tag

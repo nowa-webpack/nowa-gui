@@ -77,7 +77,7 @@ export default {
         }
       });
 
-      setInterval(() => {
+      /*setInterval(() => {
         const curProjects = getProjects();
         dispatch({
           type: 'refresh',
@@ -85,7 +85,7 @@ export default {
             projects: curProjects,
           }
         });
-      }, 5000);
+      }, 5000);*/
     },
   },
 

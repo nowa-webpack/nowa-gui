@@ -8,7 +8,7 @@ const mkdirp = require('mkdirp');
 
 const request = require('./request');
 const { getWin } = require('./window');
-const { setTemplateVersion, getTemplateVersion } = require('../config');
+const { setTemplateVersion, getTemplateVersion, clear } = require('../config');
 const { APP_PATH, TEMPLATES_DIR } = require('../constants');
 const manifestPath = join(TEMPLATES_DIR, 'manifest.json');
 
@@ -23,17 +23,23 @@ if (!fs.existsSync(TEMPLATES_DIR)) {
   fs.writeJsonSync(manifestPath, {});
 }
 
+// clear();
+// setTemplateVersion('nowa-template-salt-v_1', '0.0.1');
+
 const getMainifest = () => {
   let manifest = {};
 
   try {
     manifest = fs.readJsonSync(manifestPath);
-    // manifest = JSON.parse(fs.readFileSync(manifestPath));
   } catch (e) {
     console.log(e);
   }
 
   return manifest;
+};
+
+const setMainifest = (newManifest) => {
+  fs.writeJsonSync(manifestPath, newManifest);
 };
 
 const getOfficalTemplates = () => {
@@ -75,7 +81,7 @@ const getOfficalTemplates = () => {
             fs.copySync(join(folder, dir), folder);
             fs.removeSync(join(folder, dir));
           });
-          return { name: tag, version, update: false };
+          return { name: tag, version, update: false, path: folder };
         });
       } else {
         obj.tags = tags.map((tag) => {
@@ -89,14 +95,11 @@ const getOfficalTemplates = () => {
       return obj;
     });
 
-    let manifest = {};
-    try {
-      manifest = fs.readJsonSync(manifestPath);
-    } catch (e) { console.log(e);}
+    let manifest = getMainifest();
 
     manifest.offical = arr;
     fs.writeJsonSync(manifestPath, manifest);
-
+    // yield delay(15000);
     win.webContents.send('load-offical-templates', arr);
   }).catch((err) => {
     console.log('getOfficalTemplates', err);
@@ -104,108 +107,102 @@ const getOfficalTemplates = () => {
   });
 };
 
-/*const getCustomRemoteTemplates = (remoteTemp) => {
-  console.log('getCustomRemoteTemplates');
-  const win = getWin();
-  let manifest = {};
+const updateOfficalTemplate = co.wrap(function* (tempName, tag) {
+  let arr = [];
+  const manifest = getMainifest();
+
   try {
-    manifest = fs.readJsonSync(manifestPath);
-  } catch (e) {console.log(e); }
+    console.time('fetch events');
+    const { data: pkg } = yield request(`https://registry.npm.taobao.org/${tempName}`);
+    console.timeEnd('fetch events');
 
-  if (manifest.remote && manifest.remote.length === 0) {
-    co(function* () {
-      const arr = yield remoteTemp.map(function* (temp) {
-        const tempPath = join(TEMPLATES_DIR, `remote-${temp.name}`);
-        const { err } = yield download(temp.remote, TEMPLATES_DIR, {
-          extract: true,
-          retries: 0,
-          timeout: 20000
-        })
-        .then(() => ({ err: false }))
-        .catch(e => ({ err: e }));
+    const newVersion = pkg['dist-tags'][tag];
+    const curPkg = pkg.versions[newVersion];
+    const name = `${tempName}-${tag}`;
 
-        if (err) {
-          win.webContents.send('main-err', err.message);
-          yield delay(1000);
-          temp.disable = true;
-          // return false;
-        } else {
-          temp.disable = false;
-          temp.path = tempPath;
-        }
-        return temp;
-      });
-      console.log(arr);
+    setTemplateVersion(name, newVersion);
 
-      manifest.remote = arr.filter(n => !!n);
-      fs.writeJsonSync(manifestPath, manifest);
-
-      win.webContents.send('load-remote-templates', arr);
-    }).catch((err) => {
-      console.log('getCustomRemoteTemplates', err);
-      win.webContents.send('main-err', err.message);
+    arr = manifest.offical.map((item) => {
+      if (item.name === tempName) {
+        item.tags = item.tags.map((_t) => {
+          if (_t.name === tag) {
+            _t.update = false;
+            _t.version = newVersion;
+          }
+          return _t;
+        });
+      }
+      return item;
     });
-  } else {
-    win.webContents.send('load-remote-templates', manifest.remote);
+    manifest.offical = arr;
+    fs.writeJsonSync(manifestPath, manifest);
+    const folder = join(TEMPLATES_DIR, name);
+    download(curPkg.dist.tarball, folder, {
+      extract: true,
+      retries: 0,
+      timeout: 10000
+    }).then((files) => {
+      const dir = dirname(files[1].path);
+      fs.copySync(join(folder, dir), folder);
+      fs.removeSync(join(folder, dir));
+    });
+  } catch (err) {
+    const win = getWin();
+    win.webContents.send('main-err', err.message);
   }
+  return arr;
+});
 
-};*/
-
-/*const getCustomTemplates = (type) => {
-  console.log('getCustomTemplates', type);
-  const win = getWin();
-  let manifest = getMainifest();
-
-  win.webContents.send(`load-${type}-templates`, manifest[type] || []);
-};*/
-
-const downloadRemoteTemplate = (remotePath, dirpath) => {
-  return download(remotePath, TEMPLATES_DIR,
+const downloadRemoteTemplate = (remotePath, dirpath) =>
+  download(remotePath, TEMPLATES_DIR,
     {
       extract: true,
       retries: 0,
-      timeout: 20000
+      timeout: 10000
     })
     .then((files) => {
       const dir = dirname(files[1].path);
-      fs.renameSync(join(TEMPLATES_DIR, dir), dirpath);
+      if (fs.existsSync(dirpath)) {
+        fs.renameSync(dirpath, dirpath + '11');
+        fs.renameSync(join(TEMPLATES_DIR, dir), dirpath);
+        fs.removeSync(dirpath + '11');
+      } else {
+        fs.renameSync(join(TEMPLATES_DIR, dir), dirpath);
+      }
       return { err: false };
     })
     .catch(e => ({ err: e }));
-}
 
 const addCustomTemplates = ({ type, item }) => {
   console.log('addCustomTemplates', type);
   const win = getWin();
-  let manifest = getMainifest();
+  const manifest = getMainifest();
 
   if (type === 'local') {
+    const arr = manifest.local || [];
 
+    arr.push(item);
+
+    manifest.local = arr;
+    fs.writeJsonSync(manifestPath, manifest);
+
+    win.webContents.send('load-local-templates', arr);
   } else {
     co(function* () {
       const tempPath = join(TEMPLATES_DIR, `remote-${item.name}`);
       const { err } = yield downloadRemoteTemplate(item.remote, tempPath);
-      /*const { err } = yield download(item.remote, TEMPLATES_DIR, {
-          extract: true,
-          retries: 0,
-          timeout: 20000
-        })
-        .then((files) => {
-          const dir = dirname(files[1].path);
-          fs.renameSync(join(TEMPLATES_DIR, dir), tempPath);
-          return { err: false };
-        })
-        .catch(e => ({ err: e }));*/
 
       if (err) {
         win.webContents.send('main-err', err.message);
         yield delay(1000);
         item.disable = true;
-        // return false;
       } else {
         item.disable = false;
         item.path = tempPath;
       }
+
+      item.loading = false;
+
       const arr = manifest.remote || [];
       arr.push(item);
       manifest.remote = arr;
@@ -213,11 +210,10 @@ const addCustomTemplates = ({ type, item }) => {
 
       win.webContents.send('load-remote-templates', arr);
     }).catch((err) => {
-      console.log('getCustomTemplates', type, err);
+      console.log('addCustomTemplates', type, err);
       win.webContents.send('main-err', err.message);
     });
   }
-
 };
 
 const editCustomTemplates = ({ type, item }) => {
@@ -254,50 +250,57 @@ const editCustomTemplates = ({ type, item }) => {
       fs.writeJsonSync(manifestPath, manifest);
 
       win.webContents.send('load-remote-templates', arr);
-
     }).catch((err) => {
       console.log('getCustomTemplates', type, err);
       win.webContents.send('main-err', err.message);
     });
+  } else {
+    manifest.local.map((_t) => {
+      if (_t.id === item.id) {
+        return Object.assign(_t, item);
+      }
+      return _t;
+    });
+    fs.writeJsonSync(manifestPath, manifest);
+
+    win.webContents.send('load-local-templates', manifest.local);
   }
-
-  /*manifest[type].map((_item) => {
-    if (_item.id === item.id) {
-      return Object.assign(_item, item);
-    }
-    return _item;
-  });*/
-
 };
 
 const updateCustomTemplates = (item) => {
   console.log('updateCustomTemplates');
   const win = getWin();
-  // const manifest = getMainifest();
 
-  download(item.remote, TEMPLATES_DIR,
-    {
-      extract: true,
-      retries: 0,
-      timeout: 20000
-    })
-    .then((files) => {
-      const dir = dirname(files[1].path);
-      fs.renameSync(item.path, item.path + '11');
-      fs.renameSync(join(TEMPLATES_DIR, dir), item.path);
-      fs.removeSync(item.path + '11');
-      return { err: false };
-    })
-    .catch(err => {
+  co(function* () {
+    const { err } = yield downloadRemoteTemplate(item.remote, item.path);
+
+    if (err) {
       win.webContents.send('main-err', err.message);
-    });
+      yield delay(1000);
+      item.disable = true;
+    } else {
+      item.disable = false;
+    }
 
-  // downloadRemoteTemplate(item.remote, item.path)
-  //   .then(({ err }) => {
-  //     if (err) {
-  //       win.webContents.send('main-err', err.message);
-  //     }
-  //   });
+    item.loading = false;
+
+    const manifest = getMainifest();
+
+    manifest.remote.map((_t) => _t.id === item.id ? item : _t);
+
+    fs.writeJsonSync(manifestPath, manifest);
+
+    win.webContents.send('load-remote-templates', manifest.remote);
+    // downloadRemoteTemplate(item.remote, item.path)
+    //   .then(({ err }) => {
+    //     if (err) {
+    //       win.webContents.send('main-err', err.message);
+    //     }
+    //   });
+  }).catch((err) => {
+    console.log('updateCustomTemplates', err);
+    win.webContents.send('main-err', err.message);
+  });
 };
 
 const removeCustonTemplates = ({ type, item }) => {
@@ -317,30 +320,37 @@ const removeCustonTemplates = ({ type, item }) => {
   win.webContents.send(`load-${type}-templates`, filter);
 };
 
-/*const getCustomLocalTemplates = (localTemp) => {
-  console.log('getCustomLocalTemplates');
-  const win = getWin();
-  let manifest = {};
-  try {
-    manifest = fs.readJsonSync(manifestPath);
-  } catch (e) { 
-    console.log(e);
+
+module.exports = {
+
+  getOfficalTemplates,
+  updateOfficalTemplate,
+
+  getMainifest,
+  setMainifest,
+
+  addCustomTemplates,
+  editCustomTemplates,
+  updateCustomTemplates,
+  removeCustonTemplates,
+
+  loadConfig(promptConfigPath) {
+    try {
+      return require(promptConfigPath);
+    } catch (err) {
+      return {};
+    }
+  },
+
+  ejsRender(tpl, data) {
+    return ejs.render(tpl, data);
+  },
+
+  getPackgeJson() {
+    const json = fs.readJsonSync(join(APP_PATH, 'package.json'));
+    return json;
   }
-
-  manifest.local = localTemp;
-  fs.writeJsonSync(manifestPath, manifest);
-
-  win.webContents.send('load-local-templates', localTemp);
-
-};*/
-
-const getOfflineTemplates = () => {
-  console.log('getOfflineTemplates');
-
 };
-
-
-
 
 
 /*
@@ -460,32 +470,4 @@ const updateTemplate = co.wrap(function* (tempName, tag) {
   }
   return templates;
 });*/
-
-module.exports = {
-
-  getOfficalTemplates,
-  getOfflineTemplates,
-  getMainifest,
-  addCustomTemplates,
-  editCustomTemplates,
-  updateCustomTemplates,
-  removeCustonTemplates,
-
-  loadConfig(promptConfigPath) {
-    try {
-      return require(promptConfigPath);
-    } catch (err) {
-      return {};
-    }
-  },
-
-  ejsRender(tpl, data) {
-    return ejs.render(tpl, data);
-  },
-
-  getPackgeJson() {
-    const json = fs.readJsonSync(join(APP_PATH, 'package.json'));
-    return json;
-  }
-};
 

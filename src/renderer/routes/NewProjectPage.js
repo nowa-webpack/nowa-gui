@@ -36,7 +36,7 @@ class NewProjectPage extends Component {
   }
   render() {
     const {
-      officalTemplates, localTemplates, remoteTemplates, loading, term, dispatch
+      officalTemplates, localTemplates, remoteTemplates, term, dispatch
     } = this.props;
     const { current } = this.state;
     let component;
@@ -46,7 +46,7 @@ class NewProjectPage extends Component {
         officalTemplates,
         localTemplates,
         remoteTemplates,
-        loading,
+        // officalLoading,
         dispatch,
         next: this.next.bind(this),
       };
@@ -86,7 +86,7 @@ NewProjectPage.propTypes = {
   officalTemplates: PropTypes.array.isRequired,
   localTemplates: PropTypes.array.isRequired,
   remoteTemplates: PropTypes.array.isRequired,
-  loading: PropTypes.bool.isRequired,
+  // officalLoading: PropTypes.bool.isRequired,
   term: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
 };
@@ -95,7 +95,7 @@ export default connect(({ init }) => ({
   officalTemplates: init.officalTemplates,
   localTemplates: init.localTemplates,
   remoteTemplates: init.remoteTemplates,
-  loading: init.loading,
+  // officalLoading: init.officalLoading,
   term: init.term,
 }))(NewProjectPage);
 
