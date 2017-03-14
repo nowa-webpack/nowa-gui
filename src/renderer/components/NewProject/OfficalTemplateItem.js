@@ -29,7 +29,7 @@ class Item extends Component {
     dispatch({
       type: 'init/updateOfficalTemplate',
       payload: {
-        sltTemp: data,
+        tempName: data.name,
         tag: this.state.tag
       }
     });
@@ -41,8 +41,8 @@ class Item extends Component {
     dispatch({
       type: 'init/selectTemplate',
       payload: {
-        sltTemp: data,
-        sltTag: tag,
+        type: 'offical',
+        item: data.tags.filter(item => item.name === tag)[0]
       }
     });
     next();

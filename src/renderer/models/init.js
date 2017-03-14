@@ -8,10 +8,8 @@ import Message from 'antd/lib/message';
 
 import i18n from 'i18n';
 import { delay } from 'gui-util';
-// import { getLocalCustomTemps, getRemoteTemps, setRemoteTemps } from 'gui-local';
 
 const { application, command } = remote.getGlobal('services');
-const { config } = remote.getGlobal('configs');
 const TEMPLATES_DIR = join(osHomedir(), '.nowa', 'templates');
 
 const writeFile = (source, target, data) => {
@@ -40,10 +38,11 @@ export default {
     remoteTemplates: [],
     // loading: true,
     // officalLoading: false,
-    sltTemp: '',
-    sltTag: '',
-    basePath: join(osHomedir(), 'NowaProject'),
+    // sltTemp: '',
+    // sltTag: '',
+    // basePath: join(osHomedir(), 'NowaProject'),
     extendsProj: {},
+    sltItem: {},
 
     showTemplateModal: false,
     editTemplate: {},
@@ -126,7 +125,6 @@ export default {
     fetchOnlineTemplates() {
       application.getOfficalTemplates();
     },
-
     * addCustomRemoteTemplate({ payload: { item } }, { put, select }) {
       const { remoteTemplates } = yield select(state => state.init);
 
@@ -158,14 +156,13 @@ export default {
       });
 
       application.updateCustomTemplates(item);
-
     },
-    * updateOfficalTemplate({ payload: { sltTemp, tag } }, { put, select }) {
+    * updateOfficalTemplate({ payload: { tempName, tag } }, { put, select }) {
       const { online } = yield select(state => state.layout);
 
       if (online) {
         console.time('fetch templates');
-        const officalTemplates = yield application.updateOfficalTemplate(sltTemp.name, tag);
+        const officalTemplates = yield application.updateOfficalTemplate(tempName, tag);
         console.timeEnd('fetch templates');
         yield put({
           type: 'changeStatus',
@@ -177,45 +174,20 @@ export default {
         Message.info(i18n('OFFLINE!'));
       }
     },
-    * selectBaseProjectPath({ payload: { isInit } }, { put }) {
-      try {
-        let basePath = osHomedir();
-        if (!isInit) {
-          const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
-          basePath = importPath[0];
+    * selectTemplate({ payload: { type, item } }, { put }) {
+      const proj = application.loadConfig(join(item.path, 'proj.js'));
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          sltItem: item,
+          extendsProj: proj
         }
-
-        yield put({
-          type: 'changeStatus',
-          payload: {
-            basePath
-          }
-        });
-
-      } catch (err) {
-      }
-    },
-    * selectTemplate({ payload }, { put }) {
-      const { sltTemp, sltTag } = payload;
-      const name = `${sltTemp.name}-${sltTag}`;
-      const filePath = join(TEMPLATES_DIR, name);
-      if (fs.existsSync(filePath)) {
-        const proj = application.loadConfig(join(filePath, 'proj.js'));
-        yield put({
-          type: 'changeStatus',
-          payload: {
-            ...payload,
-            extendsProj: proj
-          }
-        });
-      } else {
-        Message.error(i18n('msg.templateErr'), 3);
-      }
+      });
     },
     * getAnswserArgs({ payload }, { put, select }) {
-      const { extendsProj, sltTemp, sltTag } = yield select(state => state.init);
+      const { extendsProj, sltItem } = yield select(state => state.init);
 
-      let answers = payload;
+      let answers = { ...payload };
 
       answers.npm = 'npm';
       answers.template = '';
@@ -224,9 +196,7 @@ export default {
         answers = extendsProj.answers(answers, {});
       }
 
-      const name = `${sltTemp.name}-${sltTag}`;
-
-      const sourceDir = join(TEMPLATES_DIR, name, 'package', 'proj');
+      const sourceDir = join(sltItem.path, 'proj');
 
       glob.sync('**', {
         cwd: sourceDir,
@@ -282,18 +252,6 @@ export default {
           projPath: answers.projPath, 
         }
       });
-
-      /*const term = yield command.nodeInstall(installOptions);
-      console.log('installing', term);
-
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          term,
-          projPath: answers.projPath,
-          installOptions
-        }
-      });*/
     },
     * finishedInstall({ payload }, { put, select }) {
       const { term, projPath } = yield select(state => state.init);
@@ -331,11 +289,7 @@ export default {
         }
       });
     },
-    * testTemplate({ payload }) {
-      // const { sltTemp } = payload;
-      config.setTemplateVersion(payload.name, '0.0.1');
-      // config.clear();
-    }
+   
   },
 
   reducers: {

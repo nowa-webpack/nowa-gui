@@ -13,9 +13,7 @@ const { application } = remote.getGlobal('services');
 
 
 const Item = ({ data, dispatch, next }) => {
-
   const updateTemplate = () => {
-    // application.updateCustomTemplates(data);
     dispatch({
       type: 'init/updateCustomRemoteTemplates',
       payload: {
@@ -37,6 +35,17 @@ const Item = ({ data, dispatch, next }) => {
         editTemplate: data
       }
     });
+  };
+
+  const handleCreate = () => {
+    dispatch({
+      type: 'init/selectTemplate',
+      payload: {
+        type: 'remote',
+        item: data
+      }
+    });
+    next();
   };
 
 
@@ -70,7 +79,7 @@ const Item = ({ data, dispatch, next }) => {
           { !data.disable &&
             <Button
               className="opt" ghost type="primary"
-              onClick={() => {}}
+              onClick={handleCreate}
             >{i18n('project.new.create')}</Button>
           }
         </InputGroup>

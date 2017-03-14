@@ -16,15 +16,12 @@ const manifestPath = join(TEMPLATES_DIR, 'manifest.json');
   * TEPLATE TYPE: OFFICAL, CUSTOM_REMOTE, CUSTOM_LOCAL
 
 */
-const delay = n => new Promise(resolve => setTimeout(resolve, n));
-
-if (!fs.existsSync(TEMPLATES_DIR)) {
-  mkdirp.sync(TEMPLATES_DIR);
-  fs.writeJsonSync(manifestPath, {});
-}
 
 // clear();
 // setTemplateVersion('nowa-template-salt-v_1', '0.0.1');
+
+
+const delay = n => new Promise(resolve => setTimeout(resolve, n));
 
 const getMainifest = () => {
   let manifest = {};
@@ -41,6 +38,21 @@ const getMainifest = () => {
 const setMainifest = (newManifest) => {
   fs.writeJsonSync(manifestPath, newManifest);
 };
+
+if (!fs.existsSync(TEMPLATES_DIR)) {
+  mkdirp.sync(TEMPLATES_DIR);
+  fs.writeJsonSync(manifestPath, {});
+} else {
+  const manifest = getMainifest();
+  // manifest.
+  // console.log( typeof manifest)
+  if (!manifest.offical) {
+    fs.removeSync(TEMPLATES_DIR);
+    mkdirp.sync(TEMPLATES_DIR);
+    fs.writeJsonSync(manifestPath, {});
+  }
+}
+
 
 const getOfficalTemplates = () => {
   console.log('getOfficalTemplates');
@@ -88,7 +100,12 @@ const getOfficalTemplates = () => {
           const version = pkg['dist-tags'][tag];
           const name = `${tempName}-${tag}`;
           const oldVersion = getTemplateVersion(name);
-          return { name: tag, version: oldVersion, update: semver.lt(oldVersion, version) };
+          return { 
+            name: tag,
+            version: oldVersion,
+            update: semver.lt(oldVersion, version),
+            path: join(TEMPLATES_DIR, name),
+          };
         });
       }
       arr.push(obj);
@@ -113,16 +130,18 @@ const updateOfficalTemplate = co.wrap(function* (tempName, tag) {
 
   try {
     console.time('fetch events');
-    const { data: pkg } = yield request(`https://registry.npm.taobao.org/${tempName}`);
+    const { data: pkg } = yield request(`https://registry.npm.taobao.org/${tempName}/${tag}`);
     console.timeEnd('fetch events');
 
-    const newVersion = pkg['dist-tags'][tag];
-    const curPkg = pkg.versions[newVersion];
+    // const newVersion = pkg['dist-tags'][tag];
+    const newVersion = pkg.version;
+    // const curPkg = pkg.versions[newVersion];
     const name = `${tempName}-${tag}`;
 
     setTemplateVersion(name, newVersion);
 
-    arr = manifest.offical.map((item) => {
+    // arr = manifest.offical.map((item) => {
+    manifest.offical.map((item) => {
       if (item.name === tempName) {
         item.tags = item.tags.map((_t) => {
           if (_t.name === tag) {
@@ -134,10 +153,10 @@ const updateOfficalTemplate = co.wrap(function* (tempName, tag) {
       }
       return item;
     });
-    manifest.offical = arr;
+    // manifest.offical = arr;
     fs.writeJsonSync(manifestPath, manifest);
     const folder = join(TEMPLATES_DIR, name);
-    download(curPkg.dist.tarball, folder, {
+    download(pkg.dist.tarball, folder, {
       extract: true,
       retries: 0,
       timeout: 10000
@@ -150,7 +169,8 @@ const updateOfficalTemplate = co.wrap(function* (tempName, tag) {
     const win = getWin();
     win.webContents.send('main-err', err.message);
   }
-  return arr;
+  // return arr;
+  return manifest.offical;
 });
 
 const downloadRemoteTemplate = (remotePath, dirpath) =>
@@ -336,6 +356,7 @@ module.exports = {
 
   loadConfig(promptConfigPath) {
     try {
+      delete require.cache[require.resolve(promptConfigPath)];
       return require(promptConfigPath);
     } catch (err) {
       return {};

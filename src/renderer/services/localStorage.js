@@ -56,7 +56,7 @@ export const setLocalEditorPath = (editor, editorPath) => {
 export const getLocalUpdateFlag = () => storage.getItem(UPDATE_TIP);
 export const setLocalUpdateFlag = () => storage.setItem(UPDATE_TIP, 1);
 
-export const setLocalCustomTemps = temps => storage.setItem(LOCAL_TEMP_PATHS, JSON.stringify(temps));
+/*export const setLocalCustomTemps = temps => storage.setItem(LOCAL_TEMP_PATHS, JSON.stringify(temps));
 export const getStoreCustomTemps = () => JSON.parse(storage.getItem(LOCAL_TEMP_PATHS) || '[]');
 export const getLocalCustomTemps = () => {
   const temps = getStoreCustomTemps();
@@ -68,4 +68,4 @@ export const getLocalCustomTemps = () => {
 };
 
 export const getRemoteTemps = () => JSON.parse(storage.getItem(REMOTE_TEMP_URLS) || '[]');
-export const setRemoteTemps = temps => storage.setItem(REMOTE_TEMP_URLS, JSON.stringify(temps));
+export const setRemoteTemps = temps => storage.setItem(REMOTE_TEMP_URLS, JSON.stringify(temps));*/

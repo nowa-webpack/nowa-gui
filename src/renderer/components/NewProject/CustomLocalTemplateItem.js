@@ -27,6 +27,17 @@ const Item = ({ data, dispatch, next }) => {
     });
   };
 
+  const handleCreate = () => {
+    dispatch({
+      type: 'init/selectTemplate',
+      payload: {
+        type: 'local',
+        item: data
+      }
+    });
+    next();
+  };
+
 
   return (
     <Card
@@ -51,7 +62,7 @@ const Item = ({ data, dispatch, next }) => {
         {
           !data.disable &&
             <Button className="opt opt-lg" ghost type="primary"
-              onClick={() => {}}
+              onClick={handleCreate}
             >{i18n('project.new.create')}</Button>
         }
       </InputGroup>

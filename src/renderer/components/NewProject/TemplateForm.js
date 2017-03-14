@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import { join } from 'path';
 import fs from 'fs-extra';
+import { remote } from 'electron';
+import osHomedir from 'os-homedir';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Select from 'antd/lib/select';
@@ -13,37 +15,39 @@ import { hidePathString } from 'gui-util';
 import { VERSION_MATCH, NAME_MATCH } from 'gui-const';
 
 const registryList = [{
-  name: 'cnpm',
+  name: 'cnpm (https://registry.npm.taobao.org)',
   value: 'https://registry.npm.taobao.org'
 }, {
-  name: 'tnpm',
+  name: 'tnpm (http://registry.npm.alibaba-inc.com)',
   value: 'http://registry.npm.alibaba-inc.com'
 }, {
-  name: 'npm',
+  name: 'npm (https://registry.npmjs.org)',
   value: 'https://registry.npmjs.org'
 }];
+
 
 class Form extends Component {
 
   constructor(props) {
     super(props);
-
-    const { basePath, extendsProj } = props.init;
+    const { extendsProj } = props;
 
     // const name = 'untitled';
     const name = '';
-
-    this.registryList = ['https://registry.npm.taobao.org', 'http://registry.npm.alibaba-inc.com', 'https://registry.npmjs.org'];
+    const basePath = join(osHomedir(), 'NowaProject');
 
     const extendsArgs = {};
 
     if (Object.keys(extendsProj).length) {
-      extendsProj.prompts.map((item) => {
+      extendsProj.prompts.forEach((item) => {
         extendsArgs[item.name] = item.default || false;
       });
     }
 
     this.state = {
+      basePath,
+      extendsArgs,
+
       projPath: join(basePath, name),
       name,
       description: 'An awesome project',
@@ -52,35 +56,25 @@ class Form extends Component {
       homepage: '',
       registry: 'https://registry.npm.taobao.org',
       repository: '',
-      extendsArgs
     };
 
-    this.old = this.state;
-  }
-  
-  componentWillReceiveProps({ init }) {
-
-    const { basePath } = this.props.init;
-    if (init.basePath !== basePath) {
-      this.setState({
-        projPath: join(init.basePath, this.state.name)
-      });
-    }
   }
 
   selectPath() {
-    const { dispatch } = this.props;
-
-    dispatch({
-      type: 'init/selectBaseProjectPath',
-      payload: {
-        isInit: false
-      }
-    });
+    try {
+      const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+      this.setState({
+        basePath: importPath[0],
+        projPath: join(importPath[0], this.state.name),
+      });
+    } catch (err) {
+    }
+   
   }
 
   changeName(name) {
-    const { basePath } = this.props.init;
+    // const { basePath } = this.props.init;
+    const { basePath } = this.state;
 
     this.setState({
       projPath: name ? join(basePath, name) : basePath,
@@ -89,9 +83,8 @@ class Form extends Component {
   }
 
   handleSubmit() {
-    const { extendsArgs, ...others } = this.state;
-    const { dispatch, init, next } = this.props;
-    const { basePath } = init;
+    const { extendsArgs, basePath, ...others } = this.state;
+    const { dispatch, next } = this.props;
 
     if (!others.name) {
       Message.error(i18n('msg.nameRequired'));
@@ -124,31 +117,9 @@ class Form extends Component {
     });
   }
 
-  resetForm() {
-    const { extendsProj } = this.props.init;
-    const extendsArgs = {};
-
-    if (Object.keys(extendsProj).length) {
-      extendsProj.prompts.map((item) => {
-        extendsArgs[item.name] = item.default || false;
-      });
-    }
-
-    this.old = { ...this.old, extendsArgs };
-
-    this.props.dispatch({
-      type: 'init/selectBaseProjectPath',
-      payload: {
-        isInit: true
-      }
-    });
-
-    this.setState(this.old);
-  }
-
   render() {
     const { projPath, name, registry, extendsArgs } = this.state;
-    const { init: { extendsProj }, prev } = this.props;
+    const { extendsProj, prev } = this.props;
     let extendsHtml;
 
     if (Object.keys(extendsProj).length) {
@@ -224,10 +195,10 @@ class Form extends Component {
 }
 
 Form.propTypes = {
-  init: PropTypes.object.isRequired,
+  extendsProj: PropTypes.object,
   prev: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
-export default connect(({ init }) => ({ init }))(Form);
+export default connect(({ init }) => ({ extendsProj: init.extendsProj }))(Form);
