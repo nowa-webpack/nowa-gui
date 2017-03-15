@@ -2,6 +2,7 @@ const { spawn, exec, execFile } = require('child_process');
 const { join } = require('path');
 const npmRunPath = require('npm-run-path');
 const fs = require('fs-extra');
+const uuid = require('uuid');
 // const log = require('electron-log');
 
 const { APP_PATH, NOWA_PATH, NOWA_BIN_PATH, IS_WIN, NODE_PATH, NPM_PATH } = require('../constants');
@@ -59,11 +60,19 @@ module.exports = {
     });*/
 
     // return spawn(NODE_PATH, [NPM_PATH, 'start', '--scripts-prepend-node-path=auto'], {
-    return spawn(NODE_PATH, [NOWA_PATH, 'server'], {
+    const term = spawn(NODE_PATH, [NOWA_PATH, 'server'], {
       cwd: projectPath,
       env,
       detached: true
     });
+
+    // global[uuid.v4()] = {
+    //   pid: term.pid,
+    //   term,
+    //   logs: '',
+    // };
+
+    return term;
   },
 
   lib(projectPath) {

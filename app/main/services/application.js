@@ -44,8 +44,6 @@ if (!fs.existsSync(TEMPLATES_DIR)) {
   fs.writeJsonSync(manifestPath, {});
 } else {
   const manifest = getMainifest();
-  // manifest.
-  // console.log( typeof manifest)
   if (!manifest.offical) {
     fs.removeSync(TEMPLATES_DIR);
     mkdirp.sync(TEMPLATES_DIR);
@@ -271,7 +269,7 @@ const editCustomTemplates = ({ type, item }) => {
 
       win.webContents.send('load-remote-templates', arr);
     }).catch((err) => {
-      console.log('getCustomTemplates', type, err);
+      console.log('editCustomTemplates', type, err);
       win.webContents.send('main-err', err.message);
     });
   } else {
@@ -311,12 +309,7 @@ const updateCustomTemplates = (item) => {
     fs.writeJsonSync(manifestPath, manifest);
 
     win.webContents.send('load-remote-templates', manifest.remote);
-    // downloadRemoteTemplate(item.remote, item.path)
-    //   .then(({ err }) => {
-    //     if (err) {
-    //       win.webContents.send('main-err', err.message);
-    //     }
-    //   });
+    
   }).catch((err) => {
     console.log('updateCustomTemplates', err);
     win.webContents.send('main-err', err.message);

@@ -227,6 +227,13 @@ export default {
         });
       }
 
+      for (let name in pkgJson.devDependencies) {
+        pkgs.push({
+          name,
+          version: pkgJson.devDependencies[name]
+        });
+      }
+
       const installOptions = {
         root: answers.projPath,
         registry: answers.registry,
