@@ -7,6 +7,9 @@ const menu = require('./services/menu');
 const network = require('./services/network');
 const upgrade = require('./services/upgrade');
 const config = require('./config');
+const fixPath = require('fix-path');
+
+fixPath();
 
 
 // Keep a global reference of the window object, if you don't, the window will

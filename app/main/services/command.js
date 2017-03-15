@@ -4,7 +4,9 @@ const npmRunPath = require('npm-run-path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
 // const log = require('electron-log');
+const fixPath = require('fix-path');
 
+fixPath();
 const { APP_PATH, NOWA_PATH, NOWA_BIN_PATH, IS_WIN, NODE_PATH, NPM_PATH } = require('../constants');
 
 const systemSep = IS_WIN ? ';' : ':';
@@ -36,6 +38,7 @@ module.exports = {
   },
 
   buildNowa(projectPath) {
+    // return execFile(NPM_PATH, ['run', 'build'], {
     return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
     // return spawn(NODE_PATH, [NPM_PATH, 'run', 'build', '--scripts-prepend-node-path=auto'], {
       cwd: projectPath,
@@ -60,7 +63,8 @@ module.exports = {
     });*/
 
     // return spawn(NODE_PATH, [NPM_PATH, 'start', '--scripts-prepend-node-path=auto'], {
-    const term = spawn(NODE_PATH, [NOWA_PATH, 'server'], {
+    // const term = spawn(NODE_PATH, [NOWA_PATH, 'server'], {
+    const term = execFile(NPM_PATH, ['start'], {
       cwd: projectPath,
       env,
       detached: true
