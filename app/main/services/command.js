@@ -32,9 +32,9 @@ module.exports = {
   },
 
   buildNowa(projectPath) {
-    return execFile(NPM_PATH, ['run', 'build'], {
+    // return execFile(NPM_PATH, ['run', 'build'], {
     // return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
-    // return spawn(NODE_PATH, [NPM_PATH, 'run', 'build', '--scripts-prepend-node-path=auto'], {
+    return spawn(NODE_PATH, [NPM_PATH, 'run', 'build', '--scripts-prepend-node-path=auto'], {
       cwd: projectPath,
       env,
     });
@@ -57,8 +57,8 @@ module.exports = {
     });*/
 
     // return spawn(NODE_PATH, [NPM_PATH, 'start', '--scripts-prepend-node-path=auto'], {
-    // const term = spawn(NODE_PATH, [NOWA_PATH, 'server'], {
-    const term = execFile(NPM_PATH, ['start'], {
+    const term = spawn(NODE_PATH, [NOWA_PATH, 'server'], {
+    // const term = execFile(NPM_PATH, ['start'], {
       cwd: projectPath,
       env,
       detached: true
