@@ -114,7 +114,8 @@ export default {
       const term = start[project.path].term;
 
       if ('pid' in term) {
-        process.kill(-term.pid);
+        term.kill();
+        //process.kill(-term.pid);
       }
 
     },

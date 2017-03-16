@@ -1,4 +1,4 @@
-const { spawn, exec, execFile } = require('child_process');
+const { spawn, exec, execFile, fork } = require('child_process');
 const { join } = require('path');
 const npmRunPath = require('npm-run-path');
 const fs = require('fs-extra');
@@ -20,14 +20,8 @@ const env = Object.assign(npmEnv, {
 
 // console.log(env)
 // fs.writeJsonSync(join(APP_PATH, 'env.json'), env)
-fs.writeFileSync(join(APP_PATH, 'env.text'), process.execPath)
+fs.writeJsonSync(join(APP_PATH, 'env.text'), process.env)
 module.exports = {
-
-  // test(){
-  //   const term = exec('npm bin -g', {env})
-  //   term.stdout.on('data', (data) => fs.writeFileSync(join(APP_PATH, 'env.text'), data.toString()));
-  //   term.stderr.on('data', (data) => fs.writeFileSync(join(APP_PATH, 'env.text'), data.toString()));
-  // },
 
   build(projectPath) {
     // return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
@@ -38,8 +32,8 @@ module.exports = {
   },
 
   buildNowa(projectPath) {
-    // return execFile(NPM_PATH, ['run', 'build'], {
-    return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
+    return execFile(NPM_PATH, ['run', 'build'], {
+    // return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
     // return spawn(NODE_PATH, [NPM_PATH, 'run', 'build', '--scripts-prepend-node-path=auto'], {
       cwd: projectPath,
       env,
@@ -79,12 +73,7 @@ module.exports = {
     return term;
   },
 
-  lib(projectPath) {
-    return spawn(NODE_PATH, [NOWA_PATH, 'lib'], {
-      cwd: projectPath,
-      env,
-    });
-  },
+  
 
   openEditor(projectPath, editor, basePath) {
     let editorPath = '';
@@ -105,11 +94,20 @@ module.exports = {
 
   nodeInstall(options) {
     const targetPath = join(APP_PATH, 'task', 'install.js');
+    // return execFile(targetPath, {
+    const term = fork(targetPath, {
+      cwd: APP_PATH,
+      silent: true,
+      // execArgv: ['--harmony'],
+      env: Object.assign(env, { params: JSON.stringify(options) }),
+    });
+    return term;
+    /*const targetPath = join(APP_PATH, 'task', 'install.js');
     return spawn(NODE_PATH, [targetPath], {
       cwd: APP_PATH,
       execArgv: ['--harmony'],
       env: Object.assign(env, { params: JSON.stringify(options) }),
-    });
+    });*/
   },
 
   /*installTemplate(name) {

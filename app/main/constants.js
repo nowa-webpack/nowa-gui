@@ -17,7 +17,8 @@ const NODE_PATH = IS_WIN
   : join(APP_PATH, 'nodes', 'node');
 
 // const NPM_PATH = join(APP_PATH, 'node_modules', 'npm', 'bin', IS_WIN ? 'npm.cmd' : 'npm');
-const NPM_PATH = join(APP_PATH, 'node_modules', 'npm', 'bin', 'npm-cli.js');
+// const NPM_PATH = join(APP_PATH, 'node_modules', 'npm', 'bin', 'npm-cli.js');
+const NPM_PATH = join(APP_PATH, 'node_modules', 'npm', 'cli.js');
 // Microsoft VS Code/bin/code.cmd
 
 module.exports = {
