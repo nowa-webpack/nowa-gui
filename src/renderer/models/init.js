@@ -1,6 +1,6 @@
 import { ipcRenderer, remote } from 'electron';
-import osHomedir from 'os-homedir';
-import { join, dirname } from 'path';
+// import osHomedir from 'os-homedir';
+import { join, dirname, basename } from 'path';
 import fs from 'fs-extra';
 import mkdirp from 'mkdirp';
 import glob from 'glob';
@@ -9,15 +9,16 @@ import Message from 'antd/lib/message';
 import i18n from 'i18n';
 import { delay } from 'gui-util';
 
-const { application, command } = remote.getGlobal('services');
-const TEMPLATES_DIR = join(osHomedir(), '.nowa', 'templates');
+const { utils, command, is, templatesManager } = remote.getGlobal('services');
+const { TEMPLATES_DIR } = is.constants;
+// const TEMPLATES_DIR = join(osHomedir(), '.nowa-gui', 'templates');
 
 const writeFile = (source, target, data) => {
   try {
     const tpl = fs.readFileSync(source);
     let content;
     try {
-      content = application.ejsRender(tpl.toString(), data);
+      content = utils.ejsRender(tpl.toString(), data);
     } catch (e) {
       content = tpl;
     }
@@ -33,33 +34,32 @@ export default {
   namespace: 'init',
 
   state: {
-    officalTemplates: [],
+    officialTemplates: [],
     localTemplates: [],
     remoteTemplates: [],
-    // loading: true,
-    // officalLoading: false,
-    // sltTemp: '',
-    // sltTag: '',
-    // basePath: join(osHomedir(), 'NowaProject'),
+    
     extendsProj: {},
     sltItem: {},
+    overrideFiles: [],
+    
 
     showTemplateModal: false,
+    showFormModal: false,
     editTemplate: {},
     templateModalTabType: 1,
     term: null,
-    projPath: '',
+    // projPath: '',
+    userAnswers: {},
     installOptions: {},
   },
 
   subscriptions: {
     setup({ dispatch }) {
-      ipcRenderer.on('load-offical-templates', (event, officalTemplates) => {
+      ipcRenderer.on('load-official-templates', (event, officialTemplates) => {
         dispatch({
           type: 'changeStatus',
           payload: {
-            officalTemplates,
-            // officalLoading: false
+            officialTemplates,
           }
         });
       }).on('load-local-templates', (event, localTemplates) => {
@@ -83,7 +83,7 @@ export default {
   effects: {
     * fetchAllTemplates(o, { select, put }) {
       const { online } = yield select(state => state.layout);
-      const manifest = application.getMainifest();
+      const manifest = templatesManager.getMainifest();
 
       if (manifest.local) {
         manifest.local.map((item) => {
@@ -105,12 +105,12 @@ export default {
 
       console.log('fetchAllTemplates', manifest);
 
-      application.setMainifest(manifest);
+      templatesManager.setMainifest(manifest);
 
       yield put({
         type: 'changeStatus',
         payload: {
-          officalTemplates: manifest.offical || [],
+          officialTemplates: manifest.official || [],
           localTemplates: manifest.local,
           remoteTemplates: manifest.remote,
         }
@@ -123,13 +123,14 @@ export default {
       }
     },
     fetchOnlineTemplates() {
-      application.getOfficalTemplates();
+      templatesManager.official.get();
+      // application.getOfficalTemplates();
     },
     * addCustomRemoteTemplate({ payload: { item } }, { put, select }) {
       const { remoteTemplates } = yield select(state => state.init);
 
       remoteTemplates.push(item);
-      console.log(remoteTemplates);
+      console.log('new remoteTemplates', remoteTemplates);
 
       yield put({
         type: 'changeStatus',
@@ -138,10 +139,12 @@ export default {
         }
       });
 
-      application.addCustomTemplates({
-        type: 'remote',
-        item,
-      });
+      templatesManager.custom.add({ type: remote, item });
+
+      // application.addCustomTemplates({
+      //   type: 'remote',
+      //   item,
+      // });
     },
     * updateCustomRemoteTemplates({ payload: { item } }, { put, select }) {
       const { remoteTemplates } = yield select(state => state.init);
@@ -155,19 +158,24 @@ export default {
         }
       });
 
-      application.updateCustomTemplates(item);
+      templatesManager.custom.update(item);
+
+
+      // application.updateCustomTemplates(item);
     },
-    * updateOfficalTemplate({ payload: { tempName, tag } }, { put, select }) {
+    * updateOfficialTemplate({ payload: { tempName, tag } }, { put, select }) {
       const { online } = yield select(state => state.layout);
 
       if (online) {
         console.time('fetch templates');
-        const officalTemplates = yield application.updateOfficalTemplate(tempName, tag);
+        // const officalTemplates = yield application.updateOfficalTemplate(tempName, tag);
+        const officialTemplates = yield templatesManager.official.update(tempName, tag);
         console.timeEnd('fetch templates');
+        console.log('update', officialTemplates );
         yield put({
           type: 'changeStatus',
           payload: {
-            officalTemplates,
+            officialTemplates,
           }
         });
       } else {
@@ -175,7 +183,8 @@ export default {
       }
     },
     * selectTemplate({ payload: { type, item } }, { put }) {
-      const proj = application.loadConfig(join(item.path, 'proj.js'));
+      // const proj = application.loadConfig(join(item.path, 'proj.js'));
+      const proj = utils.loadConfig(join(item.path, 'proj.js'));
       yield put({
         type: 'changeStatus',
         payload: {
@@ -184,7 +193,169 @@ export default {
         }
       });
     },
-    * getAnswserArgs({ payload }, { put, select }) {
+    * setUserAnswers({ payload }, { put, select }) {
+      const { extendsProj } = yield select(state => state.init);
+
+      let answers = { ...payload };
+
+      answers.npm = 'npm';
+      answers.template = '';
+
+      if (extendsProj.answers) {
+        answers = extendsProj.answers(answers, {});
+      }
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          userAnswers: answers,
+        }
+      });
+    },
+    * checkOverrideFiles(o, { put, select }) {
+      const { sltItem, userAnswers } = yield select(state => state.init);
+      const sourceDir = join(sltItem.path, 'proj');
+
+      const overrideFiles = [];
+
+      yield glob.sync('**', {
+        cwd: sourceDir,
+        nodir: true,
+        dot: true
+      }).forEach((source) => {
+        const target = join(userAnswers.projPath, source.replace(/__(\w+)__/g, (match, offset) => userAnswers[offset]));
+        // console.log(source, target)
+        if (fs.existsSync(target)) {
+          overrideFiles.push(source);
+        }
+      });
+
+      if (overrideFiles.length > 0) {
+
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            overrideFiles,
+            showFormModal: true,
+          }
+        });
+      } else {
+        yield put({
+          type: 'copyTemplateToTarget',
+        });
+      }
+    },
+    * copyTemplateToTarget(o, { put, select }) {
+      const { extendsProj, sltItem, userAnswers } = yield select(state => state.init);
+      const sourceDir = join(sltItem.path, 'proj');
+
+      glob.sync('**', {
+        cwd: sourceDir,
+        nodir: true,
+        dot: true
+      }).forEach((source) => {
+        if (extendsProj.filter && extendsProj.filter(source, userAnswers) === false) {
+          return false;
+        }
+
+        const target = join(userAnswers.projPath, source.replace(/__(\w+)__/g, (match, offset) => userAnswers[offset]));
+
+        mkdirp.sync(dirname(target));
+
+        source = join(sourceDir, source);
+        // console.log(source, target)
+
+        writeFile(source, target, userAnswers);
+      });
+
+      const pkgJson = fs.readJsonSync(join(userAnswers.projPath, 'package.json'));
+
+      const pkgs = [];
+
+      for (let name in pkgJson.dependencies) {
+        pkgs.push({
+          name,
+          version: pkgJson.dependencies[name]
+        });
+      }
+
+      for (let name in pkgJson.devDependencies) {
+        pkgs.push({
+          name,
+          version: pkgJson.devDependencies[name]
+        });
+      }
+
+      const installOptions = {
+        root: userAnswers.projPath,
+        registry: userAnswers.registry,
+        targetDir: userAnswers.projPath,
+        storeDir: join(userAnswers.projPath, '.npminstall'),
+        cacheDir: null,
+        timeout: 5 * 60000,
+        pkgs,
+      };
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          installOptions,
+        }
+      });
+
+      yield put({
+        type: 'retryInstall',
+      });
+    },
+    * finishedInstall({ payload }, { put, select }) {
+      const { term, userAnswers } = yield select(state => state.init);
+      if (term) {
+        term.kill();
+      }
+
+      yield delay(1000);
+
+      yield put({
+        type: 'project/importProj',
+        payload: {
+          filePath: userAnswers.projPath,
+          needInstall: false,
+        }
+      });
+
+      yield delay(1000);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          term: null,
+          installOptions: {}
+        }
+      });
+    },
+    * retryInstall(o, { put, select }) {
+      const { installOptions } = yield select(state => state.init);
+      const term = yield command.installModules(installOptions);
+      console.log('installing');
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          term,
+        }
+      });
+    },
+
+   
+  },
+
+  reducers: {
+    changeStatus(state, action) {
+      return { ...state, ...action.payload };
+    },
+  },
+};
+
+/* * getAnswserArgs({ payload }, { put, select }) {
       const { extendsProj, sltItem } = yield select(state => state.init);
 
       let answers = { ...payload };
@@ -212,10 +383,12 @@ export default {
         mkdirp.sync(dirname(target));
 
         source = join(sourceDir, source);
+        console.log(source, target)
 
-        writeFile(source, target, answers);
+        // writeFile(source, target, answers);
       });
 
+      // const pkgJson = utils.loadConfig(join(answers.projPath, 'package.json'))
       const pkgJson = fs.readJsonSync(join(answers.projPath, 'package.json'));
 
       const pkgs = [];
@@ -259,49 +432,5 @@ export default {
           projPath: answers.projPath, 
         }
       });
-    },
-    * finishedInstall({ payload }, { put, select }) {
-      const { term, projPath } = yield select(state => state.init);
-      if (term) {
-        term.kill();
-      }
+    },*/
 
-      yield delay(1000);
-
-      yield put({
-        type: 'project/importProj',
-        payload: {
-          filePath: projPath
-        }
-      });
-
-      yield delay(1000);
-
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          term: null,
-          installOptions: {}
-        }
-      });
-    },
-    * retryInstall(o, { put, select }) {
-      const { installOptions } = yield select(state => state.init);
-      const term = yield command.nodeInstall(installOptions);
-      console.log('installing');
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          term,
-        }
-      });
-    },
-   
-  },
-
-  reducers: {
-    changeStatus(state, action) {
-      return { ...state, ...action.payload };
-    },
-  },
-};

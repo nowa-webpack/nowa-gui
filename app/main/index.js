@@ -1,64 +1,43 @@
-const { app } = require('electron');
+const { app, ipcMain } = require('electron');
 const log = require('electron-log');
-const command = require('./services/command');
-const application = require('./services/application');
-const win = require('./services/window');
-const menu = require('./services/menu');
-const network = require('./services/network');
-const upgrade = require('./services/upgrade');
+const services = require('./services');
 const config = require('./config');
-const fixPath = require('fix-path');
-
-fixPath();
 
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
+const { menu, windowManager, nowa, utils } = services;
+const { isMac, checkRegistry } = utils;
 log.info('start nowa gui');
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-// app.on('ready', createWindow)
-app.on('ready', () => {
-  menu.init();
-  win.create();
-  network.init();
-  // upgrade.setUpdateUrl();
+// config.clear();
+// config.setTemplateUpdate('nowa-template-salt-v_1', '0.0.1');
+
+ipcMain.on('network-change-status', (event, online) => {
+  config.online(online);
 });
 
-// Quit when all windows are closed.
+app.on('ready', () => {
+  menu.init();
+  checkRegistry().then(() => {
+    windowManager.create();
+    nowa();
+  });
+});
+
 app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  
-  if (process.platform !== 'darwin') {
+  if (!isMac) {
     app.quit();
   }
 });
 
 app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (win.getWin() === null) {
-    win.create();
+  if (windowManager.getWin() === null) {
+    windowManager.create();
   }
 
-  if (!win.isVisible()) {
-    win.show();
+  if (!windowManager.isVisible()) {
+    windowManager.show();
   }
 });
 
-
-global.services = {
-  locale: app.getLocale(),
-  command,
-  application,
-  win,
-  upgrade,
-  network,
-};
-
-global.configs = {
-  config
-};
+global.services = services;
+global.config = config;

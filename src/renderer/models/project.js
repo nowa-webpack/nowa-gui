@@ -1,12 +1,11 @@
 import { remote } from 'electron';
-// import { hashHistory } from 'react-router';
 import fs from 'fs-extra';
 import { join } from 'path';
 import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
 import { getLocalProjects, setLocalProjects } from 'gui-local';
-const { application, command } = remote.getGlobal('services');
+const { command } = remote.getGlobal('services');
 
 const isNowaProject = filePath => fs.existsSync(join(filePath, 'abc.json'));
 
@@ -60,12 +59,12 @@ export default {
     setup({ dispatch }) {
       const projects = getProjects();
 
-      dispatch({
+     /* dispatch({
         type: 'layout/changeStatus',
         payload: {
           showPage: projects.length === 0 ? 0 : 2
         }
-      });
+      });*/
 
       const current = projects.filter(item => item.current);
 
@@ -77,7 +76,7 @@ export default {
         }
       });
 
-      setInterval(() => {
+      /*setInterval(() => {
         const curProjects = getProjects();
         dispatch({
           type: 'refresh',
@@ -85,12 +84,12 @@ export default {
             projects: curProjects,
           }
         });
-      }, 5000);
+      }, 5000);*/
     },
   },
 
   effects: {
-    * importProj({ payload: { filePath } }, { put, select }) {
+    * importProj({ payload: { filePath, needInstall } }, { put, select }) {
       try {
         if (!filePath) {
           const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
@@ -250,6 +249,15 @@ export default {
 
         Message.success(i18n('msg.updateSuccess'), 1.5);
       }
+    },
+    * watchProjects(o, { put }) {
+      const curProjects = getProjects();
+      yield put({
+        type: 'refresh',
+        payload: {
+          projects: curProjects,
+        }
+      });
     },
     * refresh({ payload: { projects: storeProjects } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);

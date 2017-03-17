@@ -55,6 +55,8 @@ module.exports = {
   'template.modal.name': '模板名称',
   'template.modal.description': '模板描述',
 
+  'template.setting.modal.title': '是否覆盖这些文件？',
+
   'form.submit': '提交',
   'form.reset': '重置',
   'form.back': '返回',
@@ -62,7 +64,8 @@ module.exports = {
   'form.ok': '确认',
   'form.cancel': '取消',
   'form.delete': '删除',
-
+  'form.override': '覆盖',
+  'form.import': '导入',
 
   'setting.modal.title': '设置',
   'setting.language': 'Language',

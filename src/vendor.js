@@ -12,7 +12,7 @@ require('fs-extra');
 require('mkdirp');
 require('glob');
 require('ansi-html');
-// require('semver');
+require('semver');
 require('os-homedir');
 require('antd/lib/message');
 require('antd/lib/menu');

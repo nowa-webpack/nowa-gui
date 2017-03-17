@@ -22,6 +22,7 @@ module.exports = {
       'gui-util': path.join(__dirname, '..', 'src', 'renderer', 'util'),
       'gui-local': path.join(__dirname, '..', 'src', 'renderer', 'services', 'localStorage'),
       'gui-const': path.join(__dirname, '..', 'src', 'renderer', 'constants'),
+      'gui-request': path.join(__dirname, '..', 'src', 'renderer', 'services', 'request'),
     }
 
   },

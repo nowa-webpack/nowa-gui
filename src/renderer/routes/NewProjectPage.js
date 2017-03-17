@@ -4,9 +4,9 @@ import Layout from 'antd/lib/layout';
 import Steps from 'antd/lib/steps';
 import i18n from 'i18n';
 
-import TemplateCards from '../components/NewProject/TemplateCards';
-import TemplateForm from '../components/NewProject/TemplateForm';
-import InstallLog from '../components/NewProject/InstallLog';
+import TemplateCards from '../components/TemplateCards';
+import TemplateSettings from '../components/TemplateSettings';
+import InstallLog from '../components/InstallLog';
 
 const { Content } = Layout;
 const Step = Steps.Step;
@@ -36,14 +36,14 @@ class NewProjectPage extends Component {
   }
   render() {
     const {
-      officalTemplates, localTemplates, remoteTemplates, term, dispatch
+      officialTemplates, localTemplates, remoteTemplates, term, dispatch
     } = this.props;
     const { current } = this.state;
     let component;
 
     if (current === 0) {
       const compProps = {
-        officalTemplates,
+        officialTemplates,
         localTemplates,
         remoteTemplates,
         dispatch,
@@ -57,7 +57,7 @@ class NewProjectPage extends Component {
         next: this.next.bind(this),
         prev: this.prev.bind(this),
       };
-      component = <TemplateForm {...compProps} />;
+      component = <TemplateSettings {...compProps} />;
     }
 
     if (current === 2) {
@@ -82,7 +82,7 @@ class NewProjectPage extends Component {
 }
 
 NewProjectPage.propTypes = {
-  officalTemplates: PropTypes.array.isRequired,
+  officialTemplates: PropTypes.array.isRequired,
   localTemplates: PropTypes.array.isRequired,
   remoteTemplates: PropTypes.array.isRequired,
   term: PropTypes.object,
@@ -90,7 +90,7 @@ NewProjectPage.propTypes = {
 };
 
 export default connect(({ init }) => ({
-  officalTemplates: init.officalTemplates,
+  officialTemplates: init.officialTemplates,
   localTemplates: init.localTemplates,
   remoteTemplates: init.remoteTemplates,
   term: init.term,

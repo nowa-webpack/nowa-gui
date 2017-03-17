@@ -32,6 +32,7 @@
 	background-color: #fff;
 	height: 40px;
 	line-height: 40px;
+	overflow-y: hidden;
 
 	.bar-bd{
 		position: absolute;
@@ -118,6 +119,8 @@
 
 .update-tip{
 	padding-left: 15px;
+	max-height: 250px;
+	overflow-y: auto;	
 	li{
 		list-style: disc;
 	}
@@ -129,163 +132,5 @@
 @import './new-project.less';
 @import './project-detail.less';
 
-/*
-.form{
-
-	.form-item{
-		padding: 10px;
-		label{
-			display: block;
-			font-size: 12px;
-			margin: 0 0 4px 2px;
-		}
-
-		input{
-			padding: 5px;
-			height: 40px;
-			width: 100%;
-			background-color: #f5f5f5;
-			border:1px solid #fff;
-			border-radius: 3px;
-		}
-	}
-
-	button{
-		display: block;
-		margin: 10px auto;
-		width: 300px;
-	}
-}
-
-.form-inline{
-
-	.form-item{
-
-		margin-bottom: 10px;
-
-		label{
-			display: inline-block;
-			width: 100px;
-			margin-right: 10px;
-			font-size: 12px;
-			text-align: right;
-			
-			&.switch-label{
-				width: 200px;
-			}
-		}
-
-		input{
-			padding: 5px;
-			width: 250px;
-			height: 30px;
-			background-color: #f5f5f5;
-			border:1px solid #fff;
-			border-radius: 3px;
-		}
-	}
-}
-
-.left-side{
-	-webkit-app-region: drag;
-	position: relative;
-	background-color: #fafafa;
-	box-shadow: 0 0 10px #e6e6e6;
-}
-
-.right-side{
-	background-color: #fff;
-	max-height: 500px;
-	overflow-y: auto;
-}
-
-.setting-foot{
-	-webkit-app-region: no-drag;
-	position: absolute;
-	height: 30px;
-	width: 100%;
-	bottom: 0;
-	padding: 3px 10px;
-
-	button{
-		float: right;
-		margin-left: 5px;
-		i{
-			font-size: 10px;
-		}
-	}
-}
-
-.app-opt{
-	-webkit-app-region: drag;
-	position: fixed;
-	height: 26px;
-	width: 500px;
-	right: 0;
-
-	i{
-	  -webkit-app-region: no-drag;
-		position: absolute;
-		top: 5px;
-		width: 14px;
-		height: 14px;
-		border-radius: 50%;
-		color: #fff;
-		line-height: 13px;
-		cursor: pointer;
-		font-size: 10px;
-		font-weight: bold;
-		text-align: center;
-		&.icon-close{
-			right: 25px;
-			background-color: #ff6057;
-			border: 1px solid #ff6057;
-			&:hover{
-				background-color: #ff4640;
-			}
-		}
-		&.icon-subtract{
-			right: 5px;
-			background-color: #ffbd2e;
-			border: 1px solid #ffbd2e;
-			&:hover{
-				background-color: #f9b524;
-			}
-		}
-	}
-}
-
-.set-modal{
-	.form-item{
-		i{
-			font-size: 12px;
-		}
-	}
-	.version{
-		margin-right: 10px;
-	}
-}
-
-
-.ant-modal-content{
-	width: 400px;
-	margin: 0 auto;
-}
-
-.ant-tabs.ant-tabs-card>.ant-tabs-bar {
-
-	.ant-tabs-nav-container{
-	}
-	.ant-tabs-tab{
-		border-color: #fafafa;
-		&.ant-tabs-tab-active{
-			border-color: #d9d9d9;
-		}
-	}
-}
-
-.ant-steps .ant-steps-head-inner>.ant-steps-icon{
-	line-height: 18px;
-}*/
 
 

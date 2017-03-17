@@ -7,7 +7,8 @@ const WelcomePage = ({ version, dispatch }) => {
     dispatch({
       type: 'project/importProj',
       payload: {
-        filePath: null
+        filePath: null,
+        needInstall: true
       }
     });
   };

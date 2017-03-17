@@ -55,6 +55,8 @@ module.exports = {
   'template.modal.remote.path': 'Remote Path',
   'template.modal.name': 'Name',
   'template.modal.description': 'Description',
+
+  'template.setting.modal.title': 'Override these files?',
   
 
   'form.submit': 'Submit',
@@ -64,6 +66,8 @@ module.exports = {
   'form.ok': 'OK',
   'form.cancel': 'Cancel',
   'form.delete': 'Delete',
+  'form.override': 'Override',
+  'form.import': 'Import',
 
   'setting.modal.title': 'Setting Modal',
   'setting.language': 'Language',

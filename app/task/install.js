@@ -8,6 +8,7 @@ const options = Object.assign(msg, { console } );
 co(function* () {
   
   yield npminstall(options);
+  process.exit(0);
 })
 .catch((err) => {
   process.exit(1);

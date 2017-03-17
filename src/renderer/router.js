@@ -1,6 +1,5 @@
 import React from 'react';
-import { Router, Route } from 'dva/router';
-// import IndexPage from './routes/IndexPage';
+import { Router } from 'dva/router';
 
 export default function({ history, app }) {
 
@@ -13,7 +12,7 @@ export default function({ history, app }) {
           cb(null, module.default);
         });
       },
-    }
+    },
   ];
 
   return <Router history={history} routes={routes} />;

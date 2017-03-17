@@ -11,13 +11,15 @@
     "build": "cross-env BABEL_ENV=production ./node_modules/.bin/webpack --config ./webpack/prod.config.js ",
     "prepack": "node prePacker.js",
     "pack": "build --dir",
-    "packer:mac": "npm run prepack && build -m",
-    "packer:linux": "npm run prepack && build -l",
-    "packer:win": "cross-env ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/ node packerWin.js",
+    "packer:mac": "build -m",
+    "packer:linux": "build -l",
+    "packer:win": "build -w",
+    "packer:win1": "cross-env ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/ node packerWin.js",
     "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "build": {
+    "productName": "NowaGUI",
     "appId": "com.alibaba-inc.nowa-gui",
     "asar": false,
     "rebuild": true,
@@ -26,9 +28,15 @@
     },
     "mac": {
       "target": [
-        "dmg"
+        "nsis"
       ],
       "icon": "static/icon.icns"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "static/icon.ico"
     },
     "linux": {
       "target": [
@@ -63,7 +71,6 @@
     "ejs-loader": "^0.3.0",
     "electron": "^1.6.2",
     "electron-builder": "^12.3.1",
-    "electron-packager": "^8.5.2",
     "electron-prebuilt": "^1.4.13",
     "electron-rebuild": "^1.5.7",
     "extract-text-webpack-plugin": "^2.0.0-beta.5",

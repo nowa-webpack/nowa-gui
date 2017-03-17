@@ -17,5 +17,33 @@ module.exports = {
   },
   clear() {
     config.clear();
-  }
+  },
+
+  online() {
+    const args = [].slice.call(arguments);
+    if (args.length > 0) {
+      config.set('online', args[0]);
+    } else {
+      return config.get('online');
+    }
+  },
+
+  registry() {
+    const args = [].slice.call(arguments);
+    if (args.length > 0) {
+      config.set('registry', args[0]);
+    } else {
+      return config.get('registry');
+    }
+  },
+
+  nowaNeedInstalled() {
+    const args = [].slice.call(arguments);
+    if (args.length > 0) {
+      config.set('nowaNeedInstalled', args[0]);
+    } else {
+      return config.get('nowaNeedInstalled');
+    }
+  },
+  
 };

@@ -81,15 +81,10 @@ module.exports = webpackMerge(webpackCommon, {
       // exclude: ['index.html']
     }),
     new BabiliPlugin(),
-    // new CommonsChunkPlugin({
-    //   name: 'manifest',
-    //   // filename: 'manifest.js',
-    //   minChunks: Infinity,
-    // }),
+   
     new HtmlWebpackPlugin({
       inject: true,
       template: path.resolve(__dirname, '../static/index.dist.html'),
-      // favicon: path.resolve(__dirname, '../static/favicon.ico'),
       // excludeChunks: ['vendors'],
       minify: {
         removeComments: true,
@@ -105,28 +100,7 @@ module.exports = webpackMerge(webpackCommon, {
       }
     }),
     new ExtractTextPlugin('[name].css'),
-    // new UglifyJsPlugin({
-    //   compressor: {
-    //     screw_ie8: true,
-    //     warnings: false
-    //   },
-    //   mangle: {
-    //     screw_ie8: true
-    //   },
-    //   output: {
-    //     comments: false,
-    //     screw_ie8: true
-    //   },
-    //   // sourceMap: true
-    // }),
-    // new LoaderOptionsPlugin({
-    //   options: {
-    //     context: '/',
-    //     postcss: function () {
-    //       return [autoprefixer];
-    //     }
-    //   }
-    // })
+    
   ]
 
 });
