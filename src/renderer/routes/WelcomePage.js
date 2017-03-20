@@ -1,16 +1,61 @@
 import React, { PropTypes } from 'react';
+import { remote } from 'electron';
+import { join } from 'path'
 import Button from 'antd/lib/button';
 import i18n from 'i18n';
 
+import { readPkgJson, getPkgDependencies } from 'gui-util';
+
+const { command } = remote.getGlobal('services');
+const { registry } = remote.getGlobal('config');
+
+
 const WelcomePage = ({ version, dispatch }) => {
   const handleImport = () => {
-    dispatch({
-      type: 'project/importProj',
-      payload: {
-        filePath: null,
-        needInstall: true
-      }
-    });
+    try {
+      const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+
+      const filePath = importPath[0];
+
+      const pkgs = getPkgDependencies(readPkgJson(filePath));
+
+      const installOptions = {
+        root: filePath,
+        registry: registry(),
+        targetDir: filePath,
+        storeDir: join(filePath, '.npminstall'),
+        timeout: 5 * 60000,
+        pkgs,
+      };
+
+      dispatch({
+        type: 'project/importProj',
+        payload: { filePath, needInstall: true },
+      });
+
+      const term = command.installModules(installOptions);
+
+      term.stdout.on('data', (data) => {
+        console.log(data.toString());
+      });
+      term.stderr.on('data', (data) => {
+        console.log(data.toString());
+      });
+
+      term.on('exit', (code) => {
+        if (!code) {
+          console.log('exit drag installing');
+          dispatch({
+            type: 'project/finishedInstallDependencies',
+            payload: {
+              filePath,
+            }
+          });
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const toNewPage = () => {

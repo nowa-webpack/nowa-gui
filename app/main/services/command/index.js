@@ -2,26 +2,30 @@ const { spawn, exec, execFile, fork } = require('child_process');
 const { join, delimiter } = require('path');
 const npmRunPath = require('npm-run-path');
 const fs = require('fs-extra');
-const uuid = require('uuid');
+// const uuid = require('uuid');
 const fixPath = require('fix-path');
 
 const { constants, isWin } = require('../is');
 
-const { APP_PATH, NOWA_INSTALL_DIR } = constants; 
+const { APP_PATH, NPM_PATH, NOWA_BIN_PATH, NODE_PATH } = constants; 
 
 fixPath();
-// const { APP_PATH, NOWA_PATH, NOWA_BIN_PATH, IS_WIN, NODE_PATH, NPM_PATH } = require('../constants');
-
-// const systemSep = isWin ? ';' : ':';
 
 const npmEnv = npmRunPath.env();
-/*const pathEnv = [npmEnv.PATH, NOWA_BIN_PATH, NODE_PATH, NPM_PATH].filter(p => !!p).join(delimiter);
+const pathEnv = [process.env.Path, npmEnv.PATH, NOWA_BIN_PATH, NPM_PATH, NODE_PATH].filter(p => !!p).join(delimiter);
 const env = Object.assign(npmEnv, {
   FORCE_COLOR: 1,
-  Path: pathEnv
-});*/
+  // PATH: pathEnv, //mac
+  // Path:  pathEnv, //win
+});
 
-// fs.writeJsonSync(join(APP_PATH, 'env.text'), process.env)
+if (isWin) {
+  env.Path = pathEnv;
+} else {
+  env.PATH = pathEnv;
+}
+
+fs.writeJsonSync(join(APP_PATH, 'env.text'), { prv: process.env, env, npmEnv})
 module.exports = {
 
   installModules(options) {
@@ -35,66 +39,38 @@ module.exports = {
     return term;
   },
 
- 
-
-  /*build(projectPath) {
-    // return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
-    return spawn(NODE_PATH, [NPM_PATH, 'run', 'build', '--scripts-prepend-node-path=auto'], {
-      cwd: projectPath,
-      env,
-    });
-  },
-
-  buildNowa(projectPath) {
-    // return execFile(NPM_PATH, ['run', 'build'], {
-    // return spawn(NODE_PATH, [NOWA_PATH, 'build'], {
-    return spawn(NODE_PATH, [NPM_PATH, 'run', 'build', '--scripts-prepend-node-path=auto'], {
-      cwd: projectPath,
-      env,
-    });
-  },
-
-  link(projectPath){
-    const bins = fs.readdirSync('/usr/local/bin');
-    bins.forEach(item => {
-      spawn(NODE_PATH, [NPM_PATH, 'link', item], {
-        cwd: projectPath,
-        env,
-      });
-    });
-  },
-
-  start(projectPath) {
-
-    const term = spawn(NODE_PATH, [NOWA_PATH, 'server'], {
-      cwd: projectPath,
-      env,
-      detached: true
-    });
-
-    return term;
-  },*/
-
-  
-
-/*  openEditor(projectPath, editor, basePath) {
+  openEditor(projectPath, editor, basePath) {
     let editorPath = '';
 
     if (editor === 'Sublime') {
-      editorPath = join(basePath, IS_WIN ? 'subl.exe' : '/Contents/SharedSupport/bin/subl');
+      editorPath = join(basePath, isWin ? 'subl.exe' : '/Contents/SharedSupport/bin/subl');
     }
 
     if (editor === 'VScode') {
-      editorPath = join(basePath, IS_WIN ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code');
+      editorPath = join(basePath, isWin ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code');
     }
 
     return spawn(editorPath,
       ['./'], {
         cwd: projectPath,
       });
-  },*/
+  },
 
-  
+  build(projectPath) {
+    return fork(NPM_PATH, ['run', 'build', '--scripts-prepend-node-path=auto'], {
+      silent: true,
+      cwd: projectPath,
+      env,
+    });
+  },
+
+  start(projectPath) {
+    return fork(NPM_PATH, ['run', 'start', '--scripts-prepend-node-path=auto'], {
+      silent: true,
+      cwd: projectPath,
+      env,
+    });
+  },
  
 };
 

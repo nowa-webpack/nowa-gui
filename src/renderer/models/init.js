@@ -7,7 +7,7 @@ import glob from 'glob';
 import Message from 'antd/lib/message';
 
 import i18n from 'i18n';
-import { delay } from 'gui-util';
+import { delay, getPkgDependencies, readPkgJson } from 'gui-util';
 
 const { utils, command, is, templatesManager } = remote.getGlobal('services');
 const { TEMPLATES_DIR } = is.constants;
@@ -268,23 +268,24 @@ export default {
         writeFile(source, target, userAnswers);
       });
 
-      const pkgJson = fs.readJsonSync(join(userAnswers.projPath, 'package.json'));
+      // const pkgJson = fs.readJsonSync(join(userAnswers.projPath, 'package.json'));
 
-      const pkgs = [];
+      const pkgs = getPkgDependencies(readPkgJson(userAnswers.projPath));
+      // const pkgs = [];
 
-      for (let name in pkgJson.dependencies) {
-        pkgs.push({
-          name,
-          version: pkgJson.dependencies[name]
-        });
-      }
+      // for (let name in pkgJson.dependencies) {
+      //   pkgs.push({
+      //     name,
+      //     version: pkgJson.dependencies[name]
+      //   });
+      // }
 
-      for (let name in pkgJson.devDependencies) {
-        pkgs.push({
-          name,
-          version: pkgJson.devDependencies[name]
-        });
-      }
+      // for (let name in pkgJson.devDependencies) {
+      //   pkgs.push({
+      //     name,
+      //     version: pkgJson.devDependencies[name]
+      //   });
+      // }
 
       const installOptions = {
         root: userAnswers.projPath,

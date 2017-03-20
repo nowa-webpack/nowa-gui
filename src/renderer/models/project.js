@@ -5,12 +5,10 @@ import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
 import { getLocalProjects, setLocalProjects } from 'gui-local';
+import { readABCJson, readPkgJson, isNowaProject, getPkgDependencies } from 'gui-util';
 const { command } = remote.getGlobal('services');
+const { registry } = remote.getGlobal('config');
 
-const isNowaProject = filePath => fs.existsSync(join(filePath, 'abc.json'));
-
-const readABCJson = filePath => fs.readJsonSync(join(filePath, 'abc.json'));
-const readPkgJson = filePath => fs.readJsonSync(join(filePath, 'package.json'));
 
 const getProjectInfoByPath = (filePath) => {
   let port = '';
@@ -53,18 +51,12 @@ export default {
   state: {
     projects: [],
     current: {},
+    startWacthProject: false,
   },
 
   subscriptions: {
     setup({ dispatch }) {
       const projects = getProjects();
-
-     /* dispatch({
-        type: 'layout/changeStatus',
-        payload: {
-          showPage: projects.length === 0 ? 0 : 2
-        }
-      });*/
 
       const current = projects.filter(item => item.current);
 
@@ -75,16 +67,6 @@ export default {
           current: current.length > 0 ? current[0] : (projects[0] || {})
         }
       });
-
-      /*setInterval(() => {
-        const curProjects = getProjects();
-        dispatch({
-          type: 'refresh',
-          payload: {
-            projects: curProjects,
-          }
-        });
-      }, 5000);*/
     },
   },
 
@@ -113,20 +95,13 @@ export default {
         if (filter.length) {
           Message.info(i18n('msg.existed'));
         } else {
-          storeProjects.push({
-            name: projectName,
-            path: filePath,
-            port: projectInfo.port
-          });
-
-          setLocalProjects(storeProjects);
-
           const current = {
             ...projectInfo,
             start: false,
             taskErr: false,
             name: projectName,
             path: filePath,
+            loading: needInstall
           };
 
           const { projects } = yield select(state => state.project);
@@ -137,7 +112,8 @@ export default {
             type: 'changeStatus',
             payload: {
               projects,
-              current
+              current,
+              startWacthProject: !needInstall
             }
           });
 
@@ -148,12 +124,18 @@ export default {
             }
           });
 
-          Message.success(i18n('msg.importSuccess'));
 
-          // command.link(filePath);
+          if (!needInstall) {
+            Message.success(i18n('msg.importSuccess'));
+            storeProjects.push({
+              name: projectName,
+              path: filePath,
+              port: projectInfo.port
+            });
+
+            setLocalProjects(storeProjects);
+          }
         }
-
-       
       } catch (e) {
         console.log(e);
       }
@@ -250,16 +232,8 @@ export default {
         Message.success(i18n('msg.updateSuccess'), 1.5);
       }
     },
-    * watchProjects(o, { put }) {
-      const curProjects = getProjects();
-      yield put({
-        type: 'refresh',
-        payload: {
-          projects: curProjects,
-        }
-      });
-    },
-    * refresh({ payload: { projects: storeProjects } }, { put, select }) {
+    * refresh(o, { put, select }) {
+      const storeProjects = getProjects();
       const { projects, current } = yield select(state => state.project);
       const { showPage } = yield select(state => state.layout);
       if (storeProjects.length) {
@@ -323,7 +297,43 @@ export default {
         }
         return item;
       }));
-    }
+    },
+    * finishedInstallDependencies({ payload: { filePath } }, { put, select }) {
+      const { current, projects } = yield select(state => state.project);
+      if (current.path === filePath) {
+        current.loading = false;
+      }
+
+      projects.map((item) => {
+        if (item.path === filePath) {
+          item.loading = false;
+        }
+        return item;
+      });
+
+      const storeProjects = getLocalProjects();
+
+      const filter = projects.filter(item => item.path === filePath);
+
+      storeProjects.push({
+        name: filter[0].name,
+        path: filter[0].path,
+        port: filter[0].port
+      });
+
+      setLocalProjects(storeProjects);
+
+      Message.success(i18n('msg.importSuccess'));
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          current: { ...current },
+          projects: [...projects],
+          startWacthProject: true
+        }
+      });
+    },
   },
 
   reducers: {

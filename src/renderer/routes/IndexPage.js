@@ -26,7 +26,7 @@ const IndexPage = ({ showPage, online, version, dispatch }) => {
     default:
       mainbody = <MainPage showPage={showPage} dispatch={dispatch} />;
   }
-  return(
+  return (
     <LayoutWrap>{ mainbody }</LayoutWrap>
   );
 

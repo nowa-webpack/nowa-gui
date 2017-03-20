@@ -77,13 +77,15 @@ export default {
     * build({ payload: { project } }, { put, select }) {
       const { build } = yield select(state => state.task);
 
-      let term;
+      // let term;
 
-      if (project.isNowa) {
+      const term = command.build(project.path);
+
+      /*if (project.isNowa) {
         term = command.buildNowa(project.path);
       } else {
         term = command.build(project.path);
-      }
+      }*/
 
       // const term = command.build(project.path);
 

@@ -2,22 +2,24 @@ import React, { Component, PropTypes } from 'react';
 import { remote, shell, ipcRenderer } from 'electron';
 import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
-import Layout from 'antd/lib/layout';
-import { info, confirm } from 'antd/lib/modal';
 import semver from 'semver';
 import classNames from 'classnames';
+import { join } from 'path';
+import Layout from 'antd/lib/layout';
+import { info, confirm } from 'antd/lib/modal';
 // import { hashHistory } from 'react-router';
 
 import i18n from 'i18n';
-import { hidePathString } from 'gui-util';
+import { hidePathString, readPkgJson, getPkgDependencies } from 'gui-util';
 import { IS_WIN, UPGRADE_URL } from 'gui-const';
 import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from 'gui-local';
 import request from 'gui-request';
 
 import DragPage from './DragPage';
 
+
 const { Header } = Layout;
-const { windowManager } = remote.getGlobal('services');
+const { windowManager, command } = remote.getGlobal('services');
 const { registry } = remote.getGlobal('config');
 
 
@@ -27,14 +29,13 @@ class LayoutWrap extends Component {
     this.state = {
       online: props.online,
     };
+    this.taskTimer;
     this.onDrop = this.onDrop.bind(this);
     this.getUpdateVersion = this.getUpdateVersion.bind(this);
   }
 
   componentDidMount() {
-
-    const { dispatch, online } = this.props;
-    
+    const { dispatch, online, startWacthProject } = this.props;
     if (online) {
       this.getUpdateVersion();
     }
@@ -59,9 +60,17 @@ class LayoutWrap extends Component {
 
     window.addEventListener('online', alertOnlineStatus);
     window.addEventListener('offline', alertOnlineStatus);
+
+    if (startWacthProject) {
+      this.taskTimer = setInterval(() => {
+        dispatch({
+          type: 'project/refresh',
+        });
+      }, 5000);
+    }
   }
 
-  componentWillReceiveProps({ newVersion, online }) {
+  componentWillReceiveProps({ newVersion, online, startWacthProject, dispatch }) {
     if (newVersion !== this.props.newVersion) {
       confirm({
         title: i18n('msg.updateConfirm'),
@@ -84,6 +93,18 @@ class LayoutWrap extends Component {
         this.getUpdateVersion();
       }
       this.setState({ online });
+    }
+
+    if (startWacthProject !== this.props.startWacthProject) {
+      if (!startWacthProject) {
+        clearInterval(this.taskTimer);
+      } else {
+        this.taskTimer = setInterval(() => {
+          dispatch({
+            type: 'project/refresh',
+          });
+        }, 5000);
+      }
     }
   }
 
@@ -124,11 +145,49 @@ class LayoutWrap extends Component {
 
   onDrop(acceptedFiles) {
     const { dispatch } = this.props;
+    const filePath = acceptedFiles[0].path;
 
+    const pkgs = getPkgDependencies(readPkgJson(filePath));
+
+    const installOptions = {
+      root: filePath,
+      registry: registry(),
+      targetDir: filePath,
+      storeDir: join(filePath, '.npminstall'),
+      timeout: 5 * 60000,
+      pkgs,
+    };
     dispatch({
       type: 'project/importProj',
-      payload: { filePath: acceptedFiles[0].path, needInstall: true }
+      payload: {
+        filePath,
+        needInstall: true
+      }
     });
+    console.time('ad');
+    const term = command.installModules(installOptions);
+
+    term.stdout.on('data', (data) => {
+      console.log(data.toString());
+    });
+    term.stderr.on('data', (data) => {
+      console.log(data.toString());
+    });
+
+    term.on('exit', (code) => {
+      if (!code) {
+        console.log('exit drag installing');
+        dispatch({
+          type: 'project/finishedInstallDependencies',
+          payload: {
+            filePath,
+          }
+        });
+        console.timeEnd('ad');
+      }
+    });
+
+   
     this.onDragLeave();
   }
 
@@ -207,6 +266,7 @@ LayoutWrap.propTypes = {
     path: PropTypes.string
   }).isRequired,
   online: PropTypes.bool.isRequired,
+  startWacthProject: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
@@ -216,4 +276,5 @@ export default connect(({ layout, project }) => ({
   version: layout.version,
   current: project.current,
   online: layout.online,
+  startWacthProject: project.startWacthProject,
 }))(LayoutWrap);

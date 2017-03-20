@@ -22,23 +22,60 @@ class Log extends Component {
   }
 
   componentDidMount() {
-    const { term, dispatch } = this.props;
+    const { term } = this.props;
 
+    this.termBind(term);
+  }
+
+  componentWillReceiveProps(next) {
+    const { term } = next;
+    if (!this.props.term || term.pid !== this.props.term.pid) {
+      this.termBind(term);
+    }
+  }
+
+  getProcess(str) {
+    const position = [str.indexOf('['), str.indexOf(']')];
+    // console.log(position);
+    if (position.filter(p => p !== -1).length === 2) {
+      const num = str.slice(position[0] + 1, position[1]).split('/');
+
+      let newProgress = this.state.progress;
+
+      if (num.length === 2 && !this.state.err) {
+        newProgress = (num[0] / num[1] * 100).toFixed(0);
+      }
+      return newProgress;
+    }
+    return 99;
+  }
+
+  scrollToBottom() {
+    const prt = this.refs.wrap;
+    const ele = this.refs.term;
+    if (ele.offsetHeight > prt.clientHeight) {
+      prt.scrollTop = ele.clientHeight - prt.clientHeight;
+    }
+  }
+
+  termBind(term) {
+    const { dispatch } = this.props;
     term.stdout.on('data', (data) => {
       const str = data.toString();
 
       this.setState({
         logs: newLog(this.state.logs, str),
         progress: this.getProcess(str),
-      });
+      }, () => this.scrollToBottom());
+
     });
 
     term.stderr.on('data', (data) => {
       this.setState({
         logs: newLog(this.state.logs, data.toString()),
-      });
+      }, () => this.scrollToBottom());
     });
-
+    
     term.on('exit', (code) => {
       if (code) {
         Message.error(i18n('msg.installFail'));
@@ -50,54 +87,6 @@ class Log extends Component {
         });
       }
     });
-  }
-
-  componentWillReceiveProps(next) {
-    const { term, dispatch } = next;
-    if (!this.props.term || term.pid !== this.props.term.pid) {
-      
-      term.stdout.on('data', (data) => {
-        const str = data.toString();
-
-        this.setState({
-          logs: newLog(this.state.logs, str),
-          progress: this.getProcess(str),
-        });
-
-      });
-
-      term.stderr.on('data', (data) => {
-        this.setState({
-          logs: newLog(this.state.logs, data.toString()),
-        });
-      });
-      
-      term.on('exit', (code) => {
-        if (code) {
-          Message.error(i18n('msg.installFail'));
-          this.setState({ err: true });
-        } else {
-          // Message.success(i18n('msg.installSuccess'));
-          dispatch({
-            type: 'init/finishedInstall',
-          });
-        }
-      });
-    }
-  }
-
-  getProcess(str) {
-    const position = [str.indexOf('['), str.indexOf(']')];
-
-    const num = str.slice(position[0] + 1, position[1]).split('/');
-
-    let newProgress = this.state.progress;
-
-    if (num.length === 2 && !this.state.err) {
-      newProgress = (num[0] / num[1] * 100).toFixed(0);
-    }
-
-    return newProgress;
   }
 
   clearTerm() {
@@ -121,22 +110,23 @@ class Log extends Component {
     const { prev } = this.props;
 
     const detailHtml = err ?
-      <div className="detail">{i18n('project.new.log.error')}<br />
+      (<div className="detail">{i18n('project.new.log.error')}<br />
         <Button type="primary" onClick={() => this.retryInstall()}>{i18n('project.new.log.retry')}</Button>
         <Button type="default" onClick={() => prev()}>{i18n('form.back')}</Button>
-      </div> : <div className="detail">{i18n('project.new.log.wait')}</div>;
+      </div>) : (<div className="detail">{i18n('project.new.log.wait')}</div>);
     return (
       <div className="progress-wrap" >
-        <Progress type="circle" 
+        <Progress type="circle"
           percent={+progress} width={100}
           status={err ? 'exception' : +progress === 100 ? 'success' : 'active'}
         />
         { detailHtml }
         <div className="terminal-wrap" >
-          <div className="term-container"
-            dangerouslySetInnerHTML={{ __html: logs }}
+          <div className="term-container" ref="wrap"
             style={{ height: expand ? 170 : 90 }}
-          />
+          >
+            <div dangerouslySetInnerHTML={{ __html: logs }} ref="term" />
+          </div>
           <Icon type="arrows-alt" className="clear-btn" onClick={() => this.setState({ expand: !expand })} />
         </div>
       </div>

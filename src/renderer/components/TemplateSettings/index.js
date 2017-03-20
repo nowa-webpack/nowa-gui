@@ -13,6 +13,8 @@ import Checkbox from 'antd/lib/checkbox';
 import i18n from 'i18n';
 import { hidePathString } from 'gui-util';
 import { VERSION_MATCH, NAME_MATCH } from 'gui-const';
+import { getLocalProjects } from 'gui-local';
+
 import OverrideModal from './OverrideModal';
 
 const registryList = [{
@@ -98,40 +100,37 @@ class Form extends Component {
 
     const args = { ...others, ...extendsArgs };
 
-    console.log(args);
+    console.log('args', args);
 
     dispatch({
       type: 'init/setUserAnswers',
       payload: args
     });
 
+    const storeProjects = getLocalProjects();
+
+    if (storeProjects.filter(item => item.path === args.projPath).length > 0) {
+      Message.error(i18n('msg.existed'));
+      return false;
+    }
+
     if (fs.existsSync(join(basePath, others.name))) {
-      // Message.error(i18n('msg.existed'));
-      // return false;
       dispatch({
         type: 'init/checkOverrideFiles',
       });
     } else {
       this.overwrite();
     }
-    // if (!(VERSION_MATCH.test(others.version))) {
-    //   Message.error(i18n('msg.invalidVersion'));
-    //   return false;
-    // }
-
-    
-    // next();
-
-    // dispatch({
-    //   type: 'init/getAnswserArgs',
-    //   payload: args
-    // });
   }
 
   overwrite() {
     const { dispatch, next } = this.props;
     dispatch({
       type: 'init/copyTemplateToTarget',
+    });
+    dispatch({
+      type: 'init/changeStatus',
+      payload: { showFormModal: false }
     });
     next();
   }

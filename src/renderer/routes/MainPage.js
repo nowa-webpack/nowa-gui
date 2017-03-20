@@ -7,7 +7,7 @@ import i18n from 'i18n';
 
 
 import ProjectList from '../components/ProjectList/List';
-import SettingModal from '../components/SettingModal/Modal';
+import SettingModal from '../components/Layout/SettingModal';
 import ProjectDetailPage from './ProjectDetailPage';
 import NewProjectPage from './NewProjectPage';
 

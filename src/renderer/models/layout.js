@@ -25,7 +25,6 @@ export default {
       VScode: getLocalEditorPath(VSCODE)
     },
     online: navigator.onLine,
-    // online: false
   },
 
   subscriptions: {

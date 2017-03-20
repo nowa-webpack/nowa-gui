@@ -18,9 +18,13 @@ const NOWA_INSTALL_DIR = join(DOT_NOWA_PATH, 'installation');
 const NOWA_INSTALL_JSON_FILE = join(NOWA_INSTALL_DIR, 'nowa-version.json');
 // const NOWA_PATH = join(NOWA_INSTALL_DIR, 'node_modules', 'nowa');
 const NOWA_BIN_PATH = join(NOWA_INSTALL_DIR, 'node_modules', '.bin');
+const NOWA_PATH = join(NOWA_INSTALL_DIR, 'node_modules');
 
 // const YARN_PATH = join(APP_PATH, 'node_modules', 'yarn', 'bin', 'yarn.js')
-const NPM_PATH = join(NOWA_INSTALL_DIR, 'node_modules', 'npm');
+// const NPM_PATH = join(APP_PATH, 'node_modules', 'npm');
+const NPM_PATH = join(APP_PATH, 'node_modules', 'npm', 'bin', 'npm-cli.js');
+
+const NODE_PATH = join(APP_PATH, 'nodes');
 
 module.exports = {
   isMac,
@@ -31,10 +35,12 @@ module.exports = {
 
   constants: {
     APP_PATH,
+    NOWA_PATH,
     NOWA_BIN_PATH,
     NPM_PATH,
     TEMPLATES_DIR,
     NOWA_INSTALL_DIR,
     NOWA_INSTALL_JSON_FILE,
+    NODE_PATH
   },
 };

@@ -11,9 +11,9 @@
     "build": "cross-env BABEL_ENV=production ./node_modules/.bin/webpack --config ./webpack/prod.config.js ",
     "prepack": "node prePacker.js",
     "pack": "build --dir",
-    "packer:mac": "build -m",
-    "packer:linux": "build -l",
-    "packer:win": "build -w",
+    "packer:mac": "npm run prepack && build -m",
+    "packer:linux": "npm run prepack && build -l",
+    "packer:win": "npm run prepack && build -w",
     "packer:win1": "cross-env ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/ node packerWin.js",
     "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -24,19 +24,19 @@
     "asar": false,
     "rebuild": true,
     "dmg": {
-      "icon": "static/icon.icns"
+      "icon": "static/icon"
     },
-    "mac": {
+    "win": {
       "target": [
         "nsis"
       ],
-      "icon": "static/icon.icns"
+      "icon": "static/icon"
     },
     "mac": {
       "target": [
         "dmg"
       ],
-      "icon": "static/icon.ico"
+      "icon": "static/icon"
     },
     "linux": {
       "target": [

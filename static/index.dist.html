@@ -17,19 +17,12 @@
       position: fixed;
       top: 220px;
       left: 50%;
-      -webkit-animation:change 1s linear infinite;
     }
     #loading i{
       font-size: 40px;
       color: #0c60aa;
     }
-    @-webkit-keyframes change{
-      0%{-webkit-transform:rotate(0deg);}
-      50%{-webkit-transform:rotate(180deg);}
-      100%{-webkit-transform:rotate(360deg);}
-    }
     #root{
-     
       height: 100%;
     }
   </style>
@@ -37,16 +30,12 @@
 </head>
 <body><script type="text/javascript">
     window.g_tb_aplus_loaded = true;
-    setTimeout(() => {
-      document.body.style.opacity = 1;
-    }, 500);
-    setTimeout(() => {
-      const loading = document.getElementById('loading');
-      document.body.removeChild(loading);
-    }, 1000);
+    const onLine = navigator.onLine;
+    const electron = require('electron');
+    electron.ipcRenderer.send('network-change-status', onLine);
   </script>
 <div id="loading"><i class="anticon anticon-spin anticon-loading"></i></div>
-<div id="root">1111</div>
+<div id="root"></div>
 <script defer src="http://g.alicdn.com/platform/common/s/1.1/monitor/index.js"></script>
 </body>
 </html>
