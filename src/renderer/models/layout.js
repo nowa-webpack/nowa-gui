@@ -16,7 +16,7 @@ export default {
   state: {
     showPage: -1,  // 0 welcome ; 1 new page; 2 project; -1: preinit
     showSetModal: false,
-    activeTab: '1',
+    // activeTab: '1',
     version: curVersion,
     newVersion: curVersion,
     defaultEditor: getLocalEditor() || 'VScode',

@@ -232,7 +232,11 @@ class LayoutWrap extends Component {
 
             { showPage > 0 && <div className="bar-bd" /> }
 
-            
+            <div className={classNames({
+                wifi: true,
+                online: online
+              })}><i className="iconfont icon-wifi" />
+            </div>
 
             <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
 
@@ -252,12 +256,6 @@ class LayoutWrap extends Component {
     );
   }
 }
-
-// <div className={classNames({
-//       wifi: true,
-//       online: online
-//     })}><i className="iconfont icon-wifi" />
-//   </div>
 
 LayoutWrap.propTypes = {
   version: PropTypes.string.isRequired,

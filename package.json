@@ -23,9 +23,6 @@
     "appId": "com.alibaba-inc.nowa-gui",
     "asar": false,
     "rebuild": true,
-    "dmg": {
-      "icon": "static/icon"
-    },
     "win": {
       "target": [
         "nsis"

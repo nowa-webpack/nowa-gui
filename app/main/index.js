@@ -2,13 +2,15 @@ const { app, ipcMain } = require('electron');
 const log = require('electron-log');
 const services = require('./services');
 const config = require('./config');
+const os = require('os');
 
 
 const { menu, windowManager, nowa, utils } = services;
 const { isMac, checkRegistry } = utils;
 log.info('start nowa gui');
 
-// config.clear();
+console.log(os.tmpdir())
+config.clear();
 // config.setTemplateUpdate('nowa-template-salt-v_1', '0.0.1');
 
 ipcMain.on('network-change-status', (event, online) => {
@@ -16,6 +18,10 @@ ipcMain.on('network-change-status', (event, online) => {
 });
 
 app.on('ready', () => {
+  global.start = {};
+  global.build = {};
+  global.startLog = {};
+  
   menu.init();
   checkRegistry().then(() => {
     windowManager.create();

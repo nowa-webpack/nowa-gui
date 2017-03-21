@@ -29,6 +29,7 @@ module.exports = {
 
   'project.tab.setting': '项目设置',
   'project.tab.console': '控制台',
+  'project.tab.command': '自定义命令',
   'project.tab.listen_log': '监听日志',
   'project.tab.compile_log': '编译输出',
 

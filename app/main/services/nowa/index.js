@@ -14,8 +14,8 @@ const config = require('../../config');
 const { NOWA_INSTALL_DIR, NOWA_INSTALL_JSON_FILE } = constants;
 
 const nowaPkg = ['nowa', 'nowa-server', 'nowa-build'];
-// const otherPkg = ['npm'];
-const otherPkg = [];
+const otherPkg = ['npm'];
+// const otherPkg = [];
 
 
 const checkForEmpty = () => {

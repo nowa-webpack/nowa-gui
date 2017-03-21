@@ -1,13 +1,13 @@
 import { remote } from 'electron';
 import fs from 'fs-extra';
 import { join } from 'path';
+
 import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
 import { getLocalProjects, setLocalProjects } from 'gui-local';
-import { readABCJson, readPkgJson, isNowaProject, getPkgDependencies } from 'gui-util';
-const { command } = remote.getGlobal('services');
-const { registry } = remote.getGlobal('config');
+import { readABCJson, readPkgJson, isNowaProject } from 'gui-util';
+const taskStart = remote.getGlobal('start') || {};
 
 
 const getProjectInfoByPath = (filePath) => {
@@ -58,6 +58,18 @@ export default {
     setup({ dispatch }) {
       const projects = getProjects();
 
+      if (Object.keys(taskStart).length > 0) {
+        projects.map((item) => {
+          const task = taskStart[item.path];
+          if (task && task.term) {
+            item.start = true;
+            // item.port = getPortByUID(task.uid);
+          }
+
+          return item;
+        });
+      }
+
       const current = projects.filter(item => item.current);
 
       dispatch({
@@ -65,6 +77,13 @@ export default {
         payload: {
           projects,
           current: current.length > 0 ? current[0] : (projects[0] || {})
+        }
+      });
+
+      dispatch({
+        type: 'task/initCommands',
+        payload: {
+          projects,
         }
       });
     },
@@ -124,6 +143,13 @@ export default {
             }
           });
 
+          yield put({
+            type: 'task/initAddCommands',
+            payload: {
+              project: current,
+            }
+          });
+
 
           if (!needInstall) {
             Message.success(i18n('msg.importSuccess'));
@@ -143,6 +169,13 @@ export default {
     * remove({ payload: { project } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
       const filter = projects.filter(item => item.path !== project.path);
+
+      yield put({
+        type: 'task/initRemoveCommand',
+        payload: {
+          project
+        }
+      });
 
       if (project.start) {
         // const { start, build } = yield select(state => state.task);
@@ -233,7 +266,8 @@ export default {
       }
     },
     * refresh(o, { put, select }) {
-      const storeProjects = getProjects();
+      // const storeProjects = getProjects();
+      const storeProjects = getLocalProjects();
       const { projects, current } = yield select(state => state.project);
       const { showPage } = yield select(state => state.layout);
       if (storeProjects.length) {

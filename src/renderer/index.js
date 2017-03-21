@@ -34,14 +34,15 @@ remote.require('getmac').getMac((err, macAddress) => {
 
 
 ipcRenderer.on('main-err', (event, msg) => {
-  Message.error(msg, 3);
+  Message.error(msg, 6);
 });
 
 
 // 1. Initialize
 const app = dva({
   onError(e) {
-    Message.error(e.stack, 3);
+    console.error(e)
+    Message.error(e.stack, 6);
   },
 });
 

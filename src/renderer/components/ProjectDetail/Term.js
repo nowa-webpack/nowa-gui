@@ -1,175 +1,62 @@
 import React, { Component, PropTypes } from 'react';
+import { ipcRenderer, remote } from 'electron';
 import ansiHTML from 'ansi-html';
+import classNames from 'classnames';
 import Button from 'antd/lib/button';
+import Select from 'antd/lib/select';
 // import { findDOMNode } from 'react-dom';
+import i18n from 'i18n';
 
 
 class Terminal extends Component {
   constructor(props) {
     super(props);
 
-    const { terminal, name } = props;
-
-    this.mainLogs = {};
-
-    if (terminal.log) {
-      this.mainLogs[name] = terminal.log;
-    }
-
     this.state = {
-      showClear: false,
-      logs: this.mainLogs[name] || ''
-    };
-  }
-
-  componentDidMount() {
-    const { terminal, name, dispatch, type } = this.props;
-    this.unMount = false;
-    if (terminal.term) {
-      terminal.term.stdout.on('data', (data) => {
-        this.writeData(data, name);
-      });
-
-      terminal.term.stderr.on('data', (data) => {
-        this.writeData(data, name);
-        console.log('err', type);
-        
-        dispatch({
-          type: 'task/taskErr',
-          payload: {
-            type,
-            filePath: name
-          }
-        });
-      });
-
-      terminal.term.on('exit', () => {
-        dispatch({
-          type: 'task/exit',
-          payload: {
-            name,
-            type
-          }
-        });
-      });
-    }
-  }
-
-  componentWillReceiveProps({ terminal, name, dispatch, type }) {
-    const { terminal: oldTermimal, name: oldName } = this.props;
-    if (!oldTermimal.term && terminal.term) {
-      if (oldName === name) {
-        terminal.term.stdout.on('data', (data) => {
-          this.writeData(data, name);
-        });
-
-        terminal.term.stderr.on('data', (data) => {
-          this.writeData(data, name);
-          dispatch({
-            type: 'task/taskErr',
-            payload: {
-              type,
-              filePath: name
-            }
-          });
-        });
-
-        terminal.term.on('exit', () => {
-          dispatch({
-            type: 'task/exit',
-            payload: {
-              name,
-              type
-            }
-          });
-        });
-      }
-    }
-
-    if (oldName !== name) {
-      let newLogs = this.mainLogs[name];
-
-      if (!newLogs) {
-        newLogs = terminal.log;
-      }
-
-      this.setState({
-        logs: newLogs,
-        showClear: !!newLogs
-      });
-      
-    }
-  }
-
-  componentWillUnmount() {
-    const { dispatch, type } = this.props;
-    this.unMount = true;
-    dispatch({
-      type: 'task/addLog',
-      payload: {
-        logs: this.mainLogs,
-        type,
-      }
-    });
-  }
-
-  writeData(data, wname) {
-    const { name, dispatch, type } = this.props;
-    const str = ansiHTML(data.toString().replace(/\n/g, '<br>'));
-    if (!this.unMount) {
-      if (name === wname) {
-        
-        const { logs } = this.state;
-        const newLogs = (logs || '') + str;
-        this.mainLogs[wname] = newLogs;
-        this.setState({
-          logs: newLogs,
-          showClear: true
-        }, () => {
-          const prt = this.refs.wrap;
-          const ele = this.refs.term;
-          if (ele.offsetHeight > 370) {
-            prt.scrollTop = ele.clientHeight - 370;
-          }
-        });
-      } else {
-        const newLogs = this.mainLogs[wname] + str;
-        this.mainLogs[wname] = newLogs;
-      }
-    } else {
-      dispatch({
-        type: 'task/addLog',
-        payload: {
-          logs: this.mainLogs,
-          type,
-        }
-      });
-    }
-  }
-
-  clearTerm() {
-    const { name, type, dispatch } = this.props;
-    this.setState({
       logs: '',
-      showClear: false
-    });
+      showClear: true
+    };    
+  }
 
-    this.mainLogs[name] = '';
+  handleChangeCustom() {
 
-    dispatch({
-      type: 'task/clearLog',
-      payload: {
-        name,
-        type
-      }
-    });
   }
 
   render() {
     const { showClear, logs } = this.state;
+    const { hasSide, logType, otherCommands } = this.props;
     return (
-      <div className="terminal-wrap" ref="wrap">
-        <div className="term-container"
+      <div
+        className={classNames({
+          'terminal-wrap': true,
+          'has-side': hasSide
+        })}
+        ref="wrap"
+      >
+        <div className="terminal-tabs">
+          <div
+            className={classNames({
+              'tabs-item': true,
+              active: logType === 'start'
+            })}
+          >{i18n('project.tab.listen_log')}</div>
+          <div
+            className={classNames({
+              'tabs-item': true,
+              active: logType === 'build'
+            })}
+          >{i18n('project.tab.compile_log')}</div>
+          { hasSide &&
+            <Select placeholder={i18n('project.tab.custom_log')}
+              style={{ width: 120 }}
+              onChange={() => this.handleChangeCustom}
+            >
+            { otherCommands.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>) }
+            </Select>
+          }
+        </div>
+        <div
+          className="term-container"
           ref="term"
           dangerouslySetInnerHTML={{ __html: logs }} 
         />
@@ -188,10 +75,11 @@ class Terminal extends Component {
 }
 
 Terminal.propTypes = {
-  terminal: PropTypes.object,
-  name: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  hasSide: PropTypes.bool.isRequired,
+  otherCommands: PropTypes.array,
+  logType: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
+
 };
 
 export default Terminal;

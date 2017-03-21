@@ -2,24 +2,34 @@ import React, { PropTypes } from 'react';
 import Tabs from 'antd/lib/tabs';
 import i18n from 'i18n';
 
-import Form from './Form';
+import SettingForm from './SettingForm';
+import CommandForm from './CommandForm';
+import CommandTermList from './CommandTermList';
 import Term from './Term';
 
 const TabPane = Tabs.TabPane;
 
 
-const Tab = ({ current, termBuild, termStart, activeTab, dispatch }) => {
-  const buildProps = {
+const Tab = ({ current, logType, dispatch, commands }) => {
+  /*const buildProps = {
     name: current.path,
     type: 'build',
-    terminal: termBuild || {},
     dispatch
   };
   const startProps = {
     name: current.path,
     type: 'start',
-    terminal: termStart || {},
     dispatch
+  };*/
+
+  const cmdList = Object.keys(commands).filter(cmd => cmd !== 'start' && cmd !== 'build');
+  const hasCmdSide = cmdList.length > 0;
+  const termProps = {
+    dispatch,
+    name: current.path,
+    hasSide: hasCmdSide,
+    logType,
+    otherCommands: cmdList
   };
 
   return (
@@ -30,34 +40,21 @@ const Tab = ({ current, termBuild, termStart, activeTab, dispatch }) => {
       onChange={() => {}}
     >
       <TabPane tab={i18n('project.tab.console')} key="1">
-        <Tabs
-          className="terminal-tabs"
-          defaultActiveKey="1"
-          activeKey={activeTab}
-          animated={true}
-          onChange={index => dispatch({
-            type: 'layout/changeLogTab',
-            payload: {
-              activeTab: index + ''
-            }
-          })}
-        >
-          <TabPane tab={i18n('project.tab.listen_log')} key="1"><Term {...startProps} />
-          </TabPane>
-          <TabPane tab={i18n('project.tab.compile_log')} key="2"><Term {...buildProps} />
-          </TabPane>
-        </Tabs>
+        <Term {...termProps} />
+        { hasCmdSide && <CommandTermList commands={cmdList} dispatch={dispatch} />}
       </TabPane>
-      <TabPane tab={i18n('project.tab.setting')} key="2"><Form />
+      <TabPane tab={i18n('project.tab.command')} key="2"><CommandForm commands={commands} dispatch={dispatch} />
+      </TabPane>
+      <TabPane tab={i18n('project.tab.setting')} key="3"><SettingForm />
       </TabPane>
     </Tabs>
   );
 };
 
 Tab.propTypes = {
-  termStart: PropTypes.object,
-  termBuild: PropTypes.object,
-  activeTab: PropTypes.string.isRequired,
+  // termStart: PropTypes.object,
+  commands: PropTypes.object,
+  logType: PropTypes.string.isRequired,
   current: PropTypes.shape({
     path: PropTypes.string
   }).isRequired,

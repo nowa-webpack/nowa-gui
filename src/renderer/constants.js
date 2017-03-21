@@ -21,6 +21,11 @@ export const UPGRADE_URL = IS_WIN
   ? 'http://lab.onbing.com/nowa-gui.exe'
   : 'http://lab.onbing.com/nowa-gui.dmg';
 
+const iner_url = [
+  'http://alipay-rmsdeploy-image.cn-hangzhou.alipay.aliyun-inc.com/nowa-test/nowa-gui.dmg',
+  'http://alipay-rmsdeploy-image.cn-hangzhou.alipay.aliyun-inc.com/nowa-test/nowa-gui.exe'
+];
+
 export const LOCAL_TEMP_PATHS = 'LOCAL_TEMP_PATHS';
 export const REMOTE_TEMP_URLS = 'REMOTE_TEMP_URLS';
 

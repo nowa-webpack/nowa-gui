@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
-import { shell } from 'electron';
+import { shell, remote } from 'electron';
 import { join } from 'path';
 // import classNames from 'classnames';
 import Layout from 'antd/lib/layout';
@@ -8,24 +8,29 @@ import Tooltip from 'antd/lib/tooltip';
 import Spin from 'antd/lib/spin';
 import i18n from 'i18n';
 
+import { getAddressByUID } from 'gui-util';
 import ProjectDetailTab from '../components/ProjectDetail/Tab';
 
 const { Content } = Layout;
 
+
 const ProjectDetailPage = ({
-    current, termBuild, termStart, activeTab, dispatch
+    current, logType, dispatch, commands
   }) => {
   let buildBtn;
   let startBtn;
   const { start, port, path, pkg, loading } = current;
   const hasBuildFunc = 'scripts' in pkg && 'build' in pkg.scripts;
   const hasStartFunc = 'scripts' in pkg && 'start' in pkg.scripts;
-  const tabProps = { current, termBuild, termStart, activeTab, dispatch };
+  // const tabProps = { current, termBuild, termStart, activeTab, dispatch };
+  // const tabProps = { current, termBuild, termStart, activeTab, dispatch };
+  const tabProps = { current, logType, dispatch, commands };
   
   const startProj = () => dispatch({ type: 'task/start', payload: { project: current } });
   const buildProj = () => dispatch({ type: 'task/build', payload: { project: current } });
   const stopProj = () => dispatch({ type: 'task/stop', payload: { project: current } });
   const openEditor = () => dispatch({ type: 'task/openEditor', payload: { project: current } });
+  // const compassProj = () => dispatch({ type: 'task/compass', payload: { uid: termStart.uid } });
   
   if (hasStartFunc) {
     startBtn = !start
@@ -44,7 +49,6 @@ const ProjectDetailPage = ({
       </Tooltip>
     );
   }
-
 
   if (hasBuildFunc) {
     buildBtn = (
@@ -67,7 +71,7 @@ const ProjectDetailPage = ({
       <div className="">
         <div className="opt-grp">
           { startBtn }
-          { start && port && <div className="opt" onClick={() => shell.openExternal(`http://localhost:${port}`)} >
+          { start && port && <div className="opt" onClick={() => shell.openExternal(getAddressByUID(termStart.uid))} >
               <i className="iconfont icon-compass" /><br />{i18n('task.compass')}
             </div>
           }
@@ -85,18 +89,20 @@ const ProjectDetailPage = ({
     </Content>
   );
 };
+// () => shell.openExternal(`http://localhost:${port}`)
 
 ProjectDetailPage.propTypes = {
-  activeTab: PropTypes.string.isRequired,
-  termStart: PropTypes.object,
-  termBuild: PropTypes.object,
+  logType: PropTypes.string.isRequired,
+  commands: PropTypes.object,
+  // termBuild: PropTypes.object,
   current: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(({ project, task, layout }) => ({
   current: project.current,
-  termBuild: task.build[project.current.path],
-  termStart: task.start[project.current.path],
-  activeTab: layout.activeTab,
+  commands: task.commands[project.current.path] || {},
+  // termBuild: task.build[project.current.path],
+  // termStart: task.start[project.current.path],
+  logType: task.logType,
 }))(ProjectDetailPage);

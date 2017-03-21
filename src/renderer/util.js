@@ -1,4 +1,5 @@
 import { join, basename } from 'path';
+import { tmpdir } from 'os';
 import fs from 'fs-extra';
 
 export const hidePathString = (filePath, num: 70) => {
@@ -34,6 +35,13 @@ export const getPkgDependencies = (pkgJson) => {
   return pkgs;
 };
 
+export const getAddressByUID = (uid) => {
+  const infoPath = join(tmpdir(), `.nowa-server-${uid}.json`);
+  const info = fs.readJsonSync(infoPath);
+  return info.address;
+};
+
 export const readABCJson = filePath => fs.readJsonSync(join(filePath, 'abc.json'));
 export const readPkgJson = filePath => fs.readJsonSync(join(filePath, 'package.json'));
+export const writePkgJson = (filePath, pkg) => fs.writeJsonSync(join(filePath, 'package.json'), pkg);
 export const isNowaProject = filePath => fs.existsSync(join(filePath, 'abc.json'));

@@ -29,6 +29,7 @@ module.exports = {
 
   'project.tab.setting': 'Setting',
   'project.tab.console': 'Console',
+  'project.tab.command': 'Command',
   'project.tab.listen_log': 'Listener log',
   'project.tab.compile_log': 'Compiler log',
 

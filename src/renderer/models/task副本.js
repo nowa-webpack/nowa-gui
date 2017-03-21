@@ -2,22 +2,22 @@ import { remote } from 'electron';
 import Message from 'antd/lib/message';
 
 import i18n from 'i18n';
-import { delay, writePkgJson } from 'gui-util';
+import { delay } from 'gui-util';
 import { IS_WIN } from 'gui-const';
 
 const { command } = remote.getGlobal('services');
-// const taskStart = remote.getGlobal('start');
-// const taskBuild = remote.getGlobal('build');
-// const taskStartLog = remote.getGlobal('startLog');
+const taskStart = remote.getGlobal('start');
+const taskBuild = remote.getGlobal('build');
+const taskStartLog = remote.getGlobal('startLog');
 
 export default {
 
   namespace: 'task',
 
   state: {
-    commands: {},
-    logType: 'start'
-    
+    // start: taskStart,
+    // startLog: taskStartLog,
+    // build: taskBuild,
   },
 
   subscriptions: {
@@ -47,70 +47,8 @@ export default {
   },
 
   effects: {
-    * initCommands({ payload: { projects } }, { put }) {
-      const commands = {}; 
-      projects.forEach((item) => {
-        const { scripts } = item.pkg;
-        commands[item.path] = scripts;
-      });
-
-      yield put({
-        type: 'changeStatus',
-        payload: { commands }
-      });
-    },
-    * initAddCommands({ payload: { project } }, { put, select }) {
-      const { commands } = yield select(state => state.task);
-      // const { scripts } = project.pkg;
-      commands[project.path] = project.pkg.scripts;
-
-      yield put({
-        type: 'changeStatus',
-        payload: { ...commands }
-      });
-    },
-    * initRemoveCommand({ payload: { project } }, { put, select }) {
-      const { commands } = yield select(state => state.task);
-
-      delete commands[project.path];
-
-      yield put({
-        type: 'changeStatus',
-        payload: { ...commands }
-      });
-    },
-    * addSingleCommand({ payload: { cmd } }, { put, select }) {
-      const { commands } = yield select(state => state.task);
-      const { current } = yield select(state => state.project);
-      commands[current.path][cmd.name] = cmd.value;
-
-      current.pkg.scripts = { ...commands[current.path] };
-
-      writePkgJson(current.path, current.pkg);
-
-
-      yield put({
-        type: 'changeStatus',
-        payload: { ...commands }
-      });
-    },
-    * removeSingleCommand({ payload: { cmd } }, { put, select }) {
-      const { commands } = yield select(state => state.task);
-      const { current } = yield select(state => state.project);
-      delete commands[current.path][cmd];
-
-      current.pkg.scripts = { ...commands[current.path] };
-
-      writePkgJson(current.path, current.pkg);
-
-      yield delay(500);
-      yield put({
-        type: 'changeStatus',
-        payload: { ...commands }
-      });
-    },
     * start({ payload: { project } }, { put, select }) {
-      // const { start } = yield select(state => state.task);
+      const { start } = yield select(state => state.task);
 
       const { projects } = yield select(state => state.project);
 
@@ -222,6 +160,7 @@ export default {
           }
         }
       });
+
     },
     * exit({ payload: { type, name } }, { put, select }) {
       const { build, start } = yield select(state => state.task);
@@ -303,8 +242,15 @@ export default {
       }
     },
     * dispose(o, { select }) {
-      // const { start, build } = yield select(state => state.task);
-       
+      const { start, build } = yield select(state => state.task);
+      // remote.getCurrentWindow().removeAllListeners();
+       Object.keys(start).map((item) => {
+        // start[item].kill();
+        // if (start[item].term) {
+        //   start[item].term.removeAllListeners();
+        // }
+        
+      });
       // Object.keys(start).map((item) => {
       //   // start[item].kill();
       //   if (start[item].term) start[item].term.kill();
