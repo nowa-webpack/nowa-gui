@@ -368,6 +368,48 @@ export default {
         }
       });
     },
+    * startedProject({ payload: { filePath } }, { put, select }) {
+      const { projects, current } = yield select(state => state.project);
+
+      projects.map((item) => {
+        if (item.path === filePath) {
+          item.start = true;
+        }
+        return item;
+      });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          projects,
+          current: {
+            ...current,
+            start: true
+          }
+        }
+      });
+    },
+    * stoppedProject({ payload: { filePath } }, { put, select }) {
+      const { projects, current } = yield select(state => state.project);
+
+      projects.map((item) => {
+        if (item.path === filePath) {
+          item.start = false;
+        }
+        return item;
+      });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          projects,
+          current: {
+            ...current,
+            start: false
+          }
+        }
+      });
+    }
   },
 
   reducers: {

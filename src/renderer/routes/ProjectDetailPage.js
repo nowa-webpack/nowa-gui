@@ -8,7 +8,7 @@ import Tooltip from 'antd/lib/tooltip';
 import Spin from 'antd/lib/spin';
 import i18n from 'i18n';
 
-import { getAddressByUID } from 'gui-util';
+import { getAddressByUID, delay } from 'gui-util';
 import ProjectDetailTab from '../components/ProjectDetail/Tab';
 
 const { Content } = Layout;
@@ -23,14 +23,16 @@ const ProjectDetailPage = ({
   const hasBuildFunc = 'scripts' in pkg && 'build' in pkg.scripts;
   const hasStartFunc = 'scripts' in pkg && 'start' in pkg.scripts;
   // const tabProps = { current, termBuild, termStart, activeTab, dispatch };
-  // const tabProps = { current, termBuild, termStart, activeTab, dispatch };
   const tabProps = { current, logType, dispatch, commands };
   
   const startProj = () => dispatch({ type: 'task/start', payload: { project: current } });
-  const buildProj = () => dispatch({ type: 'task/build', payload: { project: current } });
+  const buildProj = () => dispatch({ type: 'task/execCustomCmd', payload: { type: 'build', name: path } });
   const stopProj = () => dispatch({ type: 'task/stop', payload: { project: current } });
   const openEditor = () => dispatch({ type: 'task/openEditor', payload: { project: current } });
-  // const compassProj = () => dispatch({ type: 'task/compass', payload: { uid: termStart.uid } });
+  const compassProj = () => {
+    const uid = remote.getGlobal('cmd').start[path].uid;
+    delay(1000).then(shell.openExternal(getAddressByUID(uid)));
+  };
   
   if (hasStartFunc) {
     startBtn = !start
@@ -71,7 +73,7 @@ const ProjectDetailPage = ({
       <div className="">
         <div className="opt-grp">
           { startBtn }
-          { start && port && <div className="opt" onClick={() => shell.openExternal(getAddressByUID(termStart.uid))} >
+          { start && port && <div className="opt" onClick={compassProj} >
               <i className="iconfont icon-compass" /><br />{i18n('task.compass')}
             </div>
           }

@@ -1,14 +1,13 @@
-import { remote } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import Message from 'antd/lib/message';
 
 import i18n from 'i18n';
 import { delay, writePkgJson } from 'gui-util';
 import { IS_WIN } from 'gui-const';
 
-const { command } = remote.getGlobal('services');
-// const taskStart = remote.getGlobal('start');
-// const taskBuild = remote.getGlobal('build');
-// const taskStartLog = remote.getGlobal('startLog');
+const { command: remoteCommand } = remote.getGlobal('services');
+const taskStart = remote.getGlobal('cmd').start;
+// console.log(taskStart)
 
 export default {
 
@@ -23,22 +22,29 @@ export default {
   subscriptions: {
     setup({ dispatch }) {
 
-      // if (Object.keys(taskStart).length > 0) {
-      //   const start = Object.keys(taskStart).map(item => ({
-      //     ...taskStart[item],
-      //     log: taskStartLog[item],
-      //   }));
+      if (taskStart && Object.keys(taskStart).length > 0) {
+        Object.keys(taskStart).forEach((item) => {
+          if (taskStart[item].term) {
+            dispatch({
+              type: 'project/startedProject',
+              payload: { filePath: item }
+            });
+          }
+        });
+      }
 
-      //   dispatch({
-      //     type: 'changeStatus',
-      //     payload: { start }
-      //   });
-      // }
+      ipcRenderer.on('task-finished', (event, { type, success }) => {
+        if (success) {
+          Message.success(`Exec ${type} successed!`);
+        } else {
+          Message.error(`Exec ${type} failed!`);
+        }
+      });
 
       window.onbeforeunload = (e) => {
-        dispatch({
-          type: 'dispose'
-        });
+        // dispatch({
+        //   type: 'dispose'
+        // });
         dispatch({
           type: 'project/saveCurrent'
         });
@@ -61,7 +67,6 @@ export default {
     },
     * initAddCommands({ payload: { project } }, { put, select }) {
       const { commands } = yield select(state => state.task);
-      // const { scripts } = project.pkg;
       commands[project.path] = project.pkg.scripts;
 
       yield put({
@@ -109,7 +114,87 @@ export default {
         payload: { ...commands }
       });
     },
-    * start({ payload: { project } }, { put, select }) {
+    * openEditor({ payload: { project } }, { put, select }) {
+      const { defaultEditor, editor } = yield select(state => state.layout);
+      const editorPath = editor[defaultEditor];
+
+      if (!editorPath) {
+        Message.error(i18n('msg.editorNotExisted'));
+
+        yield delay(1000);
+
+        yield put({
+          type: 'layout/changeStatus',
+          payload: { showSetModal: true }
+        });
+      } else {
+        command.openEditor(project.path, defaultEditor, editorPath);
+      }
+    },
+    * start({ payload: { project } }, { put }) {
+      yield put({
+        type: 'execCustomCmd',
+        payload: {
+          type: 'start',
+          name: project.path
+        }
+      });
+
+      yield put({
+        type: 'project/startedProject',
+        payload: {
+          filePath: project.path
+        }
+      });
+    },
+    * stop({ payload: { project } }, { put }) {
+      yield put({
+        type: 'stopCustomCmd',
+        payload: {
+          type: 'start',
+          name: project.path
+        }
+      });
+
+      yield put({
+        type: 'project/stoppedProject',
+        payload: {
+          filePath: project.path
+        }
+      });
+    },
+    // * build({ payload: { project } }, { put }) {
+
+    //   yield put({
+    //     type: 'execCustomCmd',
+    //     payload: {
+    //       type: 'build',
+    //       name: project.path
+    //     }
+    //   });
+    // },
+    * execCustomCmd({ payload: { type, name } }, { put }) {
+      remoteCommand.exec({
+        name,
+        type,
+      });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          logType: type
+        }
+      });
+    },
+    * stopCustomCmd({ payload: { type, name } }, { put, select }) {
+
+      remoteCommand.stop({
+        name,
+        type,
+      });
+     
+    },
+    /** start({ payload: { project } }, { put, select }) {
       // const { start } = yield select(state => state.task);
 
       const { projects } = yield select(state => state.project);
@@ -158,11 +243,11 @@ export default {
 
       const term = command.build(project.path);
 
-      /*if (project.isNowa) {
-        term = command.buildNowa(project.path);
-      } else {
-        term = command.build(project.path);
-      }*/
+      // if (project.isNowa) {
+      //   term = command.buildNowa(project.path);
+      // } else {
+      //   term = command.build(project.path);
+      // }
 
       // const term = command.build(project.path);
 
@@ -227,7 +312,7 @@ export default {
       const { build, start } = yield select(state => state.task);
       const { projects, current } = yield select(state => state.project);
       console.log('exit', type);
-      /*if (type === 'start') {
+      if (type === 'start') {
         // delete start[name];
         // start[name].term.removeAllListeners();
         console.log(start);
@@ -250,7 +335,7 @@ export default {
             }
           }
         });
-      }*/
+      }
 
       if (type === 'build') {
         const pj = projects.filter(item => item.path === name)[0];
@@ -301,39 +386,8 @@ export default {
           }
         });
       }
-    },
-    * dispose(o, { select }) {
-      // const { start, build } = yield select(state => state.task);
-       
-      // Object.keys(start).map((item) => {
-      //   // start[item].kill();
-      //   if (start[item].term) start[item].term.kill();
-        
-      // });
-      // Object.keys(build).map((item) => {
-      //   // build[item].kill();
-      //   if (build[item].term) build[item].term.kill();
-      // });
-    },
-    * openEditor({ payload: { project } }, { put, select}) {
-      const { defaultEditor, editor } = yield select(state => state.layout);
-      // console.log(defaultEditor)
-      const editorPath = editor[defaultEditor];
-
-      if (!editorPath) {
-        Message.error(i18n('msg.editorNotExisted'));
-
-        yield delay(1000);
-
-        yield put({
-          type: 'layout/changeStatus',
-          payload: { showSetModal: true }
-        });
-      } else {
-        command.openEditor(project.path, defaultEditor, editorPath);
-      }
-    },
-    * taskErr({ payload: { type, filePath } }, { select, put }) {
+    },*/
+   /* * taskErr({ payload: { type, filePath } }, { select, put }) {
       const { build } = yield select(state => state.task);
       if (type === 'build') {
         build[filePath].err = true;
@@ -345,8 +399,8 @@ export default {
           }
         });
       }
-    },
-    * addLog({ payload: { logs, type } }, { put, select }) {
+    },*/
+   /* * addLog({ payload: { logs, type } }, { put, select }) {
       // const { start, build } = yield select(state => state.task);
       // if (type === 'start') {
       //   // start[name].log += log;
@@ -369,7 +423,7 @@ export default {
       //     build
       //   }
       // });
-    },
+    },*/
 
   },
 

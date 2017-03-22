@@ -18,9 +18,9 @@ ipcMain.on('network-change-status', (event, online) => {
 });
 
 app.on('ready', () => {
-  global.start = {};
-  global.build = {};
-  global.startLog = {};
+  global.cmd = {};
+  // global.build = {};
+  // global.startLog = {};
   
   menu.init();
   checkRegistry().then(() => {
@@ -42,6 +42,19 @@ app.on('activate', () => {
 
   if (!windowManager.isVisible()) {
     windowManager.show();
+  }
+});
+
+app.on('before-quit', () => {
+  console.log('quit');
+  const task = global.cmd.start;
+  if (task) {
+    Object.keys(task).forEach((item) => {
+      console.log(item);
+      if (task[item].term) {
+        task[item].term.kill();
+      }
+    });
   }
 });
 

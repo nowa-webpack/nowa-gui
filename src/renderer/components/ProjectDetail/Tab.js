@@ -5,7 +5,7 @@ import i18n from 'i18n';
 import SettingForm from './SettingForm';
 import CommandForm from './CommandForm';
 import CommandTermList from './CommandTermList';
-import Term from './Term';
+import Terminal from './Terminal';
 
 const TabPane = Tabs.TabPane;
 
@@ -32,6 +32,12 @@ const Tab = ({ current, logType, dispatch, commands }) => {
     otherCommands: cmdList
   };
 
+  const listProps = {
+    dispatch,
+    name: current.path,
+    commands: cmdList
+  };
+
   return (
     <Tabs
       className="detail-tabs"
@@ -40,8 +46,8 @@ const Tab = ({ current, logType, dispatch, commands }) => {
       onChange={() => {}}
     >
       <TabPane tab={i18n('project.tab.console')} key="1">
-        <Term {...termProps} />
-        { hasCmdSide && <CommandTermList commands={cmdList} dispatch={dispatch} />}
+        <Terminal {...termProps} />
+        { hasCmdSide && <CommandTermList {...listProps} />}
       </TabPane>
       <TabPane tab={i18n('project.tab.command')} key="2"><CommandForm commands={commands} dispatch={dispatch} />
       </TabPane>

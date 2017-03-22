@@ -9,12 +9,15 @@ const { tmpdir } = require('os');
 
 const { constants, isWin } = require('../is');
 const { getWin } = require('../windowManager');
+
 const { APP_PATH, NPM_PATH, BIN_PATH, NODE_PATH } = constants; 
 
 fixPath();
 
 const npmEnv = npmRunPath.env();
-const pathEnv = [process.env.Path, npmEnv.PATH, BIN_PATH, NODE_PATH].filter(p => !!p).join(delimiter);
+const pathEnv = [process.env.Path, npmEnv.PATH, BIN_PATH, NODE_PATH]
+  .filter(p => !!p)
+  .join(delimiter);
 const env = Object.assign(npmEnv, {
   FORCE_COLOR: 1,
   // PATH: pathEnv, //mac
@@ -60,7 +63,136 @@ module.exports = {
       });
   },
 
-  build(projectPath) {
+  exec({ name, type }) {
+    const win = getWin();
+    const uid = uuid.v4();
+    const term = fork(NPM_PATH, ['run', type, '--scripts-prepend-node-path=auto'], {
+      silent: true,
+      cwd: name,
+      env: Object.assign(env, { NOWA_UID: uid }),
+      detached: true
+    });
+    const globalObj = global.cmd[type] || {};
+
+    if (globalObj[name]) {
+      globalObj[name].term = term;
+      globalObj[name].uid = uid;
+    } else {
+      globalObj[name] = {
+        term,
+        log: '',
+        uid
+      };
+    }
+
+    global.cmd[type] = globalObj;
+
+    term.stdout.on('data', (data) => {
+      const log = newLog(global.cmd[type][name].log, data.toString());
+      win.webContents.send('task-ouput', {
+        name,
+        log,
+        type,
+      });
+
+      global.cmd[type][name].log = log;
+    });
+
+    term.stderr.on('data', (data) => {
+      const log = newLog(global.cmd[type][name].log, data.toString());
+      win.webContents.send('task-ouput', {
+        name,
+        log,
+        type,
+      });
+      global.cmd[type][name].log = log;
+    });
+
+    term.on('exit', (code) => {
+      global.cmd[type][name].term = null;
+
+      if (type !== 'start') {
+        win.webContents.send('task-finished', {
+          name,
+          type,
+          success: code === 0
+        });
+      }
+    });
+  },
+
+  stop({ name, type }) {
+    const { term, uid, log } = global.cmd[type][name];
+    if (type === 'start') {
+      const uidPath = join(tmpdir(), `.nowa-server-${uid}.json`);
+      fs.removeSync(uidPath);
+    }
+    term.kill();
+    global.cmd[type][name] = {
+      log
+    };
+  },
+
+  clearLog({ name, type }) {
+    global.cmd[type][name].log = '';
+  },
+
+  /*build(projectPath) {
+    const win = getWin();
+    const uid = uuid.v4();
+    const term = fork(NPM_PATH, ['run', 'build', '--scripts-prepend-node-path=auto'], {
+      silent: true,
+      cwd: projectPath,
+      env,
+    });
+
+    if (!global.build) {
+      global.build = {};
+    }
+
+    if (global.build[projectPath]) {
+      global.build[projectPath].term = term;
+      // global.build[projectPath].uid = uid;
+    } else {
+      global.build[projectPath] = {
+        term,
+        log: ''
+      };
+    }
+
+    term.stdout.on('data', (data) => {
+      // global.build[projectPath].log.write(data.toString());
+      const log = newLog(global.build[projectPath].log, data.toString());
+      win.webContents.send('task-ouput', {
+        name: projectPath,
+        log,
+        cmd: 'build'
+      });
+      global.build[projectPath].log = log;
+    });
+
+    term.stderr.on('data', (data) => {
+      const log = newLog(global.build[projectPath].log, data.toString());
+      // const str = newLog(global.startLog[projectPath], data.toString());
+      win.webContents.send('task-ouput', {
+        name: projectPath,
+        log,
+        cmd: 'build'
+      });
+      global.build[projectPath].log = log;
+    });
+
+    term.on('exit', (code) => {
+      global.build[projectPath].term = null;
+
+      win.webContents.send('task-finished', {
+        name: projectPath,
+        cmd: 'build',
+        success: code === 0
+      });
+    });
+
+
     return fork(NPM_PATH, ['run', 'build', '--scripts-prepend-node-path=auto'], {
       silent: true,
       cwd: projectPath,
@@ -80,9 +212,10 @@ module.exports = {
       env: Object.assign(env, { NOWA_UID: uid }),
     });
 
-    global.start[projectPath] = {
+    global.start[uid] = {
       term,
       uid,
+      // log: ''
     };
 
 
@@ -120,6 +253,6 @@ module.exports = {
     fs.removeSync(uidPath);
     // term.kill();
     delete global.start[projectPath];
-  }
+  }*/
 };
 
