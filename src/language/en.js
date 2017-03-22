@@ -29,9 +29,9 @@ module.exports = {
 
   'project.tab.setting': 'Setting',
   'project.tab.console': 'Console',
-  'project.tab.command': 'Command',
   'project.tab.listen_log': 'Listener log',
   'project.tab.compile_log': 'Compiler log',
+  'project.tab.command_log': 'Command List',
 
   'project.new.title': 'Create New Project',
   'project.new.version': 'Version',
@@ -106,4 +106,9 @@ module.exports = {
   'msg.curVersion': 'Current Version',
   'msg.nextVersion': 'Next Version',
   'msg.updateTip': 'Update Announcement',
+
+  'cmd.sider.title': 'Command List',
+  'cmd.modal.title': 'Add a command',
+  'cmd.meta.name': 'Command Name',
+  'cmd.meta.value': 'Command Content',
 };

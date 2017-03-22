@@ -164,8 +164,10 @@ class LayoutWrap extends Component {
         needInstall: true
       }
     });
-    console.time('ad');
-    const term = command.installModules(installOptions);
+    command.importModulesInstall(installOptions);
+    
+    // console.time('ad');
+    /*const term = command.installModules(installOptions);
 
     term.stdout.on('data', (data) => {
       console.log(data.toString());
@@ -185,7 +187,7 @@ class LayoutWrap extends Component {
         });
         console.timeEnd('ad');
       }
-    });
+    });*/
 
    
     this.onDragLeave();

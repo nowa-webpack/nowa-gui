@@ -22,8 +22,7 @@ const ProjectDetailPage = ({
   const { start, port, path, pkg, loading } = current;
   const hasBuildFunc = 'scripts' in pkg && 'build' in pkg.scripts;
   const hasStartFunc = 'scripts' in pkg && 'start' in pkg.scripts;
-  // const tabProps = { current, termBuild, termStart, activeTab, dispatch };
-  const tabProps = { current, logType, dispatch, commands };
+  const tabProps = { current, logType, dispatch, commands: commands[path] };
   
   const startProj = () => dispatch({ type: 'task/start', payload: { project: current } });
   const buildProj = () => dispatch({ type: 'task/execCustomCmd', payload: { type: 'build', name: path } });
@@ -70,7 +69,6 @@ const ProjectDetailPage = ({
   return (
     <Content className="ui-content proj-detail">
       <Spin tip="Loading..." spinning={loading || false}>
-      <div className="">
         <div className="opt-grp">
           { startBtn }
           { start && port && <div className="opt" onClick={compassProj} >
@@ -86,25 +84,21 @@ const ProjectDetailPage = ({
           </div>
         </div>
         <ProjectDetailTab {...tabProps} />
-      </div>
       </Spin>
     </Content>
   );
+
 };
-// () => shell.openExternal(`http://localhost:${port}`)
 
 ProjectDetailPage.propTypes = {
   logType: PropTypes.string.isRequired,
   commands: PropTypes.object,
-  // termBuild: PropTypes.object,
   current: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(({ project, task, layout }) => ({
   current: project.current,
-  commands: task.commands[project.current.path] || {},
-  // termBuild: task.build[project.current.path],
-  // termStart: task.start[project.current.path],
+  commands: task.commands,
   logType: task.logType,
 }))(ProjectDetailPage);

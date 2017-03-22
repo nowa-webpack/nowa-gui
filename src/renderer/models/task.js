@@ -41,6 +41,10 @@ export default {
         }
       });
 
+      ipcRenderer.on('task-stopped', (event, { type }) => {
+        Message.info(`${type} command stopped.`);
+      });
+
       window.onbeforeunload = (e) => {
         // dispatch({
         //   type: 'dispose'
@@ -87,16 +91,16 @@ export default {
     * addSingleCommand({ payload: { cmd } }, { put, select }) {
       const { commands } = yield select(state => state.task);
       const { current } = yield select(state => state.project);
+
       commands[current.path][cmd.name] = cmd.value;
 
       current.pkg.scripts = { ...commands[current.path] };
 
       writePkgJson(current.path, current.pkg);
 
-
       yield put({
         type: 'changeStatus',
-        payload: { ...commands }
+        payload: { commands: { ...commands } }
       });
     },
     * removeSingleCommand({ payload: { cmd } }, { put, select }) {
@@ -108,10 +112,10 @@ export default {
 
       writePkgJson(current.path, current.pkg);
 
-      yield delay(500);
+      // yield delay(500);
       yield put({
         type: 'changeStatus',
-        payload: { ...commands }
+        payload: { commands: { ...commands } }
       });
     },
     * openEditor({ payload: { project } }, { put, select }) {
@@ -128,7 +132,7 @@ export default {
           payload: { showSetModal: true }
         });
       } else {
-        command.openEditor(project.path, defaultEditor, editorPath);
+        remoteCommand.openEditor(project.path, defaultEditor, editorPath);
       }
     },
     * start({ payload: { project } }, { put }) {
@@ -163,16 +167,6 @@ export default {
         }
       });
     },
-    // * build({ payload: { project } }, { put }) {
-
-    //   yield put({
-    //     type: 'execCustomCmd',
-    //     payload: {
-    //       type: 'build',
-    //       name: project.path
-    //     }
-    //   });
-    // },
     * execCustomCmd({ payload: { type, name } }, { put }) {
       remoteCommand.exec({
         name,

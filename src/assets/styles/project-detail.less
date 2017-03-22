@@ -160,6 +160,7 @@
 }
 
 .cmd-sider{
+  position: relative;
   float: left;
   width: 195px;
   height: 424px;
@@ -173,6 +174,7 @@
     /*margin-bottom: 10px;*/
     font-weight: bold;
     line-height: 35px;
+    border-bottom: 1px dashed #d5eaf9;
   }
 
   .cmd-item{
@@ -192,6 +194,18 @@
     margin-left: 5px;
     &:hover{
       color: #108ee9;
+    }
+  }
+
+  .add-cmd-btn{
+    position: absolute;
+    top: 12px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    
+    i{
+      font-size: 12px;
     }
   }
 }
@@ -238,7 +252,7 @@
 }
 
 .cmd-form{
-  width: 500px;
+  width: 400px;
   margin: 20px auto;
 
   .form-label{

@@ -36,6 +36,7 @@ fs.writeJsonSync(join(APP_PATH, 'env.text'), { prv: process.env, env, npmEnv});
 module.exports = {
 
   installModules(options) {
+    const win = getWin();
     const targetPath = join(APP_PATH, 'task', 'install.js');
     const term = fork(targetPath, {
       cwd: APP_PATH,
@@ -43,7 +44,83 @@ module.exports = {
       // execArgv: ['--harmony'],
       env: Object.assign(npmEnv, { params: JSON.stringify(options), FORCE_COLOR: 1, }),
     });
-    return term;
+
+    let percent = 0;
+    let log = ''; 
+
+    term.stdout.on('data', (data) => {
+
+      const str = data.toString();
+      console.log(str);
+      if (str.indexOf('INSTALL_PROGRESS') !== -1) {
+        const a = str.split('INSTALL_PROGRESS');
+        const b = a[1].replace(/[\n\s]/g, '');
+        const c = b.slice(1, b.length - 1).split(',').map(i => i.split(':'));
+        percent = (c[1][1] / c[0][1] * 100).toFixed(0);
+        console.log(percent);
+        // console.log(JSON.parse(d));
+      } else {
+        log = newLog(log, str);
+      }
+      win.webContents.send('install-modules', {
+        project: options.root,
+        percent,
+        finished: false,
+        err: false,
+        log
+      });
+
+    });
+
+    term.stderr.on('data', (data) => {
+      log = newLog(log, data.toString());
+      console.log('err', data.toString());
+      win.webContents.send('install-modules', {
+        project: options.root,
+        percent,
+        finished: false,
+        err: false,
+        log
+      });
+    });
+
+    term.on('exit', (code) => {
+      console.log('exit install code', code);
+      win.webContents.send('install-modules', {
+        project: options.root,
+        percent,
+        finished: true,
+        err: code !== 0,
+        log
+      });
+    });
+
+    /*const targetPath = join(APP_PATH, 'task', 'install.js');
+    const term = fork(targetPath, {
+      cwd: APP_PATH,
+      silent: true,
+      // execArgv: ['--harmony'],
+      env: Object.assign(npmEnv, { params: JSON.stringify(options), FORCE_COLOR: 1, }),
+    });
+    return term;*/
+  },
+
+  importModulesInstall(options) {
+    const win = getWin();
+    const targetPath = join(APP_PATH, 'task', 'install.js');
+    const term = fork(targetPath, {
+      cwd: APP_PATH,
+      silent: true,
+      env: Object.assign(npmEnv, { params: JSON.stringify(options), FORCE_COLOR: 1, }),
+    });
+
+    term.on('exit', (code) => {
+      console.log('exit importModulesInstall code', code);
+      win.webContents.send('import-install-finished', {
+        filePath: options.root,
+        success: code === 0
+      });
+    });
   },
 
   openEditor(projectPath, editor, basePath) {
@@ -110,8 +187,14 @@ module.exports = {
 
     term.on('exit', (code) => {
       global.cmd[type][name].term = null;
-
-      if (type !== 'start') {
+      console.log(code);
+      if (!code && typeof code !== 'undefined' && code !== 0) {
+        win.webContents.send('task-stopped', {
+          name,
+          type,
+        });
+        
+      } else {
         win.webContents.send('task-finished', {
           name,
           type,
@@ -122,15 +205,21 @@ module.exports = {
   },
 
   stop({ name, type }) {
-    const { term, uid, log } = global.cmd[type][name];
-    if (type === 'start') {
-      const uidPath = join(tmpdir(), `.nowa-server-${uid}.json`);
-      fs.removeSync(uidPath);
+    if (global.cmd[type] && global.cmd[type][name]) {
+      const task = global.cmd[type][name];
+
+      if (type === 'start') {
+        const uidPath = join(tmpdir(), `.nowa-server-${task.uid}.json`);
+        fs.removeSync(uidPath);
+      }
+      if (task.term) {
+        task.term.kill();
+        // task.term.exit(0);
+      }
+      global.cmd[type][name] = {
+        log: task.log
+      };
     }
-    term.kill();
-    global.cmd[type][name] = {
-      log
-    };
   },
 
   clearLog({ name, type }) {

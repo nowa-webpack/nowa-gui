@@ -9,8 +9,8 @@ const { menu, windowManager, nowa, utils } = services;
 const { isMac, checkRegistry } = utils;
 log.info('start nowa gui');
 
-console.log(os.tmpdir())
-config.clear();
+// console.log(os.tmpdir())
+// config.clear();
 // config.setTemplateUpdate('nowa-template-salt-v_1', '0.0.1');
 
 ipcMain.on('network-change-status', (event, online) => {
@@ -19,8 +19,7 @@ ipcMain.on('network-change-status', (event, online) => {
 
 app.on('ready', () => {
   global.cmd = {};
-  // global.build = {};
-  // global.startLog = {};
+  global.install = {};
   
   menu.init();
   checkRegistry().then(() => {

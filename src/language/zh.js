@@ -29,9 +29,9 @@ module.exports = {
 
   'project.tab.setting': '项目设置',
   'project.tab.console': '控制台',
-  'project.tab.command': '自定义命令',
   'project.tab.listen_log': '监听日志',
   'project.tab.compile_log': '编译输出',
+  'project.tab.command_log': '选择命令窗口',
 
   'project.new.title': '创建新项目',
   'project.new.version': '版本',
@@ -107,5 +107,9 @@ module.exports = {
   'msg.nextVersion': '下一个版本',
   'msg.updateTip': '更新公告',
 
+  'cmd.sider.title': '命令集',
+  'cmd.modal.title': '添加命令',
+  'cmd.meta.name': '命令名',
+  'cmd.meta.value': '命令体',
   
 }

@@ -41,7 +41,6 @@ class Terminal extends Component {
   componentWillReceiveProps({ logType, name }) {
     if (logType !== this.props.logType || name !== this.props.name) {
       const task = remote.getGlobal('cmd')[logType];
-      console.log('task', task);
       if (task && task[name]) {
         this.setState({ log: task[name].log, showClear: true }, () => this.scrollToBottom());
       } else {
@@ -59,7 +58,6 @@ class Terminal extends Component {
   }
 
   handleChangeCustom(logType) {
-    console.log(logType);
     this.props.dispatch({
       type: 'task/changeStatus',
       payload: { logType }
@@ -100,7 +98,7 @@ class Terminal extends Component {
             onClick={() => this.handleChangeCustom('build')}
           >{i18n('project.tab.compile_log')}</div>
           { hasSide &&
-            <Select placeholder={i18n('project.tab.custom_log')}
+            <Select placeholder={i18n('project.tab.command_log')}
               style={{ width: 120 }}
               onChange={this.handleChangeCustom}
               value={selectValue}

@@ -33,26 +33,28 @@ const WelcomePage = ({ version, dispatch }) => {
         payload: { filePath, needInstall: true },
       });
 
-      const term = command.installModules(installOptions);
+      command.importModulesInstall(installOptions);
 
-      term.stdout.on('data', (data) => {
-        console.log(data.toString());
-      });
-      term.stderr.on('data', (data) => {
-        console.log(data.toString());
-      });
+      // const term = command.installModules(installOptions);
 
-      term.on('exit', (code) => {
-        if (!code) {
-          console.log('exit drag installing');
-          dispatch({
-            type: 'project/finishedInstallDependencies',
-            payload: {
-              filePath,
-            }
-          });
-        }
-      });
+      // term.stdout.on('data', (data) => {
+      //   console.log(data.toString());
+      // });
+      // term.stderr.on('data', (data) => {
+      //   console.log(data.toString());
+      // });
+
+      // term.on('exit', (code) => {
+      //   if (!code) {
+      //     console.log('exit drag installing');
+      //     dispatch({
+      //       type: 'project/finishedInstallDependencies',
+      //       payload: {
+      //         filePath,
+      //       }
+      //     });
+      //   }
+      // });
     } catch (e) {
       console.log(e);
     }

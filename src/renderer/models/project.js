@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import fs from 'fs-extra';
 import { join } from 'path';
 
@@ -86,6 +86,15 @@ export default {
           projects,
         }
       });
+
+      ipcRenderer.on('import-install-finished', (event, { filePath }) => {
+        dispatch({
+          type: 'finishedInstallDependencies',
+          payload: {
+            filePath,
+          }
+        });
+      });
     },
   },
 
@@ -137,19 +146,11 @@ export default {
           });
 
           yield put({
-            type: 'layout/changeStatus',
-            payload: {
-              showPage: 2
-            }
-          });
-
-          yield put({
             type: 'task/initAddCommands',
             payload: {
               project: current,
             }
           });
-
 
           if (!needInstall) {
             Message.success(i18n('msg.importSuccess'));
@@ -161,6 +162,14 @@ export default {
 
             setLocalProjects(storeProjects);
           }
+
+          yield put({
+            type: 'layout/changeStatus',
+            payload: {
+              showPage: 2
+            }
+          });
+          
         }
       } catch (e) {
         console.log(e);

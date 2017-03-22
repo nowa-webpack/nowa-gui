@@ -33,9 +33,9 @@ const get = () => {
         homepage: homepage.slice(4, homepage.length - 4),
         type: 'OFFICIAL'
       };
-
-      if (!fs.existsSync(join(TEMPLATES_DIR, `${tempName}-${defaultTag}`))) {
-        console.log('! exist');
+      const tempPath = join(TEMPLATES_DIR, `${tempName}-${defaultTag}`);
+      if (!fs.existsSync(tempPath)) {
+        console.log('! exist', tempPath, fs.existsSync(tempPath));
         obj.tags = tags.map((tag) => {
           const version = pkg['dist-tags'][tag];
           const name = `${tempName}-${tag}`;

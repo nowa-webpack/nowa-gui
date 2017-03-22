@@ -3,7 +3,6 @@ import Tabs from 'antd/lib/tabs';
 import i18n from 'i18n';
 
 import SettingForm from './SettingForm';
-import CommandForm from './CommandForm';
 import CommandTermList from './CommandTermList';
 import Terminal from './Terminal';
 
@@ -11,23 +10,12 @@ const TabPane = Tabs.TabPane;
 
 
 const Tab = ({ current, logType, dispatch, commands }) => {
-  /*const buildProps = {
-    name: current.path,
-    type: 'build',
-    dispatch
-  };
-  const startProps = {
-    name: current.path,
-    type: 'start',
-    dispatch
-  };*/
-
   const cmdList = Object.keys(commands).filter(cmd => cmd !== 'start' && cmd !== 'build');
   const hasCmdSide = cmdList.length > 0;
   const termProps = {
     dispatch,
     name: current.path,
-    hasSide: hasCmdSide,
+    hasSide: true,
     logType,
     otherCommands: cmdList
   };
@@ -47,18 +35,18 @@ const Tab = ({ current, logType, dispatch, commands }) => {
     >
       <TabPane tab={i18n('project.tab.console')} key="1">
         <Terminal {...termProps} />
-        { hasCmdSide && <CommandTermList {...listProps} />}
+        <CommandTermList {...listProps} />
       </TabPane>
-      <TabPane tab={i18n('project.tab.command')} key="2"><CommandForm commands={commands} dispatch={dispatch} />
-      </TabPane>
+     
       <TabPane tab={i18n('project.tab.setting')} key="3"><SettingForm />
       </TabPane>
     </Tabs>
   );
 };
+ // <TabPane tab={i18n('project.tab.command')} key="2"><CommandForm commands={commands} dispatch={dispatch} />
+      // </TabPane>
 
 Tab.propTypes = {
-  // termStart: PropTypes.object,
   commands: PropTypes.object,
   logType: PropTypes.string.isRequired,
   current: PropTypes.shape({

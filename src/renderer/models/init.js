@@ -309,17 +309,17 @@ export default {
       });
     },
     * finishedInstall({ payload }, { put, select }) {
-      const { term, userAnswers } = yield select(state => state.init);
-      if (term) {
-        term.kill();
-      }
+      const { installOptions } = yield select(state => state.init);
+      // if (term) {
+      //   term.kill();
+      // }
 
       yield delay(1000);
 
       yield put({
         type: 'project/importProj',
         payload: {
-          filePath: userAnswers.projPath,
+          filePath: installOptions.root,
           needInstall: false,
         }
       });
@@ -329,21 +329,20 @@ export default {
       yield put({
         type: 'changeStatus',
         payload: {
-          term: null,
           installOptions: {}
         }
       });
     },
     * retryInstall(o, { put, select }) {
       const { installOptions } = yield select(state => state.init);
-      const term = yield command.installModules(installOptions);
       console.log('installing');
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          term,
-        }
-      });
+      command.installModules(installOptions);
+      // yield put({
+      //   type: 'changeStatus',
+      //   payload: {
+      //     term,
+      //   }
+      // });
     },
 
    

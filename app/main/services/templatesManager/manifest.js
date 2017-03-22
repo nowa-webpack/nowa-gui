@@ -31,7 +31,7 @@ if (!fs.existsSync(TEMPLATES_DIR)) {
   createManifest();
 } else {
   const manifest = getMainifest();
-  if (!manifest.offical) {
+  if (!manifest.official) {
     fs.removeSync(TEMPLATES_DIR);
     createManifest();
   }

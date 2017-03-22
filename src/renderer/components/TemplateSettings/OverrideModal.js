@@ -11,46 +11,12 @@ import i18n from 'i18n';
 // const { command } = remote.getGlobal('services');
 // const { registry } = remote.getGlobal('config');
 
-const OverrideModal = ({ showModal, overrideFiles, onOverride, userAnswers, dispatch }) => {
+const OverrideModal = ({ showModal, overrideFiles, onOverride, dispatch }) => {
 
   const onCancel = () => dispatch({
     type: 'init/changeStatus',
     payload: { showFormModal: false }
   });
-  /*const onImport = () => {
-    dispatch({
-      type: 'project/importProj',
-      payload: {
-        filePath: userAnswers.projPath,
-        needInstall: true
-      }
-    });
-    onCancel();
-    const installOptions = {
-      root: userAnswers.projPath,
-      registry: registry(),
-      targetDir: userAnswers.projPath,
-      storeDir: join(userAnswers.projPath, '.npminstall'),
-      // cacheDir: null,
-      timeout: 5 * 60000,
-      // pkgs,
-    };
-    const term = command.installModules(installOptions);
-
-    term.stdout.on('data', (data) => {
-      console.log(data.toString());
-    });
-    term.stderr.on('data', (data) => {
-      console.log(data.toString());
-    });
-
-    term.on('exit', (code) => {
-      if (!code) {
-        console.log('exit import installing');
-      }
-    });
-  };*/
-
 
   return(
     <Modal
@@ -78,12 +44,12 @@ OverrideModal.propTypes = {
   dispatch: PropTypes.func.isRequired,
   overrideFiles: PropTypes.array,
   onOverride: PropTypes.func.isRequired,
-  userAnswers: PropTypes.object.isRequired,
+  // userAnswers: PropTypes.object.isRequired,
 };
 
 
 export default connect(({ init }) => ({
   showModal: init.showFormModal,
   overrideFiles: init.overrideFiles,
-  userAnswers: init.userAnswers,
+  // userAnswers: init.userAnswers,
 }))(OverrideModal);
