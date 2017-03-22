@@ -18,8 +18,11 @@ ipcMain.on('network-change-status', (event, online) => {
 });
 
 app.on('ready', () => {
-  global.cmd = {};
-  global.install = {};
+  // global.cmd = {
+  //   build: {},
+  //   start: {}
+  // };
+  // global.install = {};
   
   menu.init();
   checkRegistry().then(() => {
@@ -46,15 +49,17 @@ app.on('activate', () => {
 
 app.on('before-quit', () => {
   console.log('quit');
-  const task = global.cmd.start;
-  if (task) {
+  // const task = global.cmd.start;
+  const { getCmd } = require('./services/task');
+  const task = getCmd('start');
+  // if (task) {
     Object.keys(task).forEach((item) => {
       console.log(item);
       if (task[item].term) {
         task[item].term.kill();
       }
     });
-  }
+  // }
 });
 
 global.services = services;

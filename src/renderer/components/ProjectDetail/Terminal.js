@@ -14,10 +14,14 @@ class Terminal extends Component {
   constructor(props) {
     super(props);
     const { logType, name } = props;
-    const task = remote.getGlobal('cmd')[logType];
-    if (task && task[name]) {
+    // const task = remote.getGlobal('cmd')[logType];
+    const task = remote.require('./services/task');
+    const t = task.getTask(logType, name);
+    // if (task && task[name]) {
+    if (t.log.length > 0) {
       this.state = {
-        log: task[name].log,
+        // log: task[name].log,
+        log: t.log,
         showClear: true
       };
     } else {
@@ -40,12 +44,19 @@ class Terminal extends Component {
 
   componentWillReceiveProps({ logType, name }) {
     if (logType !== this.props.logType || name !== this.props.name) {
-      const task = remote.getGlobal('cmd')[logType];
-      if (task && task[name]) {
-        this.setState({ log: task[name].log, showClear: true }, () => this.scrollToBottom());
+      const task = remote.require('./services/task');
+      const { log } = task.getTask(logType, name);
+      if (log.length > 0) {
+        this.setState({ log, showClear: true }, () => this.scrollToBottom());
       } else {
         this.setState({ log: '', showClear: false });
       }
+      // const task = remote.getGlobal('cmd')[logType];
+      // if (task && task[name]) {
+        // this.setState({ log: task[name].log, showClear: true }, () => this.scrollToBottom());
+      // } else {
+      //   this.setState({ log: '', showClear: false });
+      // }
     }
   }
 

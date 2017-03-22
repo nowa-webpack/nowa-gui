@@ -95,6 +95,11 @@ export default {
           }
         });
       });
+      window.onbeforeunload = (e) => {
+        dispatch({
+          type: 'saveCurrent'
+        });
+      };
     },
   },
 
@@ -335,9 +340,7 @@ export default {
       const storeProjects = getLocalProjects();
 
       setLocalProjects(storeProjects.map((item) => {
-        if (item.path === current.path) {
-          item.current = true;
-        }
+        item.current = item.path === current.path;
         return item;
       }));
     },

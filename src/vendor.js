@@ -11,7 +11,7 @@ require('classnames');
 require('fs-extra');
 require('mkdirp');
 require('glob');
-require('ansi-html');
+// require('ansi-html');
 require('semver');
 require('os-homedir');
 require('antd/lib/message');

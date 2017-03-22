@@ -6,8 +6,10 @@ import { delay, writePkgJson } from 'gui-util';
 import { IS_WIN } from 'gui-const';
 
 const { command: remoteCommand } = remote.getGlobal('services');
-const taskStart = remote.getGlobal('cmd').start;
+// const taskStart = remote.getGlobal('cmd').start;
+const taskStart = remote.require('./services/task').getCmd('start');
 // console.log(taskStart)
+// console.log(remote.require('./config'))
 
 export default {
 
@@ -45,14 +47,7 @@ export default {
         Message.info(`${type} command stopped.`);
       });
 
-      window.onbeforeunload = (e) => {
-        // dispatch({
-        //   type: 'dispose'
-        // });
-        dispatch({
-          type: 'project/saveCurrent'
-        });
-      };
+      
     },
   },
 
@@ -136,6 +131,12 @@ export default {
       }
     },
     * start({ payload: { project } }, { put }) {
+
+      // const uid = yield remoteCommand.exec({
+      //   name: project.path,
+      //   type: 'start',
+      // });
+
       yield put({
         type: 'execCustomCmd',
         payload: {
@@ -147,7 +148,7 @@ export default {
       yield put({
         type: 'project/startedProject',
         payload: {
-          filePath: project.path
+          filePath: project.path,
         }
       });
     },

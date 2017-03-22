@@ -111,5 +111,8 @@ module.exports = {
   'cmd.modal.title': '添加命令',
   'cmd.meta.name': '命令名',
   'cmd.meta.value': '命令体',
-  
+
+  'preinit.msg1': '初始化的时候必须要连接网络，请联网后重新打开应用。',
+  'preinit.msg2': '{1} 后自动关闭应用',
+  'preinit.waitInstall': '正在安装需要的依赖更新，大约需要半分钟时间，请耐心等待。',
 }

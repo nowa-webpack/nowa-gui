@@ -17,11 +17,15 @@
 
 .icon-msnui-minimize:before { content: "\e6d7"; }
 
+.icon-wifi:before { content: "\e693"; }
+
 .icon-x:before { content: "\e62d"; }
 
 .icon-code:before { content: "\e773"; }
 
 .icon-similarproduct:before { content: "\e6f6"; }
+
+.icon-close-o:before { content: "\e660"; }
 
 .icon-compass:before { content: "\e71b"; }
 

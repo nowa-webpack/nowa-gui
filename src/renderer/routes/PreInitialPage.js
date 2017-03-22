@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 // import { hashHistory } from 'react-router';
 import { remote, ipcRenderer } from 'electron';
 import { getLocalProjects } from 'gui-local';
+import i18n from 'i18n';
 
 const { nowaNeedInstalled } = remote.getGlobal('config');
 
@@ -69,11 +70,11 @@ class PreInitialPage extends Component {
     if (closeFlag) {
       mainbody = (
         <div className="no-net">
-          <p>初始化的时候必须要连接网络，请联网后重新打开应用</p>
-          <p>{seconds} 后自动关闭应用</p>
+          <p>{i18n('preinit.msg1')}</p>
+          <p>{i18n('preinit.msg2', seconds)}</p>
         </div>);
     } else if (nowaNeedInstalled()) {
-      mainbody = (<div className="wait-install">正在安装需要的依赖更新，大约需要半分钟时间，请耐心等待。</div>);
+      mainbody = (<div className="wait-install">{i18n('preinit.waitInstall')}</div>);
     }
 
     return (

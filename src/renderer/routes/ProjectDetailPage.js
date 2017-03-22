@@ -29,7 +29,8 @@ const ProjectDetailPage = ({
   const stopProj = () => dispatch({ type: 'task/stop', payload: { project: current } });
   const openEditor = () => dispatch({ type: 'task/openEditor', payload: { project: current } });
   const compassProj = () => {
-    const uid = remote.getGlobal('cmd').start[path].uid;
+    const task = remote.require('./services/task');
+    const { uid } = task.getTask('start', path);
     delay(1000).then(shell.openExternal(getAddressByUID(uid)));
   };
   

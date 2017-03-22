@@ -111,4 +111,8 @@ module.exports = {
   'cmd.modal.title': 'Add a command',
   'cmd.meta.name': 'Command Name',
   'cmd.meta.value': 'Command Content',
+
+  'preinit.msg1': 'Internet connection is required during initialization, check your network & reopen APP.',
+  'preinit.msg2': 'Shutdown in {1} seconds',
+  'preinit.waitInstall': 'Installing dependencies, please wait for about half a minute.',
 };

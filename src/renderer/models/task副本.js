@@ -48,11 +48,10 @@ export default {
 
   effects: {
     * start({ payload: { project } }, { put, select }) {
-      const { start } = yield select(state => state.task);
 
       const { projects } = yield select(state => state.project);
 
-      const uid = command.start(project.path);
+      command.start(project.path);
       // console.log('start', obj.term.pid);
       
       // start[project.path] = uid;
