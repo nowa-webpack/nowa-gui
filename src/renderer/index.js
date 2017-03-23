@@ -21,6 +21,10 @@ if (IS_WIN) {
   import('../assets/styles/is-mac.less');
 }
 
+const { utils } = remote.getGlobal('services');
+// const curVersion = application.getPackgeJson().version;
+const version = utils.getPackgeJson().version;
+
 
 window.AliMonitor = window.AliMonitor || [];
 
@@ -28,7 +32,7 @@ remote.require('getmac').getMac((err, macAddress) => {
     if (err) Message.error(err, 3);
     AliMonitor.push({
       url: 'log://uxdata/nowa/',
-      msg: `{"MAC": ${macAddress}}`
+      msg: `{"MAC": ${macAddress},"version": ${version}}`
     });
 });
 
