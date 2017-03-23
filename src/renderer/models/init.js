@@ -310,21 +310,21 @@ export default {
     },
     * finishedInstall({ payload }, { put, select }) {
       const { installOptions } = yield select(state => state.init);
-      // if (term) {
-      //   term.kill();
-      // }
+      
+      const filePath = installOptions.root;
 
-      yield delay(1000);
+      // yield delay(1000);
+      
+
+      yield delay(1500);
 
       yield put({
         type: 'project/importProj',
         payload: {
-          filePath: installOptions.root,
+          filePath,
           needInstall: false,
         }
       });
-
-      yield delay(1000);
 
       yield put({
         type: 'changeStatus',
@@ -332,11 +332,13 @@ export default {
           installOptions: {}
         }
       });
+      
     },
     * retryInstall(o, { put, select }) {
       const { installOptions } = yield select(state => state.init);
       console.log('installing');
-      command.installModules(installOptions);
+      // command.installModules(installOptions);
+      ipcRenderer.send('install-modules', installOptions);
       // yield put({
       //   type: 'changeStatus',
       //   payload: {

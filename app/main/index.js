@@ -4,17 +4,22 @@ const services = require('./services');
 const config = require('./config');
 const os = require('os');
 
-
-const { menu, windowManager, nowa, utils } = services;
+const pubsub = require('electron-pubsub');
+const { menu, windowManager, nowa, utils, command } = services;
 const { isMac, checkRegistry } = utils;
 log.info('start nowa gui');
-
+pubsub.init();
 // console.log(os.tmpdir())
 // config.clear();
 // config.setTemplateUpdate('nowa-template-salt-v_1', '0.0.1');
 
 ipcMain.on('network-change-status', (event, online) => {
   config.online(online);
+});
+
+ipcMain.on('install-modules', (event, options) => {
+  // config.online(online);
+  command.installModules(options);
 });
 
 app.on('ready', () => {

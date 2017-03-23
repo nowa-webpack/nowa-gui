@@ -18,7 +18,7 @@ const Item = ({ project, current, dispatch }) => {
       type: 'layout/changeStatus',
       payload: {
         showPage: 2,
-        activeTab: '1'
+        // activeTab: '1'
       }
     });
   };

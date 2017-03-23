@@ -8,7 +8,7 @@ const { join } = require('path');
 const { request } = require('../utils');
 const { constants } = require('../is');
 const { getWin } = require('../windowManager');
-const { installModules } = require('../command');
+const { importModulesInstall } = require('../command');
 const config = require('../../config');
 
 const { NOWA_INSTALL_DIR, NOWA_INSTALL_JSON_FILE } = constants;
@@ -64,15 +64,15 @@ const checkModulesVersion = (modules) => co(function* () {
 const installNowaModules = (pkgs, endCb) => {
   const win = getWin();
   const opt = getInstallOpt(pkgs);
-  const term = installModules(opt);
+  const term = importModulesInstall(opt, true);
   console.time('nowa install');
-  term.stdout.on('data', (data) => {
-    console.log(data.toString());
-  });
+  // term.stdout.on('data', (data) => {
+  //   console.log(data.toString());
+  // });
 
-  term.stderr.on('data', (data) => {
-    console.log('err', data.toString());
-  });
+  // term.stderr.on('data', (data) => {
+  //   console.log('err', data.toString());
+  // });
 
   term.on('exit', (code) => {
     console.log('exit install', code);

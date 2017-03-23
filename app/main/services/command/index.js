@@ -6,6 +6,7 @@ const uuid = require('uuid');
 const fixPath = require('fix-path');
 const ansiHTML = require('ansi-html');
 const { tmpdir } = require('os');
+const pubsub = require('electron-pubsub');
 
 const { constants, isWin } = require('../is');
 const { getWin } = require('../windowManager');
@@ -37,7 +38,8 @@ module.exports = {
   installModules(options) {
     const win = getWin();
     const targetPath = join(APP_PATH, 'task', 'install.js');
-    const term = fork(targetPath, {
+
+    let term = fork(targetPath, {
       cwd: APP_PATH,
       silent: true,
       // execArgv: ['--harmony'],
@@ -45,10 +47,9 @@ module.exports = {
     });
 
     let percent = 0;
-    let log = ''; 
+    let log = '';
 
     term.stdout.on('data', (data) => {
-
       const str = data.toString();
       console.log(str);
       if (str.indexOf('INSTALL_PROGRESS') !== -1) {
@@ -56,54 +57,43 @@ module.exports = {
         const b = a[1].replace(/[\n\s]/g, '');
         const c = b.slice(1, b.length - 1).split(',').map(i => i.split(':'));
         percent = (c[1][1] / c[0][1] * 100).toFixed(0);
-        console.log(percent);
       } else {
         log = newLog(log, str);
       }
-      win.webContents.send('install-modules', {
+      pubsub.publish('install-modules', {
+      // win.webContents.send('install-modules', {
         project: options.root,
         percent,
-        finished: false,
-        err: false,
-        log
+        log,
+        timestamp: uuid.v4(),
       });
-
     });
 
     term.stderr.on('data', (data) => {
       log = newLog(log, data.toString());
-      console.log('err', data.toString());
-      win.webContents.send('install-modules', {
+      console.log(data.toString());
+      pubsub.publish('install-modules', {
+      // win.webContents.send('install-modules', {
         project: options.root,
         percent,
-        finished: false,
-        err: false,
-        log
+        log,
+        timestamp: uuid.v4(),
       });
     });
 
     term.on('exit', (code) => {
       console.log('exit install code', code);
-      win.webContents.send('install-modules', {
+      pubsub.publish('install-modules-finished', {
+      // win.webContents.send('install-modules-finished', {
         project: options.root,
-        percent,
-        finished: true,
         err: code !== 0,
-        log
       });
+      term = null;
     });
-
-    /*const targetPath = join(APP_PATH, 'task', 'install.js');
-    const term = fork(targetPath, {
-      cwd: APP_PATH,
-      silent: true,
-      // execArgv: ['--harmony'],
-      env: Object.assign(npmEnv, { params: JSON.stringify(options), FORCE_COLOR: 1, }),
-    });
-    return term;*/
+    
   },
 
-  importModulesInstall(options) {
+  importModulesInstall(options, isNowaInstall) {
     const win = getWin();
     const targetPath = join(APP_PATH, 'task', 'install.js');
     const term = fork(targetPath, {
@@ -111,14 +101,17 @@ module.exports = {
       silent: true,
       env: Object.assign(npmEnv, { params: JSON.stringify(options), FORCE_COLOR: 1, }),
     });
-
-    term.on('exit', (code) => {
-      console.log('exit importModulesInstall code', code);
-      win.webContents.send('import-install-finished', {
-        filePath: options.root,
-        success: code === 0
+    if (!isNowaInstall) {
+      term.on('exit', (code) => {
+        console.log('exit importModulesInstall code', code);
+        win.webContents.send('import-install-finished', {
+          filePath: options.root,
+          success: code === 0
+        });
       });
-    });
+    }
+
+    return term;
   },
 
   openEditor(projectPath, editor, basePath) {
@@ -155,7 +148,8 @@ module.exports = {
 
     term.stdout.on('data', (data) => {
       const log = task.writeLog(type, name, data.toString());
-      win.webContents.send('task-ouput', {
+      pubsub.publish('task-ouput', {
+      // win.webContents.send('task-ouput', {
         name,
         log,
         type,
@@ -164,7 +158,8 @@ module.exports = {
 
     term.stderr.on('data', (data) => {
       const log = task.writeLog(type, name, data.toString());
-      win.webContents.send('task-ouput', {
+      pubsub.publish('task-ouput', {
+      // win.webContents.send('task-ouput', {
         name,
         log,
         type,
@@ -176,12 +171,14 @@ module.exports = {
       task.clearTerm(type, name);
       console.log('exit', code);
       if (!code && typeof code !== 'undefined' && code !== 0) {
-        win.webContents.send('task-stopped', {
+        pubsub.publish('task-stopped', {
+        // win.webContents.send('task-stopped', {
           name,
           type,
         });
       } else {
-        win.webContents.send('task-finished', {
+        pubsub.publish('task-finished', {
+        // win.webContents.send('task-finished', {
           name,
           type,
           success: code === 0

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { ipcRenderer, remote } from 'electron';
+import pubsub from 'electron-pubsub';
 // import ansiHTML from 'ansi-html';
 import classNames from 'classnames';
 import Button from 'antd/lib/button';
@@ -14,13 +15,11 @@ class Terminal extends Component {
   constructor(props) {
     super(props);
     const { logType, name } = props;
-    // const task = remote.getGlobal('cmd')[logType];
     const task = remote.require('./services/task');
     const t = task.getTask(logType, name);
-    // if (task && task[name]) {
+
     if (t.log.length > 0) {
       this.state = {
-        // log: task[name].log,
         log: t.log,
         showClear: true
       };
@@ -34,12 +33,14 @@ class Terminal extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.on('task-ouput', (event, data) => {
-      const { name, logType } = this.props;
-      if (name === data.name && logType === data.type) {
-        this.setState({ log: data.log, showClear: true }, () => this.scrollToBottom());
-      }
-    });
+    pubsub.subscribe('task-ouput', this.onReceiveLog.bind(this));
+    // ipcRenderer.on('task-ouput', this.onReceiveLog.bind(this));
+    // ipcRenderer.on('task-ouput', (event, data) => {
+    //   const { name, logType } = this.props;
+    //   if (name === data.name && logType === data.type) {
+    //     this.setState({ log: data.log, showClear: true }, () => this.scrollToBottom());
+    //   }
+    // });
   }
 
   componentWillReceiveProps({ logType, name }) {
@@ -58,6 +59,18 @@ class Terminal extends Component {
       //   this.setState({ log: '', showClear: false });
       // }
     }
+  }
+
+  onReceiveLog(event, data) {
+    const { name, logType } = this.props;
+    if (name === data.name && logType === data.type) {
+      this.setState({ log: data.log, showClear: true }, () => this.scrollToBottom());
+    }
+  }
+
+  componentWillUmount() {
+    // ipcRenderer.removeListener(this.onReceiveLog);
+    pubsub.unsubscribe('task-ouput');
   }
 
   scrollToBottom() {

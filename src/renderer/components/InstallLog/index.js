@@ -1,12 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Progress from 'antd/lib/progress';
 import Icon from 'antd/lib/icon';
-// import ansiHTML from 'ansi-html';
 import i18n from 'i18n';
-
+import pubsub from 'electron-pubsub';
 
 const newLog = (oldLog, str) => oldLog + (ansiHTML(str) + '<br>');
 
@@ -18,31 +17,43 @@ class Log extends Component {
       log: '',
       err: false,
       percent: 0,
-      expand: false
+      expand: false,
     };
+
+    this.timestamp = '';
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    ipcRenderer.on('install-modules', (event, { percent, finished, err, log }) => {
-      if (finished) {
-        if (err) {
-          Message.error(i18n('msg.installFail'));
-          this.setState({
-            err
-          });
-        } else {
-          dispatch({
-            type: 'init/finishedInstall',
-          });
-        }
-      } else {
-        this.setState({
-          percent,
-          log,
-        }, () => this.scrollToBottom());
-      }
-    });
+    pubsub.subscribe('install-modules', this.onReceiveLog.bind(this));
+    pubsub.subscribe('install-modules-finished', this.onReceiveFinished.bind(this));
+  }
+
+  componentWillUnmount() {
+    console.log('umount log');
+    pubsub.unsubscribe('install-modules');
+    pubsub.unsubscribe('install-modules-finished');
+  }
+
+  onReceiveLog(event, { percent, log, timestamp }) {
+    this.timestamp = timestamp;
+    this.setState({
+      percent,
+      log,
+    }, () => this.scrollToBottom());
+  }
+
+  onReceiveFinished(event, { err }) {
+    console.log('finished');
+    if (err) {
+      Message.error(i18n('msg.installFail'));
+      this.setState({
+        err
+      });
+    } else {
+      this.props.dispatch({
+        type: 'init/finishedInstall',
+      });
+    }
   }
 
   scrollToBottom() {
@@ -73,11 +84,14 @@ class Log extends Component {
     const { err, percent, expand, log } = this.state;
     const { prev } = this.props;
 
-    const detailHtml = err ?
-      (<div className="detail">{i18n('project.new.log.error')}<br />
-        <Button type="primary" onClick={() => this.retryInstall()}>{i18n('project.new.log.retry')}</Button>
-        <Button type="default" onClick={() => prev()}>{i18n('form.back')}</Button>
-      </div>) : (<div className="detail">{i18n('project.new.log.wait')}</div>);
+    const detailHtml = err 
+      ? (<div className="detail">{i18n('project.new.log.error')}<br />
+            <Button type="primary" onClick={() => this.retryInstall()}>
+              {i18n('project.new.log.retry')}
+            </Button>
+            <Button type="default" onClick={() => prev()}>{i18n('form.back')}</Button>
+          </div>)
+      : (<div className="detail">{i18n('project.new.log.wait')}</div>);
 
     return (
       <div className="progress-wrap" >
@@ -106,5 +120,3 @@ Log.propTypes = {
 };
 
 export default Log;
-
-

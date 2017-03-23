@@ -20,60 +20,65 @@ const get = () => {
     const { data: repo } = yield request(`${registry()}/nowa-gui-templates/latest`);
 
     const official = yield repo.templates.map(function* (tempName) {
-      const { data: pkg } = yield request(`${registry()}/${tempName}`);
-      const tags = Object.keys(pkg['dist-tags']).filter(tag => tag !== 'latest');
-      const defaultTag = tags[tags.length - 1];
-      const { description } = pkg.versions[pkg['dist-tags'][defaultTag]];
-      const homepage = pkg.repository.url;
-      const obj = {
-        name: tempName,
-        defaultTag,
-        description,
-        // image,
-        homepage: homepage.slice(4, homepage.length - 4),
-        type: 'OFFICIAL'
-      };
-      const tempPath = join(TEMPLATES_DIR, `${tempName}-${defaultTag}`);
-      if (!fs.existsSync(tempPath)) {
-        console.log('! exist', tempPath, fs.existsSync(tempPath));
-        obj.tags = tags.map((tag) => {
-          const version = pkg['dist-tags'][tag];
-          const name = `${tempName}-${tag}`;
-          const curPkg = pkg.versions[version];
-          const folder = join(TEMPLATES_DIR, name);
+      const { data: pkg, err } = yield request(`${registry()}/${tempName}`);
 
-          setTemplateVersion(name, version);
-          download(curPkg.dist.tarball, folder, {
-            extract: true,
-            retries: 0,
-            timeout: 10000
-          }).then((files) => {
-            const dir = dirname(files[1].path);
-            fs.copySync(join(folder, dir), folder);
-            fs.removeSync(join(folder, dir));
+      if (!err) {
+        const tags = Object.keys(pkg['dist-tags']).filter(tag => tag !== 'latest');
+        const defaultTag = tags[tags.length - 1];
+        const { description } = pkg.versions[pkg['dist-tags'][defaultTag]];
+        const homepage = pkg.repository.url;
+        const obj = {
+          name: tempName,
+          defaultTag,
+          description,
+          // image,
+          homepage: homepage.slice(4, homepage.length - 4),
+          type: 'OFFICIAL'
+        };
+        const tempPath = join(TEMPLATES_DIR, `${tempName}-${defaultTag}`);
+        if (!fs.existsSync(tempPath)) {
+          console.log('! exist', tempPath, fs.existsSync(tempPath));
+          obj.tags = tags.map((tag) => {
+            const version = pkg['dist-tags'][tag];
+            const name = `${tempName}-${tag}`;
+            const curPkg = pkg.versions[version];
+            const folder = join(TEMPLATES_DIR, name);
+            console.log('set', name, version);
+            setTemplateVersion(name, version);
+            download(curPkg.dist.tarball, folder, {
+              extract: true,
+              retries: 0,
+              timeout: 10000
+            }).then((files) => {
+              const dir = dirname(files[1].path);
+              fs.copySync(join(folder, dir), folder);
+              fs.removeSync(join(folder, dir));
+            });
+            return {
+              name: tag,
+              version,
+              update: false,
+              path: folder
+            };
           });
-          return {
-            name: tag,
-            version,
-            update: false,
-            path: folder
-          };
-        });
+        } else {
+          obj.tags = tags.map((tag) => {
+            const version = pkg['dist-tags'][tag];
+            const name = `${tempName}-${tag}`;
+            const oldVersion = getTemplateVersion(name);
+            return { 
+              name: tag,
+              version: oldVersion,
+              update: semver.lt(oldVersion, version),
+              path: join(TEMPLATES_DIR, name),
+            };
+          });
+        }
+
+        return obj;
       } else {
-        obj.tags = tags.map((tag) => {
-          const version = pkg['dist-tags'][tag];
-          const name = `${tempName}-${tag}`;
-          const oldVersion = getTemplateVersion(name);
-          return { 
-            name: tag,
-            version: oldVersion,
-            update: semver.lt(oldVersion, version),
-            path: join(TEMPLATES_DIR, name),
-          };
-        });
+        return {};
       }
-      // arr.push(obj);
-      return obj;
     });
 
     const manifest = getMainifest();

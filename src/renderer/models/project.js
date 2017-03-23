@@ -106,6 +106,7 @@ export default {
   effects: {
     * importProj({ payload: { filePath, needInstall } }, { put, select }) {
       try {
+        console.log('filePath', filePath)
         if (!filePath) {
           const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
 
@@ -122,6 +123,7 @@ export default {
         const projectName = projectInfo.pkg.name || 'UNTITLED';
 
         const storeProjects = getLocalProjects();
+        console.log(storeProjects)
         
         const filter = storeProjects.filter(item => item.path === filePath);
 
@@ -303,7 +305,7 @@ export default {
           type: 'layout/changeStatus',
           payload: {
             showPage: showPage === 1 ? 1 : 0,
-            activeTab: '1'
+            // activeTab: '1'
           }
         });
 
@@ -316,24 +318,24 @@ export default {
         });
       }
     },
-    * taskErr({ payload: { type, filePath } }, { put, select }) {
-      const { projects, current } = yield select(state => state.project);
-      const { activeTab } = yield select(state => state.layout); 
+    // * taskErr({ payload: { type, filePath } }, { put, select }) {
+    //   const { projects, current } = yield select(state => state.project);
+    //   const { activeTab } = yield select(state => state.layout); 
 
-      if (current.path !== filePath || 
-        (current.path === filePath && activeTab !== '2')) {
-        projects.map((item) => {
-          if (item.path === filePath) {
-            item.taskErr = true;
-          }
-          return item;
-        });
-        yield put({
-          type: 'changeStatus',
-          payload: { projects }
-        });
-      }
-    },
+    //   if (current.path !== filePath || 
+    //     (current.path === filePath && activeTab !== '2')) {
+    //     projects.map((item) => {
+    //       if (item.path === filePath) {
+    //         item.taskErr = true;
+    //       }
+    //       return item;
+    //     });
+    //     yield put({
+    //       type: 'changeStatus',
+    //       payload: { projects }
+    //     });
+    //   }
+    // },
     * saveCurrent(o, { select }) {
       const { current } = yield select(state => state.project);
 

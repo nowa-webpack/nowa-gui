@@ -56,24 +56,24 @@ export default {
   },
 
   effects: {
-    * changeLogTab({ payload: { activeTab } }, { put, select }) {
-      const { projects, current } = yield select(state => state.project);
-      if (activeTab === '2') {
-        projects.map((item) => {
-          if (item.path === current.path) {
-            item.taskErr = false;
-          }
-        });
-        yield put({
-          type: 'project/changeStatus',
-          payload: { projects }
-        });
-      }
-      yield put({
-        type: 'changeStatus',
-        payload: { activeTab }
-      });
-    },
+    // * changeLogTab({ payload: { activeTab } }, { put, select }) {
+    //   const { projects, current } = yield select(state => state.project);
+    //   if (activeTab === '2') {
+    //     projects.map((item) => {
+    //       if (item.path === current.path) {
+    //         item.taskErr = false;
+    //       }
+    //     });
+    //     yield put({
+    //       type: 'project/changeStatus',
+    //       payload: { projects }
+    //     });
+    //   }
+    //   yield put({
+    //     type: 'changeStatus',
+    //     payload: { activeTab }
+    //   });
+    // },
     
   },
   reducers: {

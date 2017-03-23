@@ -70,6 +70,7 @@
     "electron-builder": "^12.3.1",
     "electron-prebuilt": "^1.4.13",
     "electron-rebuild": "^1.5.7",
+    "electron-pubsub": "^0.1.0",
     "extract-text-webpack-plugin": "^2.0.0-beta.5",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.28.0",
