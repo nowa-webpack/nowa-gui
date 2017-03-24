@@ -92,7 +92,6 @@ CommandModal.propTypes = {
   commands: PropTypes.array.isRequired,
   hideModal: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
- 
 };
 
 export default CommandModal;

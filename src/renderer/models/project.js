@@ -6,27 +6,28 @@ import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
 import { getLocalProjects, setLocalProjects } from 'gui-local';
-import { readABCJson, readPkgJson, isNowaProject, getPkgDependencies } from 'gui-util';
+import { readABCJson, writeABCJson,
+  readPkgJson, isNowaProject, getPkgDependencies, delay
+} from 'gui-util';
 
 const taskStart = remote.getGlobal('start') || {};
 const { registry } = remote.getGlobal('config');
 const { command } = remote.getGlobal('services');
 
 
-
 const getProjectInfoByPath = (filePath) => {
-  let port = '';
+  // let port = '';
   let abc = {};
   const isNowa = isNowaProject(filePath);
 
   if (isNowa) {
     abc = readABCJson(filePath);
-    port = abc.options.port || '3000';
+    // port = abc.options.port || '3000';
   }
 
   return {
     isNowa,
-    port,
+    // port,
     abc,
     pkg: readPkgJson(filePath),
   };
@@ -69,7 +70,6 @@ export default {
             item.start = true;
             // item.port = getPortByUID(task.uid);
           }
-
           return item;
         });
       }
@@ -99,7 +99,7 @@ export default {
           }
         });
       });
-      window.onbeforeunload = (e) => {
+      window.onbeforeunload = () => {
         dispatch({
           type: 'saveCurrent'
         });
@@ -140,12 +140,12 @@ export default {
         const projectName = projectInfo.pkg.name || 'UNTITLED';
 
         const storeProjects = getLocalProjects();
-        console.log(storeProjects)
         
         const filter = storeProjects.filter(item => item.path === filePath);
 
         if (filter.length) {
           Message.info(i18n('msg.existed'));
+          return false;
         } else {
           const current = {
             ...projectInfo,
@@ -181,7 +181,7 @@ export default {
             storeProjects.push({
               name: projectName,
               path: filePath,
-              port: projectInfo.port
+              // port: projectInfo.port
             });
 
             setLocalProjects(storeProjects);
@@ -249,7 +249,92 @@ export default {
         });
       }
     },
-    * update({ payload: { old, project } }, { put, select }) {
+    * updateABC({ payload: { project, abc } }, { put, select }) {
+      const { projects } = yield select(state => state.project);
+      project.abc = abc;
+
+      writeABCJson(project.path, abc);
+
+      projects.map((item) => {
+        if (item.path === project.path) {
+          return project;
+        }
+        return item;
+      });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          current: project,
+          projects: [...projects],
+        }
+      });
+    },
+    /** updateBuildConfig({ payload: { project, config } }, { put, select }) {
+      // const { projects } = yield select(state => state.project);
+      const abc = { ...project.abc, ...config };
+      yield put({
+        type: 'updateABC',
+        payload: { project, config }
+      })
+      // project.abc = newAbc;
+
+      // writeABCJson(project.path, newAbc);
+
+      // projects.map((item) => {
+      //   if (item.path === project.path) {
+      //     return project;
+      //   }
+      //   return item;
+      // });
+
+      // yield put({
+      //   type: 'changeStatus',
+      //   payload: {
+      //     current: project,
+      //     projects: [...projects],
+      //   }
+      // });
+    },*/
+    * updateServerConfig({ payload: { project, abc } }, { put, select }) {
+      // const { projects } = yield select(state => state.project);
+      yield put({
+        type: 'updateABC',
+        payload: { project, abc }
+      });
+      // project.abc = abc;
+
+      // writeABCJson(project.path, abc);
+
+      // projects.map((item) => {
+      //   if (item.path === project.path) {
+      //     return project;
+      //   }
+      //   return item;
+      // });
+
+      // yield put({
+      //   type: 'changeStatus',
+      //   payload: {
+      //     current: project,
+      //     projects: [...projects],
+      //   }
+      // });
+
+      if (project.start) {
+        yield put({
+          type: 'task/stop',
+          payload: { project }
+        });
+        yield delay(1000);
+        yield put({
+          type: 'task/start',
+          payload: { project }
+        });
+      }
+
+    },
+    /** update({ payload: { old, project } }, { put, select }) {
       if (old.name !== project.name || old.port !== project.port) {
         const { projects, current } = yield select(state => state.project);
 
@@ -297,7 +382,7 @@ export default {
 
         Message.success(i18n('msg.updateSuccess'), 1.5);
       }
-    },
+    },*/
     * refresh(o, { put, select }) {
       // const storeProjects = getProjects();
       const storeProjects = getLocalProjects();
@@ -335,24 +420,6 @@ export default {
         });
       }
     },
-    // * taskErr({ payload: { type, filePath } }, { put, select }) {
-    //   const { projects, current } = yield select(state => state.project);
-    //   const { activeTab } = yield select(state => state.layout); 
-
-    //   if (current.path !== filePath || 
-    //     (current.path === filePath && activeTab !== '2')) {
-    //     projects.map((item) => {
-    //       if (item.path === filePath) {
-    //         item.taskErr = true;
-    //       }
-    //       return item;
-    //     });
-    //     yield put({
-    //       type: 'changeStatus',
-    //       payload: { projects }
-    //     });
-    //   }
-    // },
     * saveCurrent(o, { select }) {
       const { current } = yield select(state => state.project);
 
@@ -383,7 +450,7 @@ export default {
       storeProjects.push({
         name: filter[0].name,
         path: filter[0].path,
-        port: filter[0].port
+        // port: filter[0].port
       });
 
       setLocalProjects(storeProjects);
@@ -412,7 +479,7 @@ export default {
       yield put({
         type: 'changeStatus',
         payload: {
-          projects,
+          projects: [...projects],
           current: {
             ...current,
             start: true
@@ -440,7 +507,25 @@ export default {
           }
         }
       });
-    }
+    },
+    // * taskErr({ payload: { type, filePath } }, { put, select }) {
+    //   const { projects, current } = yield select(state => state.project);
+    //   const { activeTab } = yield select(state => state.layout); 
+
+    //   if (current.path !== filePath || 
+    //     (current.path === filePath && activeTab !== '2')) {
+    //     projects.map((item) => {
+    //       if (item.path === filePath) {
+    //         item.taskErr = true;
+    //       }
+    //       return item;
+    //     });
+    //     yield put({
+    //       type: 'changeStatus',
+    //       payload: { projects }
+    //     });
+    //   }
+    // },
   },
 
   reducers: {

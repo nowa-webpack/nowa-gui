@@ -58,7 +58,6 @@
     word-break: break-all;
   }
 
-
   .clear-btn{
     position: absolute;
     top: 10px;
@@ -106,24 +105,15 @@
     margin-bottom: 0;
   }
 
-  .ui-form{
+  /*.ui-form{
     margin-top: 30px;
-  }
+  }*/
 }
-
-
 
 .terminal-tabs{
   background-color: #254463;
   color: #fff;
-
- /* .ant-tabs-nav-wrap{
-    float: none;
-    margin-bottom: 10px;
-  }
-  .ant-tabs-bar{
-    border-bottom: none;
-  }*/
+ 
   .tabs-item{
     display: inline-block;
     padding: 2px 10px;
@@ -154,159 +144,53 @@
   .ant-select-selection__rendered{
     line-height: 22px;
   }
-
-  /*.ant-tabs-ink-bar{
-    background-color: transparent;
-
-  }*/
 }
 
-.cmd-sider{
+.setting {
   position: relative;
-  float: left;
-  width: 195px;
-  height: 424px;
-  background-color: #e9f6ff;
-  padding: 4px;
-  margin: 10px 10px 10px 0;
-  border-radius: 4px;
+  width: 504px;
+  margin: 20px auto 0;
 
-  h3{
-    /*text-align: center;*/
-    font-weight: bold;
-    line-height: 35px;
-    border-bottom: 1px dashed #d5eaf9;
-  }
-
-  .cmd-item{
-    padding: 4px;
-    clear: both;
-    clear: both;
-    line-height: 24px;
-    /*border-bottom: 1px solid #fff;*/
-    &:hover{
-      background-color: #d9efff;
-    }
-  }
-
-  .iconfont{
-    float: right;
-    cursor: pointer;
-    margin-left: 5px;
-    &:hover{
-      color: #108ee9;
-    }
-  }
-
-  .add-cmd-btn{
+  .del-btn{
     position: absolute;
-    top: 12px;
-    right: 5px;
-    width: 18px;
-    height: 18px;
-    
-    i{
-      font-size: 12px;
+    right: 0;
+    top: 3px;
+  }
+
+  &-tabs {
+    /*float: none;*/
+    &.ant-tabs-card{
+
+      .ant-tabs-bar{
+        /*border-bottom: none;*/
+
+        .ant-tabs-tab{
+          border: none;
+          /*background-color: #fefefe;*/
+          &:hover{
+            color: #09488a;
+          }
+        }
+
+        .ant-tabs-tab-active{
+          background: #eaf7fe;
+          color: #0e77ca;
+        }
+      }
     }
-  }
-}
-
-.cmd-list{
-  width: 500px;
-  margin: 20px auto 40px;
-  min-height: 100px;
-  
-  .title{
-    width: 300px;
-    margin-bottom: 10px;
-    padding-left: 10px;
-    border-bottom: 1px dashed #ddd;
-    font-weight: 700;
-    font-size: 14px;
-  }
-
-  .item{
-    width: 484px;
-    height: 28px;
-    margin-bottom: 2px;
-    padding-left: 10px;
-    /*background-color: #fffaeb;*/
-    font-size: 12px;
-    line-height: 28px;
-    border-radius: 4px;
-
-
-    b{
-      margin-right: 4px;
+    .ant-tabs-nav-wrap{
+      float: none;
     }
-  }
 
-  .anticon{
-    float: right;
-    margin-right: 4px;
-    line-height: 28px;
-    font-weight: 700;
-    font-size: 12px;
-    /*color: #d73435;*/
-    cursor: pointer;
-  }
-}
-
-.cmd-form{
-  width: 400px;
-  margin: 20px auto;
-
-  .form-label{
-    display: block;
-  }
-
-  input{
-    width: 100%;
-    padding: 5px;
-    height: 28px;
-    border-radius: 3px;
-    border: 1px solid #d9d9d9;
-    color: #666;
-  }
-
-  .cmd-field{
-    vertical-align: middle;
-
-    button{
-      margin-top: 17px;
+    .ant-tabs-tabpane{
+      height: 350px;
+      padding: 20px;
+      /*background: #f8f8f8;*/
+      /*border: 1px solid #d8d8d8;
+      border-top: none;*/
     }
   }
 }
 
 
 
-/*.project-detail{
-	padding: 0 20px 0;
-  margin-top: 26px;
-	.header{
-		background-color: #f5f5f5;
-    padding: 10px;
-    margin-bottom: 20px;
-	}
-
-	.btn-grp{
-		float: right;
-	}
-
-	.terminal-wrap{
-		position: relative;
-		width: 460px;
-		height: 310px;
-		border: 1px dashed #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    overflow-y: auto;
-
-    .clear-btn{
-    	position: absolute;
-    	top: 2px;
-    	right: 2px;
-    }
-	}
-}
-*/

@@ -41,7 +41,13 @@ export const getAddressByUID = (uid) => {
   return info.address;
 };
 
-export const readABCJson = filePath => fs.readJsonSync(join(filePath, 'abc.json'));
+export const readABCJson = filePath => fs.readJsonSync(join(filePath, 'abc.json')).options;
+export const writeABCJson = (filePath, abc) => {
+  const abcPath = join(filePath, 'abc.json');
+  const file = fs.readJsonSync(abcPath);
+  file.options = abc;
+  fs.writeJsonSync(abcPath, file);
+};
 export const readPkgJson = filePath => fs.readJsonSync(join(filePath, 'package.json'));
 export const writePkgJson = (filePath, pkg) => fs.writeJsonSync(join(filePath, 'package.json'), pkg);
 export const isNowaProject = filePath => fs.existsSync(join(filePath, 'abc.json'));

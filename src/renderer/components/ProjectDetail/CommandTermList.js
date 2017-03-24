@@ -79,5 +79,10 @@ class CommandTermList extends Component {
   }
 }
 
+CommandTermList.propTypes = {
+  name: PropTypes.string.isRequired,
+  commands: PropTypes.array.isRequired,
+  dispatch: PropTypes.func.isRequired,
+};
 
 export default CommandTermList;

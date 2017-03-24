@@ -31,12 +31,7 @@ export const setLocalLanguage = language => storage.setItem(LANGUAGE, language);
 export const getLocalEditor = () => storage.getItem(EDITOR);
 export const setLocalEditor = editor => storage.setItem(EDITOR, editor);
 
-/*export const getLocalSublimePath = () => storage.getItem(SUBMIT_PATH);
-export const setLocalSublimePath = sublimePath => storage.setItem(SUBMIT_PATH, sublimePath);
 
-export const getLocalVScodePath = () => storage.getItem(VSCODE_PATH);
-export const setLocalVScodePath = vscodePath => storage.setItem(VSCODE_PATH, vscodePath);
-*/
 export const getLocalEditorPath = (editor) => {
   if (editor === SUBLIME) {
     return storage.getItem(SUBMIT_PATH);
@@ -56,16 +51,3 @@ export const setLocalEditorPath = (editor, editorPath) => {
 export const getLocalUpdateFlag = () => storage.getItem(UPDATE_TIP);
 export const setLocalUpdateFlag = () => storage.setItem(UPDATE_TIP, 1);
 
-/*export const setLocalCustomTemps = temps => storage.setItem(LOCAL_TEMP_PATHS, JSON.stringify(temps));
-export const getStoreCustomTemps = () => JSON.parse(storage.getItem(LOCAL_TEMP_PATHS) || '[]');
-export const getLocalCustomTemps = () => {
-  const temps = getStoreCustomTemps();
-  const filter = temps.filter(temp => fs.existsSync(temp.path));
-
-  setLocalCustomTemps(filter);
-
-  return filter;
-};
-
-export const getRemoteTemps = () => JSON.parse(storage.getItem(REMOTE_TEMP_URLS) || '[]');
-export const setRemoteTemps = temps => storage.setItem(REMOTE_TEMP_URLS, JSON.stringify(temps));*/

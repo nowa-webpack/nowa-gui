@@ -19,7 +19,7 @@ const ProjectDetailPage = ({
   }) => {
   let buildBtn;
   let startBtn;
-  const { start, port, path, pkg, loading } = current;
+  const { start, path, pkg, loading } = current;
   const hasBuildFunc = 'scripts' in pkg && 'build' in pkg.scripts;
   const hasStartFunc = 'scripts' in pkg && 'start' in pkg.scripts;
   const tabProps = { current, logType, dispatch, commands: commands[path] };
@@ -72,7 +72,7 @@ const ProjectDetailPage = ({
       <Spin tip="Loading..." spinning={loading || false}>
         <div className="opt-grp">
           { startBtn }
-          { start && port && <div className="opt" onClick={compassProj} >
+          { start && <div className="opt" onClick={compassProj} >
               <i className="iconfont icon-compass" /><br />{i18n('task.compass')}
             </div>
           }

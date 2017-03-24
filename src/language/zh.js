@@ -29,6 +29,8 @@ module.exports = {
 
 
   'project.tab.setting': '项目设置',
+  'project.tab.server': '开发配置',
+  'project.tab.build': '编译配置',
   'project.tab.console': '控制台',
   'project.tab.package': '包管理',
   'project.tab.listen_log': '监听日志',

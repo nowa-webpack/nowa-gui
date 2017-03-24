@@ -8,8 +8,6 @@ import { join } from 'path';
 import fs from 'fs-extra';
 
 import i18n from 'i18n';
-// const { command } = remote.getGlobal('services');
-// const { registry } = remote.getGlobal('config');
 
 const OverrideModal = ({ showModal, overrideFiles, onOverride, dispatch }) => {
 
@@ -36,9 +34,6 @@ const OverrideModal = ({ showModal, overrideFiles, onOverride, dispatch }) => {
   );
 }
 
-// <Button key="onImport" type="primary" onClick={onImport}>{i18n('form.import')}</Button>,
-
-
 OverrideModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
@@ -47,9 +42,7 @@ OverrideModal.propTypes = {
   // userAnswers: PropTypes.object.isRequired,
 };
 
-
 export default connect(({ init }) => ({
   showModal: init.showFormModal,
   overrideFiles: init.overrideFiles,
-  // userAnswers: init.userAnswers,
 }))(OverrideModal);

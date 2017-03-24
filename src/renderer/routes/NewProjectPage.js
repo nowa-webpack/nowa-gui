@@ -68,7 +68,6 @@ class NewProjectPage extends Component {
       };
       component = <InstallLog {...compProps} />;
     }
-    console.log(111)
 
     return (
       <Content className="ui-content new-proj">

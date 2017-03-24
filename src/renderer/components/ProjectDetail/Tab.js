@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import Tabs from 'antd/lib/tabs';
 import i18n from 'i18n';
 
-import SettingForm from './SettingForm';
+import ProjectSetting from '../ProjectSetting';
 import CommandTermList from './CommandTermList';
 import Terminal from './Terminal';
 
@@ -11,7 +11,7 @@ const TabPane = Tabs.TabPane;
 
 const Tab = ({ current, logType, dispatch, commands }) => {
   const cmdList = Object.keys(commands).filter(cmd => cmd !== 'start' && cmd !== 'build');
-  const hasCmdSide = cmdList.length > 0;
+  // const hasCmdSide = cmdList.length > 0;
   const termProps = {
     dispatch,
     name: current.path,
@@ -26,10 +26,15 @@ const Tab = ({ current, logType, dispatch, commands }) => {
     commands: cmdList
   };
 
+  const settingProps = {
+    project: current,
+    dispatch,
+  };
+
   return (
     <Tabs
       className="detail-tabs"
-      defaultActiveKey="1"
+      defaultActiveKey="2"
       animated={false}
       onChange={() => {}}
     >
@@ -38,7 +43,7 @@ const Tab = ({ current, logType, dispatch, commands }) => {
         <CommandTermList {...listProps} />
       </TabPane>
      
-      <TabPane tab={i18n('project.tab.setting')} key="3"><SettingForm />
+      <TabPane tab={i18n('project.tab.setting')} key="2"><ProjectSetting {...settingProps} />
       </TabPane>
     </Tabs>
   );
