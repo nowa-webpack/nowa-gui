@@ -14,9 +14,18 @@ class CommandModal extends Component {
       cmdValue: '',
     };
   }
+  componentWillReceiveProps({ showModal }) {
+    if (showModal !== this.props.showModal) {
+      this.setState({
+        cmdName: '',
+        cmdValue: '',
+      });
+    }
+  }
+
   handleOk() {
     const { cmdName, cmdValue } = this.state;
-    const { dispatch, commands } = this.props;
+    const { dispatch, commands, hideModal } = this.props;
 
     if (!(NAME_MATCH.test(cmdName))) {
       Message.error(i18n('msg.invalidName'));
@@ -40,26 +49,19 @@ class CommandModal extends Component {
       }
     });
      
-    this.props.hideModal();
-  }
-
-  hideModal() {
-    this.setState({
-      cmdName: '',
-      cmdValue: '',
-    });
-    this.props.hideModal();
+    hideModal();
   }
 
   render() {
     const { cmdName, cmdValue } = this.state;
-    const { showModal } = this.props;
+    const { showModal, hideModal } = this.props;
+
     return(
       <Modal
         title={i18n('cmd.modal.title')}
         visible={showModal}
         onOk={() => this.handleOk()} 
-        onCancel={() => this.hideModal()}
+        onCancel={() => hideModal()}
         wrapClassName="cmd-modal"
         okText={i18n('form.ok')}
         cancelText={i18n('form.cancel')}
@@ -84,5 +86,13 @@ class CommandModal extends Component {
     );
   }
 }
+
+CommandModal.propTypes = {
+  showModal: PropTypes.bool.isRequired,
+  commands: PropTypes.array.isRequired,
+  hideModal: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
+ 
+};
 
 export default CommandModal;

@@ -30,6 +30,7 @@ require('antd/lib/select');
 require('antd/lib/input');
 require('antd/lib/checkbox');
 require('antd/lib/radio');
+require('antd/lib/progress');
 
 
 

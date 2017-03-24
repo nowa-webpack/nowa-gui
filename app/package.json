@@ -27,7 +27,8 @@
   },
   "homepage": "https://github.com/nowa-webpack/nowa-gui",
   "author": {
-    "name": "Poling"
+    "name": "Poling",
+    "email": "466681097@qq.com"
   },
   "license": "MIT"
 }

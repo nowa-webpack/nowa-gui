@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { ipcRenderer, remote } from 'electron';
+// import { ipcRenderer, remote } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Progress from 'antd/lib/progress';
@@ -117,7 +117,6 @@ class Log extends Component {
 }
 
 Log.propTypes = {
-  // term: PropTypes.object,
   prev: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
 };

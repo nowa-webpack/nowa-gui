@@ -255,11 +255,6 @@ class LayoutWrap extends Component {
   }
 }
 
-// <div className={classNames({
-//       wifi: true,
-//       online: online
-//     })}><i className="iconfont icon-wifi" />
-//   </div>
 
 LayoutWrap.propTypes = {
   version: PropTypes.string.isRequired,

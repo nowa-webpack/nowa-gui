@@ -37,20 +37,17 @@
     },
     "linux": {
       "target": [
-        "AppImage",
-        "deb",
-        "rpm"
-      ],
-      "icon": "static/icon.icns"
+        "deb"
+      ]
     }
   },
   "homepage": "https://github.com/nowa-webpack/nowa-gui",
   "author": {
-    "name": "Poling"
+    "name": "Poling",
+    "email": "466681097@qq.com"
   },
   "license": "MIT",
   "devDependencies": {
-    "ansi-html": "0.0.7",
     "antd": "^2.7.0",
     "autoprefixer": "^6.6.1",
     "babel-loader": "^6.2.10",
@@ -97,7 +94,6 @@
     "webpack-merge": "^2.6.1"
   },
   "dependencies": {
-    "cross-env": "^3.1.4",
-    "npm-run-path": "^2.0.2"
+    "cross-env": "^3.1.4"
   }
 }

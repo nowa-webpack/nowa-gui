@@ -226,19 +226,6 @@ class CustomModal extends Component {
     );
   }
 }
-/*
-<TabPane tab={i18n('template.modal.local.title')} key="1">
-            <LocalForm
-              data={this.localObj}
-              onChangeData={this.changeLocalObj}
-            />
-          </TabPane>
-          <TabPane tab={i18n('template.modal.remote.title')} key="2">
-            <RemoteForm
-              data={this.remoteObj}
-              onChangeData={this.changeRemoteObj}
-            />
-          </TabPane>*/
 
 CustomModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
@@ -247,7 +234,6 @@ CustomModal.propTypes = {
   item: PropTypes.object
 };
 
-// export default CustomModal;
 
 export default connect(({ init }) => ({
   showModal: init.showTemplateModal,
