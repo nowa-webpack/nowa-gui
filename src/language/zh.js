@@ -7,6 +7,7 @@ module.exports = {
   'project.list.title': '项目',
   'project.list.empty': '拖入Nowa项目',
   'project.list.add': '新建Nowa项目',
+  'project.list.import': '导入项目',
   'project.meta.port': '端口',
   'project.meta.path': '路径',
   'project.meta.name': '项目名称',
@@ -29,6 +30,7 @@ module.exports = {
 
   'project.tab.setting': '项目设置',
   'project.tab.console': '控制台',
+  'project.tab.package': '包管理',
   'project.tab.listen_log': '监听日志',
   'project.tab.compile_log': '编译输出',
   'project.tab.command_log': '选择命令窗口',
@@ -109,6 +111,7 @@ module.exports = {
 
   'cmd.sider.title': '命令集',
   'cmd.modal.title': '添加命令',
+  'cmd.select.opt': '选择命令窗口',
   'cmd.meta.name': '命令名',
   'cmd.meta.value': '命令体',
 

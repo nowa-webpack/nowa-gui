@@ -122,7 +122,7 @@ class Terminal extends Component {
             onClick={() => this.handleChangeCustom('build')}
           >{i18n('project.tab.compile_log')}</div>
           { hasSide &&
-            <Select placeholder={i18n('project.tab.command_log')}
+            <Select placeholder={i18n('cmd.select.opt')}
               style={{ width: 120 }}
               onChange={this.handleChangeCustom}
               value={selectValue}

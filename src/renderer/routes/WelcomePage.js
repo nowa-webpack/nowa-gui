@@ -13,48 +13,28 @@ const { registry } = remote.getGlobal('config');
 const WelcomePage = ({ version, dispatch }) => {
   const handleImport = () => {
     try {
-      const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+      // const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
 
-      const filePath = importPath[0];
+      // const filePath = importPath[0];
 
-      const pkgs = getPkgDependencies(readPkgJson(filePath));
+      // const pkgs = getPkgDependencies(readPkgJson(filePath));
 
-      const installOptions = {
-        root: filePath,
-        registry: registry(),
-        targetDir: filePath,
-        storeDir: join(filePath, '.npminstall'),
-        timeout: 5 * 60000,
-        pkgs,
-      };
+      // const installOptions = {
+      //   root: filePath,
+      //   registry: registry(),
+      //   targetDir: filePath,
+      //   storeDir: join(filePath, '.npminstall'),
+      //   timeout: 5 * 60000,
+      //   pkgs,
+      // };
 
       dispatch({
         type: 'project/importProj',
-        payload: { filePath, needInstall: true },
+        payload: { filePath: null, needInstall: true },
       });
 
-      command.importModulesInstall(installOptions);
-
-      // const term = command.installModules(installOptions);
-
-      // term.stdout.on('data', (data) => {
-      //   console.log(data.toString());
-      // });
-      // term.stderr.on('data', (data) => {
-      //   console.log(data.toString());
-      // });
-
-      // term.on('exit', (code) => {
-      //   if (!code) {
-      //     console.log('exit drag installing');
-      //     dispatch({
-      //       type: 'project/finishedInstallDependencies',
-      //       payload: {
-      //         filePath,
-      //       }
-      //     });
-      //   }
-      // });
+      // command.importModulesInstall(installOptions);
+      
     } catch (e) {
       console.log(e);
     }

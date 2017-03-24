@@ -1,11 +1,12 @@
 const co = require('co');
-const npminstall = require('npminstall');
 const fs = require('fs-extra');
 const semver = require('semver');
 const mkdirp = require('mkdirp');
 const { join } = require('path');
+const pubsub = require('electron-pubsub');
 
-const { request } = require('../utils');
+
+const { request, getMockPercent, newLog } = require('../utils');
 const { constants } = require('../is');
 const { getWin } = require('../windowManager');
 const { importModulesInstall } = require('../command');
@@ -66,13 +67,32 @@ const installNowaModules = (pkgs, endCb) => {
   const opt = getInstallOpt(pkgs);
   const term = importModulesInstall(opt, true);
   console.time('nowa install');
-  // term.stdout.on('data', (data) => {
-  //   console.log(data.toString());
-  // });
+  let percent = 0;
+  let log = '';
 
-  // term.stderr.on('data', (data) => {
-  //   console.log('err', data.toString());
-  // });
+  term.stdout.on('data', (data) => {
+    const str = data.toString();
+    console.log(str);
+    if (str.indexOf('INSTALL_PROGRESS') !== -1) {
+      percent = getMockPercent(str, percent);
+    } else {
+      log = newLog(log, str);
+    }
+    pubsub.publish('nowa-installing', {
+      percent,
+      log,
+    });
+  });
+
+  term.stderr.on('data', (data) => {
+    log = newLog(log, data.toString());
+    console.log(data.toString());
+    pubsub.publish('nowa-installing', {
+    // win.webContents.send('install-modules', {
+      percent,
+      log,
+    });
+  });
 
   term.on('exit', (code) => {
     console.log('exit install', code);
@@ -81,7 +101,8 @@ const installNowaModules = (pkgs, endCb) => {
       config.nowaNeedInstalled(false);
       console.log('nowaNeedInstalled', config.nowaNeedInstalled());
       console.timeEnd('nowa install');
-      win.webContents.send('nowa-installed');
+      pubsub.publish('nowa-installed');
+      // win.webContents.send('nowa-installed');
     }
   });
 };

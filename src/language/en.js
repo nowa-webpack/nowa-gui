@@ -8,6 +8,7 @@ module.exports = {
   'project.list.title': 'Projects',
   'project.list.empty': 'Drag NOWA project folder here',
   'project.list.add': 'New NOWA Project',
+  'project.list.import': 'Import Project',
   'project.meta.port': 'Port',
   'project.meta.path': 'Path',
   'project.meta.name': 'Name',
@@ -29,9 +30,10 @@ module.exports = {
 
   'project.tab.setting': 'Setting',
   'project.tab.console': 'Console',
+  'project.tab.package': 'Package',
   'project.tab.listen_log': 'Listener log',
   'project.tab.compile_log': 'Compiler log',
-  'project.tab.command_log': 'Command List',
+  // 'project.tab.command_log': 'Command List',
 
   'project.new.title': 'Create New Project',
   'project.new.version': 'Version',
@@ -109,6 +111,7 @@ module.exports = {
 
   'cmd.sider.title': 'Command List',
   'cmd.modal.title': 'Add a command',
+  'cmd.select.opt': 'Command List',
   'cmd.meta.name': 'Command Name',
   'cmd.meta.value': 'Command Content',
 

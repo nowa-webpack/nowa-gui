@@ -23,6 +23,17 @@ const List = ({ current, projects, dispatch }) => {
             })}
           />
         </Tooltip>
+        <Tooltip placement="bottom" title={i18n('project.list.import')} >
+          <Button type="default"
+            shape="circle"
+            size="small"
+            icon="folder"
+            onClick={() => dispatch({
+              type: 'project/importProj',
+              payload: { filePath: null, needInstall: true }
+            })}
+          />
+        </Tooltip>
       </header>
       <div className="item-list">
       {

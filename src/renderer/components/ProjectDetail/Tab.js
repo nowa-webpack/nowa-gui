@@ -43,8 +43,8 @@ const Tab = ({ current, logType, dispatch, commands }) => {
     </Tabs>
   );
 };
- // <TabPane tab={i18n('project.tab.command')} key="2"><CommandForm commands={commands} dispatch={dispatch} />
-      // </TabPane>
+ // <TabPane tab={i18n('project.tab.package')} key="2">ssss
+ //      </TabPane>
 
 Tab.propTypes = {
   commands: PropTypes.object,

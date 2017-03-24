@@ -24,18 +24,21 @@ class Log extends Component {
   }
 
   componentDidMount() {
+    // ipcRenderer.on('install-modules', this.onReceiveLog.bind(this));
+    // ipcRenderer.on('install-modules-finished', this.onReceiveFinished.bind(this));
     pubsub.subscribe('install-modules', this.onReceiveLog.bind(this));
     pubsub.subscribe('install-modules-finished', this.onReceiveFinished.bind(this));
   }
 
   componentWillUnmount() {
     console.log('umount log');
+    // ipcRenderer.removeAllListeners('install-modules');
+    // ipcRenderer.removeAllListeners('install-modules-finished');
     pubsub.unsubscribe('install-modules');
     pubsub.unsubscribe('install-modules-finished');
   }
 
-  onReceiveLog(event, { percent, log, timestamp }) {
-    this.timestamp = timestamp;
+  onReceiveLog(event, { percent, log }) {
     this.setState({
       percent,
       log,

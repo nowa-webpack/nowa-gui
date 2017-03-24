@@ -6,8 +6,12 @@ import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
 import { getLocalProjects, setLocalProjects } from 'gui-local';
-import { readABCJson, readPkgJson, isNowaProject } from 'gui-util';
+import { readABCJson, readPkgJson, isNowaProject, getPkgDependencies } from 'gui-util';
+
 const taskStart = remote.getGlobal('start') || {};
+const { registry } = remote.getGlobal('config');
+const { command } = remote.getGlobal('services');
+
 
 
 const getProjectInfoByPath = (filePath) => {
@@ -106,11 +110,24 @@ export default {
   effects: {
     * importProj({ payload: { filePath, needInstall } }, { put, select }) {
       try {
-        console.log('filePath', filePath)
+        console.log('filePath', filePath);
         if (!filePath) {
           const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
 
           filePath = importPath[0];
+
+          const pkgs = getPkgDependencies(readPkgJson(filePath));
+
+          const installOptions = {
+            root: filePath,
+            registry: registry(),
+            targetDir: filePath,
+            storeDir: join(filePath, '.npminstall'),
+            timeout: 5 * 60000,
+            pkgs,
+          };
+
+          command.importModulesInstall(installOptions);
         }
 
         const projectInfo = getProjectInfoByPath(filePath);

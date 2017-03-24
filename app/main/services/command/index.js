@@ -10,6 +10,7 @@ const pubsub = require('electron-pubsub');
 
 const { constants, isWin } = require('../is');
 const { getWin } = require('../windowManager');
+const { getPercent, newLog } = require('../utils');
 const task = require('../task');
 
 const { APP_PATH, NPM_PATH, BIN_PATH, NODE_PATH } = constants; 
@@ -30,7 +31,7 @@ if (isWin) {
   env.PATH = pathEnv;
 }
 
-const newLog = (oldLog, str) => oldLog + ansiHTML(str.replace(/\n/g, '<br>'));
+// const newLog = (oldLog, str) => oldLog + ansiHTML(str.replace(/\n/g, '<br>'));
 
 // fs.writeJsonSync(join(APP_PATH, 'env.text'), { prv: process.env, env, npmEnv});
 module.exports = {
@@ -53,10 +54,11 @@ module.exports = {
       const str = data.toString();
       console.log(str);
       if (str.indexOf('INSTALL_PROGRESS') !== -1) {
-        const a = str.split('INSTALL_PROGRESS');
-        const b = a[1].replace(/[\n\s]/g, '');
-        const c = b.slice(1, b.length - 1).split(',').map(i => i.split(':'));
-        percent = (c[1][1] / c[0][1] * 100).toFixed(0);
+        percent = getPercent(str);
+        // const a = str.split('INSTALL_PROGRESS');
+        // const b = a[1].replace(/[\n\s]/g, '');
+        // const c = b.slice(1, b.length - 1).split(',').map(i => i.split(':'));
+        // percent = (c[1][1] / c[0][1] * 100).toFixed(0);
       } else {
         log = newLog(log, str);
       }
@@ -65,7 +67,7 @@ module.exports = {
         project: options.root,
         percent,
         log,
-        timestamp: uuid.v4(),
+        // timestamp: uuid.v4(),
       });
     });
 
@@ -77,7 +79,7 @@ module.exports = {
         project: options.root,
         percent,
         log,
-        timestamp: uuid.v4(),
+        // timestamp: uuid.v4(),
       });
     });
 
@@ -90,7 +92,6 @@ module.exports = {
       });
       term = null;
     });
-    
   },
 
   importModulesInstall(options, isNowaInstall) {
@@ -185,7 +186,6 @@ module.exports = {
         });
       }
     });
-
   },
 
   stop({ name, type }) {
