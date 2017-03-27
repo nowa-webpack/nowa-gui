@@ -1,11 +1,19 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 import Badge from 'antd/lib/badge';
+import Icon from 'antd/lib/icon';
+import Dropdown from 'antd/lib/dropdown';
+import Menu from 'antd/lib/menu';
+import i18n from 'i18n';
+
+
+
 
 
 const Item = ({ project, current, dispatch }) => {
 
   const { name, start, taskErr } = project;
+  const isActive = current === name;
 
   const handleClick = () => {
     dispatch({
@@ -23,6 +31,20 @@ const Item = ({ project, current, dispatch }) => {
     });
   };
 
+  const removeProj = () => {
+    dispatch({
+      type: 'project/remove',
+      payload: { project }
+    });
+  };
+
+  const menu = (
+    <Menu onClick={removeProj}>
+      <Menu.Item key="1">{i18n('form.delete')}</Menu.Item>
+    </Menu>
+  );
+
+
   let status;
 
   if (taskErr) {
@@ -35,12 +57,16 @@ const Item = ({ project, current, dispatch }) => {
     <div
       className={classnames({
         item: true,
-        'item-active': current === name
+        'item-active': isActive
       })}
       onClick={handleClick}
     >
+      { isActive && <Dropdown overlay={menu} trigger={['click']} className="item-down">
+       <Icon type="down" />
+      </Dropdown> }
       { status }
       <div className="name">{ name }</div>
+      
     </div>
   );
 };

@@ -28,14 +28,7 @@ const Setting = ({ dispatch, project }) => {
         <TabPane tab={i18n('project.tab.server')} key="1"><ServerConfigForm /></TabPane>
         <TabPane tab={i18n('project.tab.build')} key="2"><BuildConfigForm /></TabPane>
       </Tabs>
-      <Popconfirm
-        placement="bottomRight"
-        title={i18n('msg.removeProject')}
-        onConfirm={removeProj}
-        okText={i18n('form.ok')}
-        cancelText={i18n('form.cancel')}
-      ><Button type="danger" size="small" icon="delete" className="del-btn">{i18n('form.delete')}</Button>
-      </Popconfirm>
+      
     </div>
   );
 };
@@ -48,3 +41,12 @@ Setting.propTypes = {
 };
 
 export default Setting;
+
+// <Popconfirm
+//     placement="bottomRight"
+//     title={i18n('msg.removeProject')}
+//     onConfirm={removeProj}
+//     okText={i18n('form.ok')}
+//     cancelText={i18n('form.cancel')}
+//   ><Button type="danger" size="small" icon="delete" className="del-btn">{i18n('form.delete')}</Button>
+// </Popconfirm>

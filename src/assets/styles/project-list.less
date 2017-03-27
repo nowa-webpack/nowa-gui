@@ -28,6 +28,7 @@
 		position: relative;
 		padding: 6px 2px 6px 16px;
 		cursor: pointer;
+		border-right: 2px solid #fff;
 
 		.name{
 			margin-left: 18px;
@@ -47,11 +48,20 @@
 			}
 		}
 		
-		&.item-active{
+		&-active{
 			background-color: #eaf7fe;
-			border-right: 2px solid #2db7fa;
+			border-color: #2db7fa;
 			/*transition: background-color .5s;*/
-			transform: translateZ(0);
+			/*transform: translateZ(0);*/
+			transition: background-color .5s;
+		}
+
+		.anticon-down{
+			float: right;
+			margin-top: 6px;
+	    margin-right: 4px;
+	    font-size: 10px;
+	    color: #aaa;
 		}
 	}
 }

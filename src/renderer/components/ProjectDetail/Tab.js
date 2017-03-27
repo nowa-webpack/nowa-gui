@@ -42,14 +42,15 @@ const Tab = ({ current, logType, dispatch, commands }) => {
         <Terminal {...termProps} />
         <CommandTermList {...listProps} />
       </TabPane>
-     
       <TabPane tab={i18n('project.tab.setting')} key="2"><ProjectSetting {...settingProps} />
       </TabPane>
+      
     </Tabs>
   );
 };
- // <TabPane tab={i18n('project.tab.package')} key="2">ssss
- //      </TabPane>
+// <TabPane tab={i18n('project.tab.package')} key="3">ssss
+//       </TabPane>
+
 
 Tab.propTypes = {
   commands: PropTypes.object,
