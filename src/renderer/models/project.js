@@ -17,20 +17,18 @@ const { command } = remote.getGlobal('services');
 
 
 const getProjectInfoByPath = (filePath) => {
-  // let port = '';
   let abc = {};
+  const pkg = readPkgJson(filePath);
   const isNowa = isNowaProject(filePath);
-
   if (isNowa) {
     abc = readABCJson(filePath);
-    // port = abc.options.port || '3000';
   }
 
   return {
+    name: pkg.name,
     isNowa,
-    // port,
     abc,
-    pkg: readPkgJson(filePath),
+    pkg,
   };
 };
 
@@ -266,7 +264,7 @@ export default {
       yield put({
         type: 'changeStatus',
         payload: {
-          current: project,
+          current: { ...project },
           projects: [...projects],
         }
       });
@@ -274,6 +272,18 @@ export default {
     * updatePkg({ payload: { project, pkg } }, { put, select }) {
       const { projects } = yield select(state => state.project);
       project.pkg = pkg;
+
+      if (project.name !== pkg.name) {
+        project.name = pkg.name;
+        const storeProjects = getLocalProjects();
+        storeProjects.map((item) => {
+          if (item.path === project.path) {
+            item.name = pkg.name;
+          }
+          return item;
+        });
+        setLocalProjects(storeProjects);
+      }
 
       writePkgJson(project.path, pkg);
 
@@ -287,61 +297,16 @@ export default {
       yield put({
         type: 'changeStatus',
         payload: {
-          current: project,
+          current: { ...project },
           projects: [...projects],
         }
       });
     },
-    /** updateBuildConfig({ payload: { project, config } }, { put, select }) {
-      // const { projects } = yield select(state => state.project);
-      const abc = { ...project.abc, ...config };
-      yield put({
-        type: 'updateABC',
-        payload: { project, config }
-      })
-      // project.abc = newAbc;
-
-      // writeABCJson(project.path, newAbc);
-
-      // projects.map((item) => {
-      //   if (item.path === project.path) {
-      //     return project;
-      //   }
-      //   return item;
-      // });
-
-      // yield put({
-      //   type: 'changeStatus',
-      //   payload: {
-      //     current: project,
-      //     projects: [...projects],
-      //   }
-      // });
-    },*/
     * updateServerConfig({ payload: { project, abc } }, { put, select }) {
-      // const { projects } = yield select(state => state.project);
       yield put({
         type: 'updateABC',
         payload: { project, abc }
       });
-      // project.abc = abc;
-
-      // writeABCJson(project.path, abc);
-
-      // projects.map((item) => {
-      //   if (item.path === project.path) {
-      //     return project;
-      //   }
-      //   return item;
-      // });
-
-      // yield put({
-      //   type: 'changeStatus',
-      //   payload: {
-      //     current: project,
-      //     projects: [...projects],
-      //   }
-      // });
 
       if (project.start) {
         yield put({
@@ -354,7 +319,6 @@ export default {
           payload: { project }
         });
       }
-
     },
     /** update({ payload: { old, project } }, { put, select }) {
       if (old.name !== project.name || old.port !== project.port) {

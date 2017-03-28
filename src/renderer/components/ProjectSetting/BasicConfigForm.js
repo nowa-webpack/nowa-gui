@@ -24,7 +24,7 @@ class BuildConfigForm extends Component {
 
   getInitState(pkg) {
     const state = {
-      // name: pkg.name,
+      name: pkg.name,
       author: pkg.author,
       version: pkg.version,
       description: pkg.description,

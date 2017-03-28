@@ -56,10 +56,6 @@ module.exports = {
       console.log(str);
       if (str.indexOf('INSTALL_PROGRESS') !== -1) {
         percent = getPercent(str);
-        // const a = str.split('INSTALL_PROGRESS');
-        // const b = a[1].replace(/[\n\s]/g, '');
-        // const c = b.slice(1, b.length - 1).split(',').map(i => i.split(':'));
-        // percent = (c[1][1] / c[0][1] * 100).toFixed(0);
       } else {
         log = newLog(log, str);
       }
@@ -68,7 +64,6 @@ module.exports = {
         project: options.root,
         percent,
         log,
-        // timestamp: uuid.v4(),
       });
     });
 
@@ -80,7 +75,6 @@ module.exports = {
         project: options.root,
         percent,
         log,
-        // timestamp: uuid.v4(),
       });
     });
 

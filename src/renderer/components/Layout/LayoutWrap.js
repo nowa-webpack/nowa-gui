@@ -70,7 +70,7 @@ class LayoutWrap extends Component {
     }
   }
 
-  componentWillReceiveProps({ newVersion, online, startWacthProject, dispatch }) {
+  componentWillReceiveProps({ newVersion, online, startWacthProject, dispatch, current }) {
     if (newVersion !== this.props.newVersion) {
       confirm({
         title: i18n('msg.updateConfirm'),
@@ -106,11 +106,11 @@ class LayoutWrap extends Component {
         }, 5000);
       }
     }
+    
   }
 
   getUpdateVersion() {
     const { dispatch, version } = this.props;
-    // request('https://registry.npm.taobao.org/nowa-gui-version/latest')
     request(`${registry()}/nowa-gui-version/latest`)
       .then(({ data }) => {
         const newVersion = data.version;
@@ -204,23 +204,23 @@ class LayoutWrap extends Component {
   }
 
   render() {
-    const { showPage, dispatch, version, current, children } = this.props;
-    const { online } = this.state;
+    const { showPage, current, children } = this.props;
+    // const { online } = this.state;
     const closeBtn = (
       <div className="icn icn-x" key="0" onClick={() => windowManager.close()}>
         <i className="iconfont icon-x" />
       </div>
-      );
+    );
     const minimizeBtn = (
       <div className="icn icn-min" key="1" onClick={() => windowManager.minimize()}>
         <i className="iconfont icon-msnui-minimize" />
       </div>
-      );
+    );
     const maximizeBtn = (
       <div className="icn icn-max" key="2">
         <i className="iconfont icon-msnui-maximize" />
       </div>
-      );
+    );
 
     return (
       <Dropzone className="container"
@@ -234,8 +234,6 @@ class LayoutWrap extends Component {
 
             { showPage > 0 && <div className="bar-bd" /> }
 
-            
-
             <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
 
             { showPage === 2 && <div className="proj-path">
@@ -244,7 +242,9 @@ class LayoutWrap extends Component {
             </div>}
 
             <div className="app-opt">
-              { IS_WIN ? [closeBtn, maximizeBtn, minimizeBtn] : [closeBtn, minimizeBtn, maximizeBtn]}
+              { IS_WIN
+                  ? [closeBtn, maximizeBtn, minimizeBtn]
+                  : [closeBtn, minimizeBtn, maximizeBtn]}
             </div>
           </Header>
           { children }
@@ -267,6 +267,7 @@ LayoutWrap.propTypes = {
   online: PropTypes.bool.isRequired,
   startWacthProject: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default connect(({ layout, project }) => ({
