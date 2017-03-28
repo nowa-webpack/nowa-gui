@@ -70,6 +70,7 @@
     "electron-rebuild": "^1.5.7",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.9.0",
+    "git-config": "^0.0.7",
     "html-webpack-plugin": "^2.28.0",
     "i18n-helper": "^1.2.0",
     "ip": "^1.1.4",
@@ -90,8 +91,6 @@
     "react-hot-loader": "^3.0.0-beta.6",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "uxcore-tabs": "^0.5.6",
-    "version-comparison": "^2.1.1",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.1",
     "webpack-merge": "^2.6.1"

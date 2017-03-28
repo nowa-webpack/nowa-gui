@@ -29,6 +29,7 @@ module.exports = {
   'task.folder': process.platform === 'darwin' ? 'Finder' : 'Folder',
 
   'project.tab.setting': 'Setting',
+  'project.tab.basic': 'Basic Config',
   'project.tab.server': 'Server Config',
   'project.tab.build': 'Build Config',
   'project.tab.console': 'Console',

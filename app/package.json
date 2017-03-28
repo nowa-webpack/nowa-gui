@@ -16,7 +16,6 @@
     "electron-is": "^2.4.0",
     "electron-log": "^1.3.0",
     "electron-pubsub": "^0.1.0",
-    "electron-safe-ipc": "^0.6.1",
     "fix-path": "^2.1.0",
     "fs-extra": "^2.0.0",
     "getmac": "^1.2.1",

@@ -19,13 +19,16 @@ import OverrideModal from './OverrideModal';
 
 const registryList = [{
   name: 'cnpm (https://registry.npm.taobao.org)',
-  value: 'https://registry.npm.taobao.org'
+  value: 'cnpm'
+  // value: 'https://registry.npm.taobao.org'
 }, {
   name: 'tnpm (http://registry.npm.alibaba-inc.com)',
-  value: 'http://registry.npm.alibaba-inc.com'
+  value: 'tnpm'
+  // value: 'http://registry.npm.alibaba-inc.com'
 }, {
   name: 'npm (https://registry.npmjs.org)',
-  value: 'https://registry.npmjs.org'
+  value: 'npm'
+  // value: 'https://registry.npmjs.org'
 }];
 
 
@@ -61,6 +64,16 @@ class Form extends Component {
       repository: '',
     };
     this.overwrite = this.overwrite.bind(this);
+  }
+
+  componentWillReceiveProps({ isGitEmptyFolder, next, dispatch }) {
+    if (isGitEmptyFolder !== this.props.isGitEmptyFolder && isGitEmptyFolder) {
+      dispatch({
+        type: 'init/changeStatus',
+        payload: { isGitEmptyFolder: false }
+      });
+      next();
+    }
   }
 
   selectPath() {
@@ -118,6 +131,7 @@ class Form extends Component {
       dispatch({
         type: 'init/checkOverrideFiles',
       });
+      // next();
     } else {
       this.overwrite();
     }
@@ -216,6 +230,7 @@ class Form extends Component {
 
 Form.propTypes = {
   extendsProj: PropTypes.object,
+  isGitEmptyFolder: PropTypes.bool.isRequired,
   prev: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
@@ -224,4 +239,5 @@ Form.propTypes = {
 
 export default connect(({ init }) => ({ 
   extendsProj: init.extendsProj,
+  isGitEmptyFolder: init.isGitEmptyFolder,
 }))(Form);

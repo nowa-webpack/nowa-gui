@@ -4,7 +4,9 @@ import { join, dirname, basename } from 'path';
 import fs from 'fs-extra';
 import mkdirp from 'mkdirp';
 import glob from 'glob';
+import gitConfig from 'git-config';
 import Message from 'antd/lib/message';
+
 
 import i18n from 'i18n';
 import { delay, getPkgDependencies, readPkgJson } from 'gui-util';
@@ -41,13 +43,13 @@ export default {
     extendsProj: {},
     sltItem: {},
     overrideFiles: [],
-    
+    isGitEmptyFolder: false,
 
     showTemplateModal: false,
     showFormModal: false,
     editTemplate: {},
     templateModalTabType: 1,
-    term: null,
+    // term: null,
     // projPath: '',
     userAnswers: {},
     installOptions: {},
@@ -198,8 +200,13 @@ export default {
 
       let answers = { ...payload };
 
-      answers.npm = 'npm';
+      // answers.npm = 'npm';
+      answers.npm = answers.registry;
       answers.template = '';
+
+      const config = gitConfig.sync(join(answers.projPath, '.git', 'config')) || {};
+
+      answers.repository = (config['remote "origin"'] || {}).url || '';
 
       if (extendsProj.answers) {
         answers = extendsProj.answers(answers, {});
@@ -231,7 +238,6 @@ export default {
       });
 
       if (overrideFiles.length > 0) {
-
         yield put({
           type: 'changeStatus',
           payload: {
@@ -239,7 +245,21 @@ export default {
             showFormModal: true,
           }
         });
+      // } else if (fs.existsSync(join(sltItem.path, '.git'))) {
+      //   yield put({
+      //     type: 'changeStatus',
+      //     payload: { isGitEmptyFolder: true }
+      //   });
+      //   yield put({
+      //     type: 'copyTemplateToTarget',
+      //   });
       } else {
+        if (fs.existsSync(join(userAnswers.projPath, '.git'))) {
+          yield put({
+            type: 'changeStatus',
+            payload: { isGitEmptyFolder: true }
+          });
+        }
         yield put({
           type: 'copyTemplateToTarget',
         });

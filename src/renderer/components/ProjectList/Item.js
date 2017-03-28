@@ -6,14 +6,10 @@ import Dropdown from 'antd/lib/dropdown';
 import Menu from 'antd/lib/menu';
 import i18n from 'i18n';
 
-
-
-
-
-const Item = ({ project, current, dispatch }) => {
+const Item = ({ project, filePath, dispatch }) => {
 
   const { name, start, taskErr } = project;
-  const isActive = current === name;
+  const isActive = filePath === name;
 
   const handleClick = () => {
     dispatch({
@@ -72,7 +68,7 @@ const Item = ({ project, current, dispatch }) => {
 };
 
 Item.propTypes = {
-  current: PropTypes.string.isRequired,
+  filePath: PropTypes.string,
   project: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };

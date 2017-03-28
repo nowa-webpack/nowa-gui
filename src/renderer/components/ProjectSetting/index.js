@@ -10,6 +10,7 @@ import { PORT_MATCH } from 'gui-const';
 
 import BuildConfigForm from './BuildConfigForm';
 import ServerConfigForm from './ServerConfigForm';
+import BasicConfigForm from './BasicConfigForm';
 
 const TabPane = Tabs.TabPane;
 
@@ -25,8 +26,9 @@ const Setting = ({ dispatch, project }) => {
   return(
     <div className="setting">
       <Tabs type="card" className="setting-tabs" defaultActiveKey="1">
-        <TabPane tab={i18n('project.tab.server')} key="1"><ServerConfigForm /></TabPane>
-        <TabPane tab={i18n('project.tab.build')} key="2"><BuildConfigForm /></TabPane>
+        <TabPane tab={i18n('project.tab.basic')} key="1"><BasicConfigForm /></TabPane>
+        <TabPane tab={i18n('project.tab.server')} key="2"><ServerConfigForm /></TabPane>
+        <TabPane tab={i18n('project.tab.build')} key="3"><BuildConfigForm /></TabPane>
       </Tabs>
       
     </div>

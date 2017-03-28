@@ -98,6 +98,8 @@
 
 .detail-tabs{
   top: 30px;
+  height: 480px;
+
 
   .ant-tabs-nav-wrap{
     float: right;
@@ -155,10 +157,14 @@
   }
 }
 
+.set-tabpane{
+  height: 444px;
+  background-color: #f5f5f5;
+  padding: 10px;
+}
+
 .setting {
   position: relative;
-  width: 604px;
-  margin: 20px auto 0;
 
   .del-btn{
     position: absolute;
@@ -171,18 +177,18 @@
     &.ant-tabs-card{
 
       .ant-tabs-bar{
-        /*border-bottom: none;*/
+        border-bottom: none;
 
         .ant-tabs-tab{
           border: none;
-          /*background-color: #fefefe;*/
+          background-color: #eee;
           &:hover{
             color: #09488a;
           }
         }
 
         .ant-tabs-tab-active{
-          background: #eaf7fe;
+          background: #fff;
           color: #0e77ca;
         }
       }
@@ -192,12 +198,16 @@
     }
 
     .ant-tabs-tabpane{
-      height: 350px;
-      padding: 20px;
-      /*background: #f8f8f8;*/
+      height: 390px;
+      padding-top: 10px;
+      background: #fff;
       /*border: 1px solid #d8d8d8;
       border-top: none;*/
     }
+  }
+
+  .ui-form {
+    width: 600px;
   }
 }
 

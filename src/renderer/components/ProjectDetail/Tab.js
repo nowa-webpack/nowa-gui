@@ -46,7 +46,7 @@ const Tab = ({ current, logType, dispatch, commands }) => {
         <CommandTermList {...listProps} />
         </div>
       </TabPane>
-      <TabPane tab={i18n('project.tab.setting')} key="2"><ProjectSetting {...settingProps} />
+      <TabPane tab={i18n('project.tab.setting')} key="2" className="set-tabpane"><ProjectSetting {...settingProps} />
       </TabPane>
      
     </Tabs>

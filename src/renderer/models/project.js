@@ -7,7 +7,8 @@ import i18n from 'i18n';
 
 import { getLocalProjects, setLocalProjects } from 'gui-local';
 import { readABCJson, writeABCJson,
-  readPkgJson, isNowaProject, getPkgDependencies, delay
+  readPkgJson, writePkgJson,
+  isNowaProject, getPkgDependencies, delay
 } from 'gui-util';
 
 const taskStart = remote.getGlobal('start') || {};
@@ -254,6 +255,27 @@ export default {
       project.abc = abc;
 
       writeABCJson(project.path, abc);
+
+      projects.map((item) => {
+        if (item.path === project.path) {
+          return project;
+        }
+        return item;
+      });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          current: project,
+          projects: [...projects],
+        }
+      });
+    },
+    * updatePkg({ payload: { project, pkg } }, { put, select }) {
+      const { projects } = yield select(state => state.project);
+      project.pkg = pkg;
+
+      writePkgJson(project.path, pkg);
 
       projects.map((item) => {
         if (item.path === project.path) {

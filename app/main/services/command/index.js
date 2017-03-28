@@ -193,10 +193,10 @@ module.exports = {
     const t = task.getTask(type, name);
     if (t.term) {
       // t.term.kill();
-      if (isMac) {
-        t.term.kill();
-      } else {
+      if (isWin) {
         kill(t.term.pid);
+      } else {
+        t.term.kill();
       }
       if (type === 'start') {
         const uidPath = join(tmpdir(), `.nowa-server-${t.uid}.json`);

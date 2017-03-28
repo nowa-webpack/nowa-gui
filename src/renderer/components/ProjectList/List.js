@@ -7,6 +7,16 @@ import i18n from 'i18n';
 import Item from './Item';
 
 const List = ({ current, projects, dispatch }) => {
+  const toNewPage = () => {
+    dispatch({
+      type: 'layout/changeStatus',
+      payload: { showPage: 1 }
+    });
+    dispatch({
+      type: 'project/changeStatus',
+      payload: { current: {} }
+    });
+  };
 
   return (
     <div className="proj-list">
@@ -17,10 +27,7 @@ const List = ({ current, projects, dispatch }) => {
             shape="circle"
             size="small"
             icon="plus"
-            onClick={() => dispatch({
-              type: 'layout/changeStatus',
-              payload: { showPage: 1 }
-            })}
+            onClick={toNewPage}
           />
         </Tooltip>
         <Tooltip placement="bottom" title={i18n('project.list.import')} >
@@ -42,7 +49,7 @@ const List = ({ current, projects, dispatch }) => {
             key={item.name}
             project={item}
             dispatch={dispatch}
-            current={current.name}
+            filePath={current.name}
           />)
       }
       </div>

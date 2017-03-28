@@ -33,6 +33,10 @@
     const onLine = navigator.onLine;
     const electron = require('electron');
     electron.ipcRenderer.send('network-change-status', onLine);
+    setTimeout(() => {
+      const loading = document.getElementById('loading');
+      document.body.removeChild(loading);
+    }, 1000);
   </script>
 <div id="loading"><i class="anticon anticon-spin anticon-loading"></i></div>
 <div id="root"></div>

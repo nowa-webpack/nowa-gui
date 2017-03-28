@@ -11,7 +11,6 @@ export const hidePathString = (filePath, num: 70) => {
   }
 
   return filePath;
-
 };
 
 export const delay = n => new Promise(resolve => setTimeout(resolve, n));
@@ -39,6 +38,10 @@ export const getAddressByUID = (uid) => {
   const infoPath = join(tmpdir(), `.nowa-server-${uid}.json`);
   const info = fs.readJsonSync(infoPath);
   return info.address;
+};
+
+export const upperFirstCha = (word) => {
+  return word.slice(0, 1).toUpperCase() + word.slice(1);
 };
 
 export const readABCJson = filePath => fs.readJsonSync(join(filePath, 'abc.json')).options;

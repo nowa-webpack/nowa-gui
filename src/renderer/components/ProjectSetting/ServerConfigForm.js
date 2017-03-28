@@ -32,7 +32,7 @@ class ServerConfigForm extends Component {
       open: typeof abc.open === 'undefined' ? false : abc.open,
     };
 
-    if (abc.buildvars.locale) {
+    if (abc.buildvars && abc.buildvars.locale) {
       state.localeList = abc.buildvars.locale;
       state.defaultLocale = abc.vars.locale;
     } else {
@@ -65,7 +65,7 @@ class ServerConfigForm extends Component {
       payload: { project, abc: newABC }
     });
 
-
+    Message.success(i18n('msg.updateSuccess'));
 
     // if (!URL_MATCH.test(+proxy)) {
     //   Message.error(i18n('msg.invalidUrl'));
@@ -121,7 +121,7 @@ class ServerConfigForm extends Component {
         <div className="form-item">
           <label className="form-label">Entry:</label>
           <input type="text"
-            className="sm"
+            className="lg"
             onChange={e => this.setState({ entry: e.target.value })}
             value={entry}
           />
@@ -129,7 +129,7 @@ class ServerConfigForm extends Component {
         <div className="form-item">
           <label className="form-label">Port:</label>
           <input type="text"
-            className="sm"
+            className="lg"
             onChange={e => this.setState({ port: e.target.value })}
             value={port}
           />

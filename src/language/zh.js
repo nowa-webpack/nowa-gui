@@ -29,6 +29,7 @@ module.exports = {
 
 
   'project.tab.setting': '项目设置',
+  'project.tab.basic': '基本设置',
   'project.tab.server': '开发配置',
   'project.tab.build': '编译配置',
   'project.tab.console': '控制台',
