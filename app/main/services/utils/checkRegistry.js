@@ -15,6 +15,6 @@ module.exports = () => co(function* () {
     request('https://registry.npm.taobao.org/nowa/latest'),
     request('https://registry.npmjs.org/nowa/latest'),
   ]);
-  console.log('_key', _key);
+  console.log('registry', urls[_key]);
   config.registry(urls[_key]);
 });

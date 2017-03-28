@@ -8,10 +8,11 @@ const ansiHTML = require('ansi-html');
 const { tmpdir } = require('os');
 const pubsub = require('electron-pubsub');
 
-const { constants, isWin } = require('../is');
+const { constants, isWin, isMac } = require('../is');
 const { getWin } = require('../windowManager');
 const { getPercent, newLog } = require('../utils');
 const task = require('../task');
+const kill = require('./kill');
 
 const { APP_PATH, NPM_PATH, BIN_PATH, NODE_PATH } = constants; 
 
@@ -140,7 +141,7 @@ module.exports = {
       silent: true,
       cwd: name,
       env: Object.assign(env, { NOWA_UID: uid }),
-      detached: true
+      // detached: true
     });
     task.setTask(type, name, {
       term,
@@ -191,7 +192,12 @@ module.exports = {
   stop({ name, type }) {
     const t = task.getTask(type, name);
     if (t.term) {
-      t.term.kill();
+      // t.term.kill();
+      if (isMac) {
+        t.term.kill();
+      } else {
+        kill(t.term.pid);
+      }
       if (type === 'start') {
         const uidPath = join(tmpdir(), `.nowa-server-${t.uid}.json`);
         fs.removeSync(uidPath);
