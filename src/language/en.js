@@ -35,6 +35,8 @@ module.exports = {
   'project.tab.package': 'Package',
   'project.tab.listen_log': 'Listener log',
   'project.tab.compile_log': 'Compiler log',
+  'project.tab.dependencies': 'Dependencies',
+  'project.tab.devDependencies': 'Dev Dependencies',
   // 'project.tab.command_log': 'Command List',
 
   'project.new.title': 'Create New Project',

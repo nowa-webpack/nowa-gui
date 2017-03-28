@@ -1,7 +1,7 @@
 const { BrowserWindow, globalShortcut } = require('electron');
 const url = require('url');
 
-const { isDev, isWin } = require('../is');
+const { isDev, isWin, isMac } = require('../is');
 const { browser, devWebUrl, prodStaticUrl } = require('./defaultWinOptions');
 
 let win;
@@ -50,11 +50,16 @@ module.exports = {
   },
 
   close() {
-    if (isWin) {
-      win.close();
-    } else {
+    if (isMac) {
       win.hide();
+    } else {
+       win.close();
     }
+    // if (isWin) {
+    //   win.close();
+    // } else {
+    //   win.hide();
+    // }
   },
 
   show() {

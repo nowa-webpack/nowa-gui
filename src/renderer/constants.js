@@ -9,6 +9,12 @@ export const SUBLIME = 'Sublime';
 export const VSCODE = 'VScode';
 export const IS_WIN = process.platform === 'win32';
 
+export const REGISTRY_MAP = {
+  npm: 'https://registry.npmjs.org',
+  cnpm: 'https://registry.npm.taobao.org',
+  tnpm: 'http://registry.npm.alibaba-inc.com',
+};
+
 export const VSCODE_BASE_PATH = IS_WIN
   ? 'C:/Program Files (x86)/Microsoft VS Code'
   : '/Applications/Visual Studio Code.app';

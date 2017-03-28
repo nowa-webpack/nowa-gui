@@ -36,6 +36,8 @@ module.exports = {
   'project.tab.listen_log': '监听日志',
   'project.tab.compile_log': '编译输出',
   'project.tab.command_log': '选择命令窗口',
+  'project.tab.dependencies': '依赖',
+  'project.tab.devDependencies': '开发依赖',
 
   'project.new.title': '创建新项目',
   'project.new.version': '版本',

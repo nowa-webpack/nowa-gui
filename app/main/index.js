@@ -30,8 +30,8 @@ app.on('ready', () => {
   // global.install = {};
   
   menu.init();
+  windowManager.create();
   checkRegistry().then(() => {
-    windowManager.create();
     nowa();
   });
 });

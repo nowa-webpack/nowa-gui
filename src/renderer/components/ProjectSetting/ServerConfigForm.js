@@ -71,9 +71,6 @@ class ServerConfigForm extends Component {
     //   Message.error(i18n('msg.invalidUrl'));
     //   return false;
     // }
-
-
-
   }
   
  

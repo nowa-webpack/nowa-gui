@@ -5,6 +5,7 @@ import i18n from 'i18n';
 import ProjectSetting from '../ProjectSetting';
 import CommandTermList from './CommandTermList';
 import Terminal from './Terminal';
+// import PackageManager from '../PackageManager';
 
 const TabPane = Tabs.TabPane;
 
@@ -31,25 +32,28 @@ const Tab = ({ current, logType, dispatch, commands }) => {
     dispatch,
   };
 
+
   return (
     <Tabs
       className="detail-tabs"
-      defaultActiveKey="2"
+      defaultActiveKey="1"
       animated={false}
       onChange={() => {}}
     >
       <TabPane tab={i18n('project.tab.console')} key="1">
+        <div className="cnl-wrap">
         <Terminal {...termProps} />
         <CommandTermList {...listProps} />
+        </div>
       </TabPane>
       <TabPane tab={i18n('project.tab.setting')} key="2"><ProjectSetting {...settingProps} />
       </TabPane>
-      
+     
     </Tabs>
   );
 };
-// <TabPane tab={i18n('project.tab.package')} key="3">ssss
-//       </TabPane>
+ // <TabPane tab={i18n('project.tab.package')} key="3"><PackageManager {...settingProps} />
+ //      </TabPane>
 
 
 Tab.propTypes = {
