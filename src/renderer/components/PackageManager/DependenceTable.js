@@ -1,37 +1,58 @@
 import React, { Component, PropTypes } from 'react';
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Table from 'antd/lib/table';
-// import Tabs from 'antd/lib/tabs';
+import Icon from 'antd/lib/icon';
 // import Input from 'antd/lib/input';
 import semver from 'semver';
-import vcompare from 'version-comparison';
-import ncu from 'npm-check-updates';
+import { join } from 'path';
 
 import i18n from 'i18n';
 import request from 'gui-request';
+// const pubsub = remote.require('electron-pubsub');
+const { utils } = remote.getGlobal('services');
 // const { command } = remote.getGlobal('services');
 
-const columns = [{
+const basicColumns = [{
   title: 'Name',
   dataIndex: 'name',
   key: 'name',
+  width: 220,
 }, {
-  title: 'Current Version',
+  title: 'Current',
   dataIndex: 'version',
   key: 'version',
+  width: 90,
 }, {
-  title: 'Newest Version',
-  dataIndex: 'newVersion',
-  key: 'newVersion',
+  title: 'Installed',
+  dataIndex: 'installedVersion',
+  key: 'installedVersion',
+  width: 90,
 }, {
-  title: 'Action',
-  key: 'action',
-  render: (text, record) => (
-    <Icon type="download" />
-  ),
+  title: 'Newest',
+  dataIndex: 'netVersion',
+  key: 'netVersion',
+  width: 90,
 }];
+
+/*async function fetchMoudlesVersion(modules, registry) {
+  const repos = await Promise.all(
+      modules.map(({ name }) => request(`${registry}/${name}/latest`))
+    );
+  const pkgs = modules.map(({ name, version }, i) => {
+    const { data, err } = repos[i];
+    return {
+      name,
+      version,
+      newVersion: err ? version : data.version,
+      // update: vcompare(version, data.version)
+    };
+  });
+  
+  // console.log('pkgs', pkgs);
+  return pkgs;
+}*/
 
 
 class DependenceTable extends Component {
@@ -43,114 +64,181 @@ class DependenceTable extends Component {
     };
   }
 
-  componentWillReceiveProps({ project, path }) {
-    // if (path !== this.props.project.path) {
-    //   this.setState({ ...this.getInitDependencies(project.pkg) });
-    // }
+  async componentDidMount() {
+    this.getVersions(this.props).then((dataSource) => {
+      console.log(dataSource);
+      this.setState({ dataSource, loading: false });
+    });
+    ipcRenderer.on('install-modules-finished', this.onReceiveFinished.bind(this));
+    // pubsub.subscribe('install-modules-finished', this.onReceiveFinished);
   }
 
-  componentDidMount() {
-    // this.fetch();
-    // let d = await fetch();
-    ncu.run({
-        // Always specify the path to the package file 
-        packageFile: 'package.json',
-        // Any command-line option can be specified here. 
-        // These are set by default: 
-        silent: true,
-        jsonUpgraded: true
-    }).then((upgraded) => {
-    console.log('dependencies to upgrade:', upgraded);
-})
+  componentWillReceiveProps(next) {
+    if (next.filePath !== this.props.filePath) {
+      this.setState({ loading: true });
+      this.getVersions(next)
+        .then((dataSource) => {
+          console.log(dataSource);
+          this.setState({ dataSource, loading: false });
+        });
+    }
+  }
+
+  componentWillUnmount() {
+    // pubsub.unsubscribe('install-modules-finished');
+    ipcRenderer.removeAllListeners('install-modules-finished');
+  }
+
+  async getVersions({ filePath, source, registry }) {
+    const localPkgs = utils.getMoudlesVersion(filePath, source);
+    const netPkgs = await this.fetchMoudlesVersion(localPkgs, registry);
+    return netPkgs;
+  }
+
+  onReceiveFinished(e, { pkgs, err }) {
+    console.log(pkgs, err);
+    if (!err) {
+      const { dataSource } = this.state;
+      const data = dataSource.map((item) => {
+        const filter = pkgs.filter(p => p.name === item.name);
+        if (filter.length > 0) {
+          item.version = `^${item.netVersion}`;
+          item.installedVersion = item.netVersion;
+          item.update = false;
+        }
+        return item;
+      });
+      Message.success(i18n('msg.updateSuccess'));
+      this.setState({ loading: false, dataSource: data, selectedRowKeys: [] });
+    } else {
+      Message.error(i18n('msg.updateFailed'));
+      this.setState({ loading: false, selectedRowKeys: [] });
+    }
+  }
+
+  async fetchMoudlesVersion(modules, registry) {
+    const repos = await Promise.all(
+        modules.map(({ name }) => request(`${registry}/${name}/latest`))
+      );
+    const pkgs = modules.map(({ name, version, installedVersion }, i) => {
+      const { data, err } = repos[i];
+      return {
+        name,
+        version,
+        installedVersion,
+        netVersion: err ? installedVersion : data.version,
+        update: semver.lt(installedVersion, data.version)
+      };
+    });
+    
+    return pkgs;
+  }
+
+  installModules() {
+    const { filePath, registry, dispatch, type } = this.props;
+    
+    const args = [].slice.call(arguments);
+    let pkgs = [];
+    const opt = {
+      root: filePath,
+      registry,
+      targetDir: filePath,
+      storeDir: join(filePath, '.npminstall'),
+      cacheDir: null,
+      timeout: 5 * 60000,
+      // pkgs,
+    };
+
+    if (args.length) {
+      pkgs.push({
+        name: args[0].name,
+        version: args[0].netVersion
+      });
+    } else {
+      const { dataSource, selectedRowKeys } = this.state;
+
+      pkgs = selectedRowKeys.map((item) => {
+        const filter = dataSource.filter(p => p.name === item);
+        return {
+          name: item,
+          version: filter[0].netVersion,
+        };
+      });
+    }
+    const option = { ...opt, pkgs };
+    this.setState({ loading: true });
+
+    // if (args.length) {
+    //   pkgs.push(args[0].name);
+    // } else {
+    //   pkgs = this.state.selectedRowKeys;
+    // }
+
+    dispatch({
+      type: 'project/updateModules',
+      payload: {
+        option,
+        type,
+      }
+    });
+    // pubsub.publish('install-modules', option);
   }
 
   
 
-  /** fetch() {
-    const { source, registry } = this.props;
-
-    const data = yield source.map(function *({ name, version }) {
-      const url = `${registry}/${name}/latest`;
-      const { data: repo, err } = yield request(url);
-
-      if (err) {
-        return {
-          name,
-          version,
-          newVersion: version,
-          update: false
-        };
-      }
-      const newVersion = repo.version;
-      console.log(version);
-      const update = semver.lt(version, newVersion);
-
-      return {
-        name,
-        version,
-        newVersion,
-        update
-      };
-    });
-
-    console.log(data);
-    
-  }*/
-
-  onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
-  }
-
-  async fetch() {
-    const { source, registry } = this.props;
-    console.log(source)
-    const repos = await Promise.all(
-        source.map(({ name }) => request(`${registry}/${name}/latest`))
-      );
-
-    const pkgs = source.forEach(({ name, version }, i) => {
-      const { data, err } = repos[i];
-      if (err) {
-        return {
-          name,
-          version,
-          newVersion: version,
-          update: false
-        };
-      }
-      // console.log(version)
-      return {
-        name,
-        version,
-        newVersion: data.version,
-        update: vcompare(version, data.version)
-      };
-
-    });
-    
-    console.log(pkgs);
-  }
-
-
-
   render() {
-    const { loading, selectedRowKeys } = this.state;
+    const { loading, selectedRowKeys, dataSource } = this.state;
+    const hasSelected = selectedRowKeys.length > 0;
     const rowSelection = {
       selectedRowKeys,
-      onChange: this.onSelectChange,
-      selections: false,
+      onChange: (selectedRows) => {
+        this.setState({ selectedRowKeys: selectedRows });
+      },
+      onSelectAll: (selected, selectedRows, changeRows) => {
+        if (changeRows.length === 0) {
+          this.setState({ selectedRowKeys: [] });
+        }
+      },
+      getCheckboxProps: record => ({
+        disabled: !record.update,
+      }),
     };
-    const hasSelected = selectedRowKeys.length > 0;
+
+    const columns = [...basicColumns, {
+      title: 'Action',
+      key: 'action',
+      dataIndex: 'update',
+      render: (update, record) => {
+        return update
+          ? <Button
+            icon="download"
+            size="small"
+            type="primary"
+            ghost
+            className="udt-btn"
+            onClick={() => this.installModules(record)}
+            />
+          : <span />;
+      },
+    }];
 
     return (
-       <div>
+       <div className="package-wrap">
         <div style={{ marginBottom: 8 }}>
-          <Button type="primary" onClick={this.start} size="small"
+          <Button type="primary" onClick={() => this.installModules()} size="small"
             disabled={!hasSelected}
-          >Reload</Button>
+          >Update All</Button>
         </div>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={[]} loading={loading} />
+        <Table
+          size="small"
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={dataSource}
+          loading={loading}
+          pagination={false}
+          scroll={{ y: 270 }}
+          rowKey={record => record.name}
+        />
       </div>
     );
   }
@@ -160,7 +248,8 @@ class DependenceTable extends Component {
 DependenceTable.propTypes = {
   source: PropTypes.array.isRequired,
   registry: PropTypes.string.isRequired,
-  // dispatch: PropTypes.func.isRequired,
+  filePath: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 

@@ -102,7 +102,8 @@ module.exports = {
   'msg.existed': '项目已存在!',
   'msg.nameRequired': '名称不能为空!',
   'msg.importSuccess': '导入成功',
-  'msg.updateSuccess': '修改成功',
+  'msg.updateSuccess': '更新成功',
+  'msg.updateFailed': '更新失败',
   'msg.removeProject': '确认删除项目？',
   'msg.templateErr': '模板正在下载，请稍候再试',
 

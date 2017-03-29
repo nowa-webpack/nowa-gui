@@ -1,6 +1,7 @@
 const ejs = require('ejs');
 const { join } = require('path');
 const ansiHTML = require('ansi-html');
+const fs = require('fs-extra');
 const request = require('./request');
 const checkRegistry = require('./checkRegistry');
 
@@ -29,6 +30,28 @@ const getMockPercent = (str, percent) => {
 
 const newLog = (oldLog, str) => oldLog + ansiHTML(str.replace(/\n/g, '<br>'));
 
+const loadConfig = (promptConfigPath) => {
+  try {
+    delete require.cache[require.resolve(promptConfigPath)];
+    return require(promptConfigPath);
+  } catch (err) {
+    return {};
+  }
+};
+
+
+const getMoudlesVersion = (filepath, dependencies) => {
+  // const curPkg = loadConfig(join(filepath, 'package.json'));
+  const modulePath = join(filepath, 'node_modules');
+  const pkgs = dependencies.map((item) => {
+    // const pkg = loadConfig(join(modulePath, item.name, 'package.json'));
+    const pkg = fs.readJsonSync(join(modulePath, item.name, 'package.json'));
+    return Object.assign(item, { installedVersion: pkg.version });
+  });
+
+  return pkgs;
+};
+
 module.exports = {
   delay,
   request,
@@ -36,17 +59,11 @@ module.exports = {
   getPercent,
   getMockPercent,
   newLog,
+  loadConfig,
+
+  getMoudlesVersion,
 
   getPackgeJson: () => require(join(APP_PATH, 'package.json')),
-
-  loadConfig(promptConfigPath) {
-    try {
-      delete require.cache[require.resolve(promptConfigPath)];
-      return require(promptConfigPath);
-    } catch (err) {
-      return {};
-    }
-  },
 
   ejsRender(tpl, data) {
     return ejs.render(tpl, data);

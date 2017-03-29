@@ -103,6 +103,7 @@ module.exports = {
   'msg.nameRequired': 'Name Required!',
   'msg.importSuccess': 'Import Successfully!',
   'msg.updateSuccess': 'Update Successfully!',
+  'msg.updateFailed': 'Update Failed!',
   'msg.removeProject': 'Are you sure to remove this project?',
   'msg.templateErr': 'Template Files are downloading. Please try again later.',
 

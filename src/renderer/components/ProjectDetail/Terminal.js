@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { ipcRenderer, remote } from 'electron';
-import pubsub from 'electron-pubsub';
-// import ansiHTML from 'ansi-html';
+// import pubsub from 'electron-pubsub';
 import classNames from 'classnames';
 import Button from 'antd/lib/button';
 import Select from 'antd/lib/select';
 // import { findDOMNode } from 'react-dom';
 import i18n from 'i18n';
-
+// const pubsub = remote.require('electron-pubsub');
 const { command } = remote.getGlobal('services');
 
 
@@ -33,14 +32,8 @@ class Terminal extends Component {
   }
 
   componentDidMount() {
-    pubsub.subscribe('task-ouput', this.onReceiveLog.bind(this));
-    // ipcRenderer.on('task-ouput', this.onReceiveLog.bind(this));
-    // ipcRenderer.on('task-ouput', (event, data) => {
-    //   const { name, logType } = this.props;
-    //   if (name === data.name && logType === data.type) {
-    //     this.setState({ log: data.log, showClear: true }, () => this.scrollToBottom());
-    //   }
-    // });
+    // pubsub.subscribe('task-ouput', this.onReceiveLog.bind(this));
+    ipcRenderer.on('task-ouput', this.onReceiveLog.bind(this));
   }
 
   componentWillReceiveProps({ logType, name }) {
@@ -69,8 +62,8 @@ class Terminal extends Component {
   }
 
   componentWillUmount() {
-    // ipcRenderer.removeListener(this.onReceiveLog);
-    pubsub.unsubscribe('task-ouput');
+    ipcRenderer.removeAllListeners(this.onReceiveLog);
+    // pubsub.unsubscribe('task-ouput');
   }
 
   scrollToBottom() {

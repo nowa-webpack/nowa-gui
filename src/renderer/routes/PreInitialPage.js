@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 // import { hashHistory } from 'react-router';
 import { remote, ipcRenderer } from 'electron';
-import pubsub from 'electron-pubsub';
+// import pubsub from 'electron-pubsub';
 import Progress from 'antd/lib/progress';
 
 import i18n from 'i18n';
 import { getLocalProjects } from 'gui-local';
-
+// const pubsub = remote.require('electron-pubsub');
 const { nowaNeedInstalled } = remote.getGlobal('config');
 
 
@@ -41,17 +41,20 @@ class PreInitialPage extends Component {
       this.afterInstalled();
     }
 
-    pubsub.subscribe('nowa-installing', this.onReceiveLog.bind(this));
-    pubsub.subscribe('nowa-installed', this.afterInstalled.bind(this));
-
+    // pubsub.subscribe('nowa-installing', this.onReceiveLog.bind(this));
+    // pubsub.subscribe('nowa-installed', this.afterInstalled.bind(this));
+    ipcRenderer.on('nowa-installing', this.onReceiveLog.bind(this));
+    ipcRenderer.on('nowa-installed', this.afterInstalled.bind(this));
     // ipcRenderer.on('nowa-installed', () => {
     //   this.afterInstalled();
     // });
   }
 
   componentWillUnmount() {
-    pubsub.unsubscribe('nowa-installing');
-    pubsub.unsubscribe('nowa-installed');
+    // pubsub.unsubscribe('nowa-installing');
+    // pubsub.unsubscribe('nowa-installed');
+    ipcRenderer.removeAllListeners('nowa-installing');
+    ipcRenderer.removeAllListeners('nowa-installed');
   }
 
   onReceiveLog(event, { percent, log }) {

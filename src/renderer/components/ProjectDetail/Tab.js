@@ -5,7 +5,7 @@ import i18n from 'i18n';
 import ProjectSetting from '../ProjectSetting';
 import CommandTermList from './CommandTermList';
 import Terminal from './Terminal';
-// import PackageManager from '../PackageManager';
+import PackageManager from '../PackageManager';
 
 const TabPane = Tabs.TabPane;
 
@@ -36,7 +36,7 @@ const Tab = ({ current, logType, dispatch, commands }) => {
   return (
     <Tabs
       className="detail-tabs"
-      defaultActiveKey="1"
+      defaultActiveKey="3"
       animated={false}
       onChange={() => {}}
     >
@@ -48,7 +48,8 @@ const Tab = ({ current, logType, dispatch, commands }) => {
       </TabPane>
       <TabPane tab={i18n('project.tab.setting')} key="2" className="set-tabpane"><ProjectSetting {...settingProps} />
       </TabPane>
-     
+      <TabPane tab={i18n('project.tab.package')} key="3" className="set-tabpane"><PackageManager {...settingProps} />
+      </TabPane>
     </Tabs>
   );
 };

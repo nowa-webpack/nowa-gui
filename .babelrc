@@ -13,7 +13,7 @@
         "react"
       ],
       "plugins": [
-        "react-hot-loader/babel"
+        //"react-hot-loader/babel"
         
         // Enables React code to work with HMR.
       ],

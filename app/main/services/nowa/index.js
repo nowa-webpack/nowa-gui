@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const semver = require('semver');
 const mkdirp = require('mkdirp');
 const { join } = require('path');
-const pubsub = require('electron-pubsub');
+// const pubsub = require('electron-pubsub');
 
 
 const { request, getMockPercent, newLog } = require('../utils');
@@ -78,7 +78,8 @@ const installNowaModules = (pkgs, endCb) => {
     } else {
       log = newLog(log, str);
     }
-    pubsub.publish('nowa-installing', {
+    win.webContents.send('nowa-installing', {
+    // pubsub.publish('nowa-installing', {
       percent,
       log,
     });
@@ -87,8 +88,8 @@ const installNowaModules = (pkgs, endCb) => {
   term.stderr.on('data', (data) => {
     log = newLog(log, data.toString());
     console.log(data.toString());
-    pubsub.publish('nowa-installing', {
-    // win.webContents.send('install-modules', {
+    // pubsub.publish('nowa-installing', {
+    win.webContents.send('install-modules', {
       percent,
       log,
     });
@@ -101,8 +102,8 @@ const installNowaModules = (pkgs, endCb) => {
       config.nowaNeedInstalled(false);
       console.log('nowaNeedInstalled', config.nowaNeedInstalled());
       console.timeEnd('nowa install');
-      pubsub.publish('nowa-installed');
-      // win.webContents.send('nowa-installed');
+      // pubsub.publish('nowa-installed');
+      win.webContents.send('nowa-installed');
     }
   });
 };

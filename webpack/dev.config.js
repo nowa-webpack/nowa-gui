@@ -19,7 +19,7 @@ module.exports = webpackMerge(webpackCommon, {
       // 'webpack-dev-server/client?http://' + require("ip").address() + ':3000/',
       'webpack-dev-server/client',
       'webpack/hot/only-dev-server',
-      'react-hot-loader/patch',
+      // 'react-hot-loader/patch',
       './src/renderer/index.js'
     ],
     'vendor': './src/vendor.js'

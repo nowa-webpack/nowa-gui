@@ -1,11 +1,12 @@
 import React, { Component, PropTypes } from 'react';
-// import { ipcRenderer, remote } from 'electron';
+import { ipcRenderer } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Progress from 'antd/lib/progress';
 import Icon from 'antd/lib/icon';
 import i18n from 'i18n';
-import pubsub from 'electron-pubsub';
+// import pubsub from 'electron-pubsub';
+// const pubsub = remote.require('electron-pubsub');
 
 const newLog = (oldLog, str) => oldLog + (ansiHTML(str) + '<br>');
 
@@ -24,18 +25,17 @@ class Log extends Component {
   }
 
   componentDidMount() {
-    // ipcRenderer.on('install-modules', this.onReceiveLog.bind(this));
-    // ipcRenderer.on('install-modules-finished', this.onReceiveFinished.bind(this));
-    pubsub.subscribe('install-modules', this.onReceiveLog.bind(this));
-    pubsub.subscribe('install-modules-finished', this.onReceiveFinished.bind(this));
+    ipcRenderer.on('install-modules', this.onReceiveLog.bind(this));
+    ipcRenderer.on('install-modules-finished', this.onReceiveFinished.bind(this));
+    // pubsub.subscribe('install-modules', this.onReceiveLog.bind(this));
+    // pubsub.subscribe('install-modules-finished', this.onReceiveFinished.bind(this));
   }
 
   componentWillUnmount() {
-    console.log('umount log');
-    // ipcRenderer.removeAllListeners('install-modules');
-    // ipcRenderer.removeAllListeners('install-modules-finished');
-    pubsub.unsubscribe('install-modules');
-    pubsub.unsubscribe('install-modules-finished');
+    ipcRenderer.removeAllListeners('install-modules');
+    ipcRenderer.removeAllListeners('install-modules-finished');
+    // pubsub.unsubscribe('install-modules');
+    // pubsub.unsubscribe('install-modules-finished');
   }
 
   onReceiveLog(event, { percent, log }) {

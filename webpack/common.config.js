@@ -90,13 +90,13 @@ module.exports = {
     //   // include: /node_modules/,
     //   loader: 'ejs-loader?variable=data'
     // },
-		{
-			test: /\.(mp4|webm)$/,
-			loader: 'url-loader?limit=10000'
-		},
-		{ test: /\.woff2{0,1}$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
-		{ test: /\.(otf|eot|svg|ttf|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' },
-		{ test: /\.(png|jpg|gif)$/, loader: 'url-loader?limit=8192'}
+    {
+      test: /\.(mp4|webm)$/,
+      loader: 'url-loader?limit=10000'
+    },
+    { test: /\.woff2{0,1}$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+    { test: /\.(otf|eot|svg|ttf|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader' },
+    { test: /\.(png|jpg|gif)$/, loader: 'url-loader?limit=8192'}
     ]
 
   },

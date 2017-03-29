@@ -11,10 +11,10 @@ import { readABCJson, writeABCJson,
   isNowaProject, getPkgDependencies, delay
 } from 'gui-util';
 
+// const pubsub = remote.require('electron-pubsub');
 const taskStart = remote.getGlobal('start') || {};
 const { registry } = remote.getGlobal('config');
 const { command } = remote.getGlobal('services');
-
 
 const getProjectInfoByPath = (filePath) => {
   let abc = {};
@@ -89,7 +89,7 @@ export default {
           projects,
         }
       });
-
+      // pubsub.subscribe('import-install-finished', (event, { filePath }) => {
       ipcRenderer.on('import-install-finished', (event, { filePath }) => {
         dispatch({
           type: 'finishedInstallDependencies',
@@ -494,6 +494,19 @@ export default {
         }
       });
     },
+    * updateModules({ payload: { option, type } }, { put, select }) {
+      const { current } = yield select(state => state.project);
+      const { pkg } = current;
+
+      option.pkgs.forEach((item) => {
+        // delete pkg[type][item.name];
+        pkg[type][item.name] = `^${item.version}`;
+      });
+      // console.log(pkg);
+      writePkgJson(current.path, pkg);
+      ipcRenderer.send('install-modules', option);
+      // command.nodeUpdateModules({ pkgs: option.pkgs, type, filePath: current.path });
+    }
     // * taskErr({ payload: { type, filePath } }, { put, select }) {
     //   const { projects, current } = yield select(state => state.project);
     //   const { activeTab } = yield select(state => state.layout); 

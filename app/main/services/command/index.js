@@ -4,15 +4,16 @@ const npmRunPath = require('npm-run-path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
 const fixPath = require('fix-path');
-const ansiHTML = require('ansi-html');
+// const ansiHTML = require('ansi-html');
 const { tmpdir } = require('os');
-const pubsub = require('electron-pubsub');
+// const pubsub = require('electron-pubsub');
 
-const { constants, isWin, isMac } = require('../is');
+const { constants, isWin } = require('../is');
 const { getWin } = require('../windowManager');
-const { getPercent, newLog } = require('../utils');
+// const { getPercent, newLog } = require('../utils');
 const task = require('../task');
 const kill = require('./kill');
+const modules = require('./modules');
 
 const { APP_PATH, NPM_PATH, BIN_PATH, NODE_PATH } = constants; 
 
@@ -32,83 +33,8 @@ if (isWin) {
   env.PATH = pathEnv;
 }
 
-// const newLog = (oldLog, str) => oldLog + ansiHTML(str.replace(/\n/g, '<br>'));
-
 // fs.writeJsonSync(join(APP_PATH, 'env.text'), { prv: process.env, env, npmEnv});
-module.exports = {
-
-  installModules(options) {
-    const win = getWin();
-    const targetPath = join(APP_PATH, 'task', 'install.js');
-
-    let term = fork(targetPath, {
-      cwd: APP_PATH,
-      silent: true,
-      // execArgv: ['--harmony'],
-      env: Object.assign(npmEnv, { params: JSON.stringify(options), FORCE_COLOR: 1, }),
-    });
-
-    let percent = 0;
-    let log = '';
-
-    term.stdout.on('data', (data) => {
-      const str = data.toString();
-      console.log(str);
-      if (str.indexOf('INSTALL_PROGRESS') !== -1) {
-        percent = getPercent(str);
-      } else {
-        log = newLog(log, str);
-      }
-      pubsub.publish('install-modules', {
-      // win.webContents.send('install-modules', {
-        project: options.root,
-        percent,
-        log,
-      });
-    });
-
-    term.stderr.on('data', (data) => {
-      log = newLog(log, data.toString());
-      console.log(data.toString());
-      pubsub.publish('install-modules', {
-      // win.webContents.send('install-modules', {
-        project: options.root,
-        percent,
-        log,
-      });
-    });
-
-    term.on('exit', (code) => {
-      console.log('exit install code', code);
-      pubsub.publish('install-modules-finished', {
-      // win.webContents.send('install-modules-finished', {
-        project: options.root,
-        err: code !== 0,
-      });
-      term = null;
-    });
-  },
-
-  importModulesInstall(options, isNowaInstall) {
-    const win = getWin();
-    const targetPath = join(APP_PATH, 'task', 'install.js');
-    const term = fork(targetPath, {
-      cwd: APP_PATH,
-      silent: true,
-      env: Object.assign(npmEnv, { params: JSON.stringify(options), FORCE_COLOR: 1, }),
-    });
-    if (!isNowaInstall) {
-      term.on('exit', (code) => {
-        console.log('exit importModulesInstall code', code);
-        win.webContents.send('import-install-finished', {
-          filePath: options.root,
-          success: code === 0
-        });
-      });
-    }
-
-    return term;
-  },
+const exportFunc = {
 
   openEditor(projectPath, editor, basePath) {
     let editorPath = '';
@@ -144,8 +70,8 @@ module.exports = {
 
     term.stdout.on('data', (data) => {
       const log = task.writeLog(type, name, data.toString());
-      pubsub.publish('task-ouput', {
-      // win.webContents.send('task-ouput', {
+      // pubsub.publish('task-ouput', {
+      win.webContents.send('task-ouput', {
         name,
         log,
         type,
@@ -154,8 +80,8 @@ module.exports = {
 
     term.stderr.on('data', (data) => {
       const log = task.writeLog(type, name, data.toString());
-      pubsub.publish('task-ouput', {
-      // win.webContents.send('task-ouput', {
+      // pubsub.publish('task-ouput', {
+      win.webContents.send('task-ouput', {
         name,
         log,
         type,
@@ -167,14 +93,14 @@ module.exports = {
       task.clearTerm(type, name);
       console.log('exit', code);
       if (!code && typeof code !== 'undefined' && code !== 0) {
-        pubsub.publish('task-stopped', {
-        // win.webContents.send('task-stopped', {
+        // pubsub.publish('task-stopped', {
+        win.webContents.send('task-stopped', {
           name,
           type,
         });
       } else {
-        pubsub.publish('task-finished', {
-        // win.webContents.send('task-finished', {
+        // pubsub.publish('task-finished', {
+        win.webContents.send('task-finished', {
           name,
           type,
           success: code === 0
@@ -204,4 +130,6 @@ module.exports = {
   },
   
 };
+
+module.exports = Object.assign(modules, exportFunc);
 
