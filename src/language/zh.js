@@ -104,7 +104,7 @@ module.exports = {
   'msg.importSuccess': '导入成功',
   'msg.updateSuccess': '更新成功',
   'msg.updateFailed': '更新失败',
-  'msg.removeProject': '确认删除项目？',
+  'msg.removeTip': '确认删除？',
   'msg.templateErr': '模板正在下载，请稍候再试',
 
   'msg.editorPath': '请选择默认编辑器安装路径',

@@ -3,16 +3,14 @@ import { remote, ipcRenderer } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Table from 'antd/lib/table';
-import Icon from 'antd/lib/icon';
 // import Input from 'antd/lib/input';
+import Popconfirm from 'antd/lib/popconfirm';
 import semver from 'semver';
 import { join } from 'path';
 
 import i18n from 'i18n';
 import request from 'gui-request';
-// const pubsub = remote.require('electron-pubsub');
 const { utils } = remote.getGlobal('services');
-// const { command } = remote.getGlobal('services');
 
 const basicColumns = [{
   title: 'Name',
@@ -36,24 +34,6 @@ const basicColumns = [{
   width: 90,
 }];
 
-/*async function fetchMoudlesVersion(modules, registry) {
-  const repos = await Promise.all(
-      modules.map(({ name }) => request(`${registry}/${name}/latest`))
-    );
-  const pkgs = modules.map(({ name, version }, i) => {
-    const { data, err } = repos[i];
-    return {
-      name,
-      version,
-      newVersion: err ? version : data.version,
-      // update: vcompare(version, data.version)
-    };
-  });
-  
-  // console.log('pkgs', pkgs);
-  return pkgs;
-}*/
-
 
 class DependenceTable extends Component {
   constructor(props) {
@@ -66,7 +46,6 @@ class DependenceTable extends Component {
 
   async componentDidMount() {
     this.getVersions(this.props).then((dataSource) => {
-      console.log(dataSource);
       this.setState({ dataSource, loading: false });
     });
     ipcRenderer.on('install-modules-finished', this.onReceiveFinished.bind(this));
@@ -78,7 +57,6 @@ class DependenceTable extends Component {
       this.setState({ loading: true });
       this.getVersions(next)
         .then((dataSource) => {
-          console.log(dataSource);
           this.setState({ dataSource, loading: false });
         });
     }
@@ -146,7 +124,6 @@ class DependenceTable extends Component {
       storeDir: join(filePath, '.npminstall'),
       cacheDir: null,
       timeout: 5 * 60000,
-      // pkgs,
     };
 
     if (args.length) {
@@ -167,13 +144,6 @@ class DependenceTable extends Component {
     }
     const option = { ...opt, pkgs };
     this.setState({ loading: true });
-
-    // if (args.length) {
-    //   pkgs.push(args[0].name);
-    // } else {
-    //   pkgs = this.state.selectedRowKeys;
-    // }
-
     dispatch({
       type: 'project/updateModules',
       payload: {
@@ -181,10 +151,19 @@ class DependenceTable extends Component {
         type,
       }
     });
-    // pubsub.publish('install-modules', option);
   }
 
-  
+  removeModules(pkg) {
+    const { type, dispatch } = this.props;
+    const { dataSource } = this.state;
+
+    const filter = dataSource.filter(item => item.name !== pkg.name);
+    dispatch({
+      type: 'project/uninstallModules',
+      payload: { pkgName: pkg.name, type }
+    });
+    this.setState({ dataSource: filter });
+  }
 
   render() {
     const { loading, selectedRowKeys, dataSource } = this.state;
@@ -208,8 +187,31 @@ class DependenceTable extends Component {
       title: 'Action',
       key: 'action',
       dataIndex: 'update',
-      render: (update, record) => {
-        return update
+      render: (update, record) => (
+        <div>
+          <Popconfirm
+            placement="bottomRight"
+            title={i18n('msg.removeTip')}
+            onConfirm={() => this.removeModules(record)}
+            okText={i18n('form.ok')}
+            cancelText={i18n('form.cancel')}
+          ><Button className="udt-btn" ghost
+            type="danger"
+            size="small"
+            icon="delete"
+          />
+          </Popconfirm>
+          { update &&
+            <Button ghost
+              icon="download"
+              size="small"
+              type="primary"
+              className="udt-btn"
+              onClick={() => this.installModules(record)}
+            />
+          }
+        </div>
+        /*return update
           ? <Button
             icon="download"
             size="small"
@@ -218,8 +220,8 @@ class DependenceTable extends Component {
             className="udt-btn"
             onClick={() => this.installModules(record)}
             />
-          : <span />;
-      },
+          : <span />;*/
+      ),
     }];
 
     return (
@@ -247,10 +249,10 @@ class DependenceTable extends Component {
 
 DependenceTable.propTypes = {
   source: PropTypes.array.isRequired,
+  type: PropTypes.string.isRequired,
   registry: PropTypes.string.isRequired,
   filePath: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
-
 
 export default DependenceTable;

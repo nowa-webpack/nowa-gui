@@ -104,7 +104,7 @@ module.exports = {
   'msg.importSuccess': 'Import Successfully!',
   'msg.updateSuccess': 'Update Successfully!',
   'msg.updateFailed': 'Update Failed!',
-  'msg.removeProject': 'Are you sure to remove this project?',
+  'msg.removeTip': 'Are you sure to remove this item?',
   'msg.templateErr': 'Template Files are downloading. Please try again later.',
 
   'msg.editorPath': 'Please set installation path of default editor!',

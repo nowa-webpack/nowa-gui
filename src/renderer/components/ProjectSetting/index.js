@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import Button from 'antd/lib/button';
-import Message from 'antd/lib/message';
-import Popconfirm from 'antd/lib/popconfirm';
+// import Button from 'antd/lib/button';
+// import Message from 'antd/lib/message';
+// import Popconfirm from 'antd/lib/popconfirm';
 import Tabs from 'antd/lib/tabs';
 
 import i18n from 'i18n';

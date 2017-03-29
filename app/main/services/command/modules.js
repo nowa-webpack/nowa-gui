@@ -103,7 +103,22 @@ module.exports = {
     return term;
   },
 
-  nodeUpdateModules({ pkgs, filePath, type }) {
+  uninstallModules({ pkg, filePath, type }) {
+    const win = getWin();
+    // const str = pkgs.join(' ');
+    const args = ['uninstall', pkg];
+    // args.push(type === 'dependencies' ? '-S' : '-D');
+    args.push(`--registry=${config.registry()}`);
+    args.push('--scripts-prepend-node-path=auto');
+    
+    fork(NPM_PATH, args, {
+      silent: true,
+      cwd: filePath,
+      env,
+    });
+  }
+
+  /*nodeUpdateModules({ pkgs, filePath, type }) {
     const win = getWin();
     const str = pkgs.join(' ');
     const args = ['install', str];
@@ -124,6 +139,6 @@ module.exports = {
         err: code !== 0,
       });
     });
-  }
+  }*/
 
 }

@@ -320,55 +320,6 @@ export default {
         });
       }
     },
-    /** update({ payload: { old, project } }, { put, select }) {
-      if (old.name !== project.name || old.port !== project.port) {
-        const { projects, current } = yield select(state => state.project);
-
-        const projectInfo = getProjectInfoByPath(old.path);
-
-        if (old.isNowa) {
-          projectInfo.abc.name = project.name;
-          projectInfo.abc.options.port = project.port;
-
-          fs.writeJSONSync(join(old.path, 'abc.json'), projectInfo.abc);
-        }
-
-        projectInfo.pkg.name = project.name;
-
-        fs.writeJSONSync(join(old.path, 'package.json'), projectInfo.pkg);
-
-        const storeProjects = getLocalProjects();
-
-        storeProjects.map((item) => {
-          if (item.path === old.path) {
-            item.name = project.name;
-            item.port = project.port;
-          }
-          return item;
-        });
-
-        setLocalProjects(storeProjects);
-
-        projects.map((item) => {
-          if (item.path === old.path) {
-            item.name = project.name;
-            item.port = project.port;
-          }
-          return item;
-        });
-
-        const payload = { projects };
-
-        payload.current = current.path === old.path ? { ...current, ...project } : current;
-
-        yield put({
-          type: 'changeStatus',
-          payload
-        });
-
-        Message.success(i18n('msg.updateSuccess'), 1.5);
-      }
-    },*/
     * refresh(o, { put, select }) {
       // const storeProjects = getProjects();
       const storeProjects = getLocalProjects();
@@ -499,13 +450,16 @@ export default {
       const { pkg } = current;
 
       option.pkgs.forEach((item) => {
-        // delete pkg[type][item.name];
         pkg[type][item.name] = `^${item.version}`;
       });
-      // console.log(pkg);
       writePkgJson(current.path, pkg);
       ipcRenderer.send('install-modules', option);
-      // command.nodeUpdateModules({ pkgs: option.pkgs, type, filePath: current.path });
+    },
+    * uninstallModules({ payload: { pkgName, type } }, { put, select }) {
+      const { current } = yield select(state => state.project);
+      const { pkg } = current;
+      delete pkg[type][pkgName];
+      writePkgJson(current.path, pkg);
     }
     // * taskErr({ payload: { type, filePath } }, { put, select }) {
     //   const { projects, current } = yield select(state => state.project);
