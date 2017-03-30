@@ -445,21 +445,25 @@ export default {
         }
       });
     },
-    * updateModules({ payload: { option, type } }, { put, select }) {
+    * updatePkgModules({ payload: { pkgs, type } }, { select }) {
       const { current } = yield select(state => state.project);
-      const { pkg } = current;
+      const dp = current.pkg[type];
 
-      option.pkgs.forEach((item) => {
-        pkg[type][item.name] = `^${item.version}`;
+      pkgs.forEach((item) => {
+        dp[item.name] = `^${item.version}`;
       });
-      writePkgJson(current.path, pkg);
-      ipcRenderer.send('install-modules', option);
+      writePkgJson(current.path, current.pkg);
     },
-    * uninstallModules({ payload: { pkgName, type } }, { put, select }) {
+    * deletePkgModules({ payload: { pkgName, type } }, { select }) {
       const { current } = yield select(state => state.project);
       const { pkg } = current;
       delete pkg[type][pkgName];
       writePkgJson(current.path, pkg);
+    },
+    * addPkgModules({ payload: { version, pkgName, type } }, { select }) {
+      const { current } = yield select(state => state.project);
+      current.pkg[type][pkgName] = `^${version}`;
+      writePkgJson(current.path, current.pkg);
     }
     // * taskErr({ payload: { type, filePath } }, { put, select }) {
     //   const { projects, current } = yield select(state => state.project);

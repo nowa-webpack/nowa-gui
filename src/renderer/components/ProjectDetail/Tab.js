@@ -32,11 +32,10 @@ const Tab = ({ current, logType, dispatch, commands }) => {
     dispatch,
   };
 
-
   return (
     <Tabs
       className="detail-tabs"
-      defaultActiveKey="3"
+      defaultActiveKey="1"
       animated={false}
       onChange={() => {}}
     >
@@ -53,8 +52,6 @@ const Tab = ({ current, logType, dispatch, commands }) => {
     </Tabs>
   );
 };
- // <TabPane tab={i18n('project.tab.package')} key="3"><PackageManager {...settingProps} />
- //      </TabPane>
 
 
 Tab.propTypes = {

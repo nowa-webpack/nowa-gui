@@ -99,7 +99,7 @@ module.exports = {
   'msg.invalidName': '名称只能为字母数字下划线短横杠',
   'msg.invalidUrl': 'Url 格式不正确',
   'msg.invalidTemplate': '非 Nowa 模板文件夹',
-  'msg.existed': '项目已存在!',
+  'msg.existed': '该项已存在!',
   'msg.nameRequired': '名称不能为空!',
   'msg.importSuccess': '导入成功',
   'msg.updateSuccess': '更新成功',
@@ -124,4 +124,14 @@ module.exports = {
   'preinit.msg1': '初始化的时候必须要连接网络，请联网后重新打开应用。',
   'preinit.msg2': '{1} 后自动关闭应用',
   'preinit.waitInstall': '正在安装需要的依赖更新，大约需要半分钟时间，请耐心等待。',
+
+  'package.name': '包名',
+  'package.current': '定义版本',
+  'package.installed': '安装版本',
+  'package.newest': '最新版本',
+  'package.action': '操作',
+  'package.btn.updateAll': '全部更新',
+  'package.btn.install': '安装',
+
+  'table.empty': '暂无数据',
 }

@@ -43,12 +43,3 @@ Setting.propTypes = {
 };
 
 export default Setting;
-
-// <Popconfirm
-//     placement="bottomRight"
-//     title={i18n('msg.removeProject')}
-//     onConfirm={removeProj}
-//     okText={i18n('form.ok')}
-//     cancelText={i18n('form.cancel')}
-//   ><Button type="danger" size="small" icon="delete" className="del-btn">{i18n('form.delete')}</Button>
-// </Popconfirm>

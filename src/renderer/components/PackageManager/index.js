@@ -1,18 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'dva';
 import { remote } from 'electron';
 // import semver from 'semver';
-import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Tabs from 'antd/lib/tabs';
-import Input from 'antd/lib/input';
+
 import i18n from 'i18n';
 import { REGISTRY_MAP } from 'gui-const';
 import DependenceTable from './DependenceTable';
 
 const { registry } = remote.getGlobal('config');
 const TabPane = Tabs.TabPane;
-const InputGroup = Input.Group;
 
 
 class PackageManager extends Component {
@@ -21,7 +18,6 @@ class PackageManager extends Component {
     const dp = this.getInitDependencies(props.project.pkg);
     this.state = {
       activeKey: '1',
-      installDp: '',
       ...dp,
     };
   }
@@ -57,25 +53,15 @@ class PackageManager extends Component {
 
 
   render() {
-    const { activeKey, installDp, dependencies, devDependencies } = this.state;
+    const { activeKey, dependencies, devDependencies } = this.state;
     const npm = REGISTRY_MAP[this.props.project.abc.npm] || registry();
     const { project, dispatch } = this.props;
-
-    // const searchDiv = (
-    //   <InputGroup compact>
-    //     <Input style={{ width: '150px' }} value={installDp} size="small"
-    //       onChange={e => this.setState({ installDp: e.target.value })}
-    //     />
-    //     <Button type="primary" size="small" ghost>Install</Button>
-    //   </InputGroup>
-    //   );
 
     const basicProps = {
       registry: npm,
       filePath: project.path,
       dispatch,
     };
-
 
     return (
       <div className="setting">

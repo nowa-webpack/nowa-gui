@@ -124,4 +124,14 @@ module.exports = {
   'preinit.msg1': 'Internet connection is required during initialization, check your network & reopen APP.',
   'preinit.msg2': 'Shutdown in {1} seconds',
   'preinit.waitInstall': 'Installing NOWA dependencies, please wait for about half a minute.',
+
+  'package.name': 'Name',
+  'package.current': 'Current',
+  'package.installed': 'Installed',
+  'package.newest': 'Newest',
+  'package.action': 'Action',
+  'package.btn.updateAll': 'Update All',
+  'package.btn.install': 'Install',
+
+  'table.empty': 'No data.',
 };

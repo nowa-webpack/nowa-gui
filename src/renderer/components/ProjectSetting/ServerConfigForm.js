@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react';
+import { shell } from 'electron';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
+import Tooltip from 'antd/lib/tooltip';
 import Message from 'antd/lib/message';
-// import Popconfirm from 'antd/lib/popconfirm';
 import Switch from 'antd/lib/switch';
-import classNames from 'classnames';
 import Select from 'antd/lib/select';
 
 import i18n from 'i18n';
-import { PORT_MATCH, URL_MATCH } from 'gui-const';
+import { PORT_MATCH } from 'gui-const';
 
 class ServerConfigForm extends Component {
   constructor(props) {
@@ -66,11 +66,6 @@ class ServerConfigForm extends Component {
     });
 
     Message.success(i18n('msg.updateSuccess'));
-
-    // if (!URL_MATCH.test(+proxy)) {
-    //   Message.error(i18n('msg.invalidUrl'));
-    //   return false;
-    // }
   }
   
  
@@ -96,58 +91,66 @@ class ServerConfigForm extends Component {
     }
 
     return (
-      <form className="ui-form" >
-        <div className="form-item">
-          <label className="form-label">Lazyload:</label>
-          <Switch size="default" checked={lazyload}
-            onChange={checked => this.setState({ lazyload: checked })}
+      <div>
+        <Tooltip placement="top" title={i18n('foot.help')} >
+          <Button type="primary" icon="question" shape="circle" size="small" ghost
+            className="help-btn"
+            onClick={() => shell.openExternal('http://groups.alidemo.cn/alinw-tools/nowa/ben_di_kai_fa.html')}
           />
-        </div>
+        </Tooltip>
+        <form className="ui-form" >
+          <div className="form-item">
+            <label className="form-label">Lazyload:</label>
+            <Switch size="default" checked={lazyload}
+              onChange={checked => this.setState({ lazyload: checked })}
+            />
+          </div>
 
-        <div className="form-item">
-          <label className="form-label">Https:</label>
-          <Switch size="default" checked={https}
-            onChange={checked => this.setState({ https: checked })}
-          />
-        </div>
+          <div className="form-item">
+            <label className="form-label">Https:</label>
+            <Switch size="default" checked={https}
+              onChange={checked => this.setState({ https: checked })}
+            />
+          </div>
 
-        <div className="form-item">
-          <label className="form-label">Open:</label>
-          <Switch size="default" checked={open}
-            onChange={checked => this.setState({ open: checked })}
-          />
-        </div>
+          <div className="form-item">
+            <label className="form-label">Open:</label>
+            <Switch size="default" checked={open}
+              onChange={checked => this.setState({ open: checked })}
+            />
+          </div>
 
-        <div className="form-item">
-          <label className="form-label">Entry:</label>
-          <input type="text"
-            className="lg"
-            onChange={e => this.setState({ entry: e.target.value })}
-            value={entry}
-          />
-        </div>
-        <div className="form-item">
-          <label className="form-label">Port:</label>
-          <input type="text"
-            className="lg"
-            onChange={e => this.setState({ port: e.target.value })}
-            value={port}
-          />
-        </div>
-        <div className="form-item">
-          <label className="form-label">Proxy:</label>
-          <input type="text"
-            className="lg"
-            onChange={e => this.setState({ proxy: e.target.value })}
-            value={proxy}
-            placeholder="url"
-          />
-        </div>
-        { localeDiv }
-        <div className="form-btns">
-          <Button type="primary" size="default" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
-        </div>
-      </form>
+          <div className="form-item">
+            <label className="form-label">Entry:</label>
+            <input type="text"
+              className="lg"
+              onChange={e => this.setState({ entry: e.target.value })}
+              value={entry}
+            />
+          </div>
+          <div className="form-item">
+            <label className="form-label">Port:</label>
+            <input type="text"
+              className="lg"
+              onChange={e => this.setState({ port: e.target.value })}
+              value={port}
+            />
+          </div>
+          <div className="form-item">
+            <label className="form-label">Proxy:</label>
+            <input type="text"
+              className="lg"
+              onChange={e => this.setState({ proxy: e.target.value })}
+              value={proxy}
+              placeholder="url"
+            />
+          </div>
+          { localeDiv }
+          <div className="form-btns">
+            <Button type="primary" size="default" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+          </div>
+        </form>
+      </div>
     );
   }
 }

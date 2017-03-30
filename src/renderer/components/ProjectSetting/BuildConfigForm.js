@@ -1,13 +1,13 @@
 import React, { Component, PropTypes } from 'react';
+import { shell } from 'electron';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
+import Tooltip from 'antd/lib/tooltip';
 import Message from 'antd/lib/message';
-// import Popconfirm from 'antd/lib/popconfirm';
 import Switch from 'antd/lib/switch';
 import classNames from 'classnames';
 
 import i18n from 'i18n';
-import { PORT_MATCH } from 'gui-const';
 
 class BuildConfigForm extends Component {
   constructor(props) {
@@ -66,51 +66,59 @@ class BuildConfigForm extends Component {
     }
 
     return (
-      <form className="ui-form" >
-        <div className="form-item">
-          <label className="form-label">Mangle:</label>
-          <Switch size="default" checked={mangle}
-            onChange={checked => this.setState({ mangle: checked })}
+      <div>
+        <Tooltip placement="top" title={i18n('foot.help')} >
+          <Button type="primary" icon="question" shape="circle" size="small" ghost
+            className="help-btn"
+            onClick={() => shell.openExternal('http://groups.alidemo.cn/alinw-tools/nowa/ben_di_kai_fa.html')}
           />
-        </div>
+        </Tooltip>
+        <form className="ui-form" >
+          <div className="form-item">
+            <label className="form-label">Mangle:</label>
+            <Switch size="default" checked={mangle}
+              onChange={checked => this.setState({ mangle: checked })}
+            />
+          </div>
 
-        <div className="form-item">
-          <label className="form-label">Keepconsole:</label>
-          <Switch size="default" checked={keepconsole}
-            onChange={checked => this.setState({ keepconsole: checked })}
-          />
-        </div>
+          <div className="form-item">
+            <label className="form-label">Keepconsole:</label>
+            <Switch size="default" checked={keepconsole}
+              onChange={checked => this.setState({ keepconsole: checked })}
+            />
+          </div>
 
-        <div className="form-item">
-          <label className="form-label">Exportcss:</label>
-          <Switch size="default" checked={exportcss}
-            onChange={checked => this.setState({ exportcss: checked })}
-          />
-        </div>
+          <div className="form-item">
+            <label className="form-label">Exportcss:</label>
+            <Switch size="default" checked={exportcss}
+              onChange={checked => this.setState({ exportcss: checked })}
+            />
+          </div>
 
-        <div className="form-item">
-          <label className="form-label">Skipminify:</label>
-          <Switch size="default" checked={skipminify}
-            onChange={checked => this.setState({ skipminify: checked })}
-          />
-        </div>
+          <div className="form-item">
+            <label className="form-label">Skipminify:</label>
+            <Switch size="default" checked={skipminify}
+              onChange={checked => this.setState({ skipminify: checked })}
+            />
+          </div>
 
-        <div className="form-item">
-          <label className="form-label">MinifyExtension:</label>
-          <input type="text"
-            className={classNames({
-              sm: true,
-              disabled: skipminify
-            })}
-            onChange={e => this.setState({ minifyExtension: e.target.value })}
-            value={minifyExtension}
-            {...minifyField}
-          />
-        </div>
-        <div className="form-btns">
-          <Button type="primary" size="default" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
-        </div>
-      </form>
+          <div className="form-item">
+            <label className="form-label">MinifyExtension:</label>
+            <input type="text"
+              className={classNames({
+                sm: true,
+                disabled: skipminify
+              })}
+              onChange={e => this.setState({ minifyExtension: e.target.value })}
+              value={minifyExtension}
+              {...minifyField}
+            />
+          </div>
+          <div className="form-btns">
+            <Button type="primary" size="default" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+          </div>
+        </form>
+      </div>
     );
   }
 }
