@@ -6,6 +6,7 @@ import semver from 'semver';
 import classNames from 'classnames';
 import { join } from 'path';
 import Layout from 'antd/lib/layout';
+import Badge from 'antd/lib/badge';
 import { info, confirm } from 'antd/lib/modal';
 // import { hashHistory } from 'react-router';
 
@@ -166,30 +167,6 @@ class LayoutWrap extends Component {
     });
     command.importModulesInstall(installOptions);
     
-    // console.time('ad');
-    /*const term = command.installModules(installOptions);
-
-    term.stdout.on('data', (data) => {
-      console.log(data.toString());
-    });
-    term.stderr.on('data', (data) => {
-      console.log(data.toString());
-    });
-
-    term.on('exit', (code) => {
-      if (!code) {
-        console.log('exit drag installing');
-        dispatch({
-          type: 'project/finishedInstallDependencies',
-          payload: {
-            filePath,
-          }
-        });
-        console.timeEnd('ad');
-      }
-    });*/
-
-   
     this.onDragLeave();
   }
 
@@ -236,10 +213,14 @@ class LayoutWrap extends Component {
 
             <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
 
-            { showPage === 2 && <div className="proj-path">
-              {current.name}
-              <span>({hidePathString((current.path || ''))})</span>
-            </div>}
+            { showPage === 2 &&
+              <div className="proj-info">
+                <span className="proj-info-name">{current.name}</span>
+                <span className="proj-info-dir">({hidePathString((current.path || ''))})</span>
+                { current.start ? <span className="proj-info-status start">{i18n('task.status.start')}</span>
+                  : <span className="proj-info-status stop">{i18n('task.status.stop')}</span>}
+              </div>
+            }
 
             <div className="app-opt">
               { IS_WIN

@@ -5,6 +5,18 @@ const fs = require('fs-extra');
 const request = require('./request');
 const checkRegistry = require('./checkRegistry');
 
+ansiHTML.setColors({
+  // reset: ['555', '666'], // FOREGROUND-COLOR or [FOREGROUND-COLOR] or [, BACKGROUND-COLOR] or [FOREGROUND-COLOR, BACKGROUND-COLOR]
+  // black: 'aaa', // String
+  red: 'ff6b6b',
+  green: '68ce51',
+  yellow: 'f7de6e',
+  blue: '28c2e4',
+  // magenta: 'fff',
+  cyan: '28c2e4',
+  // lightgrey: '888',
+  // darkgrey: '777'
+});
 
 const { constants: { APP_PATH } } = require('../is');
 

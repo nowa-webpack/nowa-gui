@@ -27,6 +27,8 @@ module.exports = {
   'task.editor': 'Editor',
   // 'task.clear': 'Clear',
   'task.folder': process.platform === 'darwin' ? 'Finder' : 'Folder',
+  'task.status.start': 'Running',
+  'task.status.stop': 'Stopped',
 
   'project.tab.setting': 'Setting',
   'project.tab.basic': 'Basic Config',

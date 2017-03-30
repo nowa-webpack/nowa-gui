@@ -1,16 +1,13 @@
-const { spawn, exec, execFile, fork } = require('child_process');
+const { spawn, fork } = require('child_process');
 const { join, delimiter } = require('path');
 const npmRunPath = require('npm-run-path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
 const fixPath = require('fix-path');
-// const ansiHTML = require('ansi-html');
 const { tmpdir } = require('os');
-// const pubsub = require('electron-pubsub');
 
 const { constants, isWin } = require('../is');
 const { getWin } = require('../windowManager');
-// const { getPercent, newLog } = require('../utils');
 const task = require('../task');
 const kill = require('./kill');
 const modules = require('./modules');
@@ -92,7 +89,7 @@ const exportFunc = {
       // global.cmd[type][name].term = null;
       task.clearTerm(type, name);
       console.log('exit', code);
-      if (!code && typeof code !== 'undefined' && code !== 0) {
+      if ((!code && typeof code !== 'undefined' && code !== 0) || type === 'start') {
         // pubsub.publish('task-stopped', {
         win.webContents.send('task-stopped', {
           name,

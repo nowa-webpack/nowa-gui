@@ -26,7 +26,8 @@ module.exports = {
   'task.compass': '访问',
   'task.folder': '打开',
   // 'task.clear': '清理',
-
+  'task.status.start': '运行中',
+  'task.status.stop': '停止',
 
   'project.tab.setting': '项目设置',
   'project.tab.basic': '基本设置',

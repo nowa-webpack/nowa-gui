@@ -24,8 +24,10 @@ export const SUBLIME_BASE_PATH = IS_WIN
   : '/Applications/Sublime Text.app';
 
 export const UPGRADE_URL = IS_WIN
-  ? 'http://lab.onbing.com/nowa-gui.exe'
-  : 'http://lab.onbing.com/nowa-gui.dmg';
+  // ? 'http://lab.onbing.com/nowa-gui.exe'
+  // : 'http://lab.onbing.com/nowa-gui.dmg';
+  ? 'https://alixux.org/downloads/nowa-gui.exe'
+  : 'https://alixux.org/downloads/nowa-gui.dmg';
 
 const iner_url = [
   'http://alipay-rmsdeploy-image.cn-hangzhou.alipay.aliyun-inc.com/nowa-test/nowa-gui.dmg',
