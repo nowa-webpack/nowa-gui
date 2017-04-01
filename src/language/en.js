@@ -52,7 +52,7 @@ module.exports = {
   'project.new.step1': 'Select Template',
   'project.new.step2': 'Configuration',
   'project.new.step3': 'Installing Dependencies',
-  'project.new.log.wait': 'Waiting for packages installation',
+  'project.new.log.wait': 'Waiting for package installation',
   'project.new.log.error': 'Install failed, please check the log below',
   'project.new.log.retry': 'Retry',
   'project.new.empty': 'No templates.',

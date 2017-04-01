@@ -150,7 +150,7 @@ class LayoutWrap extends Component {
 
     const pkgs = getPkgDependencies(readPkgJson(filePath));
 
-    const installOptions = {
+    const options = {
       root: filePath,
       registry: registry(),
       targetDir: filePath,
@@ -165,7 +165,11 @@ class LayoutWrap extends Component {
         needInstall: true
       }
     });
-    command.importModulesInstall(installOptions);
+    // command.importModulesInstall(installOptions);
+    command.notProgressInstall({
+      options,
+      sender: 'import',
+    });
     
     this.onDragLeave();
   }

@@ -8,10 +8,11 @@ import Popconfirm from 'antd/lib/popconfirm';
 import semver from 'semver';
 import { join } from 'path';
 
+
 import i18n from 'i18n';
 import request from 'gui-request';
 import { readPkgJson } from 'gui-util';
-const { utils } = remote.getGlobal('services');
+const { utils, command } = remote.getGlobal('services');
 const InputGroup = Input.Group;
 
 const basicColumns = [{
@@ -44,16 +45,20 @@ class DependenceTable extends Component {
       loading: true,
       selectedRowKeys: [],
       installDp: '',
-      isNewModule: false
+      // isNewModule: false
     };
+
+    this.onNewPkgFinished = this.onNewPkgFinished.bind(this);
+    this.onUpdatePkgFinished = this.onUpdatePkgFinished.bind(this);
   }
 
   async componentDidMount() {
+    const { type } = this.props;
     this.getVersions(this.props).then((dataSource) => {
       this.setState({ dataSource, loading: false });
     });
-    ipcRenderer.on('install-modules-finished', this.onReceiveFinished.bind(this));
-    // pubsub.subscribe('install-modules-finished', this.onReceiveFinished);
+    ipcRenderer.on(`new-${type}-installed`, this.onNewPkgFinished);
+    ipcRenderer.on(`update-${type}-installed`, this.onUpdatePkgFinished);
   }
 
   componentWillReceiveProps(next) {
@@ -67,8 +72,9 @@ class DependenceTable extends Component {
   }
 
   componentWillUnmount() {
-    // pubsub.unsubscribe('install-modules-finished');
-    ipcRenderer.removeAllListeners('install-modules-finished');
+    const { type } = this.props;
+    ipcRenderer.removeAllListeners(`new-${type}-installed`);
+    ipcRenderer.removeAllListeners(`update-${type}-installed`);
   }
 
   async getVersions({ filePath, source, registry }) {
@@ -77,18 +83,66 @@ class DependenceTable extends Component {
     return netPkgs;
   }
 
-  onReceiveFinished(e, { pkgs, err }) {
+  onNewPkgFinished(e, { pkgs, err }) {
+    const { dataSource, installDp } = this.state;
+    console.log(installDp, pkgs, this.state);
+    if (err) {
+      Message.error(i18n('msg.installFail'));
+      this.setState({ loading: false, installDp: '' });
+    } else {
+      const { filePath, dispatch, type } = this.props;
+
+      const { version } = readPkgJson(join(filePath, 'node_modules', installDp));
+      dataSource.push({
+        name: installDp,
+        version: `^${version}`,
+        installedVersion: version,
+        netVersion: version,
+        update: false,
+      });
+
+      dispatch({
+        type: 'project/addPkgModules',
+        payload: { version, pkgName: installDp, type }
+      });
+
+      Message.success(i18n('msg.installSuccess'));
+      this.setState({ loading: false, dataSource, installDp: '' });
+    }
+  }
+
+  onUpdatePkgFinished(e, { pkgs, err }) {
+    const { dataSource } = this.state;
+    if (err) {
+      Message.error(i18n('msg.updateFailed'));
+      this.setState({ loading: false, selectedRowKeys: [] });
+    } else {
+      const { dispatch, type } = this.props;
+      const data = dataSource.map((item) => {
+        const filter = pkgs.filter(p => p.name === item.name);
+        if (filter.length > 0) {
+          item.version = `^${item.netVersion}`;
+          item.installedVersion = item.netVersion;
+          item.update = false;
+        }
+        return item;
+      });
+      dispatch({
+        type: 'project/updatePkgModules',
+        payload: { pkgs, type }
+      });
+      Message.success(i18n('msg.updateSuccess'));
+      this.setState({ loading: false, dataSource: data, selectedRowKeys: [] });
+    }
+  }
+
+  /*onReceiveFinished(e, { pkgs, err }) {
     const { dataSource, isNewModule, installDp } = this.state;
+      console.log('isNewModule', isNewModule);
     if (!err) {
       const { filePath, dispatch, type } = this.props;
-      
       if (isNewModule) {
         const { version } = readPkgJson(join(filePath, 'node_modules', installDp));
-
-        // dispatch({
-        //   type: 'project/rewriteProjectPkg',
-        //   payload: { version, pkgName: installDp, type }
-        // });
 
         dataSource.push({
           name: installDp,
@@ -131,7 +185,7 @@ class DependenceTable extends Component {
         this.setState({ loading: false, selectedRowKeys: [] });
       }
     }
-  }
+  }*/
 
   async fetchMoudlesVersion(modules, registry) {
     const repos = await Promise.all(
@@ -163,7 +217,7 @@ class DependenceTable extends Component {
     };
   }
 
-  installModules() {
+  updatelModules() {
     const args = [].slice.call(arguments);
     let pkgs = [];
     const opt = this.getBasicOpt();
@@ -184,9 +238,12 @@ class DependenceTable extends Component {
         };
       });
     }
-    const option = { ...opt, pkgs };
-    ipcRenderer.send('install-modules', option);
-    this.setState({ loading: true, isNewModule: false });
+    const options = { ...opt, pkgs };
+    command.notProgressInstall({
+      options,
+      sender: `update-${this.props.type}`
+    });
+    this.setState({ loading: true });
   }
 
   removeModules(pkg) {
@@ -210,13 +267,17 @@ class DependenceTable extends Component {
       return false;
     }
 
-    const option = this.getBasicOpt();
-    option.pkgs = [{
+    const options = this.getBasicOpt();
+    options.pkgs = [{
       name: installDp,
       version: 'latest',
     }];
-    ipcRenderer.send('install-modules', option);
-    this.setState({ loading: true, isNewModule: true });
+    command.notProgressInstall({
+      options,
+      sender: `new-${this.props.type}`
+    });
+    // this.setState({ loading: true, isNewModule: true });
+    this.setState({ loading: true });
   }
 
   render() {
@@ -261,7 +322,7 @@ class DependenceTable extends Component {
               size="small"
               type="primary"
               className="udt-btn"
-              onClick={() => this.installModules(record)}
+              onClick={() => this.updatelModules(record)}
             />
           }
         </div>
@@ -270,6 +331,7 @@ class DependenceTable extends Component {
 
     return (
        <div className="package-wrap">
+        
         <div className="input-grp">
           <InputGroup compact>
             <Input style={{ width: '150px' }} value={installDp} size="small"
@@ -279,11 +341,10 @@ class DependenceTable extends Component {
               onClick={() => this.newModule()}>{i18n('package.btn.install')}</Button>
           </InputGroup>
         </div>
-        <div style={{ marginBottom: 10 }}>
-          <Button type="primary" onClick={() => this.installModules()} size="small"
-            disabled={!hasSelected}
-          >{i18n('package.btn.updateAll')}</Button>
-        </div>
+        <Button type="primary" onClick={() => this.installModules()} size="small"
+          disabled={!hasSelected}
+          className="udt-all-btn"
+        >{i18n('package.btn.updateAll')}</Button>
         <Table
           size="small"
           rowSelection={rowSelection}

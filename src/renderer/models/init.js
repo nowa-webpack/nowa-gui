@@ -10,7 +10,6 @@ import Message from 'antd/lib/message';
 
 import i18n from 'i18n';
 import { delay, getPkgDependencies, readPkgJson } from 'gui-util';
-// const pubsub = remote.require('electron-pubsub');
 const { utils, command, is, templatesManager } = remote.getGlobal('services');
 const { TEMPLATES_DIR } = is.constants;
 // const TEMPLATES_DIR = join(osHomedir(), '.nowa-gui', 'templates');
@@ -356,16 +355,14 @@ export default {
     },
     * retryInstall(o, { put, select }) {
       const { installOptions } = yield select(state => state.init);
-      console.log('installing');
-      // command.installModules(installOptions);
-      // pubsub.publish('install-modules', installOptions);
-      ipcRenderer.send('install-modules', installOptions);
-      // yield put({
-      //   type: 'changeStatus',
-      //   payload: {
-      //     term,
-      //   }
-      // });
+      console.log('installing', installOptions);
+      command.progressInstall({
+        options: installOptions,
+        sender: 'init',
+        isTruthPercent: true,
+        endCb: null,
+      });
+      // ipcRenderer.send('install-modules', installOptions);
     },
 
    

@@ -6,10 +6,10 @@ const { join } = require('path');
 // const pubsub = require('electron-pubsub');
 
 
-const { request, getMockPercent, newLog } = require('../utils');
+const { request } = require('../utils');
 const { constants } = require('../is');
 const { getWin } = require('../windowManager');
-const { importModulesInstall } = require('../command');
+const { progressInstall } = require('../command');
 const config = require('../../config');
 
 const { NOWA_INSTALL_DIR, NOWA_INSTALL_JSON_FILE } = constants;
@@ -31,7 +31,7 @@ const checkForEmpty = () => {
 };
 
 const getInstallOpt = (pkgs) => {
-  console.log('registry', config.registry())
+  console.log('registry', config.registry());
   return {
     root: NOWA_INSTALL_DIR,
     registry: config.registry(),
@@ -64,9 +64,15 @@ const checkModulesVersion = (modules) => co(function* () {
 
 const installNowaModules = (pkgs, endCb) => {
   const win = getWin();
-  const opt = getInstallOpt(pkgs);
-  const term = importModulesInstall(opt, true);
-  console.time('nowa install');
+  const options = getInstallOpt(pkgs);
+  progressInstall({
+    options,
+    sender: 'nowa',
+    isTruthPercent: false,
+    endCb,
+  });
+   /*const term = importModulesInstall(opt, true);
+ console.time('nowa install');
   let percent = 0;
   let log = '';
 
@@ -89,7 +95,7 @@ const installNowaModules = (pkgs, endCb) => {
     log = newLog(log, data.toString());
     console.log(data.toString());
     // pubsub.publish('nowa-installing', {
-    win.webContents.send('install-modules', {
+    win.webContents.send('nowa-installing', {
       percent,
       log,
     });
@@ -105,7 +111,7 @@ const installNowaModules = (pkgs, endCb) => {
       // pubsub.publish('nowa-installed');
       win.webContents.send('nowa-installed');
     }
-  });
+  });*/
 };
 
 const init = () => {
@@ -115,6 +121,7 @@ const init = () => {
     // const pkgs = [...nowaPkg, ...otherPkg].map(name => ({ name, version: '1.0.0' }));
 
     installNowaModules(pkgs, () => {
+      config.nowaNeedInstalled(false);
       const modules = {};
       pkgs.filter(({ name }) => /^nowa/.test(name))
         .map(({ name }) => {
@@ -133,6 +140,7 @@ const init = () => {
       console.log('modules', modules);
       if (modules.length > 0) {
         installNowaModules(modules, () => {
+          config.nowaNeedInstalled(false);
           modules.forEach(({ name, version }) => {
             nowaJson[name] = version;
           });

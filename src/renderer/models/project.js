@@ -11,7 +11,6 @@ import { readABCJson, writeABCJson,
   isNowaProject, getPkgDependencies, delay
 } from 'gui-util';
 
-// const pubsub = remote.require('electron-pubsub');
 const taskStart = remote.getGlobal('start') || {};
 const { registry } = remote.getGlobal('config');
 const { command } = remote.getGlobal('services');
@@ -89,8 +88,7 @@ export default {
           projects,
         }
       });
-      // pubsub.subscribe('import-install-finished', (event, { filePath }) => {
-      ipcRenderer.on('import-install-finished', (event, { filePath }) => {
+      ipcRenderer.on('import-installed', (event, { project: filePath }) => {
         dispatch({
           type: 'finishedInstallDependencies',
           payload: {
@@ -117,7 +115,7 @@ export default {
 
           const pkgs = getPkgDependencies(readPkgJson(filePath));
 
-          const installOptions = {
+          const options = {
             root: filePath,
             registry: registry(),
             targetDir: filePath,
@@ -126,7 +124,10 @@ export default {
             pkgs,
           };
 
-          command.importModulesInstall(installOptions);
+          command.notProgressInstall({
+            options,
+            sender: 'import',
+          });
         }
 
         const projectInfo = getProjectInfoByPath(filePath);
@@ -448,7 +449,7 @@ export default {
     * updatePkgModules({ payload: { pkgs, type } }, { select }) {
       const { current } = yield select(state => state.project);
       const dp = current.pkg[type];
-
+      console.log(pkgs)
       pkgs.forEach((item) => {
         dp[item.name] = `^${item.version}`;
       });
@@ -462,6 +463,9 @@ export default {
     },
     * addPkgModules({ payload: { version, pkgName, type } }, { select }) {
       const { current } = yield select(state => state.project);
+      if (!current.pkg[type]) {
+        current.pkg[type] = {};
+      }
       current.pkg[type][pkgName] = `^${version}`;
       writePkgJson(current.path, current.pkg);
     }

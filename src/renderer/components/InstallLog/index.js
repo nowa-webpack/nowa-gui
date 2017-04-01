@@ -1,12 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Progress from 'antd/lib/progress';
 import Icon from 'antd/lib/icon';
 import i18n from 'i18n';
-// import pubsub from 'electron-pubsub';
-// const pubsub = remote.require('electron-pubsub');
 
 const newLog = (oldLog, str) => oldLog + (ansiHTML(str) + '<br>');
 
@@ -25,17 +23,13 @@ class Log extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.on('install-modules', this.onReceiveLog.bind(this));
-    ipcRenderer.on('install-modules-finished', this.onReceiveFinished.bind(this));
-    // pubsub.subscribe('install-modules', this.onReceiveLog.bind(this));
-    // pubsub.subscribe('install-modules-finished', this.onReceiveFinished.bind(this));
+    ipcRenderer.on('init-installing', this.onReceiveLog.bind(this));
+    ipcRenderer.on('init-installed', this.onReceiveFinished.bind(this));
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeAllListeners('install-modules');
-    ipcRenderer.removeAllListeners('install-modules-finished');
-    // pubsub.unsubscribe('install-modules');
-    // pubsub.unsubscribe('install-modules-finished');
+    ipcRenderer.removeAllListeners('init-installing');
+    ipcRenderer.removeAllListeners('init-installed');
   }
 
   onReceiveLog(event, { percent, log }) {

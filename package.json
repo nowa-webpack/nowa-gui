@@ -65,7 +65,6 @@
     "ejs-loader": "^0.3.0",
     "electron": "^1.6.2",
     "electron-builder": "^12.3.1",
-    "electron-prebuilt": "^1.4.13",
     "electron-pubsub": "^0.2.2",
     "electron-rebuild": "^1.5.7",
     "extract-text-webpack-plugin": "^2.1.0",

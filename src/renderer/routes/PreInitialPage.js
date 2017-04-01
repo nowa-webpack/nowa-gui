@@ -1,12 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 // import { hashHistory } from 'react-router';
 import { remote, ipcRenderer } from 'electron';
-// import pubsub from 'electron-pubsub';
 import Progress from 'antd/lib/progress';
 
 import i18n from 'i18n';
 import { getLocalProjects } from 'gui-local';
-// const pubsub = remote.require('electron-pubsub');
 const { nowaNeedInstalled } = remote.getGlobal('config');
 
 
@@ -41,8 +39,6 @@ class PreInitialPage extends Component {
       this.afterInstalled();
     }
 
-    // pubsub.subscribe('nowa-installing', this.onReceiveLog.bind(this));
-    // pubsub.subscribe('nowa-installed', this.afterInstalled.bind(this));
     ipcRenderer.on('nowa-installing', this.onReceiveLog.bind(this));
     ipcRenderer.on('nowa-installed', this.afterInstalled.bind(this));
     // ipcRenderer.on('nowa-installed', () => {
@@ -51,13 +47,12 @@ class PreInitialPage extends Component {
   }
 
   componentWillUnmount() {
-    // pubsub.unsubscribe('nowa-installing');
-    // pubsub.unsubscribe('nowa-installed');
     ipcRenderer.removeAllListeners('nowa-installing');
     ipcRenderer.removeAllListeners('nowa-installed');
   }
 
   onReceiveLog(event, { percent, log }) {
+    console.log('nowa-installing onReceiveLog');
     this.setState({
       percent,
       log,

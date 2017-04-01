@@ -43,7 +43,7 @@ module.exports = {
 
   'project.new.title': '创建新项目',
   'project.new.version': '版本',
-  'project.new.create': '新建',
+  'project.new.create': '开始创建',
   'project.new.edit': '修改',
   'project.new.update': '更新',
   'project.new.more': '了解更多',

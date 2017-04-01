@@ -1,11 +1,9 @@
 import { ipcRenderer, remote } from 'electron';
 import Message from 'antd/lib/message';
-// import pubsub from 'electron-pubsub';
 import i18n from 'i18n';
 import { delay, writePkgJson } from 'gui-util';
 import { IS_WIN } from 'gui-const';
 
-// const pubsub = remote.require('electron-pubsub');
 const { command: remoteCommand } = remote.getGlobal('services');
 const taskStart = remote.require('./services/task').getCmd('start');
 
@@ -33,7 +31,6 @@ export default {
         });
       }
 
-      // pubsub.subscribe('install-finished', (event, { type, success }) => {
       ipcRenderer.on('task-finished', (event, { type, success }) => {
         if (success) {
           Message.success(`Exec ${type} successed!`);
@@ -42,7 +39,6 @@ export default {
         }
       });
 
-      // pubsub.subscribe('install-stopped', (event, { type }) => {
       ipcRenderer.on('task-stopped', (event, { type }) => {
         Message.info(`${type} command stopped.`);
       });
