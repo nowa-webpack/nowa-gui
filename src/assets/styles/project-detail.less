@@ -219,21 +219,40 @@
   width: 674px;
   margin: 0px auto;
 
-  .udt-btn{
-    padding: 0;
+  /*.udt-btn{
     margin-right: 4px;
+  }*/
+  .new-btn{
+    float: right;
   }
 
-  .input-grp{
-    /*float: right;*/
+  /*.input-grp{
     position: absolute;
     margin-bottom: 8px;
     right: 0;
     top: 0;
-  }
+  }*/
   .udt-all-btn{
     /*position: absolute;*/
     margin-bottom: 8px;
   }
+
+  &-action{
+    font-size: 12px;
+    margin-right: 4px;
+    cursor: pointer;
+    &.del{
+      color: #49a9ee;
+      vertical-align: middle;
+    }
+    &.update{
+      color: #3dbd7d;
+    }
+    &.update-unsafe{
+      /*color: #49a9ee;*/
+      color: #f46e65;
+    }
+  }
+
 }
 

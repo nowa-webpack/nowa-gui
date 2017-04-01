@@ -132,7 +132,11 @@ module.exports = {
   'package.newest': '最新版本',
   'package.action': '操作',
   'package.btn.updateAll': '全部更新',
-  'package.btn.install': '安装',
+  'package.btn.install': '安装新依赖',
+  'package.update.tip': '确认更新到改版本吗？',
+
 
   'table.empty': '暂无数据',
+  'table.action.del': '移除',
+  'table.action.update': '更新',
 }

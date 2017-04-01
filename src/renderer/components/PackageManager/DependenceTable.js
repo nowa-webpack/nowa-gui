@@ -6,12 +6,15 @@ import Table from 'antd/lib/table';
 import Input from 'antd/lib/input';
 import Popconfirm from 'antd/lib/popconfirm';
 import semver from 'semver';
+import semverDiff from 'semver-diff';
 import { join } from 'path';
 
 
 import i18n from 'i18n';
 import request from 'gui-request';
 import { readPkgJson } from 'gui-util';
+import NewPackageModal from './NewPackageModal';
+
 const { utils, command } = remote.getGlobal('services');
 const InputGroup = Input.Group;
 
@@ -45,11 +48,14 @@ class DependenceTable extends Component {
       loading: true,
       selectedRowKeys: [],
       installDp: '',
+      showModal: false,
       // isNewModule: false
     };
 
     this.onNewPkgFinished = this.onNewPkgFinished.bind(this);
     this.onUpdatePkgFinished = this.onUpdatePkgFinished.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+    this.newModule = this.newModule.bind(this);
   }
 
   async componentDidMount() {
@@ -80,21 +86,22 @@ class DependenceTable extends Component {
   async getVersions({ filePath, source, registry }) {
     const localPkgs = utils.getMoudlesVersion(filePath, source);
     const netPkgs = await this.fetchMoudlesVersion(localPkgs, registry);
+    console.log(netPkgs);
     return netPkgs;
   }
 
   onNewPkgFinished(e, { pkgs, err }) {
-    const { dataSource, installDp } = this.state;
-    console.log(installDp, pkgs, this.state);
+    const { dataSource } = this.state;
+    const pkgName = pkgs[0].name;
     if (err) {
       Message.error(i18n('msg.installFail'));
-      this.setState({ loading: false, installDp: '' });
+      this.setState({ loading: false });
     } else {
       const { filePath, dispatch, type } = this.props;
 
-      const { version } = readPkgJson(join(filePath, 'node_modules', installDp));
+      const { version } = readPkgJson(join(filePath, 'node_modules', pkgName ));
       dataSource.push({
-        name: installDp,
+        name: pkgName,
         version: `^${version}`,
         installedVersion: version,
         netVersion: version,
@@ -103,11 +110,11 @@ class DependenceTable extends Component {
 
       dispatch({
         type: 'project/addPkgModules',
-        payload: { version, pkgName: installDp, type }
+        payload: { version, pkgName, type }
       });
 
       Message.success(i18n('msg.installSuccess'));
-      this.setState({ loading: false, dataSource, installDp: '' });
+      this.setState({ loading: false, dataSource });
     }
   }
 
@@ -136,71 +143,22 @@ class DependenceTable extends Component {
     }
   }
 
-  /*onReceiveFinished(e, { pkgs, err }) {
-    const { dataSource, isNewModule, installDp } = this.state;
-      console.log('isNewModule', isNewModule);
-    if (!err) {
-      const { filePath, dispatch, type } = this.props;
-      if (isNewModule) {
-        const { version } = readPkgJson(join(filePath, 'node_modules', installDp));
-
-        dataSource.push({
-          name: installDp,
-          version: `^${version}`,
-          installedVersion: version,
-          netVersion: version,
-          update: false,
-        });
-
-        dispatch({
-          type: 'project/addPkgModules',
-          payload: { version, pkgName: installDp, type }
-        });
-
-        Message.success(i18n('msg.installSuccess'));
-        this.setState({ loading: false, isNewModule: false, dataSource, installDp: '' });
-      } else {
-        const data = dataSource.map((item) => {
-          const filter = pkgs.filter(p => p.name === item.name);
-          if (filter.length > 0) {
-            item.version = `^${item.netVersion}`;
-            item.installedVersion = item.netVersion;
-            item.update = false;
-          }
-          return item;
-        });
-        dispatch({
-          type: 'project/updatePkgModules',
-          payload: { pkgs, type }
-        });
-        Message.success(i18n('msg.updateSuccess'));
-        this.setState({ loading: false, dataSource: data, selectedRowKeys: [] });
-      }
-    } else {
-      if (isNewModule) {
-        Message.error(i18n('msg.installFail'));
-        this.setState({ loading: false, installDp: '', isNewModule: false });
-      } else {
-        Message.error(i18n('msg.updateFailed'));
-        this.setState({ loading: false, selectedRowKeys: [] });
-      }
-    }
-  }*/
-
   async fetchMoudlesVersion(modules, registry) {
     const repos = await Promise.all(
         modules.map(({ name }) => request(`${registry}/${name}/latest`))
       );
     const pkgs = modules.map(({ name, version, installedVersion }, i) => {
       const { data, err } = repos[i];
+      const diff = semverDiff(installedVersion, data.version);
       return {
         name,
         version,
         installedVersion,
         netVersion: err ? installedVersion : data.version,
-        update: semver.lt(installedVersion, data.version)
+        update: semver.lt(installedVersion, data.version),
+        safeUpdate: diff !== 'major'
       };
-    });
+    }).sort((a, b) => b.update - a.update);
     
     return pkgs;
   }
@@ -258,8 +216,8 @@ class DependenceTable extends Component {
     this.setState({ dataSource: filter });
   }
 
-  newModule() {
-    const { installDp, dataSource } = this.state;
+  newModule(installDp) {
+    const { dataSource } = this.state;
     const filter = dataSource.filter(item => item.name === installDp);
 
     if (filter.length > 0) {
@@ -276,12 +234,15 @@ class DependenceTable extends Component {
       options,
       sender: `new-${this.props.type}`
     });
-    // this.setState({ loading: true, isNewModule: true });
-    this.setState({ loading: true });
+    this.setState({ loading: true, showModal: false });
+  }
+
+  hideModal() {
+    this.setState({ showModal: false });
   }
 
   render() {
-    const { loading, selectedRowKeys, dataSource, installDp } = this.state;
+    const { loading, selectedRowKeys, dataSource, showModal } = this.state;
     const hasSelected = selectedRowKeys.length > 0;
     const rowSelection = {
       selectedRowKeys,
@@ -302,45 +263,47 @@ class DependenceTable extends Component {
       title: i18n('package.action'),
       key: 'action',
       dataIndex: 'update',
-      render: (update, record) => (
-        <div>
-          <Popconfirm
-            placement="bottomRight"
-            title={i18n('msg.removeTip')}
-            onConfirm={() => this.removeModules(record)}
-            okText={i18n('form.ok')}
-            cancelText={i18n('form.cancel')}
-          ><Button className="udt-btn" ghost
-            type="danger"
-            size="small"
-            icon="delete"
-          />
-          </Popconfirm>
-          { update &&
-            <Button ghost
-              icon="download"
-              size="small"
-              type="primary"
-              className="udt-btn"
-              onClick={() => this.updatelModules(record)}
-            />
+      render: (update, record) => {
+        let updateDiv;
+
+        if (update) {
+          if (record.safeUpdate) {
+            updateDiv = (
+              <span className="package-wrap-action update"
+                onClick={() => this.updatelModules(record)}
+              >{i18n('table.action.update')}</span>);
+          } else {
+            updateDiv = (<Popconfirm
+              placement="bottomRight"
+              title={i18n('package.update.tip')}
+              onConfirm={() => this.updatelModules(record)}
+              okText={i18n('form.ok')}
+              cancelText={i18n('form.cancel')}
+            ><span className="package-wrap-action update-unsafe">{i18n('table.action.update')}</span>
+            </Popconfirm>);
           }
-        </div>
-      ),
+        }
+
+        return (
+          <div>
+            <Popconfirm
+              placement="bottomRight"
+              title={i18n('msg.removeTip')}
+              onConfirm={() => this.removeModules(record)}
+              okText={i18n('form.ok')}
+              cancelText={i18n('form.cancel')}
+            ><span className="package-wrap-action del">{i18n('table.action.del')}</span>
+            </Popconfirm>
+            { updateDiv }
+          </div>)
+      },
     }];
 
     return (
        <div className="package-wrap">
-        
-        <div className="input-grp">
-          <InputGroup compact>
-            <Input style={{ width: '150px' }} value={installDp} size="small"
-              onChange={e => this.setState({ installDp: e.target.value })}
-            />
-            <Button type="primary" size="small"
-              onClick={() => this.newModule()}>{i18n('package.btn.install')}</Button>
-          </InputGroup>
-        </div>
+        <Button type="primary" size="small" className="new-btn"
+          onClick={() => this.setState({ showModal: true })}
+        >{i18n('package.btn.install')}</Button>
         <Button type="primary" onClick={() => this.installModules()} size="small"
           disabled={!hasSelected}
           className="udt-all-btn"
@@ -358,11 +321,22 @@ class DependenceTable extends Component {
             emptyText: i18n('table.empty'),
           }}
         />
+        <NewPackageModal
+          showModal={showModal}
+          onHideModal={this.hideModal}
+          onHandleOK={this.newModule}
+        />
       </div>
     );
   }
-
 }
+
+// <Button className="udt-btn" ghost
+//               type="danger"
+//               size="small"
+//               icon="delete"
+//             />
+
 
 DependenceTable.propTypes = {
   source: PropTypes.array.isRequired,

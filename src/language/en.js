@@ -133,7 +133,10 @@ module.exports = {
   'package.newest': 'Newest',
   'package.action': 'Action',
   'package.btn.updateAll': 'Update All',
-  'package.btn.install': 'Install',
+  'package.btn.install': 'Add New Package',
+  'package.update.tip': 'Are you sure to update this package?',
 
   'table.empty': 'No data.',
+  'table.action.del': 'delete',
+  'table.action.update': 'update',
 };

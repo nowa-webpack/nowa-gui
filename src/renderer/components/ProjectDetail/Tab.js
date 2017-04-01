@@ -35,7 +35,7 @@ const Tab = ({ current, logType, dispatch, commands }) => {
   return (
     <Tabs
       className="detail-tabs"
-      defaultActiveKey="1"
+      defaultActiveKey="3"
       animated={false}
       onChange={() => {}}
     >
