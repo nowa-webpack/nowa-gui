@@ -6,26 +6,28 @@ import Select from 'antd/lib/select';
 // import { findDOMNode } from 'react-dom';
 import i18n from 'i18n';
 const { command } = remote.getGlobal('services');
-
+const task = remote.require('./services/task');
 
 class Terminal extends Component {
   constructor(props) {
     super(props);
     const { logType, name } = props;
-    const task = remote.require('./services/task');
     const t = task.getTask(logType, name);
 
     if (t.log.length > 0) {
       this.state = {
         log: t.log,
-        showClear: true
+        showClear: true,
+        logType
       };
     } else {
       this.state = {
         log: '',
-        showClear: false
+        showClear: false,
+        logType
       };
     }
+
     this.handleChangeCustom = this.handleChangeCustom.bind(this);  
   }
 
@@ -33,26 +35,22 @@ class Terminal extends Component {
     ipcRenderer.on('task-ouput', this.onReceiveLog.bind(this));
   }
 
-  componentWillReceiveProps({ logType, name }) {
+  componentWillReceiveProps({ logType, name, otherCommands }) {
     if (logType !== this.props.logType || name !== this.props.name) {
-      const task = remote.require('./services/task');
-      const { log } = task.getTask(logType, name);
+      const type = otherCommands.includes(logType) ? logType : 'start';
+      const { log } = task.getTask(type, name);
       if (log.length > 0) {
-        this.setState({ log, showClear: true }, () => this.scrollToBottom());
+        this.setState({ log, showClear: true, logType: type }, 
+          () => this.scrollToBottom());
       } else {
-        this.setState({ log: '', showClear: false });
+        this.setState({ log: '', showClear: false, logType: type });
       }
-      // const task = remote.getGlobal('cmd')[logType];
-      // if (task && task[name]) {
-        // this.setState({ log: task[name].log, showClear: true }, () => this.scrollToBottom());
-      // } else {
-      //   this.setState({ log: '', showClear: false });
-      // }
     }
   }
 
   onReceiveLog(event, data) {
-    const { name, logType } = this.props;
+    const { name } = this.props;
+    const { logType } = this.state;
     if (name === data.name && logType === data.type) {
       this.setState({ log: data.log, showClear: true }, () => this.scrollToBottom());
     }
@@ -84,8 +82,8 @@ class Terminal extends Component {
   }
 
   render() {
-    const { showClear, log } = this.state;
-    const { hasSide, logType, otherCommands } = this.props;
+    const { showClear, log, logType } = this.state;
+    const { hasSide, otherCommands } = this.props;
     const selectValue = logType !== 'start' && logType !== 'build' ? logType : undefined;
 
     return (
@@ -115,8 +113,9 @@ class Terminal extends Component {
               style={{ width: 120 }}
               onChange={this.handleChangeCustom}
               value={selectValue}
-            >
-            { otherCommands.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>) }
+            >{ 
+              otherCommands.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>)
+              }
             </Select>
           }
         </div>

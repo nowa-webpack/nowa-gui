@@ -3,7 +3,7 @@ import { remote, ipcRenderer } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Table from 'antd/lib/table';
-import Input from 'antd/lib/input';
+// import Input from 'antd/lib/input';
 import Popconfirm from 'antd/lib/popconfirm';
 import semver from 'semver';
 import semverDiff from 'semver-diff';
@@ -16,7 +16,7 @@ import { readPkgJson } from 'gui-util';
 import NewPackageModal from './NewPackageModal';
 
 const { utils, command } = remote.getGlobal('services');
-const InputGroup = Input.Group;
+// const InputGroup = Input.Group;
 
 const basicColumns = [{
   title: i18n('package.name'),
@@ -86,7 +86,6 @@ class DependenceTable extends Component {
   async getVersions({ filePath, source, registry }) {
     const localPkgs = utils.getMoudlesVersion(filePath, source);
     const netPkgs = await this.fetchMoudlesVersion(localPkgs, registry);
-    console.log(netPkgs);
     return netPkgs;
   }
 

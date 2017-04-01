@@ -22,7 +22,7 @@ class NewPackageModal extends Component {
         title={i18n('package.btn.install')}
         visible={showModal}
         onOk={() => onHandleOK(packageName)} 
-        onCancel={() => onHideModal()}
+        onCancel={onHideModal}
         wrapClassName="set-modal"
         okText={i18n('form.ok')}
         cancelText={i18n('form.cancel')}

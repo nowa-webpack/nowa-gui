@@ -46,7 +46,7 @@ class CommandTermList extends Component {
   }
 
   render() {
-    const { commands, name, dispatch } = this.props;
+    const { commands, dispatch } = this.props;
 
     const modalProps = {
       showModal: this.state.showModal,
