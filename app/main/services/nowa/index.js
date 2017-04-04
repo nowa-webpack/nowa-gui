@@ -34,10 +34,10 @@ const getInstallOpt = (pkgs) => {
   return {
     root: NOWA_INSTALL_DIR,
     registry: config.registry(),
-    targetDir: NOWA_INSTALL_DIR,
-    storeDir: join(NOWA_INSTALL_DIR, '.npminstall'),
-    cacheDir: null,
-    timeout: 5 * 60000,
+    // targetDir: NOWA_INSTALL_DIR,
+    // storeDir: join(NOWA_INSTALL_DIR, '.npminstall'),
+    // cacheDir: null,
+    // timeout: 5 * 60000,
     trace: false,
     pkgs,
   };

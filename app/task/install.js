@@ -1,9 +1,17 @@
 const npminstall = require('npminstall');
 const co = require('co');
+const { join } = require('path');
 
 const msg = JSON.parse(process.env.params);
 
-const options = Object.assign(msg, { console });
+// const options = Object.assign(msg, { console });
+const options = Object.assign({
+  console,
+  targetDir: msg.root,
+  storeDir: join(msg.root, 'node_modules', '.npminstall'),
+  timeout: 5 * 60000,
+  cacheDir: null,
+}, msg);
 
 co(function* () {
   

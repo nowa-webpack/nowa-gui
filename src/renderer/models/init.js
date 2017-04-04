@@ -290,29 +290,15 @@ export default {
       // const pkgJson = fs.readJsonSync(join(userAnswers.projPath, 'package.json'));
 
       const pkgs = getPkgDependencies(readPkgJson(userAnswers.projPath));
-      // const pkgs = [];
-
-      // for (let name in pkgJson.dependencies) {
-      //   pkgs.push({
-      //     name,
-      //     version: pkgJson.dependencies[name]
-      //   });
-      // }
-
-      // for (let name in pkgJson.devDependencies) {
-      //   pkgs.push({
-      //     name,
-      //     version: pkgJson.devDependencies[name]
-      //   });
-      // }
+      
 
       const installOptions = {
         root: userAnswers.projPath,
         registry: userAnswers.registry,
-        targetDir: userAnswers.projPath,
-        storeDir: join(userAnswers.projPath, '.npminstall'),
-        cacheDir: null,
-        timeout: 5 * 60000,
+        // targetDir: userAnswers.projPath,
+        // storeDir: join(userAnswers.projPath, '.npminstall'),
+        // cacheDir: null,
+        // timeout: 5 * 60000,
         pkgs,
       };
 
@@ -362,7 +348,6 @@ export default {
         isTruthPercent: true,
         endCb: null,
       });
-      // ipcRenderer.send('install-modules', installOptions);
     },
 
    
@@ -375,82 +360,5 @@ export default {
   },
 };
 
-/* * getAnswserArgs({ payload }, { put, select }) {
-      const { extendsProj, sltItem } = yield select(state => state.init);
 
-      let answers = { ...payload };
-
-      answers.npm = 'npm';
-      answers.template = '';
-
-      if (extendsProj.answers) {
-        answers = extendsProj.answers(answers, {});
-      }
-
-      const sourceDir = join(sltItem.path, 'proj');
-
-      glob.sync('**', {
-        cwd: sourceDir,
-        nodir: true,
-        dot: true
-      }).forEach((source) => {
-        if (extendsProj.filter && extendsProj.filter(source, answers) === false) {
-          return false;
-        }
-
-        const target = join(answers.projPath, source.replace(/__(\w+)__/g, (match, offset) => answers[offset]));
-
-        mkdirp.sync(dirname(target));
-
-        source = join(sourceDir, source);
-        console.log(source, target)
-
-        // writeFile(source, target, answers);
-      });
-
-      // const pkgJson = utils.loadConfig(join(answers.projPath, 'package.json'))
-      const pkgJson = fs.readJsonSync(join(answers.projPath, 'package.json'));
-
-      const pkgs = [];
-
-      for (let name in pkgJson.dependencies) {
-        pkgs.push({
-          name,
-          version: pkgJson.dependencies[name]
-        });
-      }
-
-      for (let name in pkgJson.devDependencies) {
-        pkgs.push({
-          name,
-          version: pkgJson.devDependencies[name]
-        });
-      }
-
-      const installOptions = {
-        root: answers.projPath,
-        registry: answers.registry,
-        targetDir: answers.projPath,
-        storeDir: join(answers.projPath, '.npminstall'),
-        cacheDir: null,
-        timeout: 5 * 60000,
-        pkgs,
-      };
-
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          installOptions,
-          projPath: answers.projPath, 
-        }
-      });
-
-      yield put({
-        type: 'retryInstall',
-        payload: {
-          installOptions,
-          projPath: answers.projPath, 
-        }
-      });
-    },*/
 

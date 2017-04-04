@@ -93,11 +93,11 @@ class LayoutWrap extends Component {
     const options = {
       root: filePath,
       registry,
-      // registry: registry(),
-      targetDir: filePath,
-      storeDir: join(filePath, 'node_modules', '.npminstall'),
-      timeout: 5 * 60000,
       pkgs,
+      // registry: registry(),
+      // targetDir: filePath,
+      // storeDir: join(filePath, 'node_modules', '.npminstall'),
+      // timeout: 5 * 60000,
     };
     dispatch({
       type: 'project/importProj',
