@@ -55,28 +55,6 @@ const clearTerm = (cmd, name) => {
 };
 
 
-// const writeLog = ({ cmd, name, str }) => {
-//   const t = getTask(cmd, name);
-//   t.log += ansiHTML(str.replace(/\n/g, '<br>'));
-//   task[cmd][name] = t;
-//   return t.log;
-// };
-
-// const clearLog = ({ cmd, name }) => {
-//   setTask({
-//     cmd, name, cnt: {
-//       log: ''
-//   }});
-// }
-
-// const clearTerm = ({ cmd, name }) => {
-//   setTask({
-//     cmd, name, cnt: {
-//       term: null,
-//       uid: ''
-//   }});
-// }
-
 
 module.exports = {
   getCmd,

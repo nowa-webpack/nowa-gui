@@ -7,6 +7,25 @@ import { IS_WIN } from 'gui-const';
 const { command: remoteCommand } = remote.getGlobal('services');
 const taskStart = remote.require('./services/task').getCmd('start');
 
+const pickerCmd = (cmd) => {
+  const scripts = {};
+  Object.keys(cmd).forEach((item) => {
+    scripts[item] = item.cnt;
+  });
+  return scripts;
+};
+
+const mapCmd = (scripts) => {
+  const cmds = {};
+  Object.keys(scripts).forEach((item) => {
+    cmds[item] = {
+      cnt: scripts[item],
+      running: false,
+    };
+  });
+  return cmds;
+};
+
 export default {
 
   namespace: 'task',
@@ -42,8 +61,6 @@ export default {
       ipcRenderer.on('task-stopped', (event, { type }) => {
         Message.info(`${type} command stopped.`);
       });
-
-      
     },
   },
 
@@ -52,7 +69,7 @@ export default {
       const commands = {}; 
       projects.forEach((item) => {
         const { scripts } = item.pkg;
-        commands[item.path] = scripts;
+        commands[item.path] = mapCmd(scripts);
       });
 
       yield put({
@@ -62,7 +79,9 @@ export default {
     },
     * initAddCommands({ payload: { project } }, { put, select }) {
       const { commands } = yield select(state => state.task);
-      commands[project.path] = project.pkg.scripts;
+      // commands[project.path] = project.pkg.scripts;
+      
+      commands[project.path] = mapCmd(project.pkg.scripts);
 
       yield put({
         type: 'changeStatus',
@@ -83,9 +102,15 @@ export default {
       const { commands } = yield select(state => state.task);
       const { current } = yield select(state => state.project);
 
-      commands[current.path][cmd.name] = cmd.value;
+      // commands[current.path][cmd.name] = cmd.value;
 
-      current.pkg.scripts = { ...commands[current.path] };
+      commands[current.path][cmd.name] = {
+        cnt: cmd.value,
+        running: false,
+      };
+
+      current.pkg.scripts = pickerCmd(commands[current.path]);
+      // current.pkg.scripts = { ...commands[current.path] };
 
       writePkgJson(current.path, current.pkg);
 
@@ -99,7 +124,9 @@ export default {
       const { current } = yield select(state => state.project);
       delete commands[current.path][cmd];
 
-      current.pkg.scripts = { ...commands[current.path] };
+      current.pkg.scripts = pickerCmd(commands[current.path]);
+
+      // current.pkg.scripts = { ...commands[current.path] };
 
       writePkgJson(current.path, current.pkg);
 

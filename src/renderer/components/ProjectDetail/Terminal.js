@@ -28,7 +28,7 @@ class Terminal extends Component {
       };
     }
 
-    this.handleChangeCustom = this.handleChangeCustom.bind(this);  
+    this.handleChangeCustom = this.handleChangeCustom.bind(this);
   }
 
   componentDidMount() {
@@ -36,8 +36,29 @@ class Terminal extends Component {
   }
 
   componentWillReceiveProps({ logType, name, otherCommands }) {
-    if (logType !== this.props.logType || name !== this.props.name) {
-      const type = otherCommands.includes(logType) ? logType : 'start';
+    if (logType !== this.props.logType && name === this.props.name) {
+      const { log } = task.getTask(logType, name);
+      if (log.length > 0) {
+        this.setState({ log, showClear: true, logType }, 
+          () => this.scrollToBottom());
+      } else {
+        this.setState({ log: '', showClear: false, logType });
+      }
+    }
+
+    if (name !== this.props.name) {
+      const { log } = task.getTask('start', name);
+      if (log.length > 0) {
+        this.setState({ log, showClear: true, logType: 'start' }, 
+          () => this.scrollToBottom());
+      } else {
+        this.setState({ log: '', showClear: false, logType: 'start' });
+      }
+    }
+    /*if (logType !== this.props.logType || name !== this.props.name) {
+      // const type = otherCommands.includes(logType) ? logType : 'start';
+      // console.log(type)
+      const type = logType;
       const { log } = task.getTask(type, name);
       if (log.length > 0) {
         this.setState({ log, showClear: true, logType: type }, 
@@ -45,7 +66,7 @@ class Terminal extends Component {
       } else {
         this.setState({ log: '', showClear: false, logType: type });
       }
-    }
+    }*/
   }
 
   onReceiveLog(event, data) {
@@ -85,7 +106,6 @@ class Terminal extends Component {
     const { showClear, log, logType } = this.state;
     const { hasSide, otherCommands } = this.props;
     const selectValue = logType !== 'start' && logType !== 'build' ? logType : undefined;
-
     return (
       <div
         className={classNames({

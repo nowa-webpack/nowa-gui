@@ -1,36 +1,17 @@
 const { spawn, fork } = require('child_process');
-const { join, delimiter } = require('path');
-const npmRunPath = require('npm-run-path');
+const { join } = require('path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
-const fixPath = require('fix-path');
 const { tmpdir } = require('os');
 
-const { constants, isWin } = require('../is');
-const { getWin } = require('../windowManager');
 const task = require('../task');
 const kill = require('./kill');
 const modules = require('./modules');
+const env = require('./env');
+const { getWin } = require('../windowManager');
+const { constants: { NPM_PATH }, isWin } = require('../is');
 
-const { APP_PATH, NPM_PATH, BIN_PATH, NODE_PATH } = constants; 
 
-fixPath();
-
-const npmEnv = npmRunPath.env();
-const pathEnv = [process.env.Path, npmEnv.PATH, BIN_PATH, NODE_PATH]
-  .filter(p => !!p)
-  .join(delimiter);
-const env = Object.assign(npmEnv, {
-  FORCE_COLOR: 1,
-});
-
-if (isWin) {
-  env.Path = pathEnv;
-} else {
-  env.PATH = pathEnv;
-}
-
-// fs.writeJsonSync(join(APP_PATH, 'env.text'), { prv: process.env, env, npmEnv});
 const exportFunc = {
 
   openEditor(projectPath, editor, basePath) {

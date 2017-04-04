@@ -37,6 +37,15 @@ class CommandTermList extends Component {
     });
   }
 
+  changeLogType(logType) {
+    this.props.dispatch({
+      type: 'task/changeStatus',
+      payload: {
+        logType
+      }
+    });
+  }
+
   showModal() {
     this.setState({ showModal: true });
   }
@@ -67,7 +76,7 @@ class CommandTermList extends Component {
           onClick={() => this.showModal()}
         />
         { commands.map(cmd =>
-          <div className="cmd-item" key={cmd}>
+          <div className="cmd-item" key={cmd} onClick={() => this.changeLogType(cmd)}>
             {cmd}
             <i className="iconfont icon-close-o" onClick={() => this.removeCmd(cmd)} />
             <i className="iconfont icon-stop" onClick={() => this.stopCmd(cmd)} />
