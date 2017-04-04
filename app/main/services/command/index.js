@@ -74,7 +74,7 @@ const exportFunc = {
         type,
         finished: code === 0
       });
-      
+
 
       /*if ((!code && typeof code !== 'undefined' && code !== 0) || type === 'start') {
         win.webContents.send('task-stopped', {
@@ -95,11 +95,12 @@ const exportFunc = {
     const t = task.getTask(type, name);
     if (t.term) {
       // t.term.kill();
-      if (isWin) {
-        kill(t.term.pid);
-      } else {
-        t.term.kill();
-      }
+      // if (isWin) {
+      //   kill(t.term.pid);
+      // } else {
+      //   t.term.kill();
+      // }
+      kill(t.term.pid, 'SIGKILL');
       if (type === 'start') {
         const uidPath = join(tmpdir(), `.nowa-server-${t.uid}.json`);
         fs.removeSync(uidPath);
@@ -110,7 +111,7 @@ const exportFunc = {
   clearLog({ name, type }) {
     task.clearLog(type, name);
   },
-  
+
 };
 
 module.exports = Object.assign(modules, exportFunc);

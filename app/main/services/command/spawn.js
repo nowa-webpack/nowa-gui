@@ -43,7 +43,7 @@ function normalizeExecArgs(command, options) {
 /**
  * exec thread
  */
-module.exports = () => {
+module.exports = function() {
   const parsed = normalizeExecArgs.apply(null, arguments);
 
   return spawn(parsed.shell, parsed.args, parsed.options);

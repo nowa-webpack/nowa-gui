@@ -37,7 +37,7 @@ module.exports = function (pid, signal, callback){
     // darwin
     case 'darwin':
       buildProcessTree(pid, tree, pidsToProcess, function (parentPid) {
-        return spawn('pgrep', ['-P', parentPid]);
+        return spawn(`pgrep -P ${parentPid}`);
       }, function () {
         killAll(tree, signal, callback);
       });
@@ -45,7 +45,7 @@ module.exports = function (pid, signal, callback){
     // linux
     default:
       buildProcessTree(pid, tree, pidsToProcess, function (parentPid) {
-        return spawn('ps', ['-o', 'pid', '--no-headers', '--ppid', parentPid]);
+        return spawn(`ps -o pid --no-headers --ppid ${parentPid}`);
       }, function () {
         killAll(tree, signal, callback);
       });
@@ -61,14 +61,14 @@ function killAll(tree, signal, callback){
       tree[pid].forEach(function (pidpid){
         if (!killed[pidpid]) {
           killPid(pidpid, signal);
-          
+
           killed[pidpid] = 1;
         }
       });
-      
+
       if (!killed[pid]) {
         killPid(pid, signal);
-        
+
         killed[pid] = 1;
       }
     });
@@ -79,7 +79,7 @@ function killAll(tree, signal, callback){
       throw error;
     }
   }
-  
+
   if (callback) {
     return callback();
   }
@@ -114,12 +114,12 @@ function buildProcessTree(parentPid, tree, pidsToProcess, spawnChildProcessesLis
 
     allData.match(/\d+/g).forEach(function (pid){
       pid = parseInt(pid, 10);
-      
+
       tree[parentPid].push(pid);
-      
+
       tree[pid] = [];
       pidsToProcess[pid] = 1;
-      
+
       buildProcessTree(pid, tree, pidsToProcess, spawnChildProcessesList, callback);
     });
   };
