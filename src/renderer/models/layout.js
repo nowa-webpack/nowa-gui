@@ -38,7 +38,7 @@ export default {
         console.log(online ? 'online' : 'offline');
 
         dispatch({
-          type: 'layout/changeStatus',
+          type: 'changeStatus',
           payload: { online }
         });
 

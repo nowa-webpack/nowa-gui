@@ -30,9 +30,9 @@
 </head>
 <body><script type="text/javascript">
     window.g_tb_aplus_loaded = true;
-    const onLine = navigator.onLine;
-    const electron = require('electron');
-    electron.ipcRenderer.send('network-change-status', onLine);
+    // const onLine = navigator.onLine;
+    // const electron = require('electron');
+    // electron.ipcRenderer.send('network-change-status', onLine);
     setTimeout(() => {
       const loading = document.getElementById('loading');
       document.body.removeChild(loading);
