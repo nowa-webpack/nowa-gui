@@ -83,7 +83,7 @@ export default {
 
   effects: {
     * fetchAllTemplates(o, { select, put }) {
-      const { online } = yield select(state => state.layout);
+      // const { online } = yield select(state => state.layout);
       const manifest = templatesManager.getMainifest();
 
       if (manifest.local) {
@@ -117,11 +117,11 @@ export default {
         }
       });
 
-      if (online) {
-        yield put({
-          type: 'fetchOnlineTemplates',
-        });
-      }
+      // if (online) {
+      //   yield put({
+      //     type: 'fetchOnlineTemplates',
+      //   });
+      // }
     },
     fetchOnlineTemplates() {
       templatesManager.official.get();

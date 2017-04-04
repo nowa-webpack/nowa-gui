@@ -9,12 +9,13 @@ import MainPage from './MainPage';
 import LayoutWrap from '../components/Layout/LayoutWrap';
 
 
-const IndexPage = ({ showPage, online, version, dispatch }) => {
+const IndexPage = ({ showPage, version, nowaPreFlag, dispatch }) => {
   let mainbody;
 
   switch (showPage) {
     case -1:
-      mainbody = <PreInitialPage online={online} dispatch={dispatch} />;
+      // mainbody = <PreInitialPage online={online} dispatch={dispatch} />;
+      mainbody = <PreInitialPage dispatch={dispatch} nowaPreFlag={nowaPreFlag} />;
       break;
     case 0:
       mainbody = <WelcomePage version={version} dispatch={dispatch} />;
@@ -34,14 +35,14 @@ const IndexPage = ({ showPage, online, version, dispatch }) => {
 
 IndexPage.propTypes = {
   showPage: PropTypes.number.isRequired,
-  online: PropTypes.bool.isRequired,
+  nowaPreFlag: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
   version: PropTypes.string.isRequired,
 };
 
 export default connect(({ layout }) => ({
   showPage: layout.showPage,
-  online: layout.online,
+  nowaPreFlag: layout.nowaPreFlag,
   version: layout.version,
 }))(IndexPage);
 

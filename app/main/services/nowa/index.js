@@ -62,7 +62,6 @@ const checkModulesVersion = modules => co(function* () {
 });
 
 const installNowaModules = (pkgs, endCb) => {
-  const win = getWin();
   const options = getInstallOpt(pkgs);
   progressInstall({
     options,
@@ -70,58 +69,25 @@ const installNowaModules = (pkgs, endCb) => {
     isTruthPercent: false,
     endCb,
   });
-   /*const term = importModulesInstall(opt, true);
- console.time('nowa install');
-  let percent = 0;
-  let log = '';
-
-  term.stdout.on('data', (data) => {
-    const str = data.toString();
-    console.log(str);
-    if (str.indexOf('INSTALL_PROGRESS') !== -1) {
-      percent = getMockPercent(str, percent);
-    } else {
-      log = newLog(log, str);
-    }
-    win.webContents.send('nowa-installing', {
-    // pubsub.publish('nowa-installing', {
-      percent,
-      log,
-    });
-  });
-
-  term.stderr.on('data', (data) => {
-    log = newLog(log, data.toString());
-    console.log(data.toString());
-    // pubsub.publish('nowa-installing', {
-    win.webContents.send('nowa-installing', {
-      percent,
-      log,
-    });
-  });
-
-  term.on('exit', (code) => {
-    console.log('exit install', code);
-    if (!code) {
-      endCb();
-      config.nowaNeedInstalled(false);
-      console.log('nowaNeedInstalled', config.nowaNeedInstalled());
-      console.timeEnd('nowa install');
-      // pubsub.publish('nowa-installed');
-      win.webContents.send('nowa-installed');
-    }
-  });*/
 };
 
 const init = () => {
-  config.nowaNeedInstalled(true);
+  // config.nowaNeedInstalled(true);
+  const win = getWin();
 
+  // nowa-need-install: 0 close, 1: update, 2: no update
   // new .nowa-gui
   if (!checkForEmpty()) {
+    if (!config.online()) {
+      win.webContents.send('nowa-need-install', 0);
+      return;
+    }
+
+    win.webContents.send('nowa-need-install', 1);
     const pkgs = [...nowaPkg, ...otherPkg].map(name => ({ name, version: 'latest' }));
 
     installNowaModules(pkgs, () => {
-      config.nowaNeedInstalled(false);
+      // config.nowaNeedInstalled(false);
       const modules = {};
       pkgs.filter(({ name }) => /^nowa/.test(name))
         .forEach(({ name }) => {
@@ -134,6 +100,10 @@ const init = () => {
       fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, modules);
     });
   } else {
+    if (!config.online()) {
+      win.webContents.send('nowa-need-install', 2);
+      return;
+    }
     // update nowa modules
     const nowaJson = fs.readJsonSync(NOWA_INSTALL_JSON_FILE);
     const pkgs = Object.keys(nowaJson).map(name => ({ name, version: nowaJson[name] }));
@@ -142,6 +112,7 @@ const init = () => {
 
       // need update
       if (modules.length > 0) {
+        win.webContents.send('nowa-need-install', 1);
         installNowaModules(modules, () => {
           config.nowaNeedInstalled(false);
           modules.forEach(({ name, version }) => {
@@ -152,6 +123,7 @@ const init = () => {
 
       // don't need update
       } else {
+        win.webContents.send('nowa-need-install', 2);
         config.nowaNeedInstalled(false);
       }
     });

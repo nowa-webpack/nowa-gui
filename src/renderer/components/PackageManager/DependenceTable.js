@@ -22,7 +22,7 @@ const basicColumns = [{
   title: i18n('package.name'),
   dataIndex: 'name',
   key: 'name',
-  width: 220,
+  width: 200,
 }, {
   title: i18n('package.current'),
   dataIndex: 'version',

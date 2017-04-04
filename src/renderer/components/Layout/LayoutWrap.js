@@ -20,47 +20,25 @@ import DragPage from './DragPage';
 
 
 const { Header } = Layout;
-const { windowManager, command } = remote.getGlobal('services');
-const { registry } = remote.getGlobal('config');
+const { windowManager, command, utils } = remote.getGlobal('services');
+// const { registry } = remote.getGlobal('config');
 
 
 class LayoutWrap extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      online: props.online,
-    };
+    // this.state = {
+      // online: props.online,
+    // };
     this.taskTimer;
     this.onDrop = this.onDrop.bind(this);
     this.getUpdateVersion = this.getUpdateVersion.bind(this);
   }
 
   componentDidMount() {
-    const { dispatch, online, startWacthProject } = this.props;
-    if (online) {
-      this.getUpdateVersion();
-    }
-
-    const alertOnlineStatus = () => {
-      const newOnline = navigator.onLine;
-      console.log(newOnline ? 'online' : 'offline');
-
-      dispatch({
-        type: 'layout/changeStatus',
-        payload: { online: newOnline }
-      });
-
-      if (newOnline !== online && newOnline) {
-        dispatch({
-          type: 'init/fetchOnlineTemplates',
-        });
-      }
-
-      ipcRenderer.send('network-change-status', newOnline);
-    };
-
-    window.addEventListener('online', alertOnlineStatus);
-    window.addEventListener('offline', alertOnlineStatus);
+    const { dispatch, startWacthProject } = this.props;
+    console.log('LayoutWrap componentDidMount');
+    
 
     if (startWacthProject) {
       this.taskTimer = setInterval(() => {
@@ -71,7 +49,7 @@ class LayoutWrap extends Component {
     }
   }
 
-  componentWillReceiveProps({ newVersion, online, startWacthProject, dispatch, current }) {
+  componentWillReceiveProps({ newVersion, online, startWacthProject, dispatch }) {
     if (newVersion !== this.props.newVersion) {
       confirm({
         title: i18n('msg.updateConfirm'),
@@ -89,11 +67,8 @@ class LayoutWrap extends Component {
       });
     }
 
-    if (online !== this.props.online) {
-      if (online) {
-        this.getUpdateVersion();
-      }
-      this.setState({ online });
+    if (online !== this.props.online && online) {
+      this.getUpdateVersion();
     }
 
     if (startWacthProject !== this.props.startWacthProject) {
@@ -107,12 +82,52 @@ class LayoutWrap extends Component {
         }, 5000);
       }
     }
+  }
+
+  onDrop(acceptedFiles) {
+    const { dispatch, registry } = this.props;
+    const filePath = acceptedFiles[0].path;
+
+    const pkgs = getPkgDependencies(readPkgJson(filePath));
+
+    const options = {
+      root: filePath,
+      registry,
+      // registry: registry(),
+      targetDir: filePath,
+      storeDir: join(filePath, '.npminstall'),
+      timeout: 5 * 60000,
+      pkgs,
+    };
+    dispatch({
+      type: 'project/importProj',
+      payload: {
+        filePath,
+        needInstall: true
+      }
+    });
+    command.notProgressInstall({
+      options,
+      sender: 'import',
+    });
     
+    this.onDragLeave();
+  }
+
+  onDragOver() {
+    document.getElementById('main-ctn').style.display = 'none';
+    document.getElementById('drag-ctn').style.display = '';
+  }
+
+  onDragLeave() {
+    document.getElementById('main-ctn').style.display = '';
+    document.getElementById('drag-ctn').style.display = 'none';
   }
 
   getUpdateVersion() {
-    const { dispatch, version } = this.props;
-    request(`${registry()}/nowa-gui-version/latest`)
+    const { dispatch, version, registry } = this.props;
+    // request(`${registry()}/nowa-gui-version/latest`)
+    request(`${registry}/nowa-gui-version/latest`)
       .then(({ data }) => {
         const newVersion = data.version;
         console.log('newVersion', newVersion);
@@ -142,46 +157,6 @@ class LayoutWrap extends Component {
           });
         }
       });
-  }
-
-  onDrop(acceptedFiles) {
-    const { dispatch } = this.props;
-    const filePath = acceptedFiles[0].path;
-
-    const pkgs = getPkgDependencies(readPkgJson(filePath));
-
-    const options = {
-      root: filePath,
-      registry: registry(),
-      targetDir: filePath,
-      storeDir: join(filePath, '.npminstall'),
-      timeout: 5 * 60000,
-      pkgs,
-    };
-    dispatch({
-      type: 'project/importProj',
-      payload: {
-        filePath,
-        needInstall: true
-      }
-    });
-    // command.importModulesInstall(installOptions);
-    command.notProgressInstall({
-      options,
-      sender: 'import',
-    });
-    
-    this.onDragLeave();
-  }
-
-  onDragOver() {
-    document.getElementById('main-ctn').style.display = 'none';
-    document.getElementById('drag-ctn').style.display = '';
-  }
-
-  onDragLeave() {
-    document.getElementById('main-ctn').style.display = '';
-    document.getElementById('drag-ctn').style.display = 'none';
   }
 
   render() {
@@ -250,6 +225,7 @@ LayoutWrap.propTypes = {
     path: PropTypes.string
   }).isRequired,
   online: PropTypes.bool.isRequired,
+  registry: PropTypes.string.isRequired,
   startWacthProject: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
@@ -261,5 +237,6 @@ export default connect(({ layout, project }) => ({
   version: layout.version,
   current: project.current,
   online: layout.online,
+  registry: layout.registry,
   startWacthProject: project.startWacthProject,
 }))(LayoutWrap);
