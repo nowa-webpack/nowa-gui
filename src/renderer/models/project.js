@@ -119,7 +119,8 @@ export default {
             root: filePath,
             registry: registry(),
             targetDir: filePath,
-            storeDir: join(filePath, '.npminstall'),
+            // storeDir: join(filePath, '.npminstall'),
+            storeDir: join(filePath, 'node_modules', '.npminstall'),
             timeout: 5 * 60000,
             pkgs,
           };
@@ -132,10 +133,10 @@ export default {
 
         const projectInfo = getProjectInfoByPath(filePath);
 
-        if (!projectInfo.isNowa) {
-          Message.error(i18n('msg.invalidProject'));
-          return false;
-        }
+        // if (!projectInfo.isNowa) {
+        //   Message.error(i18n('msg.invalidProject'));
+        //   return false;
+        // }
 
         const projectName = projectInfo.pkg.name || 'UNTITLED';
 

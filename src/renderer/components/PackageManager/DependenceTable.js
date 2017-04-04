@@ -168,7 +168,8 @@ class DependenceTable extends Component {
       root: filePath,
       registry,
       targetDir: filePath,
-      storeDir: join(filePath, '.npminstall'),
+      // storeDir: join(filePath, '.npminstall'),
+      storeDir: join(filePath, 'node_modules', '.npminstall'),
       cacheDir: null,
       timeout: 5 * 60000,
     };

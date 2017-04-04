@@ -95,7 +95,7 @@ class LayoutWrap extends Component {
       registry,
       // registry: registry(),
       targetDir: filePath,
-      storeDir: join(filePath, '.npminstall'),
+      storeDir: join(filePath, 'node_modules', '.npminstall'),
       timeout: 5 * 60000,
       pkgs,
     };
