@@ -117,7 +117,7 @@ export default {
       // commands[current.path][cmd.name] = cmd.value;
 
       commands[current.path][cmd.name] = {
-        cnt: cmd.value,
+        cnt: cmd.cnt,
         running: false,
       };
 

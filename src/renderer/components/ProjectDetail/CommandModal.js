@@ -32,7 +32,7 @@ class CommandModal extends Component {
       return false;
     }
 
-    if (commands.filter(cmd => cmd === cmdName).length > 0) {
+    if (commands.filter(item => item.name === cmdName).length > 0) {
       Message.error(i18n('msg.existed'));
       return false;
     }
@@ -45,7 +45,7 @@ class CommandModal extends Component {
     dispatch({
       type: 'task/addSingleCommand',
       payload: {
-        cmd: { name: cmdName, value: cmdValue }
+        cmd: { name: cmdName, cnt: cmdValue }
       }
     });
      
