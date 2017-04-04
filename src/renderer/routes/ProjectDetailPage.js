@@ -70,6 +70,7 @@ const ProjectDetailPage = ({
   return (
     <Content className="ui-content proj-detail">
       <Spin tip="Loading..." spinning={loading || false}>
+        <ProjectDetailTab {...tabProps} />
         <div className="opt-grp">
           { startBtn }
           { start && <div className="opt" onClick={compassProj} >
@@ -84,7 +85,6 @@ const ProjectDetailPage = ({
             <i className="iconfont icon-folder" /><br />{i18n('task.folder')}
           </div>
         </div>
-        <ProjectDetailTab {...tabProps} />
       </Spin>
     </Content>
   );
