@@ -41,6 +41,7 @@ const exportFunc = {
       env: Object.assign(env, { NOWA_UID: uid }),
       // detached: true
     });
+
     task.setTask(type, name, {
       term,
       uid
@@ -48,7 +49,6 @@ const exportFunc = {
 
     term.stdout.on('data', (data) => {
       const log = task.writeLog(type, name, data.toString());
-      // pubsub.publish('task-ouput', {
       win.webContents.send('task-ouput', {
         name,
         log,
@@ -58,7 +58,6 @@ const exportFunc = {
 
     term.stderr.on('data', (data) => {
       const log = task.writeLog(type, name, data.toString());
-      // pubsub.publish('task-ouput', {
       win.webContents.send('task-ouput', {
         name,
         log,
@@ -67,23 +66,28 @@ const exportFunc = {
     });
 
     term.on('exit', (code) => {
-      // global.cmd[type][name].term = null;
       task.clearTerm(type, name);
-      console.log('exit', code);
-      if ((!code && typeof code !== 'undefined' && code !== 0) || type === 'start') {
-        // pubsub.publish('task-stopped', {
+      console.log('exit', type, code);
+
+      win.webContents.send('task-end', {
+        name,
+        type,
+        finished: code === 0
+      });
+      
+
+      /*if ((!code && typeof code !== 'undefined' && code !== 0) || type === 'start') {
         win.webContents.send('task-stopped', {
           name,
           type,
         });
       } else {
-        // pubsub.publish('task-finished', {
         win.webContents.send('task-finished', {
           name,
           type,
           success: code === 0
         });
-      }
+      }*/
     });
   },
 

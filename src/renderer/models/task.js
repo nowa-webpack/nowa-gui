@@ -50,7 +50,19 @@ export default {
         });
       }
 
-      ipcRenderer.on('task-finished', (event, { type, success }) => {
+      ipcRenderer.on('task-end', (event, { type, name, finished }) => {
+        Message.info(`${type} command ${finished ? 'finished' : 'stopped'}.`, 3);
+        dispatch({
+          type: 'changeCommandStatus',
+          payload: {
+            type,
+            name,
+            running: false
+          }
+        });
+      });
+
+      /*ipcRenderer.on('task-finished', (event, { type }) => {
         if (success) {
           Message.success(`Exec ${type} successed!`);
         } else {
@@ -60,7 +72,7 @@ export default {
 
       ipcRenderer.on('task-stopped', (event, { type }) => {
         Message.info(`${type} command stopped.`);
-      });
+      });*/
     },
   },
 
@@ -198,11 +210,25 @@ export default {
       });
 
       yield put({
-        type: 'changeStatus',
+        type: 'changeCommandStatus',
         payload: {
-          logType: type
+          type,
+          name,
+          running: true,
         }
       });
+
+      // const { commands } = yield select(state => state.task);
+
+      // commands[name][type].running = true;
+
+      // yield put({
+      //   type: 'changeStatus',
+      //   payload: {
+      //     commands: { ...commands },
+      //     logType: type
+      //   }
+      // });
     },
     stopCustomCmd({ payload: { type, name } }, { put, select }) {
       remoteCommand.stop({
@@ -210,7 +236,19 @@ export default {
         type,
       });
     },
+    * changeCommandStatus({ payload: { type, name, running } }, { select, put }) {
+      const { commands } = yield select(state => state.task);
 
+      commands[name][type].running = running;
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          commands: { ...commands },
+          logType: type
+        }
+      });
+    }
   },
 
   reducers: {

@@ -13,6 +13,7 @@ const TabPane = Tabs.TabPane;
 const Tab = ({ current, logType, dispatch, commands }) => {
   const cmdList = Object.keys(commands).filter(cmd => cmd !== 'start' && cmd !== 'build');
   // const hasCmdSide = cmdList.length > 0;
+  const listCmd = cmdList.map(name => ({ ...commands[name], name }));
   const termProps = {
     dispatch,
     name: current.path,
@@ -24,7 +25,8 @@ const Tab = ({ current, logType, dispatch, commands }) => {
   const listProps = {
     dispatch,
     name: current.path,
-    commands: cmdList
+    commands: listCmd,
+    // commands: cmdList
   };
 
   const settingProps = {

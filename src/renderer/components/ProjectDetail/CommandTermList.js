@@ -56,6 +56,7 @@ class CommandTermList extends Component {
 
   render() {
     const { commands, dispatch } = this.props;
+    console.log(commands)
 
     const modalProps = {
       showModal: this.state.showModal,
@@ -75,13 +76,18 @@ class CommandTermList extends Component {
           className="add-cmd-btn"
           onClick={() => this.showModal()}
         />
-        { commands.map(cmd =>
-          <div className="cmd-item" key={cmd} onClick={() => this.changeLogType(cmd)}>
-            {cmd}
-            <i className="iconfont icon-close-o" onClick={() => this.removeCmd(cmd)} />
-            <i className="iconfont icon-stop" onClick={() => this.stopCmd(cmd)} />
-            <i className="iconfont icon-play" onClick={() => this.startCmd(cmd)} />
-          </div>)}
+        {
+          commands.map(({ name, running }) => (
+            <div className="cmd-item" key={name} onClick={() => this.changeLogType(name)}>
+              {name}
+              <i className="iconfont icon-close-o" onClick={() => this.removeCmd(name)} />
+              { running
+                ? <i className="iconfont icon-stop" onClick={() => this.stopCmd(name)} />
+                : <i className="iconfont icon-play" onClick={() => this.startCmd(name)} />
+              }
+            </div>
+          ))
+        }
         <CommandModal {...modalProps} />
       </div>
     );
@@ -91,6 +97,7 @@ class CommandTermList extends Component {
 CommandTermList.propTypes = {
   name: PropTypes.string.isRequired,
   commands: PropTypes.array.isRequired,
+  // commands: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
