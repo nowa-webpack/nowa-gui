@@ -3,7 +3,6 @@ const log = require('electron-log');
 const services = require('./services');
 const config = require('./config');
 const os = require('os');
-// const pubsub = require('electron-pubsub');
 
 const { menu, windowManager, nowa, utils, command } = services;
 const { isMac, checkRegistry } = utils;
@@ -13,19 +12,23 @@ log.info('start nowa gui');
 
 ipcMain.on('network-change-status', (event, online) => {
   config.online(online);
+  console.log('online', online);
+  if (online) {
+    checkRegistry().then((registry) => {
+      const win = windowManager.getWin();
+      win.webContents.send('check-registry', registry);
+      nowa();
+    });
+  } else {
+    nowa();
+  }
 });
 
-// pubsub.subscribe('install-modules', (event, options) => {
-// ipcMain.on('install-modules', (event, options) => {
-//   command.installModules(options);
-// });
 
 app.on('ready', () => {
   menu.init();
   windowManager.create();
-  checkRegistry().then(() => {
-    nowa();
-  });
+  
 });
 
 app.on('window-all-closed', () => {

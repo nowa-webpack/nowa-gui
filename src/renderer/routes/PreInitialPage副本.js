@@ -5,7 +5,7 @@ import Progress from 'antd/lib/progress';
 
 import i18n from 'i18n';
 import { getLocalProjects } from 'gui-local';
-// const { nowaNeedInstalled } = remote.getGlobal('config');
+const { nowaNeedInstalled } = remote.getGlobal('config');
 
 
 class PreInitialPage extends Component {
@@ -13,31 +13,38 @@ class PreInitialPage extends Component {
     super(props);
     this.state = {
       seconds: 5,
+      closeFlag: !props.online,
       // closeFlag: !props.online && nowaNeedInstalled(),
-      // log: '',
+      log: '',
       percent: 0,
-      nowaPreFlag: props.nowaPreFlag,
-      // nowaNeedInstalled: 0,
     };
     this.shutdownTimer;
     this.afterInstalled = this.afterInstalled.bind(this);
-    this.onReceiveNowaFlag = this.onReceiveNowaFlag.bind(this);
   }
   componentDidMount() {
-    console.log('PreInitialPage componentDidMount');
+    console.log('in PreInitialPage', 'nowaNeedInstalled', nowaNeedInstalled());
+    // this.removeLoading();
 
-    if (this.props.nowaPreFlag !== -2) {
-      this.onReceiveNowaFlag(this.props.nowaPreFlag);
+    if (this.state.closeFlag) {
+      this.removeLoading();
+      this.shutdownTimer = setInterval(() => {
+        const { seconds } = this.state;
+        if (seconds === 1) {
+          clearInterval(this.shutdownTimer);
+          remote.app.quit();
+        } else {
+          this.setState({ seconds: seconds - 1 });
+        }
+      }, 1000);
+    } else if (!nowaNeedInstalled()) {
+      this.afterInstalled();
     }
 
-    ipcRenderer.on('nowa-installing', this.onReceivePercent.bind(this));
+    ipcRenderer.on('nowa-installing', this.onReceiveLog.bind(this));
     ipcRenderer.on('nowa-installed', this.afterInstalled.bind(this));
-  }
-
-  componentWillReceiveProps({ nowaPreFlag }) {
-    if (nowaPreFlag !== this.props.nowaPreFlag && nowaPreFlag !== -2) {
-      this.onReceiveNowaFlag(nowaPreFlag);
-    }
+    // ipcRenderer.on('nowa-installed', () => {
+    //   this.afterInstalled();
+    // });
   }
 
   componentWillUnmount() {
@@ -45,32 +52,20 @@ class PreInitialPage extends Component {
     ipcRenderer.removeAllListeners('nowa-installed');
   }
 
-  onReceiveNowaFlag(nowaPreFlag) {
-    console.log('nowaNeedInstalled', nowaPreFlag);
-    if (nowaPreFlag === 0) {
-      this.shutdownTimer = setInterval(() => {
-        const { seconds } = this.state;
-        if (seconds === 1) {
-          clearInterval(this.shutdownTimer);
-          remote.app.quit();
-        } else {
-          this.setState({ seconds: seconds - 1, nowaPreFlag: 0 });
-        }
-      }, 1000);
-    } else if (nowaPreFlag === 2) {
-      this.afterInstalled();
-    } else {
-      this.setState({ nowaPreFlag });
-    }
-  }
-
-  onReceivePercent(event, { percent }) {
+  onReceiveLog(event, { percent, log }) {
+    console.log('nowa-installing onReceiveLog');
     this.setState({
       percent,
-      // log,
+      log,
     });
   }
 
+  removeLoading() {
+    const loadingDiv = document.getElementById('loading');
+    if (loadingDiv) {
+      document.body.removeChild(loadingDiv);
+    }
+  }
 
   afterInstalled() {
     const { dispatch } = this.props;
@@ -88,40 +83,36 @@ class PreInitialPage extends Component {
   }
 
   render() {
-    const { seconds, nowaPreFlag, percent } = this.state;
+    const { seconds, closeFlag, percent, log } = this.state;
     let mainbody;
 
-    if (nowaPreFlag === 0) {
+    if (closeFlag) {
       mainbody = (
         <div className="no-net">
           <p>{i18n('preinit.msg1')}</p>
           <p>{i18n('preinit.msg2', seconds)}</p>
-        </div>
-      );
-    } else if (nowaPreFlag === 1) {
+        </div>);
+    } else if (nowaNeedInstalled()) {
       mainbody = (
-        <div>
-          <Progress type="circle"
-            percent={+percent} width={100}
-            status={+percent === 100 ? 'success' : 'active'}
-          />
-          <div className="wait-install">{i18n('preinit.waitInstall')}</div>
-        </div>
+        <div className="wait-install">{i18n('preinit.waitInstall')}</div>
       );
     }
 
     return (
       <div className="preinit">
-        { mainbody }
+        <Progress type="circle"
+          percent={+percent} width={100}
+          status={+percent === 100 ? 'success' : 'active'}
+        />
+        { <div className="wait-install">{i18n('preinit.waitInstall')}</div> }
       </div>
     );
   }
 }
 
-
 PreInitialPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  nowaPreFlag: PropTypes.number.isRequired,
+  online: PropTypes.bool.isRequired,
 };
 
 export default PreInitialPage;

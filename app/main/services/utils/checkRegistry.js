@@ -18,4 +18,5 @@ module.exports = () => co(function* () {
   ]);
   console.log('registry', urls[_key]);
   config.registry(urls[_key]);
+  return urls[_key];
 });

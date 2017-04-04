@@ -12,7 +12,7 @@ const { constants: { TEMPLATES_DIR } } = require('../is');
 const { getMainifest, setMainifest } = require('./manifest');
 
 const get = () => {
-  console.log('getOfficialTemplates');
+  console.log('getOfficialTemplates', registry());
   const win = getWin();
   // const arr = [];
 

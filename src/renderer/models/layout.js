@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import fs from 'fs-extra';
 
 import { SUBLIME, VSCODE } from 'gui-const';
@@ -24,11 +24,26 @@ export default {
       Sublime: getLocalEditorPath(SUBLIME),
       VScode: getLocalEditorPath(VSCODE)
     },
-    online: navigator.onLine,
+    // online: navigator.onLine,
+    online: false,
+    registry: 'https://registry.npm.taobao.org',
+    nowaPreFlag: -1, // -1 no-op, 0 close, 1: update, 2: no update
   },
 
   subscriptions: {
     setup({ dispatch }) {
+
+      const onNetworkChange = () => {
+        const online = navigator.onLine;
+        console.log(online ? 'online' : 'offline');
+
+        dispatch({
+          type: 'layout/changeStatus',
+          payload: { online }
+        });
+
+        ipcRenderer.send('network-change-status', online);
+      };
 
       if (!getLocalEditorPath(SUBLIME)) {
         setLocalEditorPath(SUBLIME, fs.existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : '');
@@ -38,18 +53,40 @@ export default {
         setLocalEditorPath(VSCODE, fs.existsSync(VSCODE_BASE_PATH) ? VSCODE_BASE_PATH : '');
       }
 
+      window.addEventListener('online', onNetworkChange);
+      window.addEventListener('offline', onNetworkChange);
+
       dispatch({
         type: 'changeStatus',
         payload: {
           editor: {
             Sublime: getLocalEditorPath(SUBLIME),
             VScode: getLocalEditorPath(VSCODE),
-          }
+          },
         }
       });
 
       dispatch({
         type: 'init/fetchAllTemplates',
+      });
+
+      onNetworkChange();
+
+      ipcRenderer.on('check-registry', (event, registry) => {
+        dispatch({
+          type: 'changeStatus',
+          payload: { registry }
+        });
+        dispatch({
+          type: 'init/fetchOnlineTemplates',
+        });
+      });
+
+      ipcRenderer.on('nowa-need-install', (event, nowaPreFlag) => {
+        dispatch({
+          type: 'changeStatus',
+          payload: { nowaPreFlag }
+        });
       });
 
     },
