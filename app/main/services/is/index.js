@@ -2,7 +2,7 @@ const is = require('electron-is');
 const { app } = require('electron');
 const os = require('os');
 const { join } = require('path');
-const npmRunPath = require('npm-run-path');
+// const npmRunPath = require('npm-run-path');
 
 const isMac = is.macOS();
 const isWin = is.windows();

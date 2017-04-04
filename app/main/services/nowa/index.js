@@ -20,7 +20,6 @@ const otherPkg = ['npm'];
 
 
 const checkForEmpty = () => {
-  
   const isExisted = fs.existsSync(NOWA_INSTALL_JSON_FILE);
 
   if (!isExisted) {
@@ -44,7 +43,7 @@ const getInstallOpt = (pkgs) => {
   };
 };
 
-const checkModulesVersion = (modules) => co(function* () {
+const checkModulesVersion = modules => co(function* () {
   const checkedModules = yield modules.map(function* ({ name, version }) {
     const url = `${config.registry()}/${name}/latest`;
     const { data: repo } = yield request(url);
@@ -116,15 +115,16 @@ const installNowaModules = (pkgs, endCb) => {
 
 const init = () => {
   config.nowaNeedInstalled(true);
+
+  // new .nowa-gui
   if (!checkForEmpty()) {
     const pkgs = [...nowaPkg, ...otherPkg].map(name => ({ name, version: 'latest' }));
-    // const pkgs = [...nowaPkg, ...otherPkg].map(name => ({ name, version: '1.0.0' }));
 
     installNowaModules(pkgs, () => {
       config.nowaNeedInstalled(false);
       const modules = {};
       pkgs.filter(({ name }) => /^nowa/.test(name))
-        .map(({ name }) => {
+        .forEach(({ name }) => {
           const pkgFile = join(NOWA_INSTALL_DIR, 'node_modules', name, 'package.json');
           const newVersion = fs.readJsonSync(pkgFile).version;
 
@@ -134,10 +134,13 @@ const init = () => {
       fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, modules);
     });
   } else {
+    // update nowa modules
     const nowaJson = fs.readJsonSync(NOWA_INSTALL_JSON_FILE);
     const pkgs = Object.keys(nowaJson).map(name => ({ name, version: nowaJson[name] }));
     checkModulesVersion(pkgs).then((modules) => {
       console.log('modules', modules);
+
+      // need update
       if (modules.length > 0) {
         installNowaModules(modules, () => {
           config.nowaNeedInstalled(false);
@@ -146,6 +149,8 @@ const init = () => {
           });
           fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, nowaJson);
         });
+
+      // don't need update
       } else {
         config.nowaNeedInstalled(false);
       }
