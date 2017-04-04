@@ -2,7 +2,7 @@ import { ipcRenderer, remote } from 'electron';
 import Message from 'antd/lib/message';
 import i18n from 'i18n';
 import { delay, writePkgJson } from 'gui-util';
-import { IS_WIN } from 'gui-const';
+// import { IS_WIN } from 'gui-const';
 
 const { command: remoteCommand } = remote.getGlobal('services');
 const taskStart = remote.require('./services/task').getCmd('start');
@@ -10,7 +10,7 @@ const taskStart = remote.require('./services/task').getCmd('start');
 const pickerCmd = (cmd) => {
   const scripts = {};
   Object.keys(cmd).forEach((item) => {
-    scripts[item] = item.cnt;
+    scripts[item] = cmd[item].cnt;
   });
   return scripts;
 };
@@ -123,6 +123,7 @@ export default {
 
       current.pkg.scripts = pickerCmd(commands[current.path]);
       // current.pkg.scripts = { ...commands[current.path] };
+      console.log(current.pkg.scripts)
 
       writePkgJson(current.path, current.pkg);
 
