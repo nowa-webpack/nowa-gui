@@ -292,6 +292,7 @@ class DependenceTable extends Component {
 
         return (
           <div>
+            { updateDiv }
             <Popconfirm
               placement="bottomRight"
               title={i18n('msg.removeTip')}
@@ -300,7 +301,6 @@ class DependenceTable extends Component {
               cancelText={i18n('form.cancel')}
             ><Button size="default" type="danger" ghost className="package-wrap-action">{i18n('table.action.del')}</Button>
             </Popconfirm>
-            { updateDiv }
           </div>);
       },
     }];

@@ -3,7 +3,7 @@ const any = require('co-any');
 const request = require('./request');
 const config = require('../../config');
 
-const aliRegistry = 'http://registry.npm.alibaba-inc.co';
+const aliRegistry = 'http://registry.npm.alibaba-inc.com';
 const urls = [
   'https://registry.npm.taobao.org',
   'https://registry.npmjs.org'

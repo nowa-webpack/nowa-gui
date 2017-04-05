@@ -33,9 +33,10 @@
 
 .icon-clear:before { content: "\e6d1"; }
 
+.icon-pause:before { content: "\e67d"; }
+
 .icon-play:before { content: "\e6b0"; }
 
 .icon-success:before { content: "\e6b3"; }
 
 .icon-stop:before { content: "\e6b5"; }
-

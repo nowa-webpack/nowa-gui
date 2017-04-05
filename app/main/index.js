@@ -14,7 +14,8 @@ log.info('start nowa gui');
 ipcMain.on('network-change-status', (event, online) => {
   config.online(online);
   console.log('online', online);
-  if (online && !config.registry()) {
+  // if (online && !config.registry()) {
+  if (online) {
     checkRegistry().then((registry) => {
       const win = windowManager.getWin();
       win.webContents.send('check-registry', registry);
