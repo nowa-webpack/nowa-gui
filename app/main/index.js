@@ -4,8 +4,9 @@ const services = require('./services');
 const config = require('./config');
 const os = require('os');
 
-const { menu, windowManager, nowa, utils, command } = services;
-const { isMac, checkRegistry } = utils;
+const { menu, windowManager, nowa, utils, command, is } = services;
+const { checkRegistry } = utils;
+
 log.info('start nowa gui');
 // config.clear();
 // config.setTemplateUpdate('nowa-template-salt-v_1', '0.0.1');
@@ -13,7 +14,7 @@ log.info('start nowa gui');
 ipcMain.on('network-change-status', (event, online) => {
   config.online(online);
   console.log('online', online);
-  if (online) {
+  if (online && !config.registry()) {
     checkRegistry().then((registry) => {
       const win = windowManager.getWin();
       win.webContents.send('check-registry', registry);
@@ -28,13 +29,6 @@ ipcMain.on('network-change-status', (event, online) => {
 app.on('ready', () => {
   menu.init();
   windowManager.create();
-  
-});
-
-app.on('window-all-closed', () => {
-  if (!isMac) {
-    app.quit();
-  }
 });
 
 app.on('activate', () => {
@@ -47,19 +41,18 @@ app.on('activate', () => {
   }
 });
 
-app.on('before-quit', () => {
-  console.log('quit');
-  // const task = global.cmd.start;
-  const { getCmd } = require('./services/task');
-  const task = getCmd('start');
-  // if (task) {
-    Object.keys(task).forEach((item) => {
-      console.log(item);
-      if (task[item].term) {
-        task[item].term.kill();
-      }
+app.on('window-all-closed', () => {
+  console.log('window-all-closed');
+  if (!is.isMac) {
+    command.clearNotMacTask(() => {
+      app.quit();
     });
-  // }
+  }
+});
+
+app.on('before-quit', () => {
+  console.log('before quit');
+  if (is.isMac) command.clearMacTask();
 });
 
 global.services = services;

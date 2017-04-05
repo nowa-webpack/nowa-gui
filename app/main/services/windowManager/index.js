@@ -53,13 +53,8 @@ module.exports = {
     if (isMac) {
       win.hide();
     } else {
-       win.close();
+      win.close();
     }
-    // if (isWin) {
-    //   win.close();
-    // } else {
-    //   win.hide();
-    // }
   },
 
   show() {

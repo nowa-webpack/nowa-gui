@@ -9,7 +9,7 @@ const kill = require('./kill');
 const modules = require('./modules');
 const env = require('./env');
 const { getWin } = require('../windowManager');
-const { constants: { NPM_PATH }, isWin } = require('../is');
+const { constants: { NPM_PATH }, isWin, isMac } = require('../is');
 
 
 const exportFunc = {
@@ -68,13 +68,13 @@ const exportFunc = {
     term.on('exit', (code) => {
       task.clearTerm(type, name);
       console.log('exit', type, code);
-
-      win.webContents.send('task-end', {
-        name,
-        type,
-        finished: code === 0
-      });
-      
+      if (getWin()) {
+        getWin().webContents.send('task-end', {
+          name,
+          type,
+          finished: code === 0
+        });
+      }
     });
   },
 
@@ -92,6 +92,33 @@ const exportFunc = {
   clearLog({ name, type }) {
     task.clearLog(type, name);
   },
+
+  clearNotMacTask(cb) {
+    console.log('clear task');
+    const taskStart = task.getCmd('start');
+    let a = 0, b = 0;
+    Object.keys(taskStart).forEach((item) => {
+      if (taskStart[item].term) {
+        a++;
+        // console.log(item, taskStart[item].term.pid, a, b);
+        kill(taskStart[item].term.pid, 'SIGKILL', () => {
+          b++;
+          if (a ===b) cb();
+        });
+      }
+    });
+    if (a === 0) cb();
+  },
+
+  clearMacTask() {
+    console.log('clear task');
+    const taskStart = task.getCmd('start');
+    Object.keys(taskStart).forEach((item) => {
+      if (taskStart[item].term) {
+        taskStart[item].term.kill();
+      }
+    });
+  }
 
 };
 
