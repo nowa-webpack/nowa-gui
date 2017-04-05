@@ -79,13 +79,21 @@ class CommandTermList extends Component {
         />
         {
           commands.map(({ name, running }) => (
-            <div className={classNames({
-              'cmd-item': true,
-              active: name === logType
+            <div
+              className={classNames({
+                'cmd-item': true,
+                active: name === logType
               })}
-              key={name} onClick={() => this.changeLogType(name)}>
+              key={name}
+              onClick={() => this.changeLogType(name)}
+            >
               {name}
-              <i className="iconfont icon-close-o" onClick={() => this.removeCmd(name)} />
+              <i className="iconfont icon-close-o"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  this.removeCmd(name);
+                }}
+              />
               { running
                 ? <i className="iconfont icon-pause" onClick={() => this.stopCmd(name)} />
                 : <i className="iconfont icon-play" onClick={() => this.startCmd(name)} />

@@ -10,7 +10,7 @@ import PackageManager from '../PackageManager';
 const TabPane = Tabs.TabPane;
 
 
-const Tab = ({ current, logType, dispatch, commands }) => {
+const Tab = ({ current, logType, dispatch, commands, registry }) => {
   const cmdList = Object.keys(commands).filter(cmd => cmd !== 'start' && cmd !== 'build');
   // const hasCmdSide = cmdList.length > 0;
   const listCmd = cmdList.map(name => ({ ...commands[name], name }));
@@ -33,6 +33,7 @@ const Tab = ({ current, logType, dispatch, commands }) => {
   const settingProps = {
     project: current,
     dispatch,
+    registry,
   };
 
   return (
@@ -60,6 +61,7 @@ const Tab = ({ current, logType, dispatch, commands }) => {
 Tab.propTypes = {
   commands: PropTypes.object,
   logType: PropTypes.string.isRequired,
+  registry: PropTypes.string.isRequired,
   current: PropTypes.shape({
     path: PropTypes.string
   }).isRequired,

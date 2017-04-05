@@ -16,19 +16,23 @@ const TabPane = Tabs.TabPane;
 
 const Setting = ({ dispatch, project }) => {
 
-  const removeProj = () => {
-    dispatch({
-      type: 'project/remove',
-      payload: { project }
-    });
-  };
+  // const removeProj = () => {
+  //   dispatch({
+  //     type: 'project/remove',
+  //     payload: { project }
+  //   });
+  // };
 
   return(
     <div className="setting">
       <Tabs type="card" className="setting-tabs" defaultActiveKey="1">
         <TabPane tab={i18n('project.tab.basic')} key="1"><BasicConfigForm /></TabPane>
-        <TabPane tab={i18n('project.tab.server')} key="2"><ServerConfigForm /></TabPane>
-        <TabPane tab={i18n('project.tab.build')} key="3"><BuildConfigForm /></TabPane>
+        { project.isNowa &&
+          <TabPane tab={i18n('project.tab.server')} key="2"><ServerConfigForm /></TabPane>
+        }
+        { project.isNowa &&
+          <TabPane tab={i18n('project.tab.build')} key="3"><BuildConfigForm /></TabPane>
+        }
       </Tabs>
       
     </div>

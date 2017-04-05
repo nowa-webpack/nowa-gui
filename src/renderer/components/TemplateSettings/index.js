@@ -36,7 +36,7 @@ class Form extends Component {
 
   constructor(props) {
     super(props);
-    const { extendsProj } = props;
+    const { extendsProj, defaultRegistry } = props;
 
     // const name = 'untitled';
     const name = '';
@@ -60,7 +60,8 @@ class Form extends Component {
       author: process.env.USER || process.env.USERNAME || '',
       version: '1.0.0',
       homepage: '',
-      registry: 'https://registry.npm.taobao.org',
+      registry: defaultRegistry,
+      // registry: 'https://registry.npm.taobao.org',
       repository: '',
     };
     this.overwrite = this.overwrite.bind(this);
@@ -234,10 +235,12 @@ Form.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
+  defaultRegistry: PropTypes.string.isRequired,
 };
 
 
-export default connect(({ init }) => ({ 
+export default connect(({ init, layout }) => ({ 
   extendsProj: init.extendsProj,
   isGitEmptyFolder: init.isGitEmptyFolder,
+  defaultRegistry: layout.registry
 }))(Form);

@@ -8,7 +8,7 @@ import i18n from 'i18n';
 import { REGISTRY_MAP } from 'gui-const';
 import DependenceTable from './DependenceTable';
 
-const { registry } = remote.getGlobal('config');
+// const { registry } = remote.getGlobal('config');
 const TabPane = Tabs.TabPane;
 
 
@@ -54,8 +54,8 @@ class PackageManager extends Component {
 
   render() {
     const { activeKey, dependencies, devDependencies } = this.state;
-    const npm = REGISTRY_MAP[this.props.project.abc.npm] || registry();
-    const { project, dispatch } = this.props;
+    const { project, dispatch, registry } = this.props;
+    const npm = REGISTRY_MAP[project.abc.npm] || registry;
 
     const basicProps = {
       registry: npm,
@@ -89,6 +89,7 @@ PackageManager.propTypes = {
     abc: PropTypes.object,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
+  registry: PropTypes.string.isRequired,
 };
 
 

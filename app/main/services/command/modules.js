@@ -1,5 +1,7 @@
 const { fork } = require('child_process');
 const { join } = require('path');
+const iconv = require('iconv-lite');
+
 
 const env = require('./env');
 const config = require('../../config');
@@ -28,6 +30,7 @@ const progressInstall = ({ options = {}, sender, isTruthPercent = true, endCb })
   console.time(senderInstalling);
   term.stdout.on('data', (data) => {
     const str = data.toString();
+    // const str = iconv.decode(data, 'gb2312');
     console.log(str);
     if (str.indexOf('INSTALL_PROGRESS') !== -1) {
       percent = isTruthPercent ? getPercent(str) : getMockPercent(str, percent);
@@ -43,6 +46,7 @@ const progressInstall = ({ options = {}, sender, isTruthPercent = true, endCb })
   });
 
   term.stderr.on('data', (data) => {
+    // log = newLog(log, iconv.decode(data, 'gb2312'));
     log = newLog(log, data.toString());
     console.log(data.toString());
     win.webContents.send(senderInstalling, {

@@ -15,14 +15,14 @@ const { Content } = Layout;
 
 
 const ProjectDetailPage = ({
-    current, logType, dispatch, commands
+    current, logType, dispatch, commands, registry
   }) => {
   let buildBtn;
   let startBtn;
-  const { start, path, pkg, loading } = current;
+  const { start, path, pkg, loading, isNowa } = current;
   const hasBuildFunc = 'scripts' in pkg && 'build' in pkg.scripts;
   const hasStartFunc = 'scripts' in pkg && 'start' in pkg.scripts;
-  const tabProps = { current, logType, dispatch, commands: commands[path] };
+  const tabProps = { current, logType, dispatch, commands: commands[path], registry };
   
   const startProj = () => dispatch({ type: 'task/start', payload: { project: current } });
   const buildProj = () => dispatch({ type: 'task/execCustomCmd', payload: { type: 'build', name: path } });
@@ -73,7 +73,7 @@ const ProjectDetailPage = ({
         <ProjectDetailTab {...tabProps} />
         <div className="opt-grp">
           { startBtn }
-          { start && <div className="opt" onClick={compassProj} >
+          { start && isNowa && <div className="opt" onClick={compassProj} >
               <i className="iconfont icon-compass" /><br />{i18n('task.compass')}
             </div>
           }
@@ -93,6 +93,7 @@ const ProjectDetailPage = ({
 
 ProjectDetailPage.propTypes = {
   logType: PropTypes.string.isRequired,
+  registry: PropTypes.string.isRequired,
   commands: PropTypes.object,
   current: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
@@ -102,4 +103,5 @@ export default connect(({ project, task, layout }) => ({
   current: project.current,
   commands: task.commands,
   logType: task.logType,
+  registry: layout.registry,
 }))(ProjectDetailPage);

@@ -7,33 +7,17 @@ import i18n from 'i18n';
 import { readPkgJson, getPkgDependencies } from 'gui-util';
 
 const { command } = remote.getGlobal('services');
-const { registry } = remote.getGlobal('config');
+// const { registry } = remote.getGlobal('config');
 
 
 const WelcomePage = ({ version, dispatch }) => {
   const handleImport = () => {
     try {
-      // const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
-
-      // const filePath = importPath[0];
-
-      // const pkgs = getPkgDependencies(readPkgJson(filePath));
-
-      // const installOptions = {
-      //   root: filePath,
-      //   registry: registry(),
-      //   targetDir: filePath,
-      //   storeDir: join(filePath, '.npminstall'),
-      //   timeout: 5 * 60000,
-      //   pkgs,
-      // };
 
       dispatch({
         type: 'project/importProj',
         payload: { filePath: null, needInstall: true },
       });
-
-      // command.importModulesInstall(installOptions);
       
     } catch (e) {
       console.log(e);

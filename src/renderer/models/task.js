@@ -51,7 +51,15 @@ export default {
       }
 
       ipcRenderer.on('task-end', (event, { type, name, finished }) => {
-        Message.info(`${type} command ${finished ? 'finished' : 'stopped'}.`, 3);
+        Message.info(`${type} command ${finished ? 'finished' : 'stopped'}.`);
+        if (type === 'start') {
+          dispatch({
+            type: 'project/stoppedProject',
+            payload: {
+              filePath: name
+            }
+          });
+        }
         dispatch({
           type: 'changeCommandStatus',
           payload: {

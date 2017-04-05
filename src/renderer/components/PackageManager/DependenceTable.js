@@ -310,7 +310,7 @@ class DependenceTable extends Component {
         <Button type="primary" size="small" className="new-btn"
           onClick={() => this.setState({ showModal: true })}
         >{i18n('package.btn.install')}</Button>
-        <Button type="primary" onClick={() => this.installModules()} size="small"
+        <Button type="primary" onClick={() => this.updatelModules()} size="small"
           disabled={!hasSelected}
           className="udt-all-btn"
         >{i18n('package.btn.updateAll')}</Button>

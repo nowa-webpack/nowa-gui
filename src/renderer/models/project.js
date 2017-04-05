@@ -12,7 +12,7 @@ import { readABCJson, writeABCJson,
 } from 'gui-util';
 
 const taskStart = remote.getGlobal('start') || {};
-const { registry } = remote.getGlobal('config');
+// const { registry } = remote.getGlobal('config');
 const { command } = remote.getGlobal('services');
 
 const getProjectInfoByPath = (filePath) => {
@@ -45,7 +45,6 @@ const getProjects = () => {
     };
   });
 };
-
 
 export default {
 
@@ -106,6 +105,7 @@ export default {
 
   effects: {
     * importProj({ payload: { filePath, needInstall } }, { put, select }) {
+      const { registry } = yield select(state => state.layout);   
       try {
         console.log('filePath', filePath);
         if (!filePath) {
@@ -117,11 +117,7 @@ export default {
 
           const options = {
             root: filePath,
-            registry: registry(),
-            // targetDir: filePath,
-            // storeDir: join(filePath, '.npminstall'),
-            // storeDir: join(filePath, 'node_modules', '.npminstall'),
-            // timeout: 5 * 60000,
+            registry,
             pkgs,
           };
 

@@ -10,7 +10,7 @@ const modules = require('./modules');
 const env = require('./env');
 const { getWin } = require('../windowManager');
 const { constants: { NPM_PATH }, isWin, isMac } = require('../is');
-
+const iconv = require('iconv-lite');
 
 const exportFunc = {
 
@@ -47,23 +47,27 @@ const exportFunc = {
       uid
     });
 
-    term.stdout.on('data', (data) => {
-      const log = task.writeLog(type, name, data.toString());
+    const senderData = (data) => {
+      // const log = task.writeLog(type, name, data.toString());
+      const log = task.writeLog(type, name, iconv.decode(data, 'gb2312'));
       win.webContents.send('task-ouput', {
         name,
         log,
         type,
       });
-    });
+    };
 
-    term.stderr.on('data', (data) => {
-      const log = task.writeLog(type, name, data.toString());
-      win.webContents.send('task-ouput', {
-        name,
-        log,
-        type,
-      });
-    });
+    term.stdout.on('data', senderData);
+    term.stderr.on('data', senderData);
+
+    // term.stderr.on('data', (data) => {
+    //   const log = task.writeLog(type, name, data.toString());
+    //   win.webContents.send('task-ouput', {
+    //     name,
+    //     log,
+    //     type,
+    //   });
+    // });
 
     term.on('exit', (code) => {
       task.clearTerm(type, name);
