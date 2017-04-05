@@ -8,14 +8,15 @@ const checkRegistry = require('./checkRegistry');
 ansiHTML.setColors({
   // reset: ['555', '666'], // FOREGROUND-COLOR or [FOREGROUND-COLOR] or [, BACKGROUND-COLOR] or [FOREGROUND-COLOR, BACKGROUND-COLOR]
   // black: 'aaa', // String
-  red: 'ff6b6b',
-  green: '68ce51',
-  yellow: 'f7de6e',
-  blue: '28c2e4',
-  // magenta: 'fff',
-  cyan: '28c2e4',
+  red: 'ea8484',
+  green: '44a195',
+  yellow: 'e6d483',
+  blue: '8d9eb3',
+  magenta: 'ce75ce',
+  // cyan: '28c2e4',
+  cyan: '8dd5e4',
   // lightgrey: '888',
-  // darkgrey: '777'
+  darkgrey: '8dd5e4'
 });
 
 const { constants: { APP_PATH } } = require('../is');

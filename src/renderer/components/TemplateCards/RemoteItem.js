@@ -70,7 +70,6 @@ const Item = ({ data, dispatch, next }) => {
               'opt-lg': data.disable
             })}
             onClick={showModal}
-            icon="edit"
           >{i18n('project.new.edit')}</Button>
           <Button
             className={classNames({

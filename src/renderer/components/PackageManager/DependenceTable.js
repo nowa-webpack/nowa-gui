@@ -22,7 +22,7 @@ const basicColumns = [{
   title: i18n('package.name'),
   dataIndex: 'name',
   key: 'name',
-  width: 200,
+  width: 250,
 }, {
   title: i18n('package.current'),
   dataIndex: 'version',
@@ -263,15 +263,21 @@ class DependenceTable extends Component {
       title: i18n('package.action'),
       key: 'action',
       dataIndex: 'update',
+      width: 150,
       render: (update, record) => {
         let updateDiv;
 
         if (update) {
           if (record.safeUpdate) {
             updateDiv = (
-              <span className="package-wrap-action update"
+              <Button
+                className="package-wrap-action"
+                size="default"
+                type="primary"
                 onClick={() => this.updatelModules(record)}
-              >{i18n('table.action.update')}</span>);
+              >
+                {i18n('table.action.update')}</Button>
+              );
           } else {
             updateDiv = (<Popconfirm
               placement="bottomRight"
@@ -279,7 +285,7 @@ class DependenceTable extends Component {
               onConfirm={() => this.updatelModules(record)}
               okText={i18n('form.ok')}
               cancelText={i18n('form.cancel')}
-            ><span className="package-wrap-action update-unsafe">{i18n('table.action.update')}</span>
+            ><Button size="default" type="danger" className="package-wrap-action">{i18n('table.action.update')}</Button>
             </Popconfirm>);
           }
         }
@@ -292,10 +298,10 @@ class DependenceTable extends Component {
               onConfirm={() => this.removeModules(record)}
               okText={i18n('form.ok')}
               cancelText={i18n('form.cancel')}
-            ><span className="package-wrap-action del">{i18n('table.action.del')}</span>
+            ><Button size="default" type="danger" ghost className="package-wrap-action">{i18n('table.action.del')}</Button>
             </Popconfirm>
             { updateDiv }
-          </div>)
+          </div>);
       },
     }];
 
@@ -331,11 +337,41 @@ class DependenceTable extends Component {
   }
 }
 
-// <Button className="udt-btn" ghost
-//               type="danger"
-//               size="small"
-//               icon="delete"
-//             />
+// render: (update, record) => {
+//         let updateDiv;
+
+//         if (update) {
+//           if (record.safeUpdate) {
+//             updateDiv = (
+//               <span className="package-wrap-action update"
+//                 onClick={() => this.updatelModules(record)}
+//               >{i18n('table.action.update')}</span>);
+//           } else {
+//             updateDiv = (<Popconfirm
+//               placement="bottomRight"
+//               title={i18n('package.update.tip')}
+//               onConfirm={() => this.updatelModules(record)}
+//               okText={i18n('form.ok')}
+//               cancelText={i18n('form.cancel')}
+//             >
+//             <span className="package-wrap-action update-unsafe">{i18n('table.action.update')}</span>
+//             </Popconfirm>);
+//           }
+//         }
+
+//         return (
+//           <div>
+//             <Popconfirm
+//               placement="bottomRight"
+//               title={i18n('msg.removeTip')}
+//               onConfirm={() => this.removeModules(record)}
+//               okText={i18n('form.ok')}
+//               cancelText={i18n('form.cancel')}
+//             ><span className="package-wrap-action del">{i18n('table.action.del')}</span>
+//             </Popconfirm>
+//             { updateDiv }
+//           </div>);
+//       },
 
 
 DependenceTable.propTypes = {

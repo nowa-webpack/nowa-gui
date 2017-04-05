@@ -59,7 +59,6 @@ const Item = ({ data, dispatch, next }) => {
             'opt-mx': data.disable,
           })}
           onClick={showModal}
-          icon="edit"
         >{i18n('project.new.edit')}</Button>
         {
           !data.disable &&

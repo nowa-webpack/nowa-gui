@@ -26,6 +26,7 @@ const Tab = ({ current, logType, dispatch, commands }) => {
     dispatch,
     name: current.path,
     commands: listCmd,
+    logType,
     // commands: cmdList
   };
 

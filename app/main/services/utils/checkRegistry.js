@@ -3,20 +3,22 @@ const any = require('co-any');
 const request = require('./request');
 const config = require('../../config');
 
+const aliRegistry = 'http://registry.npm.alibaba-inc.co';
 const urls = [
   'https://registry.npm.taobao.org',
-  'http://registry.npm.alibaba-inc.com',
   'https://registry.npmjs.org'
 ];
 
-
-module.exports = () => co(function* () {
-  const { _key } = yield any([
-    request('https://registry.npm.taobao.org/nowa/latest'),
-    request('http://registry.npm.alibaba-inc.com/nowa/latest'),
-    request('https://registry.npmjs.org/nowa/latest'),
-  ]);
-  console.log('registry', urls[_key]);
-  config.registry(urls[_key]);
-  return urls[_key];
-});
+module.exports = function () {
+  return co(function* () {
+    let registry = aliRegistry;
+    const { err } = yield request(`${aliRegistry}/nowa/latest`, { timeout: 5000 });
+    if (err) {
+      const { _key } = yield any(urls.map(url => request(`${url}/nowa/latest`)));
+      registry = urls[_key];
+    }
+    config.registry(registry);
+    console.log('registry', registry);
+    return registry;
+  });
+};

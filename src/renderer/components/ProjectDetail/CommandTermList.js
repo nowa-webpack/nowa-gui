@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Button from 'antd/lib/button';
+import classNames from 'classnames';
 import i18n from 'i18n';
 
 import CommandModal from './CommandModal';
@@ -55,8 +56,8 @@ class CommandTermList extends Component {
   }
 
   render() {
-    const { commands, dispatch } = this.props;
-    console.log(commands)
+    const { commands, dispatch, logType } = this.props;
+    // console.log(commands)
 
     const modalProps = {
       showModal: this.state.showModal,
@@ -68,7 +69,7 @@ class CommandTermList extends Component {
     return (
       <div className="cmd-sider">
         <h3>{i18n('cmd.sider.title')}</h3>
-        <Button
+        <Button ghost
           icon="plus"
           type="primary"
           shape="circle"
@@ -78,11 +79,15 @@ class CommandTermList extends Component {
         />
         {
           commands.map(({ name, running }) => (
-            <div className="cmd-item" key={name} onClick={() => this.changeLogType(name)}>
+            <div className={classNames({
+              'cmd-item': true,
+              active: name === logType
+              })}
+              key={name} onClick={() => this.changeLogType(name)}>
               {name}
               <i className="iconfont icon-close-o" onClick={() => this.removeCmd(name)} />
               { running
-                ? <i className="iconfont icon-stop" onClick={() => this.stopCmd(name)} />
+                ? <i className="iconfont icon-pause" onClick={() => this.stopCmd(name)} />
                 : <i className="iconfont icon-play" onClick={() => this.startCmd(name)} />
               }
             </div>
@@ -97,7 +102,7 @@ class CommandTermList extends Component {
 CommandTermList.propTypes = {
   name: PropTypes.string.isRequired,
   commands: PropTypes.array.isRequired,
-  // commands: PropTypes.object.isRequired,
+  logType: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
