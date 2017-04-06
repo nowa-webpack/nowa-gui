@@ -54,3 +54,9 @@ export const writeABCJson = (filePath, abc) => {
 export const readPkgJson = filePath => fs.readJsonSync(join(filePath, 'package.json'));
 export const writePkgJson = (filePath, pkg) => fs.writeJsonSync(join(filePath, 'package.json'), pkg);
 export const isNowaProject = filePath => fs.existsSync(join(filePath, 'abc.json'));
+
+export const isAliProject = (pkgJson) => {
+  const pkgs = getPkgDependencies(pkgJson);
+  const filter = pkgs.filter(item => /^@ali(pay|fe)?\//.test(item.name));
+  return filter.length > 0;
+};

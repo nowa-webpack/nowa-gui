@@ -15,6 +15,12 @@ export const REGISTRY_MAP = {
   tnpm: 'http://registry.npm.alibaba-inc.com',
 };
 
+export const NPM_MAP = {
+  'https://registry.npmjs.org': 'npm',
+  'https://registry.npm.taobao.org': 'cnpm',
+  'http://registry.npm.alibaba-inc.com': 'tnpm',
+};
+
 export const VSCODE_BASE_PATH = IS_WIN
   ? 'C:/Program Files (x86)/Microsoft VS Code'
   : '/Applications/Visual Studio Code.app';
@@ -55,6 +61,7 @@ export const URL_MATCH = /^((ht|f)tps?):\/\/([\w\-]+(\.[\w\-]+)*\/)*[\w\-]+(\.[\
 
 export const VERSION_MATCH = /^\d+\.\d+\.\d+([\.\-\w])*$/;
 
-export const NAME_MATCH = /^([A-Za-z0-9]|[._@\/\-])+$/;
+// export const NAME_MATCH = /^([A-Za-z0-9]|[._@\/\-])+$/;
+export const NAME_MATCH = /^(@\w+\/)?[\w\-]+$/;
 
 export const PORT_MATCH = /^([1-9]|[1-9]\d{1,3}|[1-6][0-5][0-5][0-3][0-5])$/;

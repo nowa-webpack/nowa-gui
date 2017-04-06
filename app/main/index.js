@@ -5,11 +5,12 @@ const config = require('./config');
 const os = require('os');
 
 const { menu, windowManager, nowa, utils, command, is } = services;
-const { checkRegistry } = utils;
+const { checkRegistry, checkEncoding } = utils;
 
 log.info('start nowa gui');
 // config.clear();
 // config.setTemplateUpdate('nowa-template-salt-v_1', '0.0.1');
+
 
 ipcMain.on('network-change-status', (event, online) => {
   config.online(online);
@@ -30,6 +31,7 @@ ipcMain.on('network-change-status', (event, online) => {
 app.on('ready', () => {
   menu.init();
   windowManager.create();
+  checkEncoding();
 });
 
 app.on('activate', () => {

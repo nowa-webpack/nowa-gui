@@ -9,8 +9,7 @@ const kill = require('./kill');
 const modules = require('./modules');
 const env = require('./env');
 const { getWin } = require('../windowManager');
-const { constants: { NPM_PATH }, isWin, isMac } = require('../is');
-const iconv = require('iconv-lite');
+const { constants: { NPM_PATH }, isWin } = require('../is');
 
 const exportFunc = {
 
@@ -48,8 +47,9 @@ const exportFunc = {
     });
 
     const senderData = (data) => {
-      // const log = task.writeLog(type, name, data.toString());
-      const log = task.writeLog(type, name, iconv.decode(data, 'gb2312'));
+      const log = task.writeLog(type, name, data);
+      // const log = task.writeLog(type, name, iconv.decode(data, 'gb2312'));
+      // const log = task.writeLog(type, name, iconv.decode(data, 'UTF-8'));
       win.webContents.send('task-ouput', {
         name,
         log,
@@ -59,15 +59,6 @@ const exportFunc = {
 
     term.stdout.on('data', senderData);
     term.stderr.on('data', senderData);
-
-    // term.stderr.on('data', (data) => {
-    //   const log = task.writeLog(type, name, data.toString());
-    //   win.webContents.send('task-ouput', {
-    //     name,
-    //     log,
-    //     type,
-    //   });
-    // });
 
     term.on('exit', (code) => {
       task.clearTerm(type, name);

@@ -12,7 +12,7 @@ import Checkbox from 'antd/lib/checkbox';
 
 import i18n from 'i18n';
 import { hidePathString } from 'gui-util';
-import { VERSION_MATCH, NAME_MATCH } from 'gui-const';
+import { NAME_MATCH } from 'gui-const';
 import { getLocalProjects } from 'gui-local';
 
 import OverrideModal from './OverrideModal';
@@ -60,6 +60,7 @@ class Form extends Component {
       author: process.env.USER || process.env.USERNAME || '',
       version: '1.0.0',
       homepage: '',
+      // registry: NPM_MAP[defaultRegistry],
       registry: defaultRegistry,
       // registry: 'https://registry.npm.taobao.org',
       repository: '',

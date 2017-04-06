@@ -28,6 +28,16 @@ module.exports = {
     }
   },
 
+  encode() {
+    const args = [].slice.call(arguments);
+    if (args.length > 0) {
+      config.set('encode', args[0]);
+    } else {
+      return config.get('encode');
+    }
+  },
+
+
   registry() {
     const args = [].slice.call(arguments);
     if (args.length > 0) {

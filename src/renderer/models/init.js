@@ -1,6 +1,6 @@
 import { ipcRenderer, remote } from 'electron';
 // import osHomedir from 'os-homedir';
-import { join, dirname, basename } from 'path';
+import { join, dirname } from 'path';
 import fs from 'fs-extra';
 import mkdirp from 'mkdirp';
 import glob from 'glob';
@@ -10,9 +10,8 @@ import Message from 'antd/lib/message';
 
 import i18n from 'i18n';
 import { delay, getPkgDependencies, readPkgJson } from 'gui-util';
-const { utils, command, is, templatesManager } = remote.getGlobal('services');
-const { TEMPLATES_DIR } = is.constants;
-// const TEMPLATES_DIR = join(osHomedir(), '.nowa-gui', 'templates');
+import { NPM_MAP } from 'gui-const';
+const { utils, command, templatesManager } = remote.getGlobal('services');
 
 const writeFile = (source, target, data) => {
   try {
@@ -199,8 +198,7 @@ export default {
 
       let answers = { ...payload };
 
-      // answers.npm = 'npm';
-      answers.npm = answers.registry;
+      answers.npm = NPM_MAP[answers.registry];
       answers.template = '';
 
       const config = gitConfig.sync(join(answers.projPath, '.git', 'config')) || {};
@@ -318,9 +316,6 @@ export default {
       
       const filePath = installOptions.root;
 
-      // yield delay(1000);
-      
-
       yield delay(1500);
 
       yield put({
@@ -328,6 +323,7 @@ export default {
         payload: {
           filePath,
           needInstall: false,
+          projectRegistry: installOptions.registry
         }
       });
 

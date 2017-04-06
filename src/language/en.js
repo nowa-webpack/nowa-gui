@@ -104,6 +104,7 @@ module.exports = {
   'msg.existed': 'Already existed!',
   'msg.nameRequired': 'Name Required!',
   'msg.importSuccess': 'Import Successfully!',
+  'msg.importFailed': 'Import Failed!',
   'msg.updateSuccess': 'Update Successfully!',
   'msg.updateFailed': 'Update Failed!',
   'msg.removeTip': 'Are you sure to remove this item?',

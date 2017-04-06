@@ -1,4 +1,6 @@
 const ansiHTML = require('ansi-html');
+const iconv = require('iconv-lite');
+const config = require('../../config');
 
 let task = {};
 
@@ -34,7 +36,15 @@ const setTask = (cmd, name, cnt) => {
 //   console.log(task)
 // };
 
-const writeLog = (cmd, name, str) => {
+// const writeLog = (cmd, name, str) => {
+//   const t = getTask(cmd, name);
+//   t.log += ansiHTML(str.replace(/\n/g, '<br>'));
+//   task[cmd][name] = t;
+//   return t.log;
+// };
+
+const writeLog = (cmd, name, buf) => {
+  const str = iconv.decode(buf, config.encode());
   const t = getTask(cmd, name);
   t.log += ansiHTML(str.replace(/\n/g, '<br>'));
   task[cmd][name] = t;

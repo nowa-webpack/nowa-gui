@@ -126,8 +126,8 @@ class LayoutWrap extends Component {
 
   getUpdateVersion() {
     const { dispatch, version, registry } = this.props;
-    // request(`${registry()}/nowa-gui-version/latest`)
     request(`${registry}/nowa-gui-version/latest`)
+    // request('https://registry.npm.taobao.org/nowa-gui-version/latest')
       .then(({ data }) => {
         const newVersion = data.version;
         console.log('newVersion', newVersion);

@@ -4,6 +4,7 @@ const ansiHTML = require('ansi-html');
 const fs = require('fs-extra');
 const request = require('./request');
 const checkRegistry = require('./checkRegistry');
+const checkEncoding = require('./checkEncoding');
 
 ansiHTML.setColors({
   // reset: ['555', '666'], // FOREGROUND-COLOR or [FOREGROUND-COLOR] or [, BACKGROUND-COLOR] or [FOREGROUND-COLOR, BACKGROUND-COLOR]
@@ -69,6 +70,7 @@ module.exports = {
   delay,
   request,
   checkRegistry,
+  checkEncoding,
   getPercent,
   getMockPercent,
   newLog,

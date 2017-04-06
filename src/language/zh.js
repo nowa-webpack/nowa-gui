@@ -54,6 +54,7 @@ module.exports = {
   'project.new.log.wait': '依赖安装中 请耐心等待',
   'project.new.log.error': '安装过程中出现错误, 如有需要请查看下方日志或返回重试',
   'project.new.empty': '当前无模版',
+  'project.new.log.retry': '重试',
   'project.new.addTempldate': '添加自定义模版',
 
   'template.modal.title': '自定义模版设置',
@@ -103,6 +104,7 @@ module.exports = {
   'msg.existed': '该项已存在!',
   'msg.nameRequired': '名称不能为空!',
   'msg.importSuccess': '导入成功',
+  'msg.importFailed': '导入失败',
   'msg.updateSuccess': '更新成功',
   'msg.updateFailed': '更新失败',
   'msg.removeTip': '确认删除？',

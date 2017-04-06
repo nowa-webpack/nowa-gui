@@ -75,10 +75,10 @@ class ServerConfigForm extends Component {
 
     if (defaultLocale) {
       localeDiv = (
-        <div className="form-item">
-          <label className="form-label">Locale:</label>
+        <div className="setting-form-item sm">
+          <label className="setting-form-label">Locale:</label>
           <Select
-            style={{ width: 100 }}
+            style={{ width: 170 }}
             defaultValue={defaultLocale}
             onChange={value => this.setState({ defaultLocale: value })}
           >
@@ -91,53 +91,54 @@ class ServerConfigForm extends Component {
     }
 
     return (
-      <div>
+      <div style={{ position: 'relative'}}>
         <Tooltip placement="top" title={i18n('foot.help')} >
           <Button type="primary" icon="question" shape="circle" size="small" ghost
             className="help-btn"
             onClick={() => shell.openExternal('http://groups.alidemo.cn/alinw-tools/nowa/ben_di_kai_fa.html')}
           />
         </Tooltip>
-        <form className="ui-form" >
-          <div className="form-item">
-            <label className="form-label">Lazyload:</label>
+        <form className="setting-form" >
+          <div className="setting-form-item sm">
+            <label className="setting-form-label">Lazyload:</label>
             <Switch size="default" checked={lazyload}
               onChange={checked => this.setState({ lazyload: checked })}
             />
           </div>
-
-          <div className="form-item">
-            <label className="form-label">Https:</label>
-            <Switch size="default" checked={https}
-              onChange={checked => this.setState({ https: checked })}
-            />
-          </div>
-
-          <div className="form-item">
-            <label className="form-label">Open:</label>
-            <Switch size="default" checked={open}
-              onChange={checked => this.setState({ open: checked })}
-            />
-          </div>
-
-          <div className="form-item">
-            <label className="form-label">Entry:</label>
-            <input type="text"
-              className="lg"
-              onChange={e => this.setState({ entry: e.target.value })}
-              value={entry}
-            />
-          </div>
-          <div className="form-item">
-            <label className="form-label">Port:</label>
+          <div className="setting-form-item sm">
+            <label className="setting-form-label">Port:</label>
             <input type="text"
               className="lg"
               onChange={e => this.setState({ port: e.target.value })}
               value={port}
             />
           </div>
-          <div className="form-item">
-            <label className="form-label">Proxy:</label>
+          
+
+          <div className="setting-form-item sm">
+            <label className="setting-form-label">Open:</label>
+            <Switch size="default" checked={open}
+              onChange={checked => this.setState({ open: checked })}
+            />
+          </div>
+
+          <div className="setting-form-item sm">
+            <label className="setting-form-label">Entry:</label>
+            <input type="text"
+              className="lg"
+              onChange={e => this.setState({ entry: e.target.value })}
+              value={entry}
+            />
+          </div>
+          <div className="setting-form-item sm">
+            <label className="setting-form-label">Https:</label>
+            <Switch size="default" checked={https}
+              onChange={checked => this.setState({ https: checked })}
+            />
+          </div>
+          { localeDiv }
+          <div className="setting-form-item lg">
+            <label className="setting-form-label">Proxy:</label>
             <input type="text"
               className="lg"
               onChange={e => this.setState({ proxy: e.target.value })}
@@ -145,8 +146,8 @@ class ServerConfigForm extends Component {
               placeholder="url"
             />
           </div>
-          { localeDiv }
-          <div className="form-btns">
+          
+          <div className="setting-form-btns">
             <Button type="primary" size="default" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
           </div>
         </form>

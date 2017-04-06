@@ -19,6 +19,7 @@
     "fix-path": "^2.1.0",
     "fs-extra": "^2.0.0",
     "getmac": "^1.2.1",
+    "iconv-lite": "^0.4.15",
     "node-fetch": "^1.6.3",
     "npm-run-path": "^2.0.2",
     "npminstall": "^2.26.4",

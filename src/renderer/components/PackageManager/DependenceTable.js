@@ -288,6 +288,8 @@ class DependenceTable extends Component {
             ><Button size="default" type="danger" className="package-wrap-action">{i18n('table.action.update')}</Button>
             </Popconfirm>);
           }
+        } else {
+          updateDiv = <Button disabled className="package-wrap-action">{i18n('table.action.update')}</Button>;
         }
 
         return (

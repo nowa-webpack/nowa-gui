@@ -6,13 +6,13 @@ import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
 import { getLocalProjects, setLocalProjects } from 'gui-local';
+import { REGISTRY_MAP, NPM_MAP } from 'gui-const';
 import { readABCJson, writeABCJson,
   readPkgJson, writePkgJson,
-  isNowaProject, getPkgDependencies, delay
+  isNowaProject, getPkgDependencies, delay, isAliProject
 } from 'gui-util';
 
 const taskStart = remote.getGlobal('start') || {};
-// const { registry } = remote.getGlobal('config');
 const { command } = remote.getGlobal('services');
 
 const getProjectInfoByPath = (filePath) => {
@@ -23,12 +23,34 @@ const getProjectInfoByPath = (filePath) => {
     abc = readABCJson(filePath);
   }
 
-  return {
+  const obj = {
     name: pkg.name,
     isNowa,
     abc,
     pkg,
   };
+
+  if (isNowa) {
+    if (Object.keys(REGISTRY_MAP).includes(abc.npm)) {
+      obj.registry = REGISTRY_MAP[abc.npm];
+    } else {
+      obj.registry = abc.npm;
+      abc.npm = NPM_MAP[abc.npm];
+      writeABCJson(abc);
+      obj.abc = abc;
+    }
+  } else if (isAliProject(pkg)) {
+    obj.registry = REGISTRY_MAP.tnpm;
+  }
+
+
+  // if (isAliProject(pkg)) {
+  //   obj.registry = REGISTRY_MAP.tnpm;
+  // } else if (isNowa) {
+  //   obj.registry = REGISTRY_MAP[abc.npm];
+  // }
+
+  return obj;
 };
 
 const getProjects = () => {
@@ -38,8 +60,8 @@ const getProjects = () => {
     const info = getProjectInfoByPath(project.path);
 
     return {
-      ...project,
       ...info,
+      ...project,
       start: false,
       taskErr: false,
     };
@@ -65,7 +87,6 @@ export default {
           const task = taskStart[item.path];
           if (task && task.term) {
             item.start = true;
-            // item.port = getPortByUID(task.uid);
           }
           return item;
         });
@@ -104,30 +125,51 @@ export default {
   },
 
   effects: {
-    * importProj({ payload: { filePath, needInstall } }, { put, select }) {
-      const { registry } = yield select(state => state.layout);   
+    * importProj({ payload: { filePath, needInstall, projectRegistry } }, { put, select }) {
       try {
+        const { registry: defaultRegistry } = yield select(state => state.layout);
+        let projectInfo = {};
+        let userRegistry;
         console.log('filePath', filePath);
+
+        
         if (!filePath) {
           const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
 
           filePath = importPath[0];
+          projectInfo = getProjectInfoByPath(filePath);
+          const pkgs = getPkgDependencies(projectInfo.pkg);
+          
 
-          const pkgs = getPkgDependencies(readPkgJson(filePath));
+          // if (isAliProject(projectInfo.pkg)) {
+          //   userRegistry = REGISTRY_MAP.tnpm;
+          // } else if (projectInfo.registry) {
+          //   userRegistry = projectInfo.registry;
+          // } else {
+          //   userRegistry = defaultRegistry;
+          // }
+
+          if (projectInfo.registry) {
+            userRegistry = projectInfo.registry;
+          } else if (isAliProject(pkgs)) {
+            userRegistry = REGISTRY_MAP.tnpm;
+          } else {
+            userRegistry = defaultRegistry;
+          }
 
           const options = {
             root: filePath,
-            registry,
+            registry: userRegistry,
             pkgs,
           };
-
+          
           command.notProgressInstall({
             options,
             sender: 'import',
           });
+        } else {
+          projectInfo = getProjectInfoByPath(filePath);
         }
-
-        const projectInfo = getProjectInfoByPath(filePath);
 
         // if (!projectInfo.isNowa) {
         //   Message.error(i18n('msg.invalidProject'));
@@ -143,55 +185,62 @@ export default {
         if (filter.length) {
           Message.info(i18n('msg.existed'));
           return false;
-        } else {
-          const current = {
-            ...projectInfo,
-            start: false,
-            taskErr: false,
+        }
+
+        const current = {
+          ...projectInfo,
+          start: false,
+          taskErr: false,
+          name: projectName,
+          path: filePath,
+          loading: needInstall
+        };
+
+        if (!userRegistry && !projectRegistry) {
+          if (isAliProject(projectInfo.pkg)) {
+            current.registry = REGISTRY_MAP.tnpm;
+          } else if (!current.registry) {
+            current.registry = defaultRegistry;
+          }
+        }
+
+        const { projects } = yield select(state => state.project);
+
+        projects.push(current);
+
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            projects,
+            current,
+            startWacthProject: !needInstall
+          }
+        });
+
+        yield put({
+          type: 'task/initAddCommands',
+          payload: {
+            project: current,
+          }
+        });
+
+        if (!needInstall) {
+          Message.success(i18n('msg.importSuccess'));
+          storeProjects.push({
             name: projectName,
             path: filePath,
-            loading: needInstall
-          };
-
-          const { projects } = yield select(state => state.project);
-
-          projects.push(current);
-
-          yield put({
-            type: 'changeStatus',
-            payload: {
-              projects,
-              current,
-              startWacthProject: !needInstall
-            }
+            registry: current.registry
           });
 
-          yield put({
-            type: 'task/initAddCommands',
-            payload: {
-              project: current,
-            }
-          });
-
-          if (!needInstall) {
-            Message.success(i18n('msg.importSuccess'));
-            storeProjects.push({
-              name: projectName,
-              path: filePath,
-              // port: projectInfo.port
-            });
-
-            setLocalProjects(storeProjects);
-          }
-
-          yield put({
-            type: 'layout/changeStatus',
-            payload: {
-              showPage: 2
-            }
-          });
-          
+          setLocalProjects(storeProjects);
         }
+
+        yield put({
+          type: 'layout/changeStatus',
+          payload: {
+            showPage: 2
+          }
+        });
       } catch (e) {
         console.log(e);
       }
@@ -267,16 +316,26 @@ export default {
         }
       });
     },
-    * updatePkg({ payload: { project, pkg } }, { put, select }) {
+    * updatePkg({ payload: { project, pkg, registry } }, { put, select }) {
       const { projects } = yield select(state => state.project);
       project.pkg = pkg;
+      // project.registry = registry;
 
-      if (project.name !== pkg.name) {
+      if (project.name !== pkg.name || project.registry !== registry) {
+
+        if (project.isNowa && project.registry !== registry) {
+          project.abc.npm = NPM_MAP[registry];
+          writeABCJson(project.path, project.abc);
+        }
+
         project.name = pkg.name;
+        project.registry = registry;
+
         const storeProjects = getLocalProjects();
         storeProjects.map((item) => {
           if (item.path === project.path) {
             item.name = pkg.name;
+            item.registry = registry;
           }
           return item;
         });
@@ -382,15 +441,20 @@ export default {
 
       const filter = projects.filter(item => item.path === filePath);
 
-      storeProjects.push({
-        name: filter[0].name,
-        path: filter[0].path,
-        // port: filter[0].port
-      });
+      if (filter.length) {
+        storeProjects.push({
+          name: filter[0].name,
+          path: filter[0].path,
+          registry: filter[0].registry,
+        });
 
-      setLocalProjects(storeProjects);
+        setLocalProjects(storeProjects);
+        
+        Message.success(i18n('msg.importSuccess'));
+      } else {
+        Message.error(i18n('msg.importFailed'));
+      }
 
-      Message.success(i18n('msg.importSuccess'));
 
       yield put({
         type: 'changeStatus',
