@@ -36,7 +36,8 @@ const getProjectInfoByPath = (filePath) => {
     } else {
       obj.registry = abc.npm;
       abc.npm = NPM_MAP[abc.npm];
-      writeABCJson(abc);
+      // writeABCJson(abc);
+      writeABCJson(filePath, abc);
       obj.abc = abc;
     }
   } else if (isAliProject(pkg)) {

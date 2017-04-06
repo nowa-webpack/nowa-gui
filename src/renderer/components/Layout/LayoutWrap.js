@@ -101,10 +101,6 @@ class LayoutWrap extends Component {
       root: filePath,
       registry,
       pkgs,
-      // registry: registry(),
-      // targetDir: filePath,
-      // storeDir: join(filePath, 'node_modules', '.npminstall'),
-      // timeout: 5 * 60000,
     };
     dispatch({
       type: 'project/importProj',
@@ -204,7 +200,7 @@ class LayoutWrap extends Component {
 
             { showPage > 0 && <div className="bar-bd" /> }
 
-            <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
+            <div className="logo" onClick={() => shell.openExternal('https://alixux.org/home.html')} />
 
             { showPage === 2 &&
               <div className="proj-info">
