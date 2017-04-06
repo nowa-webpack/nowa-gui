@@ -1,4 +1,5 @@
 import fs from 'fs-extra';
+import { join } from 'path';
 import { 
   LOCAL_PROJECTS, LANGUAGE, EDITOR, SUBMIT_PATH, VSCODE_PATH, UPDATE_TIP,
   LOCAL_TEMP_PATHS, REMOTE_TEMP_URLS, SUBLIME, VSCODE
@@ -15,7 +16,7 @@ export const setLocalProjects = (projects) => {
 export const getLocalProjects = () => {
   const projects = getStoreProjects();
   // 检查项目是否存在
-  const filter = projects.filter(project => fs.existsSync(project.path));
+  const filter = projects.filter(project => fs.existsSync(join(project.path, 'package.json')));
 
   setLocalProjects(filter);
 
