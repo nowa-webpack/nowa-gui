@@ -13,8 +13,8 @@ module.exports = function () {
   if (isWin) {
     const pageCode = execSync('chcp').toString().split(':')[1].trim();
     if (encodeMap[pageCode]) encode = encodeMap[pageCode];
-  } else {
-    encode = process.env.LANG.split('.')[1];
+  // } else {
+  //   encode = process.env.LANG.split('.')[1];
   }
 
   console.log('encode', encode);
