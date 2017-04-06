@@ -200,7 +200,7 @@ class LayoutWrap extends Component {
 
             { showPage > 0 && <div className="bar-bd" /> }
 
-            <div className="logo" onClick={() => shell.openExternal('https://alixux.org/home.html')} />
+            <div className="logo" onClick={() => shell.openExternal('https://alixux.org/nowa/')} />
 
             { showPage === 2 &&
               <div className="proj-info">
