@@ -8,6 +8,7 @@ export const VSCODE_PATH = 'VSCODE_PATH';
 export const SUBLIME = 'Sublime';
 export const VSCODE = 'VScode';
 export const IS_WIN = process.platform === 'win32';
+export const IS_MAC = process.platform === 'darwin';
 
 export const REGISTRY_MAP = {
   npm: 'https://registry.npmjs.org',
@@ -30,10 +31,14 @@ export const SUBLIME_BASE_PATH = IS_WIN
   : '/Applications/Sublime Text.app';
 
 export const UPGRADE_URL = IS_WIN
+  ? 'https://alixux.org/downloads/nowa-gui.exe'
+  : IS_MAC
+    ? 'https://alixux.org/downloads/nowa-gui.dmg'
+    : 'https://alixux.org/downloads/nowa-gui.deb';
   // ? 'http://lab.onbing.com/nowa-gui.exe'
   // : 'http://lab.onbing.com/nowa-gui.dmg';
-  ? 'https://alixux.org/downloads/nowa-gui.exe'
-  : 'https://alixux.org/downloads/nowa-gui.dmg';
+  // ? 'https://alixux.org/downloads/nowa-gui.exe'
+  // : 'https://alixux.org/downloads/nowa-gui.dmg';
 
 const inner_url = [
   'http://alipay-rmsdeploy-image.cn-hangzhou.alipay.aliyun-inc.com/nowa-test/nowa-gui.dmg',

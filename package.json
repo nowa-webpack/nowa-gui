@@ -1,6 +1,6 @@
 {
   "name": "NowaGUI",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "A tool for nowa developement.",
   "main": "index.js",
   "scripts": {

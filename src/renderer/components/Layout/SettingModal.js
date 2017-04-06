@@ -101,9 +101,11 @@ class SetDialog extends Component {
 
   render() {
     const { shouldAppUpdate, language, showModal, defaultEditor, editor } = this.state;
-    const { version, newVersion } = this.props;
+    const { version, newVersion, upgradeUrl } = this.props;
 
     const pathIcon = <i className="iconfont icon-folder" onClick={() => this.selectPath()} />;
+
+    const upgrade = upgradeUrl ? upgradeUrl : UPGRADE_URL;
 
     return (
       <Modal
@@ -137,7 +139,7 @@ class SetDialog extends Component {
             {
               shouldAppUpdate &&
               <Button type="primary" size="small" icon="download"
-                onClick={() => shell.openExternal(UPGRADE_URL)} 
+                onClick={() => shell.openExternal(upgrade)} 
               >{newVersion}</Button>
             }
           </div>
@@ -180,4 +182,5 @@ export default connect(({ layout }) => ({
   newVersion: layout.newVersion,
   defaultEditor: layout.defaultEditor,
   editor: layout.editor,
+  upgradeUrl: layout.upgradeUrl,
 }))(SetDialog);

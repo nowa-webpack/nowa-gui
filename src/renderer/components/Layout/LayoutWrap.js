@@ -36,9 +36,12 @@ class LayoutWrap extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, startWacthProject } = this.props;
+    const { dispatch, startWacthProject, online } = this.props;
     console.log('LayoutWrap componentDidMount');
     
+    if (online) {
+      this.getUpdateVersion();
+    }
 
     if (startWacthProject) {
       this.taskTimer = setInterval(() => {
@@ -49,7 +52,7 @@ class LayoutWrap extends Component {
     }
   }
 
-  componentWillReceiveProps({ newVersion, online, startWacthProject, dispatch }) {
+  componentWillReceiveProps({ newVersion, online, startWacthProject, upgradeUrl, dispatch }) {
     if (newVersion !== this.props.newVersion) {
       confirm({
         title: i18n('msg.updateConfirm'),
@@ -59,7 +62,11 @@ class LayoutWrap extends Component {
             <p>{i18n('msg.nextVersion')} {newVersion}</p>
           </div>),
         onOk() {
-          shell.openExternal(UPGRADE_URL);
+          if (upgradeUrl) {
+            shell.openExternal(upgradeUrl);
+          } else {
+            shell.openExternal(UPGRADE_URL);
+          }
         },
         onCancel() {},
         okText: i18n('form.ok'),
@@ -131,6 +138,13 @@ class LayoutWrap extends Component {
       .then(({ data }) => {
         const newVersion = data.version;
         console.log('newVersion', newVersion);
+
+        if (data.download) {
+          dispatch({
+            type: 'layout/changeStatus',
+            payload: { upgradeUrl: data.download[process.platform] }
+          });
+        }
 
         if (semver.lt(version, newVersion)) {
           dispatch({
@@ -226,6 +240,7 @@ LayoutWrap.propTypes = {
   }).isRequired,
   online: PropTypes.bool.isRequired,
   registry: PropTypes.string.isRequired,
+  upgradeUrl: PropTypes.string.isRequired,
   startWacthProject: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
@@ -239,4 +254,5 @@ export default connect(({ layout, project }) => ({
   online: layout.online,
   registry: layout.registry,
   startWacthProject: project.startWacthProject,
+  upgradeUrl: layout.upgradeUrl
 }))(LayoutWrap);

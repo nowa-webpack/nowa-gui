@@ -24,7 +24,7 @@ export default {
       Sublime: getLocalEditorPath(SUBLIME),
       VScode: getLocalEditorPath(VSCODE)
     },
-    // online: navigator.onLine,
+    upgradeUrl: '',
     online: false,
     registry: 'https://registry.npm.taobao.org',
     nowaPreFlag: -1, // -1 no-op, 0 close, 1: update, 2: no update
