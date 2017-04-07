@@ -5,7 +5,6 @@ import Progress from 'antd/lib/progress';
 
 import i18n from 'i18n';
 import { getLocalProjects } from 'gui-local';
-// const { nowaNeedInstalled } = remote.getGlobal('config');
 
 
 class PreInitialPage extends Component {
