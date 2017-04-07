@@ -138,6 +138,12 @@ export default {
           const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
 
           filePath = importPath[0];
+
+          if (!fs.existsSync(join(filePath, 'package.json'))) {
+            Message.error(i18n('msg.invalidProject'));
+            return false;
+          }
+          
           projectInfo = getProjectInfoByPath(filePath);
           const pkgs = getPkgDependencies(projectInfo.pkg);
           

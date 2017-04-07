@@ -96,7 +96,7 @@ module.exports = {
   'msg.installSuccess': '安装成功！',
   'msg.installFail': '安装失败！',
   'msg.invalidPort': '端口号错误',
-  'msg.invalidProject': '非 Nowa 项目',
+  'msg.invalidProject': '非 Node 项目',
   'msg.invalidVersion': '版本号错误!',
   'msg.invalidName': '名称只能为字母数字下划线短横杠',
   'msg.invalidUrl': 'Url 格式不正确',
@@ -133,7 +133,7 @@ module.exports = {
   'package.installed': '安装版本',
   'package.newest': '最新版本',
   'package.action': '操作',
-  'package.btn.updateAll': '全部更新',
+  'package.btn.updateAll': '批量更新',
   'package.btn.install': '安装新依赖',
   'package.update.tip': '确认更新到改版本吗？',
 
