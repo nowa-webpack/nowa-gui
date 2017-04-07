@@ -42,13 +42,13 @@ npm run packer:win
 
 ## images
 
-<img src="https://raw.githubusercontent.com//nowa-webpack/nowa-gui/v2/doc/detailp.png"/>
+<img src="https://raw.githubusercontent.com//nowa-webpack/nowa-gui/v3/doc/detailp.png"/>
 <br/>
-<img src="https://raw.githubusercontent.com//nowa-webpack/nowa-gui/v2/doc/newp.png"/>
+<img src="https://raw.githubusercontent.com//nowa-webpack/nowa-gui/v3/doc/newp.png"/>
 <br/>
-<img src="https://raw.githubusercontent.com//nowa-webpack/nowa-gui/v2/doc/pkg.png"/>
+<img src="https://raw.githubusercontent.com//nowa-webpack/nowa-gui/v3/doc/pkg.png"/>
 <br/>
-<img src="https://raw.githubusercontent.com//nowa-webpack/nowa-gui/v2/doc/set1.png"/>
+<img src="https://raw.githubusercontent.com//nowa-webpack/nowa-gui/v3/doc/set1.png"/>
 <br/>
 
 
