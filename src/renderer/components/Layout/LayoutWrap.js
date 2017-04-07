@@ -149,7 +149,7 @@ class LayoutWrap extends Component {
           });
         }
 
-        if (+getLocalUpdateFlag(newVersion) !== 1) {
+        if (+getLocalUpdateFlag(version) !== 1) {
           console.log(data)
           const arr = data.readme.split('#').filter(i => !!i).map(i => i.split('*').slice(1));
 
@@ -162,7 +162,7 @@ class LayoutWrap extends Component {
                 {tip.map(item => <li key={item}>{item}</li>)}
               </ul>),
             onOk() {
-              setLocalUpdateFlag(newVersion);
+              setLocalUpdateFlag(version);
             },
             okText: i18n('form.ok'),
           });
