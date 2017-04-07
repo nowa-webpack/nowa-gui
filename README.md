@@ -1,3 +1,15 @@
+## images
+
+<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/v3/doc/detailp.png" width="600" />
+<br/>
+<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/v3/doc/newp.png" width="600"/>
+<br/>
+<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/v3/doc/pkg.png" width="600"/>
+<br/>
+<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/v3/doc/set1.png" width="600"/>
+<br/>
+
+
 ## setup
 
 ```bash
@@ -40,16 +52,6 @@ npm run packer:win
 ```
 
 
-## images
-
-<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/v3/doc/detailp.png"/>
-<br/>
-<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/v3/doc/newp.png"/>
-<br/>
-<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/v3/doc/pkg.png"/>
-<br/>
-<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/v3/doc/set1.png"/>
-<br/>
 
 
 
