@@ -32,7 +32,7 @@ npm start
 
 ```
 
-## packer app
+## pack app
 
 ```bash
 npm run build
