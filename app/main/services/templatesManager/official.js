@@ -66,7 +66,7 @@ const get = () => {
             const version = pkg['dist-tags'][tag];
             const name = `${tempName}-${tag}`;
             const oldVersion = getTemplateVersion(name);
-            return { 
+            return {
               name: tag,
               version: oldVersion,
               update: semver.lt(oldVersion, version),
