@@ -129,10 +129,10 @@ class LayoutWrap extends Component {
 
   getUpdateVersion() {
     const { dispatch, version, registry } = this.props;
-    request(`${registry}/nowa-gui-version/latest`)
-    // request('https://registry.npm.taobao.org/nowa-gui-version/latest')
+    request(`${registry}/nowa-gui-version`)
+    // request('https://registry.npm.taobao.org/nowa-gui-version')
       .then(({ data }) => {
-        const newVersion = data.version;
+        const newVersion = data['dist-tags'].latest;
         console.log('newVersion', newVersion);
 
         if (data.download) {
@@ -149,7 +149,8 @@ class LayoutWrap extends Component {
           });
         }
 
-        if (+getLocalUpdateFlag() !== 1) {
+        if (+getLocalUpdateFlag(newVersion) !== 1) {
+          console.log(data)
           const arr = data.readme.split('#').filter(i => !!i).map(i => i.split('*').slice(1));
 
           const tip = getLocalLanguage() === 'zh' ? arr[0] : arr[1];
@@ -161,7 +162,7 @@ class LayoutWrap extends Component {
                 {tip.map(item => <li key={item}>{item}</li>)}
               </ul>),
             onOk() {
-              setLocalUpdateFlag();
+              setLocalUpdateFlag(newVersion);
             },
             okText: i18n('form.ok'),
           });

@@ -49,6 +49,18 @@ export const setLocalEditorPath = (editor, editorPath) => {
   }
 };
 
-export const getLocalUpdateFlag = () => storage.getItem(UPDATE_TIP);
-export const setLocalUpdateFlag = () => storage.setItem(UPDATE_TIP, 1);
+// export const getLocalUpdateFlag = () => storage.getItem(UPDATE_TIP);
+// export const setLocalUpdateFlag = () => storage.setItem(UPDATE_TIP, 1);
+
+export const getLocalUpdateFlag = (version) => {
+  const str = storage.getItem(UPDATE_TIP);
+  if (str) return str.split('|')[1];
+
+  return 0;
+};
+
+export const setLocalUpdateFlag = (version) => {
+  // return storage.getItem(UPDATE_TIP).split('|')[1];
+  storage.setItem(UPDATE_TIP, `${version}|1`);
+};
 
