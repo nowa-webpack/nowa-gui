@@ -248,15 +248,17 @@ export default {
     * changeCommandStatus({ payload: { type, name, running } }, { select, put }) {
       const { commands } = yield select(state => state.task);
 
-      commands[name][type].running = running;
+      if (commands[name]) {
+        commands[name][type].running = running;
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            commands: { ...commands },
+            logType: type
+          }
+        });
+      }
 
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          commands: { ...commands },
-          logType: type
-        }
-      });
     }
   },
 
