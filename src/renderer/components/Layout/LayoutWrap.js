@@ -1,12 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { remote, shell, ipcRenderer } from 'electron';
+import { remote, shell } from 'electron';
 import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
 import semver from 'semver';
-import classNames from 'classnames';
-import { join } from 'path';
 import Layout from 'antd/lib/layout';
-import Badge from 'antd/lib/badge';
 import { info, confirm } from 'antd/lib/modal';
 // import { hashHistory } from 'react-router';
 

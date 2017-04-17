@@ -13,6 +13,8 @@ import ProjectDetailTab from '../components/ProjectDetail/Tab';
 
 const { Content } = Layout;
 
+const { command } = remote.getGlobal('services');
+
 
 const ProjectDetailPage = ({
     current, logType, dispatch, commands, registry
@@ -33,6 +35,8 @@ const ProjectDetailPage = ({
     const { uid } = task.getTask('start', path);
     delay(1000).then(shell.openExternal(getAddressByUID(uid)));
   };
+
+  const openTerminal = () => command.openTerminal(current.path);
   
   if (hasStartFunc) {
     startBtn = !start
@@ -84,7 +88,9 @@ const ProjectDetailPage = ({
           <div className="opt " onClick={openEditor}>
             <i className="iconfont icon-code" /><br />{i18n('task.editor')}
           </div>
-         
+          <div className="opt " onClick={openTerminal}>
+            <i className="iconfont icon-terminal" /><br />{i18n('task.terminal')}
+          </div>
         </div>
       </Spin>
     </Content>

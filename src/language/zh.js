@@ -25,6 +25,7 @@ module.exports = {
   'task.editor': '代码',
   'task.compass': '访问',
   'task.folder': '打开文件夹',
+  'task.terminal': '终端',
   // 'task.clear': '清理',
   'task.remove': '删除项目',
   'task.status.start': '运行中',

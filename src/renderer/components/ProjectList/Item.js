@@ -67,6 +67,8 @@ const Item = ({ project, filePath, dispatch }) => {
     status = <Badge status="warning" />;
   } else if (start) {
     status = <Badge status="processing" />;
+  } else {
+    status = <Badge status="default" />;
   }
 
   return (

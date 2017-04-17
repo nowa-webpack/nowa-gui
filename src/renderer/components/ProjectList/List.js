@@ -23,18 +23,12 @@ const List = ({ current, projects, dispatch }) => {
       <header>
         {i18n('project.list.title')}
         <Tooltip placement="bottom" title={i18n('project.list.add')} >
-          <Button type="default"
-            shape="circle"
-            size="small"
-            icon="plus"
+          <div className="list-btn iconfont icon-add"
             onClick={toNewPage}
           />
         </Tooltip>
         <Tooltip placement="bottom" title={i18n('project.list.import')} >
-          <Button type="default"
-            shape="circle"
-            size="small"
-            icon="folder"
+          <div className="list-btn iconfont icon-folder"
             onClick={() => dispatch({
               type: 'project/importProj',
               payload: { filePath: null, needInstall: true }
@@ -57,12 +51,31 @@ const List = ({ current, projects, dispatch }) => {
   );
 };
 
+// <Tooltip placement="bottom" title={i18n('project.list.add')} >
+//     <Button type="default"
+//       shape="circle"
+//       size="small"
+//       icon="plus"
+//       onClick={toNewPage}
+//     />
+//   </Tooltip>
+//   <Tooltip placement="bottom" title={i18n('project.list.import')} >
+//     <Button type="default"
+//       shape="circle"
+//       size="small"
+//       icon="folder"
+//       onClick={() => dispatch({
+//         type: 'project/importProj',
+//         payload: { filePath: null, needInstall: true }
+//       })}
+//     />
+//   </Tooltip>
+
 List.propTypes = {
   current: PropTypes.shape({
     name: PropTypes.string,
   }).isRequired,
   projects: PropTypes.array,
-  // showModal: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
@@ -71,5 +84,4 @@ export default connect(({ project, task, layout }) => ({
   projects: project.projects,
   task,
   layout,
-  // showModal: layout.showRemoveModal
 }))(List);

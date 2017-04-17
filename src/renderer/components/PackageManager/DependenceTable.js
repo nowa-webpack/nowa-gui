@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { remote, ipcRenderer } from 'electron';
+import { remote, ipcRenderer, shell } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Table from 'antd/lib/table';
@@ -23,6 +23,12 @@ const basicColumns = [{
   dataIndex: 'name',
   key: 'name',
   width: 250,
+  render: (text) => 
+    (
+      <a
+        onClick={() => shell.openExternal(`https://www.npmjs.com/package/${text}`)}
+      >{text}</a>
+    )
 }, {
   title: i18n('package.current'),
   dataIndex: 'version',
@@ -127,16 +133,16 @@ class DependenceTable extends Component {
       const data = dataSource.map((item) => {
         const filter = pkgs.filter(p => p.name === item.name);
         if (filter.length > 0) {
-          item.version = `^${item.netVersion}`;
+          // item.version = `^${item.netVersion}`;
           item.installedVersion = item.netVersion;
           item.update = false;
         }
         return item;
       });
-      dispatch({
-        type: 'project/updatePkgModules',
-        payload: { pkgs, type }
-      });
+      // dispatch({
+      //   type: 'project/updatePkgModules',
+      //   payload: { pkgs, type }
+      // });
       Message.success(i18n('msg.updateSuccess'));
       this.setState({ loading: false, dataSource: data, selectedRowKeys: [] });
     }

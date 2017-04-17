@@ -1,4 +1,4 @@
-const { spawn, fork } = require('child_process');
+const { spawn, fork, exec, execSync } = require('child_process');
 const { join } = require('path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
@@ -9,7 +9,7 @@ const kill = require('./kill');
 const modules = require('./modules');
 const env = require('./env');
 const { getWin } = require('../windowManager');
-const { constants: { NPM_PATH }, isWin } = require('../is');
+const { constants: { NPM_PATH, APP_PATH }, isWin, isMac } = require('../is');
 
 const exportFunc = {
 
@@ -28,6 +28,29 @@ const exportFunc = {
       ['./'], {
         cwd: projectPath,
       });
+  },
+
+  openTerminal(cwd) {
+    if (isWin) {
+      const shell = process.env.comspec || 'cmd.exe';
+      execSync(`start ${shell}`, {
+        cwd,
+      });
+    } else if (isMac) {
+      // execSync(`open /bin/sh`, {
+      //   cwd,
+      // });
+      // console.log(join(APP_PATH, 'task', 'terminal'));
+      execSync(join(APP_PATH, 'task', 'terminal'));
+      // execSync(`bash -c "${cwd}"`);
+    } else {
+      execSync(`/usr/bin/x-terminal-emulator`, {
+        cwd
+      });
+      // exec(`gnome-terminal --working-directory=${cwd}`, {
+      //   cwd,
+      // });
+    }
   },
 
   exec({ name, type }) {
