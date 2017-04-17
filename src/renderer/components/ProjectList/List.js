@@ -62,6 +62,7 @@ List.propTypes = {
     name: PropTypes.string,
   }).isRequired,
   projects: PropTypes.array,
+  // showModal: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
@@ -69,5 +70,6 @@ export default connect(({ project, task, layout }) => ({
   current: project.current,
   projects: project.projects,
   task,
-  layout
+  layout,
+  // showModal: layout.showRemoveModal
 }))(List);

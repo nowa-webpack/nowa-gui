@@ -66,6 +66,7 @@ const get = () => {
             const version = pkg['dist-tags'][tag];
             const name = `${tempName}-${tag}`;
             const oldVersion = getTemplateVersion(name);
+            console.log(name, oldVersion, version);
             return {
               name: tag,
               version: oldVersion,

@@ -28,6 +28,8 @@ const getProjectInfoByPath = (filePath) => {
     isNowa,
     abc,
     pkg,
+    hasMod: false,
+    // hasPage: false,
   };
 
   if (isNowa) {
@@ -39,6 +41,12 @@ const getProjectInfoByPath = (filePath) => {
       // writeABCJson(abc);
       writeABCJson(filePath, abc);
       obj.abc = abc;
+    }
+
+    if (abc.template) {
+      console.log(join(abc.template, 'mod'));
+      obj.hasMod = fs.readdirSync(abc.template).filter(dir => dir !== 'proj').length > 0;
+      // obj.hasPage = fs.existsSync(join(abc.template, 'page'));
     }
   } else if (isAliProject(pkg)) {
     obj.registry = REGISTRY_MAP.tnpm;

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import { shell, remote } from 'electron';
 import { join } from 'path';
-// import classNames from 'classnames';
+import classNames from 'classnames';
 import Layout from 'antd/lib/layout';
 import Tooltip from 'antd/lib/tooltip';
 import Spin from 'antd/lib/spin';
@@ -73,7 +73,10 @@ const ProjectDetailPage = ({
         <ProjectDetailTab {...tabProps} />
         <div className="opt-grp">
           { startBtn }
-          { start && isNowa && <div className="opt" onClick={compassProj} >
+          { isNowa && <div className={classNames({
+            opt: true,
+            disable: !start
+          })} onClick={compassProj} >
               <i className="iconfont icon-compass" /><br />{i18n('task.compass')}
             </div>
           }
@@ -81,15 +84,16 @@ const ProjectDetailPage = ({
           <div className="opt " onClick={openEditor}>
             <i className="iconfont icon-code" /><br />{i18n('task.editor')}
           </div>
-          <div className="opt " onClick={() => shell.showItemInFolder(join(path, 'package.json'))}>
-            <i className="iconfont icon-folder" /><br />{i18n('task.folder')}
-          </div>
+         
         </div>
       </Spin>
     </Content>
   );
-
 };
+
+//  <div className="opt " onClick={() => shell.showItemInFolder(join(path, 'package.json'))}>
+//   <i className="iconfont icon-folder" /><br />{i18n('task.folder')}
+// </div>
 
 ProjectDetailPage.propTypes = {
   logType: PropTypes.string.isRequired,

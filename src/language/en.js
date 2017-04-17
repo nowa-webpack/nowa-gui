@@ -26,7 +26,8 @@ module.exports = {
   'task.compass': 'Explore',
   'task.editor': 'Editor',
   // 'task.clear': 'Clear',
-  'task.folder': process.platform === 'darwin' ? 'Finder' : 'Folder',
+  'task.remove': 'Remove Project',
+  'task.folder': process.platform === 'darwin' ? 'Reveal in Finder' : 'Reveal in Folder',
   'task.status.start': 'Running',
   'task.status.stop': 'Stopped',
 

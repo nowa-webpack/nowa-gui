@@ -24,8 +24,9 @@ module.exports = {
   'task.compile': '编译',
   'task.editor': '代码',
   'task.compass': '访问',
-  'task.folder': '打开',
+  'task.folder': '打开文件夹',
   // 'task.clear': '清理',
+  'task.remove': '删除项目',
   'task.status.start': '运行中',
   'task.status.stop': '停止',
 
@@ -121,8 +122,8 @@ module.exports = {
   'cmd.sider.title': '命令集',
   'cmd.modal.title': '添加命令',
   'cmd.select.opt': '选择命令窗口',
-  'cmd.meta.name': '命令名',
-  'cmd.meta.value': '命令体',
+  'cmd.meta.name': '名称',
+  'cmd.meta.value': '命令',
 
   'preinit.msg1': '初始化的时候必须要连接网络，请联网后重新打开应用。',
   'preinit.msg2': '{1} 后自动关闭应用',
