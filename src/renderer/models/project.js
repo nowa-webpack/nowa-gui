@@ -43,11 +43,11 @@ const getProjectInfoByPath = (filePath) => {
       obj.abc = abc;
     }
 
-    if (abc.template) {
-      console.log(join(abc.template, 'mod'));
-      obj.hasMod = fs.readdirSync(abc.template).filter(dir => dir !== 'proj').length > 0;
+    // if (abc.template) {
+      // console.log(join(abc.template, 'mod'));
+      // obj.hasMod = fs.readdirSync(abc.template).filter(dir => dir !== 'proj').length > 0;
       // obj.hasPage = fs.existsSync(join(abc.template, 'page'));
-    }
+    // }
   } else if (isAliProject(pkg)) {
     obj.registry = REGISTRY_MAP.tnpm;
   }
@@ -117,13 +117,18 @@ export default {
           projects,
         }
       });
-      ipcRenderer.on('import-installed', (event, { project: filePath }) => {
-        dispatch({
-          type: 'finishedInstallDependencies',
-          payload: {
-            filePath,
-          }
-        });
+      ipcRenderer.on('import-installed', (event, { project: filePath, err }) => {
+        if (err) {
+          Message.error(i18n('msg.installFail'));
+        } else {
+          Message.success(i18n('msg.importSuccess'));
+          dispatch({
+            type: 'finishedInstallDependencies',
+            payload: {
+              filePath,
+            }
+          });
+        }
       });
       window.onbeforeunload = () => {
         dispatch({
@@ -134,7 +139,115 @@ export default {
   },
 
   effects: {
-    * importProj({ payload: { filePath, needInstall, projectRegistry } }, { put, select }) {
+    * importProjectFromFolder({ payload }, { put, select }) {
+      try {
+        let filePath;
+        const { registry: globalRegistry } = yield select(state => state.setting);
+
+        if (payload.filePath) {
+          filePath = payload.filePath;
+        } else {
+          const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+          filePath = importPath[0];
+        }
+
+        if (!fs.existsSync(join(filePath, 'package.json'))) {
+          Message.error(i18n('msg.invalidProject'));
+          return false;
+        }
+
+        const projectInfo = getProjectInfoByPath(filePath);
+
+        const dependencies = getPkgDependencies(projectInfo.pkg);
+        const projectName = projectInfo.pkg.name || 'UNTITLED';
+
+        let needInstall = false;
+
+        if (!fs.existsSync(join(filePath, 'node_modules'))) {
+          needInstall = true;
+        } else {
+          const filter = dependencies.filter(item => !fs.existsSync(join(filePath, 'node_modules', item.name)));
+          if (filter.length) {
+            needInstall = true;
+          }
+        }
+
+        console.log(projectName, needInstall);
+
+        if (!needInstall) {
+          yield put({
+            type: 'importProjectFromInit',
+            payload: {
+              filePath,
+              projectRegistry: projectInfo.registry || globalRegistry,
+            }
+          });
+        } else {
+          const current = {
+            ...projectInfo,
+            start: false,
+            taskErr: false,
+            name: projectName,
+            path: filePath,
+            loadingStep: 1, // 0 no-op 1: showInfo 2: showLog
+            registry: projectInfo.registry || globalRegistry,
+          };
+
+          yield put({
+            type: 'addLocalStoreProject',
+            payload: {
+              current
+            }
+          });
+
+          const storeProjects = getLocalProjects();
+
+          storeProjects.push({
+            name: current.name,
+            path: current.path,
+            registry: current.registry,
+            loadingStep: 1
+          });
+
+          setLocalProjects(storeProjects);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    * startInstallImportProject({ payload: { project, newRegistry } }, { put, select }) {
+      const { projects } = yield select(state => state.project);
+
+      project.registry = newRegistry;
+      project.loadingStep = 2;
+
+      const newProjs = projects.map((item) => {
+        if (item.path === project.path) return project;
+        return item;
+      });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          projects: [...newProjs],
+          current: { ...project },
+        }
+      });
+
+      const dependencies = getPkgDependencies(project.pkg);
+
+      const options = {
+        root: project.path,
+        registry: newRegistry,
+        pkgs: dependencies,
+      };
+      
+      command.progressInstall({
+        options,
+        sender: 'import',
+      });
+    },
+    /** importProjectFromFolder({ payload: { filePath, needInstall, projectRegistry } }, { put, select }) {
       try {
         const { registry: defaultRegistry } = yield select(state => state.layout);
         let projectInfo = {};
@@ -153,8 +266,13 @@ export default {
           }
           
           projectInfo = getProjectInfoByPath(filePath);
-          const pkgs = getPkgDependencies(projectInfo.pkg);
           
+        } else {
+          projectInfo = getProjectInfoByPath(filePath);
+        }
+
+        if (needInstall) {
+          const pkgs = getPkgDependencies(projectInfo.pkg);
 
           // if (isAliProject(projectInfo.pkg)) {
           //   userRegistry = REGISTRY_MAP.tnpm;
@@ -178,12 +296,11 @@ export default {
             pkgs,
           };
           
-          command.notProgressInstall({
+          // command.notProgressInstall({
+          command.progressInstall({
             options,
             sender: 'import',
           });
-        } else {
-          projectInfo = getProjectInfoByPath(filePath);
         }
 
         // if (!projectInfo.isNowa) {
@@ -239,6 +356,13 @@ export default {
           }
         });
 
+        yield put({
+          type: 'layout/changeStatus',
+          payload: {
+            showPage: 2
+          }
+        });
+
         if (!needInstall) {
           Message.success(i18n('msg.importSuccess'));
           storeProjects.push({
@@ -248,17 +372,124 @@ export default {
           });
 
           setLocalProjects(storeProjects);
-        }
 
-        yield put({
-          type: 'layout/changeStatus',
-          payload: {
-            showPage: 2
-          }
-        });
+          yield put({
+            type: 'task/start',
+            payload: {
+              project: current
+            }
+          });
+        }
+        
       } catch (e) {
         console.log(e);
       }
+    },*/
+    * importProjectFromInit({ payload: { filePath, projectRegistry } }, { put }) {
+
+      const projectInfo = getProjectInfoByPath(filePath);
+
+      const projectName = projectInfo.pkg.name || 'UNTITLED';
+
+      const current = {
+        ...projectInfo,
+        start: false,
+        taskErr: false,
+        name: projectName,
+        path: filePath,
+        loadingStep: 0,
+      };
+
+      if (projectRegistry) {
+        current.registry = projectRegistry;
+      }
+
+      const storeProjects = getLocalProjects();
+
+      storeProjects.push({
+        name: current.name,
+        path: current.path,
+        registry: current.registry,
+      });
+
+      setLocalProjects(storeProjects);
+
+      yield put({
+        type: 'addLocalStoreProject',
+        payload: {
+          current,
+        }
+      });
+
+      Message.success(i18n('msg.importSuccess'));
+
+      yield put({
+        type: 'task/start',
+        payload: {
+          project: current
+        }
+      });
+    },
+    * addLocalStoreProject({ payload: { current } }, { put, select }) {
+      const { projects } = yield select(state => state.project);
+      
+      projects.push(current);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          projects,
+          current,
+          startWacthProject: true
+        }
+      });
+
+      yield put({
+        type: 'task/initAddCommands',
+        payload: {
+          project: current,
+        }
+      });
+
+      yield put({
+        type: 'layout/changeStatus',
+        payload: {
+          showPage: 2
+        }
+      });
+    },
+    * finishedInstallDependencies({ payload: { filePath } }, { put, select }) {
+      const { projects, current } = yield select(state => state.project);
+
+      projects.map((item) => {
+        if (filePath === item.path) {
+          delete item.loadingStep;
+        }
+        return item;
+      });
+
+      if (current.path === filePath) {
+        delete current.loadingStep;
+      }
+
+      const storeProjects = getLocalProjects();
+
+      storeProjects.map((item) => {
+        if (item.path === filePath) {
+          delete item.loadingStep;
+        }
+        return item;
+      });
+
+      setLocalProjects(storeProjects);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          projects: [...projects],
+          current: { ...current }
+        }
+      });
     },
     * remove({ payload: { project } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
@@ -374,7 +605,7 @@ export default {
         }
       });
     },
-    * updateServerConfig({ payload: { project, abc } }, { put, select }) {
+    * updateServerConfig({ payload: { project, abc } }, { put }) {
       yield put({
         type: 'updateABC',
         payload: { project, abc }
@@ -439,47 +670,6 @@ export default {
         return item;
       }));
     },
-    * finishedInstallDependencies({ payload: { filePath } }, { put, select }) {
-      const { current, projects } = yield select(state => state.project);
-      if (current.path === filePath) {
-        current.loading = false;
-      }
-
-      projects.map((item) => {
-        if (item.path === filePath) {
-          item.loading = false;
-        }
-        return item;
-      });
-
-      const storeProjects = getLocalProjects();
-
-      const filter = projects.filter(item => item.path === filePath);
-
-      if (filter.length) {
-        storeProjects.push({
-          name: filter[0].name,
-          path: filter[0].path,
-          registry: filter[0].registry,
-        });
-
-        setLocalProjects(storeProjects);
-        
-        Message.success(i18n('msg.importSuccess'));
-      } else {
-        Message.error(i18n('msg.importFailed'));
-      }
-
-
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          current: { ...current },
-          projects: [...projects],
-          startWacthProject: true
-        }
-      });
-    },
     * startedProject({ payload: { filePath } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
 
@@ -525,7 +715,7 @@ export default {
     * updatePkgModules({ payload: { pkgs, type } }, { select }) {
       const { current } = yield select(state => state.project);
       const dp = current.pkg[type];
-      console.log(pkgs)
+      console.log(pkgs);
       pkgs.forEach((item) => {
         dp[item.name] = `^${item.version}`;
       });

@@ -60,6 +60,10 @@ module.exports = {
   'project.new.empty': 'No templates.',
   'project.new.addTempldate': 'Add Custom Template',
 
+  'project.import.title': 'Project Import Initialization',
+  'project.import.info': 'There has been some uninstalled dependencies, please check the appropriate registry.',
+  'project.import.install': 'Installing Dependencies',
+
   'template.modal.title': 'Custom Template Setting',
   'template.modal.local.title': 'Local Template',
   'template.modal.remote.title': 'Remote Template',
@@ -81,12 +85,13 @@ module.exports = {
   'form.override': 'Override',
   'form.import': 'Import',
 
-  'setting.modal.title': 'Setting Modal',
+  'setting.modal.title': 'Setting',
   'setting.language': 'Language',
   'setting.language.en': 'English',
   'setting.language.zh': '中文',
   'setting.version': 'App Version',
   'setting.editor': 'Editor',
+  'setting.registry': 'Registry',
   'setting.version.newest.tip': 'Newest',
 
   'foot.set': 'Setting',

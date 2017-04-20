@@ -3,18 +3,25 @@ const any = require('co-any');
 const request = require('./request');
 const config = require('../../config');
 
-// const aliRegistry = 'http://registry.npm.alibaba-inc.com';
+// const aliRegistry = 'https://registry.npm.alibaba-inc.com';
 const urls = [
-  'https://registry.npm.taobao.org',
-  'https://registry.npmjs.org'
+  'http://registry.npm.taobao.org',
+  'http://registry.npmjs.org'
 ];
+
+
+
 
 module.exports = function () {
   return co(function* () {
+    if (!config.registryList()) {
+      config.registryList(urls.join(','));
+    }
+    const registryList = config.registryList().split(',');
     
     console.time('registry');
-    const { _key } = yield any(urls.map(url => request(`${url}/nowa/latest`)));
-    const registry = urls[_key];
+    const { _key } = yield any(registryList.map(url => request(`${url}/nowa/latest`)));
+    const registry = registryList[_key];
     console.timeEnd('registry');
     
     config.registry(registry);

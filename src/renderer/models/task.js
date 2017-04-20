@@ -158,7 +158,7 @@ export default {
       });
     },
     * openEditor({ payload: { project } }, { put, select }) {
-      const { defaultEditor, editor } = yield select(state => state.layout);
+      const { defaultEditor, editor } = yield select(state => state.setting);
       const editorPath = editor[defaultEditor];
 
       if (!editorPath) {
@@ -175,26 +175,22 @@ export default {
       }
     },
     * start({ payload: { project } }, { put }) {
+      if (!project.start) {
+        yield put({
+          type: 'execCustomCmd',
+          payload: {
+            type: 'start',
+            name: project.path
+          }
+        });
 
-      // const uid = yield remoteCommand.exec({
-      //   name: project.path,
-      //   type: 'start',
-      // });
-
-      yield put({
-        type: 'execCustomCmd',
-        payload: {
-          type: 'start',
-          name: project.path
-        }
-      });
-
-      yield put({
-        type: 'project/startedProject',
-        payload: {
-          filePath: project.path,
-        }
-      });
+        yield put({
+          type: 'project/startedProject',
+          payload: {
+            filePath: project.path,
+          }
+        });
+      }
     },
     * stop({ payload: { project } }, { put }) {
       yield put({
@@ -239,7 +235,7 @@ export default {
       //   }
       // });
     },
-    stopCustomCmd({ payload: { type, name } }, { put, select }) {
+    stopCustomCmd({ payload: { type, name } }) {
       remoteCommand.stop({
         name,
         type,
@@ -258,7 +254,6 @@ export default {
           }
         });
       }
-
     }
   },
 

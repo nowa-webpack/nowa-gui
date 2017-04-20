@@ -23,6 +23,12 @@ const Item = ({ project, filePath, dispatch }) => {
       }
     });
     dispatch({
+      type: 'task/changeStatus',
+      payload: {
+        logType: 'start'
+      }
+    });
+    dispatch({
       type: 'layout/changeStatus',
       payload: {
         showPage: 2,

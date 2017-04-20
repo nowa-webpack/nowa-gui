@@ -44,7 +44,9 @@ class PreInitialPage extends Component {
   onReceiveNowaFlag(nowaPreFlag) {
     console.log('nowaNeedInstalled', nowaPreFlag);
     const loading = document.getElementById('loading');
+
     if (loading) document.body.removeChild(loading);
+
     if (nowaPreFlag === 0) {
       this.shutdownTimer = setInterval(() => {
         const { seconds } = this.state;
@@ -71,11 +73,20 @@ class PreInitialPage extends Component {
 
   afterInstalled() {
     const { dispatch } = this.props;
+    const { nowaPreFlag } = this.state;
     // this.removeLoading();
     const proj = getLocalProjects();
+    let showPage = 0;
+    
+    if (nowaPreFlag === 1) {
+      showPage = 3;
+    } else {
+      showPage = proj.length > 0 ? 2 : 0;
+    }
+
     dispatch({
       type: 'layout/changeStatus',
-      payload: { showPage: proj.length > 0 ? 2 : 0 }
+      payload: { showPage }
     });
 
     dispatch({

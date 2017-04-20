@@ -16,7 +16,7 @@ module.exports = {
   'project.meta.version': '版本',
   'project.meta.homepage': '主页',
   'project.meta.repo': '项目地址',
-  'project.meta.npm_registry': 'npm源地址',
+  'project.meta.npm_registry': 'Npm源地址',
   'project.meta.others': '其他',
 
   'task.start': '启动',
@@ -59,6 +59,11 @@ module.exports = {
   'project.new.log.retry': '重试',
   'project.new.addTempldate': '添加自定义模版',
 
+  'project.import.title': '项目导入初始化',
+  'project.import.info': '检测到改项目有未安装的依赖，请选择合适的Npm源',
+  'project.import.install': '依赖安装',
+
+
   'template.modal.title': '自定义模版设置',
   'template.modal.local.title': '本地模版',
   'template.modal.remote.title': '远程模版',
@@ -84,6 +89,7 @@ module.exports = {
   'setting.language.en': 'English',
   // 'setting.language': '语言',
   // 'setting.language.en': '英文',
+  'setting.registry': 'Npm源地址',
   'setting.language.zh': '中文',
   'setting.editor': '编辑器',
   'setting.version': '工具版本',

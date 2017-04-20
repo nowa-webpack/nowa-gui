@@ -18,7 +18,7 @@ import { getLocalProjects } from 'gui-local';
 import OverrideModal from './OverrideModal';
 
 const registryList = [{
-  name: 'cnpm (https://registry.npm.taobao.org)',
+  name: 'cnpm (http://registry.npm.taobao.org)',
   value: 'cnpm'
   // value: 'https://registry.npm.taobao.org'
 }, {
@@ -26,7 +26,7 @@ const registryList = [{
   value: 'tnpm'
   // value: 'http://registry.npm.alibaba-inc.com'
 }, {
-  name: 'npm (https://registry.npmjs.org)',
+  name: 'npm (http://registry.npmjs.org)',
   value: 'npm'
   // value: 'https://registry.npmjs.org'
 }];
@@ -148,6 +148,10 @@ class Form extends Component {
       type: 'init/changeStatus',
       payload: { showFormModal: false }
     });
+    dispatch({
+      type: 'layout/changeStatus',
+      payload: { showSideMask: true }
+    });
     next();
   }
 
@@ -240,8 +244,8 @@ Form.propTypes = {
 };
 
 
-export default connect(({ init, layout }) => ({ 
+export default connect(({ init, setting }) => ({ 
   extendsProj: init.extendsProj,
   isGitEmptyFolder: init.isGitEmptyFolder,
-  defaultRegistry: layout.registry
+  defaultRegistry: setting.registry
 }))(Form);

@@ -11,14 +11,14 @@ export const IS_WIN = process.platform === 'win32';
 export const IS_MAC = process.platform === 'darwin';
 
 export const REGISTRY_MAP = {
-  npm: 'https://registry.npmjs.org',
-  cnpm: 'https://registry.npm.taobao.org',
+  npm: 'http://registry.npmjs.org',
+  cnpm: 'http://registry.npm.taobao.org',
   tnpm: 'http://registry.npm.alibaba-inc.com',
 };
 
 export const NPM_MAP = {
-  'https://registry.npmjs.org': 'npm',
-  'https://registry.npm.taobao.org': 'cnpm',
+  'http://registry.npmjs.org': 'npm',
+  'http://registry.npm.taobao.org': 'cnpm',
   'http://registry.npm.alibaba-inc.com': 'tnpm',
 };
 

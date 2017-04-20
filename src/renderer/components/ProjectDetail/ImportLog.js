@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { ipcRenderer, remote } from 'electron';
 import Button from 'antd/lib/button';
-import Message from 'antd/lib/message';
+// import Message from 'antd/lib/message';
 import Progress from 'antd/lib/progress';
 import Icon from 'antd/lib/icon';
 import i18n from 'i18n';
 
-// const newLog = (oldLog, str) => oldLog + (ansiHTML(str) + '<br>');
+const task = remote.require('./services/task');
 
-class Log extends Component {
+
+class ImportLog extends Component {
 
   constructor(props) {
     super(props);
@@ -16,20 +17,30 @@ class Log extends Component {
       log: '',
       err: false,
       percent: 0,
-      expand: false,
+      // expand: true,
     };
 
-    this.timestamp = '';
   }
 
   componentDidMount() {
-    ipcRenderer.on('init-installing', this.onReceiveLog.bind(this));
-    ipcRenderer.on('init-installed', this.onReceiveFinished.bind(this));
+    ipcRenderer.on('import-installing', this.onReceiveLog.bind(this));
+    // ipcRenderer.on('import-installed', this.onReceiveFinished.bind(this));
+  }
+
+  componentWillReceiveProps({ filePath }) {
+    if (filePath !== this.props.filePath) {
+      const { log } = task.getTask('IMPORT_PROJECT', name);
+      if (log.length > 0) {
+        this.setState({ log }, () => this.scrollToBottom());
+      } else {
+        this.setState({ log: '' });
+      }
+    }
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeAllListeners('init-installing');
-    ipcRenderer.removeAllListeners('init-installed');
+    ipcRenderer.removeAllListeners('import-installing');
+    // ipcRenderer.removeAllListeners('import-installed');
   }
 
   onReceiveLog(event, { percent, log }) {
@@ -39,23 +50,20 @@ class Log extends Component {
     }, () => this.scrollToBottom());
   }
 
-  onReceiveFinished(event, { err }) {
-    console.log('finished');
-    if (err) {
-      Message.error(i18n('msg.installFail'));
-      this.setState({
-        err
-      });
-    } else {
-      this.props.dispatch({
-        type: 'init/finishedInstall',
-      });
-      this.props.dispatch({
-        type: 'layout/changeStatus',
-        payload: { showSideMask: false }
-      });
-    }
-  }
+  // onReceiveFinished(event, { err }) {
+  //   console.log('finished');
+  //   if (err) {
+  //     Message.error(i18n('msg.installFail'));
+  //     this.setState({
+  //       err
+  //     });
+  //   } else {
+  //     /*this.props.dispatch({
+  //       type: 'project/finishedInstallDependencies',
+  //       payload: { filePath: this.props.filePath }
+  //     });*/
+  //   }
+  // }
 
   scrollToBottom() {
     const prt = this.refs.wrap;
@@ -74,23 +82,24 @@ class Log extends Component {
   }
 
   retryInstall() {
-    const { dispatch } = this.props;
+    const { dispatch, filePath } = this.props;
     this.clearTerm();
-    dispatch({
-      type: 'init/retryInstall',
-    });
+    // dispatch({
+    //   type: 'project/importProj',
+    //   payload: {
+    //     filePath, needInstall: true
+    //   }
+    // });
   }
 
   render() {
-    const { err, percent, expand, log } = this.state;
-    const { prev } = this.props;
+    const { err, percent, log } = this.state;
 
     const detailHtml = err 
       ? (<div className="detail">{i18n('project.new.log.error')}<br />
             <Button type="primary" onClick={() => this.retryInstall()}>
               {i18n('project.new.log.retry')}
             </Button>
-            <Button type="default" onClick={() => prev()}>{i18n('form.back')}</Button>
           </div>)
       : (<div className="detail">{i18n('project.new.log.wait')}</div>);
 
@@ -103,7 +112,7 @@ class Log extends Component {
         { detailHtml }
         <div className="terminal-wrap" >
           <div className="term-container" ref="wrap"
-            style={{ height: expand ? 170 : 90 }}
+            style={{ height: 170 }}
           >
             <div dangerouslySetInnerHTML={{ __html: log }} ref="term" />
           </div>
@@ -114,9 +123,9 @@ class Log extends Component {
   }
 }
 
-Log.propTypes = {
-  prev: PropTypes.func.isRequired,
+ImportLog.propTypes = {
+  filePath: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
-export default Log;
+export default ImportLog;

@@ -15,7 +15,7 @@ const WelcomePage = ({ version, dispatch }) => {
     try {
 
       dispatch({
-        type: 'project/importProj',
+        type: 'project/importProjectFromFolder',
         payload: { filePath: null, needInstall: true },
       });
       

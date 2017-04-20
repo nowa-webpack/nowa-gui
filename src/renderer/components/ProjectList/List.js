@@ -30,7 +30,7 @@ const List = ({ current, projects, dispatch }) => {
         <Tooltip placement="bottom" title={i18n('project.list.import')} >
           <div className="list-btn iconfont icon-folder"
             onClick={() => dispatch({
-              type: 'project/importProj',
+              type: 'project/importProjectFromFolder',
               payload: { filePath: null, needInstall: true }
             })}
           />

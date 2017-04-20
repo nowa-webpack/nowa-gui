@@ -3,14 +3,14 @@ import Tabs from 'antd/lib/tabs';
 import i18n from 'i18n';
 
 import ProjectSetting from '../ProjectSetting';
-import CommandTermList from './CommandTermList';
-import Terminal from './Terminal';
+import CommandTermList from '../ProjectTaskLog/CommandTermList';
+import Terminal from '../ProjectTaskLog/Terminal';
 import PackageManager from '../PackageManager';
 
 const TabPane = Tabs.TabPane;
 
 
-const Tab = ({ current, logType, dispatch, commands, registry }) => {
+const Tab = ({ current, logType, dispatch, commands, registry: globalRegistry }) => {
   const cmdList = Object.keys(commands).filter(cmd => cmd !== 'start' && cmd !== 'build');
   // const hasCmdSide = cmdList.length > 0;
   const listCmd = cmdList.map(name => ({ ...commands[name], name }));
@@ -33,7 +33,7 @@ const Tab = ({ current, logType, dispatch, commands, registry }) => {
   const settingProps = {
     project: current,
     dispatch,
-    registry,
+    globalRegistry,
   };
 
   return (

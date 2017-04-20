@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { shell } from 'electron';
 import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
@@ -7,13 +7,12 @@ import i18n from 'i18n';
 
 
 import ProjectList from '../components/ProjectList/List';
-import SettingModal from '../components/Layout/SettingModal';
 import ProjectDetailPage from './ProjectDetailPage';
 import NewProjectPage from './NewProjectPage';
 
 const { Sider } = Layout;
 
-const MainPage = ({ showPage, dispatch }) => {
+const MainPage = ({ showPage, dispatch, showSideMask }) => {
   return (
     <Layout>
       <Sider className="ui-sider" width={175}>
@@ -21,7 +20,7 @@ const MainPage = ({ showPage, dispatch }) => {
         <div className="ui-foot">
           <Tooltip placement="top" title={i18n('foot.set')} >
             <Button type="default" icon="setting" shape="circle"
-              onClick={() => dispatch({ type: 'layout/changeStatus', payload: { showSetModal: true } })}
+              onClick={() => dispatch({ type: 'layout/showPage', payload: { toPage: 3 } })}
             />
           </Tooltip>
           <Tooltip placement="top" title={i18n('foot.feedback')} >
@@ -35,11 +34,17 @@ const MainPage = ({ showPage, dispatch }) => {
             />
           </Tooltip>
         </div>
+        { showSideMask && <div className="ui-sider-mask" />}
       </Sider>
       { showPage === 2 ? <ProjectDetailPage /> : <NewProjectPage />}
-      <SettingModal />
     </Layout>
   );
+};
+
+MainPage.propTypes = {
+  showPage: PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  showSideMask: PropTypes.bool.isRequired,
 };
 
 export default MainPage;

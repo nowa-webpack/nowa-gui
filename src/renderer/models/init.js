@@ -320,10 +320,9 @@ export default {
       yield delay(1500);
 
       yield put({
-        type: 'project/importProj',
+        type: 'project/importProjectFromInit',
         payload: {
           filePath,
-          needInstall: false,
           projectRegistry: installOptions.registry
         }
       });

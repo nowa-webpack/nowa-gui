@@ -37,19 +37,11 @@ const exportFunc = {
         cwd,
       });
     } else if (isMac) {
-      // execSync(`open /bin/sh`, {
-      //   cwd,
-      // });
-      // console.log(join(APP_PATH, 'task', 'terminal'));
-      execSync(join(APP_PATH, 'task', 'terminal'));
-      // execSync(`bash -c "${cwd}"`);
+      execSync(join(APP_PATH, 'task', 'terminal'), { cwd });
     } else {
-      execSync(`/usr/bin/x-terminal-emulator`, {
+      execSync('/usr/bin/x-terminal-emulator', {
         cwd
       });
-      // exec(`gnome-terminal --working-directory=${cwd}`, {
-      //   cwd,
-      // });
     }
   },
 
@@ -71,8 +63,6 @@ const exportFunc = {
 
     const senderData = (data) => {
       const log = task.writeLog(type, name, data);
-      // const log = task.writeLog(type, name, iconv.decode(data, 'gb2312'));
-      // const log = task.writeLog(type, name, iconv.decode(data, 'UTF-8'));
       win.webContents.send('task-ouput', {
         name,
         log,

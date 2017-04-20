@@ -17,18 +17,17 @@ import DragPage from './DragPage';
 
 
 const { Header } = Layout;
-const { windowManager, command, utils } = remote.getGlobal('services');
+const { windowManager } = remote.getGlobal('services');
 // const { registry } = remote.getGlobal('config');
 
 
 class LayoutWrap extends Component {
   constructor(props) {
     super(props);
-    // this.state = {
-      // online: props.online,
-    // };
+    
     this.taskTimer;
     this.onDrop = this.onDrop.bind(this);
+    this.onDragOver = this.onDragOver.bind(this);
     this.getUpdateVersion = this.getUpdateVersion.bind(this);
   }
 
@@ -89,34 +88,43 @@ class LayoutWrap extends Component {
   }
 
   onDrop(acceptedFiles) {
-    const { dispatch, registry } = this.props;
+    const { dispatch, registry, current } = this.props;
     const filePath = acceptedFiles[0].path;
 
-    const pkgs = getPkgDependencies(readPkgJson(filePath));
+    // if (!current.loading) {
+
+      dispatch({
+        type: 'project/importProjectFromFolder',
+        payload: {
+          filePath,
+        }
+      });
+
+      this.onDragLeave();
+    // }
+
+
+    /*const pkgs = getPkgDependencies(readPkgJson(filePath));
 
     const options = {
       root: filePath,
       registry,
       pkgs,
     };
-    dispatch({
-      type: 'project/importProj',
-      payload: {
-        filePath,
-        needInstall: true
-      }
-    });
+
+    
     command.notProgressInstall({
       options,
       sender: 'import',
-    });
+    });*/
     
-    this.onDragLeave();
   }
 
   onDragOver() {
-    document.getElementById('main-ctn').style.display = 'none';
-    document.getElementById('drag-ctn').style.display = '';
+    // if (!this.props.current.loading) {
+      document.getElementById('main-ctn').style.display = 'none';
+      document.getElementById('drag-ctn').style.display = '';
+    // }
   }
 
   onDragLeave() {
@@ -129,6 +137,7 @@ class LayoutWrap extends Component {
     request(`${registry}/nowa-gui-version`)
     // request('https://registry.npm.taobao.org/nowa-gui-version')
       .then(({ data }) => {
+        console.log(data['dist-tags'])
         const newVersion = data['dist-tags'].latest;
         console.log('newVersion', newVersion);
 
@@ -147,7 +156,7 @@ class LayoutWrap extends Component {
         }
 
         if (+getLocalUpdateFlag(version) !== 1) {
-          console.log(data)
+          // console.log(data);
           const arr = data.readme.split('#').filter(i => !!i).map(i => i.split('*').slice(1));
 
           const tip = getLocalLanguage() === 'zh' ? arr[0] : arr[1];
@@ -186,6 +195,8 @@ class LayoutWrap extends Component {
       </div>
     );
 
+    const showBD = showPage === 1 || showPage === 2;
+
     return (
       <Dropzone className="container"
         onDrop={this.onDrop}
@@ -196,7 +207,7 @@ class LayoutWrap extends Component {
         <Layout id="main-ctn">
           <Header className="top-bar">
 
-            { showPage > 0 && <div className="bar-bd" /> }
+            { showBD && <div className="bar-bd" /> }
 
             <div className="logo" onClick={() => shell.openExternal('https://alixux.org/nowa/')} />
 
@@ -230,7 +241,8 @@ LayoutWrap.propTypes = {
   showPage: PropTypes.number.isRequired,
   current: PropTypes.shape({
     name: PropTypes.string,
-    path: PropTypes.string
+    path: PropTypes.string,
+    // loading: PropTypes.bool,
   }).isRequired,
   online: PropTypes.bool.isRequired,
   registry: PropTypes.string.isRequired,
@@ -240,13 +252,13 @@ LayoutWrap.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default connect(({ layout, project }) => ({
+export default connect(({ layout, project, setting }) => ({
   showPage: layout.showPage,
   newVersion: layout.newVersion,
   version: layout.version,
   current: project.current,
   online: layout.online,
-  registry: layout.registry,
+  registry: setting.registry,
   startWacthProject: project.startWacthProject,
   upgradeUrl: layout.upgradeUrl
 }))(LayoutWrap);

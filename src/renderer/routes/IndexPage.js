@@ -6,10 +6,11 @@ import i18n from 'i18n';
 import WelcomePage from './WelcomePage';
 import PreInitialPage from './PreInitialPage';
 import MainPage from './MainPage';
+import SettingPage from './SettingPage';
 import LayoutWrap from '../components/Layout/LayoutWrap';
 
 
-const IndexPage = ({ showPage, version, nowaPreFlag, dispatch }) => {
+const IndexPage = ({ showPage, version, nowaPreFlag, dispatch, showSideMask }) => {
   let mainbody;
 
   switch (showPage) {
@@ -22,10 +23,13 @@ const IndexPage = ({ showPage, version, nowaPreFlag, dispatch }) => {
       break;
     case 1:
     case 2:
-      mainbody = <MainPage showPage={showPage} dispatch={dispatch} />;
+      mainbody = <MainPage showPage={showPage} dispatch={dispatch} showSideMask={showSideMask} />;
+      break;
+    case 3:
+      mainbody = <SettingPage dispatch={dispatch} />;
       break;
     default:
-      mainbody = <MainPage showPage={showPage} dispatch={dispatch} />;
+      mainbody = <MainPage showPage={showPage} dispatch={dispatch} showSideMask={showSideMask} />;
   }
   return (
     <LayoutWrap>{ mainbody }</LayoutWrap>
@@ -38,11 +42,13 @@ IndexPage.propTypes = {
   nowaPreFlag: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
   version: PropTypes.string.isRequired,
+  showSideMask: PropTypes.bool.isRequired,
 };
 
 export default connect(({ layout }) => ({
   showPage: layout.showPage,
   nowaPreFlag: layout.nowaPreFlag,
   version: layout.version,
+  showSideMask: layout.showSideMask,
 }))(IndexPage);
 

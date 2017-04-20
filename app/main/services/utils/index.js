@@ -37,7 +37,12 @@ const getMockPercent = (str, percent) => {
   if (p === 0 && percent + s < 60) {
     percent += s;
   } else {
-    percent = p * 10 + 60;
+    if (p === 4 && percent < 100) {
+      percent += 5;
+    } else {
+      // percent = p * 10 + 60;
+      percent = p * 5 + 60;
+    }
   }
   return percent;
 };
@@ -57,13 +62,18 @@ const loadConfig = (promptConfigPath) => {
 const getMoudlesVersion = (filepath, dependencies) => {
   // const curPkg = loadConfig(join(filepath, 'package.json'));
   const modulePath = join(filepath, 'node_modules');
+
+  if (!fs.existsSync(modulePath)) {
+    return dependencies;
+  }
+  
   const pkgs = dependencies.map((item) => {
     // const pkg = loadConfig(join(modulePath, item.name, 'package.json'));
     const pkg = fs.readJsonSync(join(modulePath, item.name, 'package.json'));
     return Object.assign(item, { installedVersion: pkg.version });
   });
-
   return pkgs;
+
 };
 
 module.exports = {

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CMD="clear && $*"
+CMD="clear"
 
 ITERM_EXISTS=`osascript <<EOF
 set doesExist to false
@@ -20,6 +20,7 @@ function open_iterm () {
       tell the first terminal
         launch session "Default Session"
         tell the last session
+          write text "cd `pwd`"
           write text "bash -c \"$CMD\""
         end tell
       end tell
@@ -27,6 +28,7 @@ function open_iterm () {
       tell (make new terminal)
         launch session "Default Session"
         tell the last session
+          write text "cd `pwd`"
           write text "bash -c \"$CMD\""
         end tell
       end tell
@@ -43,6 +45,7 @@ function open_iterm2point9 () {
       tell current window
         create tab with default profile
         tell first session of current tab
+          write text "cd `pwd`"
           write text "bash -c \"$CMD\""
         end tell
       end tell
@@ -57,6 +60,7 @@ function open_terminal () {
   delay 0.4
   tell application "System Events" to keystroke "t" using command down
   tell application "Terminal"
+    do script "cd `pwd`" in window 1
     do script "bash -c \"$CMD\"" in window 1
   end tell
 EOF

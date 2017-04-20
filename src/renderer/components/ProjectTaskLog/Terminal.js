@@ -55,18 +55,6 @@ class Terminal extends Component {
         this.setState({ log: '', showClear: false, logType: 'start' });
       }
     }
-    /*if (logType !== this.props.logType || name !== this.props.name) {
-      // const type = otherCommands.includes(logType) ? logType : 'start';
-      // console.log(type)
-      const type = logType;
-      const { log } = task.getTask(type, name);
-      if (log.length > 0) {
-        this.setState({ log, showClear: true, logType: type }, 
-          () => this.scrollToBottom());
-      } else {
-        this.setState({ log: '', showClear: false, logType: type });
-      }
-    }*/
   }
 
   onReceiveLog(event, data) {
@@ -109,7 +97,7 @@ class Terminal extends Component {
     return (
       <div
         className={classNames({
-          'terminal-wrap': true,
+          'proj-detail-terminal-wrap': true,
           'has-side': hasSide
         })}
       >
@@ -133,9 +121,9 @@ class Terminal extends Component {
               style={{ width: 120 }}
               onChange={this.handleChangeCustom}
               value={selectValue}
-            >{ 
+            >{
               otherCommands.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>)
-              }
+            }
             </Select>
           }
         </div>
@@ -148,9 +136,9 @@ class Terminal extends Component {
           ><i className="iconfont icon-clear" />
           </Button>
         }
-        <div className="term-wrap" ref="wrap">
+        <div className="proj-detail-term-wrap" ref="wrap">
         <div
-          className="term-container"
+          className="proj-detail-term-container"
           ref="term"
           dangerouslySetInnerHTML={{ __html: log }} 
         />

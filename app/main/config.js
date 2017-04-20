@@ -47,6 +47,15 @@ module.exports = {
     }
   },
 
+  registryList() {
+    const args = [].slice.call(arguments);
+    if (args.length > 0) {
+      config.set('registryList', args[0]);
+    } else {
+      return config.get('registryList');
+    }
+  },
+
   nowaNeedInstalled() {
     const args = [].slice.call(arguments);
     if (args.length > 0) {

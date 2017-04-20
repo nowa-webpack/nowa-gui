@@ -23,27 +23,25 @@ const basicColumns = [{
   dataIndex: 'name',
   key: 'name',
   width: 250,
-  render: (text) => 
+  render: text =>
     (
-      <a
-        onClick={() => shell.openExternal(`https://www.npmjs.com/package/${text}`)}
-      >{text}</a>
+      <a onClick={() => shell.openExternal(`https://www.npmjs.com/package/${text}`)}>{text}</a>
     )
 }, {
   title: i18n('package.current'),
   dataIndex: 'version',
   key: 'version',
-  width: 90,
+  width: 100,
 }, {
   title: i18n('package.installed'),
   dataIndex: 'installedVersion',
   key: 'installedVersion',
-  width: 90,
+  width: 100,
 }, {
   title: i18n('package.newest'),
   dataIndex: 'netVersion',
   key: 'netVersion',
-  width: 90,
+  width: 100,
 }];
 
 
@@ -91,6 +89,7 @@ class DependenceTable extends Component {
 
   async getVersions({ filePath, source, registry }) {
     const localPkgs = utils.getMoudlesVersion(filePath, source);
+    console.log(localPkgs);
     const netPkgs = await this.fetchMoudlesVersion(localPkgs, registry);
     return netPkgs;
   }
@@ -129,7 +128,7 @@ class DependenceTable extends Component {
       Message.error(i18n('msg.updateFailed'));
       this.setState({ loading: false, selectedRowKeys: [] });
     } else {
-      const { dispatch, type } = this.props;
+      // const { dispatch, type } = this.props;
       const data = dataSource.map((item) => {
         const filter = pkgs.filter(p => p.name === item.name);
         if (filter.length > 0) {
@@ -149,9 +148,11 @@ class DependenceTable extends Component {
   }
 
   async fetchMoudlesVersion(modules, registry) {
+
     const repos = await Promise.all(
         modules.map(({ name }) => request(`${registry}/${name}/latest`))
       );
+    console.log(registry, repos);
     const pkgs = modules.map(({ name, version, installedVersion }, i) => {
       const { data, err } = repos[i];
       const diff = semverDiff(installedVersion, data.version);
@@ -173,11 +174,6 @@ class DependenceTable extends Component {
     return {
       root: filePath,
       registry,
-      // targetDir: filePath,
-      // storeDir: join(filePath, '.npminstall'),
-      // storeDir: join(filePath, 'node_modules', '.npminstall'),
-      // cacheDir: null,
-      // timeout: 5 * 60000,
     };
   }
 
@@ -345,41 +341,6 @@ class DependenceTable extends Component {
   }
 }
 
-// render: (update, record) => {
-//         let updateDiv;
-
-//         if (update) {
-//           if (record.safeUpdate) {
-//             updateDiv = (
-//               <span className="package-wrap-action update"
-//                 onClick={() => this.updatelModules(record)}
-//               >{i18n('table.action.update')}</span>);
-//           } else {
-//             updateDiv = (<Popconfirm
-//               placement="bottomRight"
-//               title={i18n('package.update.tip')}
-//               onConfirm={() => this.updatelModules(record)}
-//               okText={i18n('form.ok')}
-//               cancelText={i18n('form.cancel')}
-//             >
-//             <span className="package-wrap-action update-unsafe">{i18n('table.action.update')}</span>
-//             </Popconfirm>);
-//           }
-//         }
-
-//         return (
-//           <div>
-//             <Popconfirm
-//               placement="bottomRight"
-//               title={i18n('msg.removeTip')}
-//               onConfirm={() => this.removeModules(record)}
-//               okText={i18n('form.ok')}
-//               cancelText={i18n('form.cancel')}
-//             ><span className="package-wrap-action del">{i18n('table.action.del')}</span>
-//             </Popconfirm>
-//             { updateDiv }
-//           </div>);
-//       },
 
 
 DependenceTable.propTypes = {

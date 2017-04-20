@@ -48,7 +48,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "antd": "^2.8.3",
+    "antd": "^2.9.1",
     "autoprefixer": "^6.6.1",
     "babel-loader": "^6.4.1",
     "babel-preset-babili": "^0.0.10",

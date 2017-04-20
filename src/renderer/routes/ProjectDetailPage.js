@@ -10,6 +10,8 @@ import i18n from 'i18n';
 
 import { getAddressByUID, delay } from 'gui-util';
 import ProjectDetailTab from '../components/ProjectDetail/Tab';
+import ProjectDetailImportLog from '../components/ProjectDetail/ImportLog';
+import ProjectDetailImportInfo from '../components/ProjectDetail/ImportInfo';
 
 const { Content } = Layout;
 
@@ -17,11 +19,11 @@ const { command } = remote.getGlobal('services');
 
 
 const ProjectDetailPage = ({
-    current, logType, dispatch, commands, registry
+    current, logType, dispatch, commands, registry, registryList
   }) => {
   let buildBtn;
   let startBtn;
-  const { start, path, pkg, loading, isNowa } = current;
+  const { start, path, pkg, loadingStep, isNowa } = current;
   const hasBuildFunc = 'scripts' in pkg && 'build' in pkg.scripts;
   const hasStartFunc = 'scripts' in pkg && 'start' in pkg.scripts;
   const tabProps = { current, logType, dispatch, commands: commands[path], registry };
@@ -73,9 +75,8 @@ const ProjectDetailPage = ({
 
   return (
     <Content className="ui-content proj-detail">
-      <Spin tip="Loading..." spinning={loading || false}>
-        <ProjectDetailTab {...tabProps} />
-        <div className="opt-grp">
+      { !loadingStep && <ProjectDetailTab {...tabProps} /> }
+      { !loadingStep && <div className="opt-grp">
           { startBtn }
           { isNowa && <div className={classNames({
             opt: true,
@@ -91,11 +92,14 @@ const ProjectDetailPage = ({
           <div className="opt " onClick={openTerminal}>
             <i className="iconfont icon-terminal" /><br />{i18n('task.terminal')}
           </div>
-        </div>
-      </Spin>
+        </div> }
+      { loadingStep === 1 && <ProjectDetailImportInfo project={current} dispatch={dispatch} registryList={registryList} />}
+      { loadingStep === 2 && <ProjectDetailImportLog filePath={path} dispatch={dispatch} />}
     </Content>
   );
 };
+
+
 
 //  <div className="opt " onClick={() => shell.showItemInFolder(join(path, 'package.json'))}>
 //   <i className="iconfont icon-folder" /><br />{i18n('task.folder')}
@@ -104,14 +108,16 @@ const ProjectDetailPage = ({
 ProjectDetailPage.propTypes = {
   logType: PropTypes.string.isRequired,
   registry: PropTypes.string.isRequired,
+  registryList: PropTypes.array.isRequired,
   commands: PropTypes.object,
   current: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
-export default connect(({ project, task, layout }) => ({
+export default connect(({ project, task, setting }) => ({
   current: project.current,
   commands: task.commands,
   logType: task.logType,
-  registry: layout.registry,
+  registry: setting.registry,
+  registryList: setting.registryList,
 }))(ProjectDetailPage);
