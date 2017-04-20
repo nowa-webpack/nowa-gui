@@ -5,8 +5,8 @@ import _ from 'lodash';
 import { zh, en } from '../../language';
 
 import { getLocalLanguage, setLocalLanguage } from './localStorage';
-const { locale } = remote.getGlobal('services');
-
+// const { locale } = remote.getGlobal('services');
+const locale = window.navigator.language;
 
 let i18n;
 
