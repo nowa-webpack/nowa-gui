@@ -5,8 +5,10 @@ export const EDITOR = 'EDITOR';
 export const UPDATE_TIP = 'UPDATE_FLAG';
 export const SUBMIT_PATH = 'SUBMIT_PATH';
 export const VSCODE_PATH = 'VSCODE_PATH';
+export const WEBSTORM_PATH = 'WEBSTORM_PATH';
 export const SUBLIME = 'Sublime';
 export const VSCODE = 'VScode';
+export const WEBSTORM = 'WebStorm';
 export const IS_WIN = process.platform === 'win32';
 export const IS_MAC = process.platform === 'darwin';
 
@@ -29,6 +31,10 @@ export const VSCODE_BASE_PATH = IS_WIN
 export const SUBLIME_BASE_PATH = IS_WIN
   ? 'C:/Program Files/Sublime Text 3'
   : '/Applications/Sublime Text.app';
+
+export const WEBSTORM_BASE_PATH = IS_WIN
+  ? 'C:/Program Files (x86)/JetBrains/WebStorm 2017.1/bin/webstorm.exe'
+  : '/Applications/WebStorm.app';
 
 export const UPGRADE_URL = IS_WIN
   ? 'https://alixux.org/downloads/nowa-gui.exe'

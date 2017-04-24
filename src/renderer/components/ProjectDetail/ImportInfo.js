@@ -51,6 +51,7 @@ class ImportInfo extends Component {
               mode="combobox"
               style={{ width: 250 }}
               value={registry}
+              filterOption={false}
               onChange={value => this.setState({ registry: value })}
             >
               {registryList.map(item => 

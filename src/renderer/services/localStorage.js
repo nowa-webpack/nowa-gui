@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import { join } from 'path';
 import { 
-  LOCAL_PROJECTS, LANGUAGE, EDITOR, SUBMIT_PATH, VSCODE_PATH, UPDATE_TIP,
-  LOCAL_TEMP_PATHS, REMOTE_TEMP_URLS, SUBLIME, VSCODE
+  LOCAL_PROJECTS, LANGUAGE, EDITOR, UPDATE_TIP,
+  SUBLIME, VSCODE, WEBSTORM, SUBMIT_PATH, VSCODE_PATH, WEBSTORM_PATH
 } from 'gui-const';
 
 const storage = window.localStorage;
@@ -37,7 +37,12 @@ export const getLocalEditorPath = (editor) => {
   if (editor === SUBLIME) {
     return storage.getItem(SUBMIT_PATH);
   }
-  return storage.getItem(VSCODE_PATH);
+  if (editor === VSCODE) {
+    return storage.getItem(VSCODE_PATH);
+  }
+  if (editor === WEBSTORM) {
+    return storage.getItem(WEBSTORM_PATH);
+  }
 };
 
 export const setLocalEditorPath = (editor, editorPath) => {
@@ -47,15 +52,17 @@ export const setLocalEditorPath = (editor, editorPath) => {
   if (editor === VSCODE) {
     storage.setItem(VSCODE_PATH, editorPath);
   }
+  if (editor === WEBSTORM) {
+    storage.setItem(WEBSTORM_PATH, editorPath);
+  }
 };
 
 // export const getLocalUpdateFlag = () => storage.getItem(UPDATE_TIP);
 // export const setLocalUpdateFlag = () => storage.setItem(UPDATE_TIP, 1);
 
-export const getLocalUpdateFlag = (version) => {
+export const getLocalUpdateFlag = () => {
   const str = storage.getItem(UPDATE_TIP);
   if (str) return str.split('|')[1];
-
   return 0;
 };
 

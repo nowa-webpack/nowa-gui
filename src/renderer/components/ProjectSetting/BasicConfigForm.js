@@ -102,6 +102,7 @@ class BasicConfigForm extends Component {
             mode="combobox"
             style={{ width: 495 }}
             value={registry}
+            filterOption={false}
             onChange={value => this.setState({ registry: value })}
           >
             {registryList.map(item => 

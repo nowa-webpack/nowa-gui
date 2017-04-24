@@ -18,15 +18,15 @@ import { getLocalProjects } from 'gui-local';
 import OverrideModal from './OverrideModal';
 
 const registryList = [{
-  name: 'cnpm (http://registry.npm.taobao.org)',
+  name: 'http://registry.npm.taobao.org',
   value: 'cnpm'
   // value: 'https://registry.npm.taobao.org'
 }, {
-  name: 'tnpm (http://registry.npm.alibaba-inc.com)',
+  name: 'http://registry.npm.alibaba-inc.com',
   value: 'tnpm'
   // value: 'http://registry.npm.alibaba-inc.com'
 }, {
-  name: 'npm (http://registry.npmjs.org)',
+  name: 'http://registry.npmjs.org',
   value: 'npm'
   // value: 'https://registry.npmjs.org'
 }];

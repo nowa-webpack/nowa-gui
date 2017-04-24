@@ -9,14 +9,14 @@ import Input from 'antd/lib/input';
 import i18n from 'i18n';
 
 import { hidePathString } from 'gui-util';
-import { UPGRADE_URL, IS_WIN, VSCODE, SUBLIME } from 'gui-const';
+import { UPGRADE_URL, IS_WIN, VSCODE, SUBLIME, WEBSTORM } from 'gui-const';
 import { 
   getLocalLanguage, setLocalLanguage,
   getLocalEditor, setLocalEditor, getLocalProjects,
   setLocalEditorPath } from 'gui-local';
 
 const RadioGroup = Radio.Group;
-const InputGroup = Input.Group;
+// const InputGroup = Input.Group;
 const DEFAULT_LANGUAGE = getLocalLanguage();
 
 
@@ -109,12 +109,13 @@ class SettingPage extends Component {
   selectPath() {
     const { defaultEditor, editor } = this.state;
     try {
-      const importPath = IS_WIN 
-        ? remote.dialog.showOpenDialog({ properties: ['openDirectory'] })
-        : remote.dialog.showOpenDialog({ properties: ['openFile'] });
+      // const importPath = IS_WIN 
+      //   ? remote.dialog.showOpenDialog({ properties: ['openDirectory'] })
+      //   : remote.dialog.showOpenDialog({ properties: ['openFile'] });
+
+      const importPath = remote.dialog.showOpenDialog({ properties: ['openFile'] });
 
       editor[defaultEditor] = importPath[0];
-
       
       this.setState({ editor });
     } catch (e) {
@@ -149,10 +150,11 @@ class SettingPage extends Component {
           <div className="form-item">
             <label className="form-label">{i18n('setting.editor')}:</label>
             <RadioGroup value={defaultEditor}
-              onChange={(e) => this.setState({ defaultEditor: e.target.value })}
+              onChange={e => this.setState({ defaultEditor: e.target.value })}
             >
-              <Radio value={SUBLIME}>Sublime3</Radio>
+              <Radio value={SUBLIME}>Sublime</Radio>
               <Radio value={VSCODE}>VScode</Radio>
+              <Radio value={WEBSTORM}>WebStorm</Radio>
             </RadioGroup>
             <div className="form-item-grp">
               <Input addonAfter={pathAddon} disabled
@@ -167,6 +169,7 @@ class SettingPage extends Component {
               mode="combobox"
               style={{ width: 250 }}
               value={registry}
+              filterOption={false}
               onChange={value => this.setState({ registry: value })}
             >
               {registryList.map(item => 
@@ -213,7 +216,6 @@ SettingPage.propTypes = {
 };
 
 export default connect(({ layout, setting }) => ({
-  // showModal: layout.showSetModal,
   version: layout.version,
   shouldAppUpdate: layout.shouldAppUpdate,
   newVersion: layout.newVersion,

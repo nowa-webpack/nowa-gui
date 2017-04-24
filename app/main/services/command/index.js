@@ -9,27 +9,59 @@ const kill = require('./kill');
 const modules = require('./modules');
 const env = require('./env');
 const { getWin } = require('../windowManager');
-const { constants: { NPM_PATH, APP_PATH, NOWA_INSTALL_DIR }, isWin, isMac } = require('../is');
+const { constants: { NPM_PATH, APP_PATH, NOWA_INSTALL_DIR }, isWin, isMac, isLinux } = require('../is');
 
 const exportFunc = {
 
   openEditor(projectPath, editor, basePath) {
-    let editorPath = '';
+    let editorPath = basePath;
 
     if (editor === 'Sublime') {
-      editorPath = join(basePath, isWin ? 'subl.exe' : '/Contents/SharedSupport/bin/subl');
+      // editorPath = join(basePath, isWin ? 'subl.exe' : '/Contents/SharedSupport/bin/subl');
+      // editorPath = join(basePath, isWin ? 'sublime_text.exe' : '/Contents/SharedSupport/bin/subl');
+
+      if (isMac) {
+        editorPath = join(basePath, '/Contents/SharedSupport/bin/subl');
+      }
+
+      if (isWin) {
+        editorPath = basePath.indexOf('.exe') === -1 
+          ? join(basePath, 'sublime_text.exe') : basePath;
+      }
     }
 
     if (editor === 'VScode') {
-      editorPath = join(basePath, isWin ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code');
+      // editorPath = join(basePath, isWin ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code');
+      // editorPath = join(basePath, isWin ? 'Code.exe' : '/Contents/Resources/app/bin/code');
+
+      if (isMac) {
+        editorPath = join(basePath, '/Contents/Resources/app/bin/code');
+      }
+
+      if (isWin) {
+        editorPath = basePath.indexOf('.exe') === -1 ? join(basePath, 'Code.exe') : basePath;
+      }
+    }
+
+    if (editor === 'WebStorm') {
+      if (isMac) {
+        editorPath = join(basePath, '/Contents/MacOS/webstorm');
+      }
     }
 
     // sublime_text
 
-    return spawn(editorPath,
-      ['./'], {
-        cwd: projectPath,
-      });
+    try {
+
+      execSync(`${editorPath} ${projectPath}`,
+        {
+          cwd: projectPath,
+        });
+      return true;
+    } catch () {
+      return false;
+    }
+
   },
 
   openTerminal(cwd) {

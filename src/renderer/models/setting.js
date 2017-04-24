@@ -1,8 +1,8 @@
 import { remote, ipcRenderer } from 'electron';
 import fs from 'fs-extra';
 
-import { SUBLIME, VSCODE } from 'gui-const';
-import { VSCODE_BASE_PATH, SUBLIME_BASE_PATH } from 'gui-const';
+import { SUBLIME, VSCODE, WEBSTORM } from 'gui-const';
+import { VSCODE_BASE_PATH, SUBLIME_BASE_PATH, WEBSTORM_BASE_PATH } from 'gui-const';
 import { getLocalEditor, getLocalEditorPath, setLocalEditorPath } from 'gui-local';
 
 const config = remote.getGlobal('config');
@@ -19,7 +19,8 @@ export default {
     defaultEditor: getLocalEditor() || 'VScode',
     editor: {
       Sublime: getLocalEditorPath(SUBLIME),
-      VScode: getLocalEditorPath(VSCODE)
+      VScode: getLocalEditorPath(VSCODE),
+      WebStorm: getLocalEditor(WEBSTORM),
     },
     registry: 'https://registry.npm.taobao.org',
     registryList: [],
@@ -36,12 +37,17 @@ export default {
         setLocalEditorPath(VSCODE, fs.existsSync(VSCODE_BASE_PATH) ? VSCODE_BASE_PATH : '');
       }
 
+      if (!getLocalEditorPath(WEBSTORM)) {
+        setLocalEditorPath(WEBSTORM, fs.existsSync(WEBSTORM_BASE_PATH) ? WEBSTORM_BASE_PATH : '');
+      }
+
       dispatch({
         type: 'changeStatus',
         payload: {
           editor: {
             Sublime: getLocalEditorPath(SUBLIME),
             VScode: getLocalEditorPath(VSCODE),
+            WebStorm: getLocalEditorPath(WEBSTORM),
           },
         }
       });
