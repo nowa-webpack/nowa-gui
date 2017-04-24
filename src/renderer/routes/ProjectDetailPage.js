@@ -52,7 +52,7 @@ const ProjectDetailPage = ({
         </div>);
   } else {
     startBtn = (
-      <Tooltip placement="top" title={i18n('No start scripts in package.json')} >
+      <Tooltip placement="top" title={i18n('Cannot find scripts.start in pacakge.json')} >
         <div className="opt start disable">
           <i className="iconfont icon-play" /><br />{i18n('task.start')}
         </div>
@@ -67,7 +67,7 @@ const ProjectDetailPage = ({
       </div>);
   } else {
     buildBtn = (
-      <Tooltip placement="top" title={i18n('No build scripts in package.json')} >
+      <Tooltip placement="top" title={i18n('Cannot find scripts.build in pacakge.json')} >
         <div className="opt disable">
           <i className="iconfont icon-similarproduct" /><br />{i18n('task.compile')}
         </div>

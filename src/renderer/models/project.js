@@ -425,12 +425,12 @@ export default {
 
       Message.success(i18n('msg.importSuccess'));
 
-      yield put({
-        type: 'task/start',
-        payload: {
-          project: current
-        }
-      });
+      // yield put({
+      //   type: 'task/start',
+      //   payload: {
+      //     project: current
+      //   }
+      // });
     },
     * addLocalStoreProject({ payload: { current } }, { put, select }) {
       const { projects } = yield select(state => state.project);
@@ -619,10 +619,10 @@ export default {
           payload: { project }
         });
         yield delay(1000);
-        yield put({
-          type: 'task/start',
-          payload: { project }
-        });
+        // yield put({
+        //   type: 'task/start',
+        //   payload: { project }
+        // });
       }
     },
     * refresh(o, { put, select }) {

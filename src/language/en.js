@@ -60,7 +60,7 @@ module.exports = {
   'project.new.empty': 'No templates.',
   'project.new.addTempldate': 'Add Custom Template',
 
-  'project.import.title': 'nitializing for Project Import',
+  'project.import.title': 'Initializing for Project Import',
   'project.import.info': 'Some dependencies of this project are uninstalled, please choose an appropriate NPM registry to install from.',
   'project.import.install': 'Installing Dependencies',
 
@@ -141,7 +141,7 @@ module.exports = {
   'package.newest': 'Newest',
   'package.action': 'Action',
   'package.btn.updateAll': 'Batch Update',
-  'package.btn.install': 'Add New Package',
+  'package.btn.install': 'Add New Dependency',
   'package.update.tip': 'Are you sure to update this package?',
 
   'table.empty': 'No data.',

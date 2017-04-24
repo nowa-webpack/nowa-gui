@@ -36,7 +36,7 @@ module.exports = {
   'project.tab.server': '开发配置',
   'project.tab.build': '编译配置',
   'project.tab.console': '控制台',
-  'project.tab.package': '包管理',
+  'project.tab.package': '依赖管理',
   'project.tab.listen_log': '监听日志',
   'project.tab.compile_log': '编译输出',
   'project.tab.command_log': '选择命令窗口',
@@ -136,7 +136,7 @@ module.exports = {
   'preinit.msg2': '{1} 后自动关闭应用',
   'preinit.waitInstall': '正在安装需要的依赖更新，大约需要半分钟时间，请耐心等待。',
 
-  'package.name': '包名',
+  'package.name': '依赖名',
   'package.current': '定义版本',
   'package.installed': '安装版本',
   'package.newest': '最新版本',

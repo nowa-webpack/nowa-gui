@@ -9,7 +9,7 @@ const kill = require('./kill');
 const modules = require('./modules');
 const env = require('./env');
 const { getWin } = require('../windowManager');
-const { constants: { NPM_PATH, APP_PATH, BIN_PATH, NOWA_INSTALL_DIR }, isWin, isMac } = require('../is');
+const { constants: { NPM_PATH, APP_PATH, NOWA_INSTALL_DIR }, isWin, isMac } = require('../is');
 
 const exportFunc = {
 
