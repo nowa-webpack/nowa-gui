@@ -33,9 +33,11 @@ const ProjectDetailPage = ({
   const stopProj = () => dispatch({ type: 'task/stop', payload: { project: current } });
   const openEditor = () => dispatch({ type: 'task/openEditor', payload: { project: current } });
   const compassProj = () => {
-    const task = remote.require('./services/task');
-    const { uid } = task.getTask('start', path);
-    delay(1000).then(shell.openExternal(getAddressByUID(uid)));
+    if (isNowa && start) {
+      const task = remote.require('./services/task');
+      const { uid } = task.getTask('start', path);
+      delay(1000).then(shell.openExternal(getAddressByUID(uid)));
+    }
   };
 
   const openTerminal = () => command.openTerminal(current.path);
@@ -78,9 +80,9 @@ const ProjectDetailPage = ({
       { !loadingStep && <ProjectDetailTab {...tabProps} /> }
       { !loadingStep && <div className="opt-grp">
           { startBtn }
-          { isNowa && <div className={classNames({
+          { <div className={classNames({
             opt: true,
-            disable: !start
+            disable: !start || !isNowa
           })} onClick={compassProj} >
               <i className="iconfont icon-compass" /><br />{i18n('task.compass')}
             </div>

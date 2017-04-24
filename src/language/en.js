@@ -60,8 +60,8 @@ module.exports = {
   'project.new.empty': 'No templates.',
   'project.new.addTempldate': 'Add Custom Template',
 
-  'project.import.title': 'Project Import Initialization',
-  'project.import.info': 'There has been some uninstalled dependencies, please check the appropriate registry.',
+  'project.import.title': 'nitializing for Project Import',
+  'project.import.info': 'Some dependencies of this project are uninstalled, please choose an appropriate NPM registry to install from.',
   'project.import.install': 'Installing Dependencies',
 
   'template.modal.title': 'Custom Template Setting',

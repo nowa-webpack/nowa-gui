@@ -60,7 +60,7 @@ module.exports = {
   'project.new.addTempldate': '添加自定义模版',
 
   'project.import.title': '项目导入初始化',
-  'project.import.info': '检测到改项目有未安装的依赖，请选择合适的Npm源',
+  'project.import.info': '检测到改项目有未安装的依赖，请选择合适的Npm安装源',
   'project.import.install': '依赖安装',
 
 

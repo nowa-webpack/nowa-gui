@@ -24,6 +24,8 @@ const exportFunc = {
       editorPath = join(basePath, isWin ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code');
     }
 
+    // sublime_text
+
     return spawn(editorPath,
       ['./'], {
         cwd: projectPath,

@@ -12,7 +12,7 @@ import { hidePathString } from 'gui-util';
 import { UPGRADE_URL, IS_WIN, VSCODE, SUBLIME } from 'gui-const';
 import { 
   getLocalLanguage, setLocalLanguage,
-  getLocalEditor, setLocalEditor,
+  getLocalEditor, setLocalEditor, getLocalProjects,
   setLocalEditorPath } from 'gui-local';
 
 const RadioGroup = Radio.Group;
@@ -96,10 +96,11 @@ class SettingPage extends Component {
     if (backPage !== -1) {
       this.goBack();
     } else {
+      const proj = getLocalProjects();
       this.props.dispatch({
         type: 'layout/changeStatus',
         payload: {
-          showPage: 0
+          showPage: proj.length > 0 ? 2 : 0,
         }
       });
     }

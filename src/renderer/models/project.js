@@ -13,7 +13,7 @@ import { readABCJson, writeABCJson,
 } from 'gui-util';
 
 const taskStart = remote.getGlobal('start') || {};
-const { command } = remote.getGlobal('services');
+const { command, tray } = remote.getGlobal('services');
 
 const getProjectInfoByPath = (filePath) => {
   let abc = {};
@@ -100,6 +100,8 @@ export default {
           return item;
         });
       }
+
+      tray.setInitTrayMenu(projects);
 
       const current = projects.filter(item => item.current);
 

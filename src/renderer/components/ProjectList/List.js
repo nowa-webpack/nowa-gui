@@ -40,10 +40,10 @@ const List = ({ current, projects, dispatch }) => {
       {
         projects.map(item =>
           <Item
-            key={item.name}
+            key={item.path}
             project={item}
             dispatch={dispatch}
-            filePath={current.name}
+            projPath={current.path}
           />)
       }
       </div>
@@ -74,6 +74,7 @@ const List = ({ current, projects, dispatch }) => {
 List.propTypes = {
   current: PropTypes.shape({
     name: PropTypes.string,
+    path: PropTypes.string,
   }).isRequired,
   projects: PropTypes.array,
   dispatch: PropTypes.func.isRequired,

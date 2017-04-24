@@ -4,8 +4,9 @@ const services = require('./services');
 const config = require('./config');
 const os = require('os');
 
-const { menu, windowManager, nowa, utils, command, is } = services;
+const { menu, windowManager, nowa, utils, command, is, tray } = services;
 const { checkRegistry, checkEncoding } = utils;
+
 
 log.info('start nowa gui');
 // config.clear();
@@ -27,11 +28,13 @@ ipcMain.on('network-change-status', (event, online) => {
   }
 });
 
-
 app.on('ready', () => {
   menu.init();
   windowManager.create();
+  tray.init();
   checkEncoding();
+
+  
 });
 
 app.on('activate', () => {

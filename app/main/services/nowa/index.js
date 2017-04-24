@@ -14,10 +14,11 @@ const config = require('../../config');
 
 const { NOWA_INSTALL_DIR, NOWA_INSTALL_JSON_FILE } = constants;
 
-const nowaPkg = ['nowa', 'nowa-server', 'nowa-build'];
+const nowaPkg = ['nowa', 'nowa-init', 'nowa-server', 'nowa-build'];
+// const nowaPkg = ['nowa', 'nowa-server', 'nowa-build'];
 const otherPkg = ['npm'];
 // const otherPkg = [];
-
+const needInstallPkgs = [...nowaPkg, ...otherPkg].map(name => ({ name, version: 'latest' }));
 
 const checkForEmpty = () => {
   const isExisted = fs.existsSync(NOWA_INSTALL_JSON_FILE);
@@ -72,7 +73,6 @@ const installNowaModules = (pkgs, endCb) => {
 };
 
 const init = () => {
-  // config.nowaNeedInstalled(true);
   const win = getWin();
 
   // nowa-need-install: 0 close, 1: update, 2: no update
@@ -84,12 +84,11 @@ const init = () => {
     }
 
     win.webContents.send('nowa-need-install', 1);
-    const pkgs = [...nowaPkg, ...otherPkg].map(name => ({ name, version: 'latest' }));
 
-    installNowaModules(pkgs, () => {
+    installNowaModules(needInstallPkgs, () => {
       // config.nowaNeedInstalled(false);
       const modules = {};
-      pkgs.filter(({ name }) => /^nowa/.test(name))
+      needInstallPkgs.filter(({ name }) => /^nowa/.test(name))
         .forEach(({ name }) => {
           const pkgFile = join(NOWA_INSTALL_DIR, 'node_modules', name, 'package.json');
           const newVersion = fs.readJsonSync(pkgFile).version;
@@ -106,25 +105,36 @@ const init = () => {
     }
     // update nowa modules
     const nowaJson = fs.readJsonSync(NOWA_INSTALL_JSON_FILE);
-    const pkgs = Object.keys(nowaJson).map(name => ({ name, version: nowaJson[name] }));
-    checkModulesVersion(pkgs).then((modules) => {
-      console.log('modules', modules);
+    const existsPkgs = Object.keys(nowaJson).map(name => ({ name, version: nowaJson[name] }));
+    const nowaNeedInstallPkgs = nowaPkg.map(name => ({ name, version: 'latest' }));
+
+    checkModulesVersion(existsPkgs).then((modules) => {
 
       // need update
-      if (modules.length > 0) {
+      if (modules.length > 0 || existsPkgs.length !== nowaNeedInstallPkgs.length) {
         win.webContents.send('nowa-need-install', 1);
-        installNowaModules(modules, () => {
-          config.nowaNeedInstalled(false);
-          modules.forEach(({ name, version }) => {
-            nowaJson[name] = version;
+
+        const missPkgs = nowaNeedInstallPkgs.filter((item) => {
+          const filter = existsPkgs.filter(n => n.name === item.name);
+          return filter.length === 0;
+        }).filter(item => item.name !== 'npm');
+
+        missPkgs.concat(modules);
+        
+        console.log('missPkgs', missPkgs);
+
+        installNowaModules(missPkgs, () => {
+          missPkgs.forEach(({ name }) => {
+            // nowaJson[name] = version;
+            const pkgFile = join(NOWA_INSTALL_DIR, 'node_modules', name, 'package.json');
+            const newVersion = fs.readJsonSync(pkgFile).version;
+            nowaJson[name] = newVersion;
           });
           fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, nowaJson);
         });
-
       // don't need update
       } else {
         win.webContents.send('nowa-need-install', 2);
-        config.nowaNeedInstalled(false);
       }
     });
   }

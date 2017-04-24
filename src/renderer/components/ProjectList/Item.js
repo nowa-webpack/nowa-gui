@@ -10,10 +10,10 @@ import { join } from 'path';
 import i18n from 'i18n';
 
 
-const Item = ({ project, filePath, dispatch }) => {
+const Item = ({ project, projPath, dispatch }) => {
 
-  const { name, start, taskErr } = project;
-  const isActive = filePath === name;
+  const { name, path, start, taskErr } = project;
+  const isActive = projPath === path;
 
   const handleClick = () => {
     dispatch({
@@ -95,7 +95,7 @@ const Item = ({ project, filePath, dispatch }) => {
 };
 
 Item.propTypes = {
-  filePath: PropTypes.string,
+  projPath: PropTypes.string,
   project: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };

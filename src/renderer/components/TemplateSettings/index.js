@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import { join } from 'path';
+import { join, basename } from 'path';
 import fs from 'fs-extra';
 import { remote } from 'electron';
 import osHomedir from 'os-homedir';
@@ -38,8 +38,8 @@ class Form extends Component {
     super(props);
     const { extendsProj, defaultRegistry } = props;
 
-    // const name = 'untitled';
-    const name = '';
+    const name = 'untitled';
+    // const name = '';
     const basePath = join(osHomedir(), 'NowaProject');
 
     const extendsArgs = {};
@@ -55,7 +55,7 @@ class Form extends Component {
       extendsArgs,
 
       projPath: join(basePath, name),
-      name,
+      // name,
       description: 'An awesome project',
       author: process.env.USER || process.env.USERNAME || '',
       version: '1.0.0',
@@ -83,7 +83,8 @@ class Form extends Component {
       const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
       this.setState({
         basePath: importPath[0],
-        projPath: join(importPath[0], this.state.name),
+        projPath: join(importPath[0], basename(this.state.projPath)),
+        // projPath: join(importPath[0], this.state.name),
       });
     } catch (err) {
     }
@@ -102,18 +103,23 @@ class Form extends Component {
   handleSubmit() {
     const { extendsArgs, basePath, ...others } = this.state;
     const { dispatch, next } = this.props;
+    const name = basename(others.projPath);
 
-    if (!others.name) {
-      Message.error(i18n('msg.nameRequired'));
-      return false;
-    }
+    // if (!others.name) {
+    //   Message.error(i18n('msg.nameRequired'));
+    //   return false;
+    // }
 
-    if (!(NAME_MATCH.test(others.name))) {
+    // if (!basename(this.state.projPath)) {
+
+    // }
+
+    if (!(NAME_MATCH.test(name))) {
       Message.error(i18n('msg.invalidName'));
       return false;
     }
 
-    const args = { ...others, ...extendsArgs };
+    const args = { ...others, ...extendsArgs, name };
 
     console.log('args', args);
 
@@ -129,7 +135,8 @@ class Form extends Component {
       return false;
     }
 
-    if (fs.existsSync(join(basePath, others.name))) {
+    // if (fs.existsSync(join(basePath, others.name))) {
+    if (fs.existsSync(others.projPath)) {
       dispatch({
         type: 'init/checkOverrideFiles',
       });
@@ -156,7 +163,8 @@ class Form extends Component {
   }
 
   render() {
-    const { projPath, name, registry, extendsArgs } = this.state;
+    // const { projPath, name, registry, extendsArgs } = this.state;
+    const { projPath, registry, extendsArgs } = this.state;
     const { extendsProj, prev } = this.props;
     let extendsHtml;
 
@@ -194,17 +202,11 @@ class Form extends Component {
         <form className="ui-form" >
 
           <div className="form-item">
-            <label className="form-label">{i18n('project.meta.name')}:</label>
-            <input type="text" className="lg"
-              placeholder="untitled"
-              onChange={e => this.changeName(e.target.value)} value={name} 
-            />
-          </div>
-
-          <div className="form-item">
             <label className="form-label">{i18n('project.meta.path')}:</label>
             <div className="form-item-grp">
-            <Input addonAfter={pathIcon} value={hidePathString(projPath, 45)} disabled />
+            <Input addonAfter={pathIcon} value={hidePathString(projPath, 45)}
+              onChange={e => this.setState({ projPath: e.target.value })}
+            />
             </div>
           </div>
 
@@ -233,6 +235,21 @@ class Form extends Component {
     );
   }
 }
+
+// <div className="form-item">
+//     <label className="form-label">{i18n('project.meta.name')}:</label>
+//     <input type="text" className="lg"
+//       placeholder="untitled"
+//       onChange={e => this.changeName(e.target.value)} value={name} 
+//     />
+//   </div>
+
+//   <div className="form-item">
+//     <label className="form-label">{i18n('project.meta.path')}:</label>
+//     <div className="form-item-grp">
+//     <Input addonAfter={pathIcon} value={hidePathString(projPath, 45)} disabled />
+//     </div>
+//   </div>
 
 Form.propTypes = {
   extendsProj: PropTypes.object,
