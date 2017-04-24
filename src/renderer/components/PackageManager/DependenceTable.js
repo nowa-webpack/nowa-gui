@@ -89,7 +89,6 @@ class DependenceTable extends Component {
 
   async getVersions({ filePath, source, registry }) {
     const localPkgs = utils.getMoudlesVersion(filePath, source);
-    console.log(localPkgs);
     const netPkgs = await this.fetchMoudlesVersion(localPkgs, registry);
     return netPkgs;
   }
@@ -128,20 +127,23 @@ class DependenceTable extends Component {
       Message.error(i18n('msg.updateFailed'));
       this.setState({ loading: false, selectedRowKeys: [] });
     } else {
-      // const { dispatch, type } = this.props;
+      const { dispatch, type } = this.props;
       const data = dataSource.map((item) => {
         const filter = pkgs.filter(p => p.name === item.name);
         if (filter.length > 0) {
-          // item.version = `^${item.netVersion}`;
+          if (!item.safeUpdate) {
+            item.version = `^${item.netVersion}`;
+          }
           item.installedVersion = item.netVersion;
           item.update = false;
         }
         return item;
       });
-      // dispatch({
-      //   type: 'project/updatePkgModules',
-      //   payload: { pkgs, type }
-      // });
+
+      dispatch({
+        type: 'project/updatePkgModules',
+        payload: { pkgs, type }
+      });
       Message.success(i18n('msg.updateSuccess'));
       this.setState({ loading: false, dataSource: data, selectedRowKeys: [] });
     }
@@ -152,7 +154,7 @@ class DependenceTable extends Component {
     const repos = await Promise.all(
         modules.map(({ name }) => request(`${registry}/${name}/latest`))
       );
-    console.log(registry, repos);
+    console.log(registry);
     const pkgs = modules.map(({ name, version, installedVersion }, i) => {
       const { data, err } = repos[i];
       const diff = semverDiff(installedVersion, data.version);
@@ -165,7 +167,7 @@ class DependenceTable extends Component {
         safeUpdate: diff !== 'major'
       };
     }).sort((a, b) => b.update - a.update);
-    
+    console.log(pkgs)
     return pkgs;
   }
 
@@ -185,7 +187,8 @@ class DependenceTable extends Component {
     if (args.length) {
       pkgs.push({
         name: args[0].name,
-        version: args[0].netVersion
+        version: args[0].netVersion,
+        safe: args[0].safeUpdate,
       });
     } else {
       const { dataSource, selectedRowKeys } = this.state;

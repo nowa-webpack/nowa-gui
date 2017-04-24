@@ -717,9 +717,10 @@ export default {
     * updatePkgModules({ payload: { pkgs, type } }, { select }) {
       const { current } = yield select(state => state.project);
       const dp = current.pkg[type];
-      console.log(pkgs);
       pkgs.forEach((item) => {
-        dp[item.name] = `^${item.version}`;
+        if (!item.safe) {
+          dp[item.name] = `^${item.version}`;
+        }
       });
       writePkgJson(current.path, current.pkg);
     },

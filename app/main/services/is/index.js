@@ -26,6 +26,8 @@ const NPM_PATH = join(NODE_MODULES_PATH, 'npm', 'bin', 'npm-cli.js');
 
 const NODE_PATH = join(APP_PATH, 'nodes');
 
+const LINK_NOWA_PATH = isWin ? join(process.env.APPDATA, 'npm', 'nowa') : '/usr/local/bin/nowa';
+
 module.exports = {
   isMac,
   isWin,
@@ -41,6 +43,7 @@ module.exports = {
     TEMPLATES_DIR,
     NOWA_INSTALL_DIR,
     NOWA_INSTALL_JSON_FILE,
-    NODE_PATH
+    NODE_PATH,
+    LINK_NOWA_PATH
   },
 };

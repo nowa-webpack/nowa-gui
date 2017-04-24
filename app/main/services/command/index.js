@@ -9,7 +9,7 @@ const kill = require('./kill');
 const modules = require('./modules');
 const env = require('./env');
 const { getWin } = require('../windowManager');
-const { constants: { NPM_PATH, APP_PATH }, isWin, isMac } = require('../is');
+const { constants: { NPM_PATH, APP_PATH, BIN_PATH, NOWA_INSTALL_DIR }, isWin, isMac } = require('../is');
 
 const exportFunc = {
 
@@ -45,6 +45,12 @@ const exportFunc = {
         cwd
       });
     }
+  },
+
+  linkNowa() {
+    fork(NPM_PATH, ['link'], {
+      cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa')
+    });
   },
 
   exec({ name, type }) {
