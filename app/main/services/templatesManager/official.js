@@ -7,13 +7,14 @@ const log = require('electron-log');
 
 const { getWin } = require('../windowManager');
 const { request } = require('../utils');
-const { registry, setTemplateVersion, getTemplateVersion } = require('../../config');
+const { registry } = require('../../config');
 const { constants: { TEMPLATES_DIR } } = require('../is');
 const { getMainifest, setMainifest } = require('./manifest');
 
 const get = () => {
   console.log('getOfficialTemplates', registry());
   const win = getWin();
+  const manifest = getMainifest();
   // const arr = [];
 
   co(function* () {
@@ -43,8 +44,8 @@ const get = () => {
             const name = `${tempName}-${tag}`;
             const curPkg = pkg.versions[version];
             const folder = join(TEMPLATES_DIR, name);
-            console.log('set', name, version);
-            setTemplateVersion(name, version);
+            // console.log('set', name, version);
+            // setTemplateVersion(name, version);
             download(curPkg.dist.tarball, folder, {
               extract: true,
               retries: 0,
@@ -62,10 +63,12 @@ const get = () => {
             };
           });
         } else {
+          const manifestItem = manifest.official.filter(n => n.name === tempName)[0];
           obj.tags = tags.map((tag) => {
             const version = pkg['dist-tags'][tag];
             const name = `${tempName}-${tag}`;
-            const oldVersion = getTemplateVersion(name);
+            const oldVersion = manifestItem.tags.filter(n => n.name === tag)[0].version;
+            // const oldVersion = getTemplateVersion(name);
             console.log(name, oldVersion, version);
             return {
               name: tag,
@@ -82,7 +85,7 @@ const get = () => {
       }
     });
 
-    const manifest = getMainifest();
+    
 
     manifest.official = official;
     setMainifest(manifest);
@@ -108,7 +111,7 @@ const update = (tempName, tag) => co(function* () {
     const name = `${tempName}-${tag}`;
     const folder = join(TEMPLATES_DIR, name);
 
-    setTemplateVersion(name, newVersion);
+    // setTemplateVersion(name, newVersion);
 
     manifest.official.map((item) => {
       if (item.name === tempName) {

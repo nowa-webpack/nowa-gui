@@ -1,4 +1,4 @@
-const { spawn, fork, exec, execSync } = require('child_process');
+const { fork, execSync, spawnSync } = require('child_process');
 const { join } = require('path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
@@ -49,19 +49,19 @@ const exportFunc = {
       }
     }
 
-    // sublime_text
-
     try {
-
-      execSync(`${editorPath} ${projectPath}`,
-        {
-          cwd: projectPath,
-        });
+      if (editor === 'WebStorm') {
+        execSync(`${editorPath} ${projectPath}`,
+          {
+            cwd: projectPath,
+          });
+      } else {
+        spawnSync(editorPath, ['./'], { cwd: projectPath });
+      }
       return true;
     } catch (e) {
       return false;
     }
-
   },
 
   openTerminal(cwd) {
