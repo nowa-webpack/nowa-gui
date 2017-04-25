@@ -23,6 +23,11 @@ const init = () => {
   const contextMenu = Menu.buildFromTemplate(basicTemplateMenu);
   tray.setContextMenu(contextMenu);
   tray.setToolTip('Nowa');
+  if (isWin) {
+    tray.on('click', () => {
+      tray.popUpContextMenu();
+    });
+  }
   // tray.setPressedImage(macPressIconPath);
 };
 
@@ -62,7 +67,7 @@ const submenu = project => [{
     updateTrayMenu(project, 'stop');
   }
 }, {
-  label: 'Reveal in Finder',
+  label: `Reveal in ${isWin ? 'Folder' : 'Finder'}`,
   click: () => {
     shell.showItemInFolder(join(project.path, 'package.json'));
   }
