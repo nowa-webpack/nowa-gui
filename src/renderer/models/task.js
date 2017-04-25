@@ -175,6 +175,12 @@ export default {
 
         if (!succees) {
           Message.error('Open editor failed, please check the editor path.');
+          yield delay(500);
+
+          yield put({
+            type: 'layout/changeStatus',
+            payload: { showPage: 3 }
+          });
         }
       }
     },

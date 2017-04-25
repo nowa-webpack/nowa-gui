@@ -58,7 +58,7 @@ const exportFunc = {
           cwd: projectPath,
         });
       return true;
-    } catch () {
+    } catch (e) {
       return false;
     }
 
