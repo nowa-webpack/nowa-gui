@@ -90,4 +90,7 @@ const setInitTrayMenu = (projects) => {
 module.exports = {
   init,
   setInitTrayMenu,
+  destroy() {
+    tray.destroy();
+  }
 };

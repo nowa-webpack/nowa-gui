@@ -57,6 +57,7 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   console.log('before quit');
   if (is.isMac) command.clearMacTask();
+  tray.destroy();
 });
 
 global.services = services;
