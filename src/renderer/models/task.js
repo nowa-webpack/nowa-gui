@@ -70,6 +70,20 @@ export default {
         });
       });
 
+      ipcRenderer.on('task-start', (event, { project }) => {
+        dispatch({
+          type: 'start',
+          payload: { project }
+        });
+      });
+
+      ipcRenderer.on('task-stop', (event, { project }) => {
+        dispatch({
+          type: 'stop',
+          payload: { project }
+        });
+      });
+
       /*ipcRenderer.on('task-finished', (event, { type }) => {
         if (success) {
           Message.success(`Exec ${type} successed!`);
@@ -184,8 +198,9 @@ export default {
         }
       }
     },
-    * start({ payload: { project } }, { put }) {
-      if (!project.start) {
+    * start({ payload: { project } }, { put, select }) {
+      const { commands } = yield select(state => state.task);
+      if (!project.start && commands[project.path].start) {
         yield put({
           type: 'execCustomCmd',
           payload: {

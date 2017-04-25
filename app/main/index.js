@@ -33,8 +33,6 @@ app.on('ready', () => {
   windowManager.create();
   tray.init();
   checkEncoding();
-
-  
 });
 
 app.on('activate', () => {

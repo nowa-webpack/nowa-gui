@@ -682,13 +682,16 @@ export default {
         return item;
       });
 
+      if (current.path === filePath) {
+        current.start = true;
+      }
+
       yield put({
         type: 'changeStatus',
         payload: {
           projects: [...projects],
           current: {
             ...current,
-            start: true
           }
         }
       });
@@ -703,13 +706,16 @@ export default {
         return item;
       });
 
+      if (current.path === filePath) {
+        current.start = false;
+      }
+
       yield put({
         type: 'changeStatus',
         payload: {
           projects,
           current: {
             ...current,
-            start: false
           }
         }
       });
