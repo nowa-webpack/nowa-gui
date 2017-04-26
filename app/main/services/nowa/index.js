@@ -120,22 +120,25 @@ const init = () => {
           return filter.length === 0;
         }).filter(item => item.name !== 'npm');
 
-        missPkgs.concat(modules);
+        const spkgs = missPkgs.concat(modules);
         
-        console.log('missPkgs', missPkgs);
+        console.log('spkgs', spkgs);
 
-        installNowaModules(missPkgs, () => {
-          missPkgs.forEach(({ name }) => {
-            // nowaJson[name] = version;
-            const pkgFile = join(NOWA_INSTALL_DIR, 'node_modules', name, 'package.json');
-            const newVersion = fs.readJsonSync(pkgFile).version;
-            nowaJson[name] = newVersion;
+        if (spkgs.length > 0) {
+
+          installNowaModules(spkgs, () => {
+            spkgs.forEach(({ name }) => {
+              // nowaJson[name] = version;
+              const pkgFile = join(NOWA_INSTALL_DIR, 'node_modules', name, 'package.json');
+              const newVersion = fs.readJsonSync(pkgFile).version;
+              nowaJson[name] = newVersion;
+            });
+            fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, nowaJson);
+            // if (!fs.existsSync(LINK_NOWA_PATH)) {
+              linkNowa();
+            // }
           });
-          fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, nowaJson);
-          // if (!fs.existsSync(LINK_NOWA_PATH)) {
-            linkNowa();
-          // }
-        });
+        }
       // don't need update
       } else {
         // if (!fs.existsSync(LINK_NOWA_PATH)) {
