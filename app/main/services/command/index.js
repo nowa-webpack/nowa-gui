@@ -67,9 +67,10 @@ const exportFunc = {
   openTerminal(cwd) {
     if (isWin) {
       const shell = process.env.comspec || 'cmd.exe';
-      execSync(`start ${shell}`, {
-        cwd,
-      });
+      // execSync(`start ${shell}`, {
+      //   cwd,
+      // });
+      execSync(join(APP_PATH, 'task', 'terminal.cmd'), { cwd });
     } else if (isMac) {
       execSync(join(APP_PATH, 'task', 'terminal'), { cwd });
     } else {

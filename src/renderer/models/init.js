@@ -201,7 +201,7 @@ export default {
       // answers.npm = NPM_MAP[answers.registry];
       answers.npm = answers.registry;
       // answers.template = '';
-      answers.template = sltItem.path;
+      answers.template = sltItem.path.replace(/\\/g, '\\\\');
 
       const config = gitConfig.sync(join(answers.projPath, '.git', 'config')) || {};
 
