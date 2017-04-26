@@ -76,13 +76,15 @@ class PreInitialPage extends Component {
     const { nowaPreFlag } = this.state;
     // this.removeLoading();
     const proj = getLocalProjects();
-    let showPage = 0;
+    // let showPage = 0;
+
+    console.log('nowaPreFlag', nowaPreFlag);
     
-    if (nowaPreFlag === 1) {
-      showPage = 3;
-    } else {
-      showPage = proj.length > 0 ? 2 : 0;
-    }
+    // if (nowaPreFlag === 1) {
+    //   showPage = 3;
+    // } else {
+    const showPage = proj.length > 0 ? 2 : 0;
+    // }
 
     dispatch({
       type: 'layout/changeStatus',

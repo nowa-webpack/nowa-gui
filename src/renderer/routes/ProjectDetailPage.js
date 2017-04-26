@@ -102,11 +102,6 @@ const ProjectDetailPage = ({
 };
 
 
-
-//  <div className="opt " onClick={() => shell.showItemInFolder(join(path, 'package.json'))}>
-//   <i className="iconfont icon-folder" /><br />{i18n('task.folder')}
-// </div>
-
 ProjectDetailPage.propTypes = {
   logType: PropTypes.string.isRequired,
   registry: PropTypes.string.isRequired,

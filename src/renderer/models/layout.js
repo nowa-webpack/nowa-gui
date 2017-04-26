@@ -39,26 +39,8 @@ export default {
         ipcRenderer.send('network-change-status', online);
       };
 
-      // if (!getLocalEditorPath(SUBLIME)) {
-      //   setLocalEditorPath(SUBLIME, fs.existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : '');
-      // }
-
-      // if (!getLocalEditorPath(VSCODE)) {
-      //   setLocalEditorPath(VSCODE, fs.existsSync(VSCODE_BASE_PATH) ? VSCODE_BASE_PATH : '');
-      // }
-
       window.addEventListener('online', onNetworkChange);
       window.addEventListener('offline', onNetworkChange);
-
-      // dispatch({
-      //   type: 'changeStatus',
-      //   payload: {
-      //     editor: {
-      //       Sublime: getLocalEditorPath(SUBLIME),
-      //       VScode: getLocalEditorPath(VSCODE),
-      //     },
-      //   }
-      // });
 
       dispatch({
         type: 'init/fetchAllTemplates',
@@ -66,15 +48,6 @@ export default {
 
       onNetworkChange();
 
-      // ipcRenderer.on('check-registry', (event, registry) => {
-      //   dispatch({
-      //     type: 'changeStatus',
-      //     payload: { registry }
-      //   });
-      //   dispatch({
-      //     type: 'init/fetchOnlineTemplates',
-      //   });
-      // });
 
       ipcRenderer.on('nowa-need-install', (event, nowaPreFlag) => {
         dispatch({
@@ -82,9 +55,6 @@ export default {
           payload: { nowaPreFlag }
         });
       });
-
-      
-
     },
   },
 
@@ -99,6 +69,13 @@ export default {
           showPage: toPage,
         }
       });
+
+      yield put({
+        type: 'project/changeStatus',
+        payload: {
+          startWacthProject: false,
+        }
+      });
     },
     * goBack(o, { put, select }) {
       const { backPage, showPage } = yield select(state => state.layout);
@@ -108,6 +85,12 @@ export default {
         payload: {
           backPage: showPage,
           showPage: backPage,
+        }
+      });
+      yield put({
+        type: 'project/changeStatus',
+        payload: {
+          startWacthProject: true,
         }
       });
     }

@@ -28,10 +28,25 @@ const getPercent = (str) => {
   const a = str.split('INSTALL_PROGRESS');
   const b = a[1].replace(/[\n\s]/g, '');
   const c = b.slice(1, b.length - 1).split(',').map(i => i.split(':'));
-  return (c[1][1] / c[0][1] * 100).toFixed(0);
+  return parseInt(c[1][1] / c[0][1] * 100);
 };
 
 const getMockPercent = (str, percent) => {
+  const p = getPercent(str) / 20;
+  const s = parseInt(Math.random() * 7);
+  if (p < 1 && percent + s < 60) {
+    percent += s;
+  } else {
+    if (p === 5 && percent < 100) {
+      percent += 5;
+    } else {
+      percent = p * 4 + 60;
+    }
+  }
+  return percent > 100 ? 100 : parseInt(percent);
+};
+
+/*const getMockPercent = (str, percent) => {
   const p = getPercent(str) / 25;
   const s = parseInt(Math.random() * 7);
   if (p === 0 && percent + s < 60) {
@@ -45,7 +60,7 @@ const getMockPercent = (str, percent) => {
     }
   }
   return percent;
-};
+};*/
 
 const newLog = (oldLog, str) => oldLog + ansiHTML(str.replace(/\n/g, '<br>'));
 

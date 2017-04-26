@@ -85,8 +85,6 @@ const get = () => {
       }
     });
 
-    
-
     manifest.official = official;
     setMainifest(manifest);
     // yield delay(15000);

@@ -6,17 +6,13 @@ import { VSCODE_BASE_PATH, SUBLIME_BASE_PATH, WEBSTORM_BASE_PATH } from 'gui-con
 import { getLocalEditor, getLocalEditorPath, setLocalEditorPath } from 'gui-local';
 
 const config = remote.getGlobal('config');
-// const curVersion = utils.getPackgeJson().version;
 
 export default {
 
   namespace: 'setting',
 
   state: {
-    // showPage: -1,  // 0 welcome ; 1 new page; 2 project; -1: preinit; 3 setting
-    // version: curVersion,
-    // newVersion: curVersion,
-    defaultEditor: getLocalEditor() || 'VScode',
+    defaultEditor: getLocalEditor() || SUBLIME,
     editor: {
       Sublime: getLocalEditorPath(SUBLIME),
       VScode: getLocalEditorPath(VSCODE),
@@ -28,7 +24,6 @@ export default {
 
   subscriptions: {
     setup({ dispatch }) {
-
       if (!getLocalEditorPath(SUBLIME)) {
         setLocalEditorPath(SUBLIME, fs.existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : '');
       }
@@ -55,7 +50,7 @@ export default {
       ipcRenderer.on('check-registry', (event, registry) => {
         dispatch({
           type: 'changeStatus',
-          payload: { registry, registryList: config.registryList().split(',') }
+          payload: { registry, registryList: config.registryList() }
         });
         dispatch({
           type: 'init/fetchOnlineTemplates',
@@ -76,32 +71,13 @@ export default {
       } else {
         registryList.push(registry);
 
-        config.registryList(registryList.join(','));
+        config.registryList(registryList);
         yield put({
           type: 'changeStatus',
           payload: { registry, registryList }
         });
       }
     }
-    // * changeLogTab({ payload: { activeTab } }, { put, select }) {
-    //   const { projects, current } = yield select(state => state.project);
-    //   if (activeTab === '2') {
-    //     projects.map((item) => {
-    //       if (item.path === current.path) {
-    //         item.taskErr = false;
-    //       }
-    //     });
-    //     yield put({
-    //       type: 'project/changeStatus',
-    //       payload: { projects }
-    //     });
-    //   }
-    //   yield put({
-    //     type: 'changeStatus',
-    //     payload: { activeTab }
-    //   });
-    // },
-    
   },
   reducers: {
     changeStatus(state, action) {

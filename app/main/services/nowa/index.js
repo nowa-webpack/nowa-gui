@@ -132,15 +132,15 @@ const init = () => {
             nowaJson[name] = newVersion;
           });
           fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, nowaJson);
-          if (!fs.existsSync(LINK_NOWA_PATH)) {
+          // if (!fs.existsSync(LINK_NOWA_PATH)) {
             linkNowa();
-          }
+          // }
         });
       // don't need update
       } else {
-        if (!fs.existsSync(LINK_NOWA_PATH)) {
+        // if (!fs.existsSync(LINK_NOWA_PATH)) {
           linkNowa();
-        }
+        // }
         win.webContents.send('nowa-need-install', 2);
       }
     });

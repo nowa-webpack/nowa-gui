@@ -17,7 +17,7 @@ import { getLocalProjects } from 'gui-local';
 
 import OverrideModal from './OverrideModal';
 
-const registryList = [{
+/*const registryList = [{
   name: 'http://registry.npm.taobao.org',
   value: 'cnpm'
   // value: 'https://registry.npm.taobao.org'
@@ -29,8 +29,9 @@ const registryList = [{
   name: 'http://registry.npmjs.org',
   value: 'npm'
   // value: 'https://registry.npmjs.org'
-}];
+}];*/
 
+// const aliRegistry = 'http://registry.npm.alibaba-inc.com';
 
 class Form extends Component {
 
@@ -65,6 +66,7 @@ class Form extends Component {
       // registry: 'https://registry.npm.taobao.org',
       repository: '',
     };
+
     this.overwrite = this.overwrite.bind(this);
   }
 
@@ -104,15 +106,6 @@ class Form extends Component {
     const { extendsArgs, basePath, ...others } = this.state;
     const { dispatch, next } = this.props;
     const name = basename(others.projPath);
-
-    // if (!others.name) {
-    //   Message.error(i18n('msg.nameRequired'));
-    //   return false;
-    // }
-
-    // if (!basename(this.state.projPath)) {
-
-    // }
 
     if (!(NAME_MATCH.test(name))) {
       Message.error(i18n('msg.invalidName'));
@@ -163,9 +156,8 @@ class Form extends Component {
   }
 
   render() {
-    // const { projPath, name, registry, extendsArgs } = this.state;
     const { projPath, registry, extendsArgs } = this.state;
-    const { extendsProj, prev } = this.props;
+    const { extendsProj, prev, registryList } = this.props;
     let extendsHtml;
 
     if (Object.keys(extendsProj).length) {
@@ -218,7 +210,7 @@ class Form extends Component {
               onChange={(value) => this.setState({ registry: value })}
             >
               { registryList.map(item =>
-                <Select.Option key={item} value={item.value}>{ item.name }</Select.Option>)
+                <Select.Option key={item} value={item}>{ item }</Select.Option>)
               }
             </Select>
           </div>
@@ -258,11 +250,13 @@ Form.propTypes = {
   next: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
   defaultRegistry: PropTypes.string.isRequired,
+  registryList: PropTypes.array.isRequired,
 };
 
 
 export default connect(({ init, setting }) => ({ 
   extendsProj: init.extendsProj,
   isGitEmptyFolder: init.isGitEmptyFolder,
-  defaultRegistry: setting.registry
+  defaultRegistry: setting.registry,
+  registryList: setting.registryList,
 }))(Form);

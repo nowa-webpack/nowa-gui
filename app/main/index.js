@@ -9,14 +9,10 @@ const { checkRegistry, checkEncoding } = utils;
 
 
 log.info('start nowa gui');
-// config.clear();
-// config.setTemplateUpdate('nowa-template-salt-v_1', '0.0.1');
-// console.log(config.getTemplateVersion('dingyou-dingtalk-mobile-v_1'));
 
 ipcMain.on('network-change-status', (event, online) => {
   config.online(online);
   console.log('online', online);
-  // if (online && !config.registry()) {
   if (online) {
     checkRegistry().then((registry) => {
       const win = windowManager.getWin();

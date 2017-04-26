@@ -198,7 +198,8 @@ export default {
 
       let answers = { ...payload };
 
-      answers.npm = NPM_MAP[answers.registry];
+      // answers.npm = NPM_MAP[answers.registry];
+      answers.npm = answers.registry;
       // answers.template = '';
       answers.template = sltItem.path;
 

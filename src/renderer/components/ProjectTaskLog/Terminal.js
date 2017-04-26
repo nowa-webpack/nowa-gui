@@ -29,10 +29,11 @@ class Terminal extends Component {
     }
 
     this.handleChangeCustom = this.handleChangeCustom.bind(this);
+    this.onReceiveLog = this.onReceiveLog.bind(this);
   }
 
   componentDidMount() {
-    ipcRenderer.on('task-ouput', this.onReceiveLog.bind(this));
+    ipcRenderer.on('task-ouput', this.onReceiveLog);
   }
 
   componentWillReceiveProps({ logType, name, otherCommands }) {
