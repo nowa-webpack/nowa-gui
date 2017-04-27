@@ -505,7 +505,6 @@ export default {
       });
 
       if (project.start) {
-        // const { start, build } = yield select(state => state.task);
         yield put({
           type: 'task/stop',
           payload: {

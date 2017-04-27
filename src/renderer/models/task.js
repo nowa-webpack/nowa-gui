@@ -125,6 +125,13 @@ export default {
     * initRemoveCommand({ payload: { project } }, { put, select }) {
       const { commands } = yield select(state => state.task);
 
+      // command.clearLog({ name, type: logType });
+      // remoteCommand
+
+      Object.keys(commands[project.path]).forEach(type => {
+        remoteCommand.clearLog({ name: project.path, type });
+      });
+
       delete commands[project.path];
 
       yield put({

@@ -30,19 +30,6 @@ const setTask = (cmd, name, cnt) => {
   task[cmd][name] = Object.assign(t, cnt);
 };
 
-// const setTask = ({ cmd, name, cnt }) => {
-//   const t = Object.assign(getTask(cmd, name), cnt);
-//   task[cmd][name] = t;
-//   console.log(task)
-// };
-
-// const writeLog = (cmd, name, str) => {
-//   const t = getTask(cmd, name);
-//   t.log += ansiHTML(str.replace(/\n/g, '<br>'));
-//   task[cmd][name] = t;
-//   return t.log;
-// };
-
 const writeLog = (cmd, name, buf) => {
   const str = iconv.decode(buf, config.encode());
   const t = getTask(cmd, name);
