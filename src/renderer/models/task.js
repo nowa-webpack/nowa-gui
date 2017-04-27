@@ -185,15 +185,14 @@ export default {
           payload: { showPage: 3 }
         });
       } else {
-        const succees = remoteCommand.openEditor(project.path, defaultEditor, editorPath);
-
-        if (!succees) {
+        const { success } = yield remoteCommand.openEditor(project.path, defaultEditor, editorPath);
+        if (!success) {
           Message.error('Open editor failed, please check the editor path.');
           yield delay(500);
 
           yield put({
-            type: 'layout/changeStatus',
-            payload: { showPage: 3 }
+            type: 'layout/showPage',
+            payload: { toPage: 3 }
           });
         }
       }

@@ -1,4 +1,4 @@
-const { fork, execSync, spawnSync } = require('child_process');
+const { fork, execSync, spawn, exec } = require('child_process');
 const { join } = require('path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
@@ -49,19 +49,31 @@ const exportFunc = {
       }
     }
 
-    try {
-      if (editor === 'WebStorm') {
-        execSync(`${editorPath} ${projectPath}`,
-          {
-            cwd: projectPath,
-          });
-      } else {
-        spawnSync(editorPath, ['./'], { cwd: projectPath });
+    let term;
+
+    return new Promise((resolve, reject) => {
+      try {
+        if (editor === 'WebStorm') {
+          /*execSync(`${editorPath} ${projectPath}`,
+            {
+              cwd: projectPath,
+            });*/
+
+          term = exec(`${editorPath} ${projectPath}`, { cwd: projectPath });
+        } else {
+          term = spawn(editorPath, ['./'], { cwd: projectPath });
+        }
+        term.on('exit', () => {
+          console.log('exit ediotr');
+          resolve({ success: true });
+        });
+        // return true;
+      } catch (e) {
+        resolve({ success: false });
+        // return false;
       }
-      return true;
-    } catch (e) {
-      return false;
-    }
+    });
+
   },
 
   openTerminal(cwd) {
