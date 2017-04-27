@@ -111,7 +111,7 @@ class LayoutWrap extends Component {
 
   getUpdateVersion() {
     const { dispatch, version, registry } = this.props;
-    request(`${registry}/nowa-gui-version-test`)
+    request(`${registry}/nowa-gui-version`)
       .then(({ data, err }) => {
         if (!err) {
           const newVersion = data['dist-tags'].latest;
