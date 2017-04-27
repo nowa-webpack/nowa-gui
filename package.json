@@ -11,9 +11,9 @@
     "build": "cross-env BABEL_ENV=production ./node_modules/.bin/webpack --config ./webpack/prod.config.js ",
     "prepack": "node prePacker.js",
     "pack": "build --dir",
-    "packer:mac": "npm run prepack && build -m",
-    "packer:linux": "npm run prepack && build -l",
-    "packer:win": "npm run prepack && build -w",
+    "packer:mac": "npm run prepack && npm run build && build -m",
+    "packer:linux": "npm run prepack && npm run build && build -l",
+    "packer:win": "npm run prepack && npm run build && build -w",
     "packer:win1": "cross-env ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron/ node packerWin.js",
     "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "test": "echo \"Error: no test specified\" && exit 1"
