@@ -1,4 +1,4 @@
-const { fork, execSync, spawn, exec } = require('child_process');
+const { fork, spawn, exec } = require('child_process');
 const { join } = require('path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
@@ -73,29 +73,24 @@ const exportFunc = {
         // return false;
       }
     });
-
   },
 
   openTerminal(cwd) {
     if (isWin) {
-      // const shell = process.env.comspec || 'cmd.exe';
-      // execSync(`start ${shell}`, {
-      //   cwd,
-      // });
-      execSync(join(APP_PATH, 'task', 'terminal.cmd'), { cwd });
+      const shell = process.env.comspec || 'cmd.exe';
+      exec(`start ${shell}`, { cwd });
     } else if (isMac) {
-      execSync(join(APP_PATH, 'task', 'terminal'), { cwd });
+      exec(join(APP_PATH, 'task', 'terminal'), { cwd });
     } else {
-      execSync('/usr/bin/x-terminal-emulator', {
-        cwd
-      });
+      exec('/usr/bin/x-terminal-emulator', { cwd });
     }
   },
 
   linkNowa() {
-    fork(NPM_PATH, ['link'], {
-      cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa')
-    });
+    exec('npm link', { cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa'), env });
+    // fork(NPM_PATH, ['link'], {
+    //   cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa')
+    // });
   },
 
   exec({ name, type }) {

@@ -12,7 +12,8 @@ const DefinePlugin = require('webpack/lib/DefinePlugin');
 
 module.exports = webpackMerge(webpackCommon, {
 
-  devtool: 'inline-source-map',
+  // devtool: 'inline-source-map',
+  devtool: 'cheap-module-eval-source-map',
 
   entry: {
     'app': [

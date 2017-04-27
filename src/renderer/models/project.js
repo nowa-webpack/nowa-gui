@@ -38,7 +38,6 @@ const getProjectInfoByPath = (filePath) => {
     } else {
       obj.registry = abc.npm;
       abc.npm = NPM_MAP[abc.npm];
-      // writeABCJson(abc);
       writeABCJson(filePath, abc);
       obj.abc = abc;
     }
@@ -69,10 +68,11 @@ const getProjects = () => {
     const info = getProjectInfoByPath(project.path);
 
     return {
-      ...info,
-      ...project,
+      loadingStep: 0,
       start: false,
       taskErr: false,
+      ...info,
+      ...project,
     };
   });
 };
@@ -464,21 +464,21 @@ export default {
       const { projects, current } = yield select(state => state.project);
 
       projects.map((item) => {
-        if (filePath === item.path) {
+        if (filePath === item.path && 'loadingStep' in item) {
           delete item.loadingStep;
         }
         return item;
       });
 
-      if (current.path === filePath) {
+      if (current.path === filePath && 'loadingStep' in current) {
         delete current.loadingStep;
       }
 
       const storeProjects = getLocalProjects();
 
       storeProjects.map((item) => {
-        if (item.path === filePath) {
-          delete item.loadingStep;
+        if (item.path === filePath && 'loadingStep' in item) {
+          return { name: item.name, path: item.path, registry: item.registry };
         }
         return item;
       });
