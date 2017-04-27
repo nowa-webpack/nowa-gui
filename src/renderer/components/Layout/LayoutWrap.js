@@ -56,11 +56,11 @@ class LayoutWrap extends Component {
             <p>{i18n('msg.nextVersion')} {newVersion}</p>
           </div>),
         onOk() {
-          // if (upgradeUrl) {
+          if (upgradeUrl) {
             shell.openExternal(upgradeUrl);
-          // } else {
-          //   shell.openExternal(UPGRADE_URL);
-          // }
+          } else {
+            shell.openExternal(UPGRADE_URL);
+          }
         },
         onCancel() {},
         okText: i18n('form.ok'),
