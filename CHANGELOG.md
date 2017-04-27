@@ -10,12 +10,22 @@
 1.6.0 / 2017-04-07
 ==================
 
+*** zh
+
 * 界面优化
 * 更换下载地址
 * 增加包管理功能
 * 增加源策略
 * 增加 nowa 和 package.json 可视化配置
 * 工具官网上线
+
+*** en
+
+* support running customized npm scripts
+* support customized templates, also loading remote / local templates
+* visualized settings for development
+* visualized dependency management
+* installation package size reduce to 50%
 
 1.5.0 / 2017-03-31
 ==================

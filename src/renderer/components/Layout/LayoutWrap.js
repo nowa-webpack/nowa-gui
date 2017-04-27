@@ -8,8 +8,8 @@ import { info, confirm } from 'antd/lib/modal';
 // import { hashHistory } from 'react-router';
 
 import i18n from 'i18n';
-import { hidePathString, readPkgJson, getPkgDependencies } from 'gui-util';
-import { IS_WIN, UPGRADE_URL } from 'gui-const';
+import { hidePathString } from 'gui-util';
+import { IS_WIN, UPGRADE_URL, EXTENSION_MAP } from 'gui-const';
 import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from 'gui-local';
 import request from 'gui-request';
 
@@ -18,8 +18,6 @@ import DragPage from './DragPage';
 
 const { Header } = Layout;
 const { windowManager } = remote.getGlobal('services');
-// const { registry } = remote.getGlobal('config');
-
 
 class LayoutWrap extends Component {
   constructor(props) {
@@ -58,11 +56,11 @@ class LayoutWrap extends Component {
             <p>{i18n('msg.nextVersion')} {newVersion}</p>
           </div>),
         onOk() {
-          if (upgradeUrl) {
+          // if (upgradeUrl) {
             shell.openExternal(upgradeUrl);
-          } else {
-            shell.openExternal(UPGRADE_URL);
-          }
+          // } else {
+          //   shell.openExternal(UPGRADE_URL);
+          // }
         },
         onCancel() {},
         okText: i18n('form.ok'),
@@ -90,41 +88,20 @@ class LayoutWrap extends Component {
   onDrop(acceptedFiles) {
     const { dispatch, registry, current } = this.props;
     const filePath = acceptedFiles[0].path;
+    dispatch({
+      type: 'project/importProjectFromFolder',
+      payload: {
+        filePath,
+      }
+    });
 
-    // if (!current.loading) {
-
-      dispatch({
-        type: 'project/importProjectFromFolder',
-        payload: {
-          filePath,
-        }
-      });
-
-      this.onDragLeave();
-    // }
-
-
-    /*const pkgs = getPkgDependencies(readPkgJson(filePath));
-
-    const options = {
-      root: filePath,
-      registry,
-      pkgs,
-    };
-
-    
-    command.notProgressInstall({
-      options,
-      sender: 'import',
-    });*/
+    this.onDragLeave();
     
   }
 
   onDragOver() {
-    // if (!this.props.current.loading) {
-      document.getElementById('main-ctn').style.display = 'none';
-      document.getElementById('drag-ctn').style.display = '';
-    // }
+    document.getElementById('main-ctn').style.display = 'none';
+    document.getElementById('drag-ctn').style.display = '';
   }
 
   onDragLeave() {
@@ -134,44 +111,46 @@ class LayoutWrap extends Component {
 
   getUpdateVersion() {
     const { dispatch, version, registry } = this.props;
-    request(`${registry}/nowa-gui-version`)
-    // request('https://registry.npm.taobao.org/nowa-gui-version')
-      .then(({ data }) => {
-        console.log(data['dist-tags'])
-        const newVersion = data['dist-tags'].latest;
-        console.log('newVersion', newVersion);
+    request(`${registry}/nowa-gui-version-test`)
+      .then(({ data, err }) => {
+        if (!err) {
+          const newVersion = data['dist-tags'].latest;
+          console.log('newVersion', newVersion);
 
-        if (data.download) {
-          dispatch({
-            type: 'layout/changeStatus',
-            payload: { upgradeUrl: data.download[process.platform] }
-          });
-        }
+          if (data.versions[newVersion].downloadDomain) {
+            dispatch({
+              type: 'layout/changeStatus',
+              // payload: { upgradeUrl: data.download[process.platform] }
+              payload: {
+                upgradeUrl: `${data.versions[newVersion].downloadDomain}/${newVersion}/NowaGUI.${EXTENSION_MAP[process.platform]}`
+              }
+            });
+          }
 
-        if (semver.lt(version, newVersion)) {
-          dispatch({
-            type: 'layout/changeStatus',
-            payload: { newVersion }
-          });
-        }
+          if (semver.lt(version, newVersion)) {
+            dispatch({
+              type: 'layout/changeStatus',
+              payload: { newVersion }
+            });
+          }
 
-        if (+getLocalUpdateFlag(version) !== 1) {
-          // console.log(data);
-          const arr = data.readme.split('#').filter(i => !!i).map(i => i.split('*').slice(1));
+          if (+getLocalUpdateFlag(version) !== 1) {
+            const arr = data.readme.split('#').filter(i => !!i).map(i => i.split('*').slice(1));
 
-          const tip = getLocalLanguage() === 'zh' ? arr[0] : arr[1];
+            const tip = getLocalLanguage() === 'zh' ? arr[0] : arr[1];
 
-          info({
-            title: i18n('msg.updateTip'),
-            content: (
-              <ul className="update-tip">
-                {tip.map(item => <li key={item}>{item}</li>)}
-              </ul>),
-            onOk() {
-              setLocalUpdateFlag(version);
-            },
-            okText: i18n('form.ok'),
-          });
+            info({
+              title: i18n('msg.updateTip'),
+              content: (
+                <ul className="update-tip">
+                  {tip.map(item => <li key={item}>{item}</li>)}
+                </ul>),
+              onOk() {
+                setLocalUpdateFlag(version);
+              },
+              okText: i18n('form.ok'),
+            });
+          }
         }
       });
   }

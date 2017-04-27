@@ -24,6 +24,12 @@ export const NPM_MAP = {
   'http://registry.npm.alibaba-inc.com': 'tnpm',
 };
 
+export const EXTENSION_MAP = {
+  win32: 'exe',
+  darwin: 'dmg',
+  linux: 'deb',
+};
+
 export const VSCODE_BASE_PATH = IS_WIN
   ? 'C:/Program Files (x86)/Microsoft VS Code'
   : '/Applications/Visual Studio Code.app';
@@ -43,8 +49,6 @@ export const UPGRADE_URL = IS_WIN
     : 'https://alixux.org/downloads/nowa-gui.deb';
   // ? 'http://lab.onbing.com/nowa-gui.exe'
   // : 'http://lab.onbing.com/nowa-gui.dmg';
-  // ? 'https://alixux.org/downloads/nowa-gui.exe'
-  // : 'https://alixux.org/downloads/nowa-gui.dmg';
 
 const inner_url = [
   'http://alipay-rmsdeploy-image.cn-hangzhou.alipay.aliyun-inc.com/nowa-test/nowa-gui.dmg',
