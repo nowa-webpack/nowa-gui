@@ -2,30 +2,29 @@
 ==================
 * 界面优化
 * 增加任务托盘
+* 可以在项目目录下唤起终端
 * 支持非 Nowa 项目
 * 优化源策略
 * 增加 WebStorm 编辑器选项
 * 可以使用 Nowa 命令
+* 修改下载链接
+* 增加全局源配置
+* 修复控制台日志切换 Bug
+* 增加导入项目时的日志显示
 
 1.6.0 / 2017-04-07
 ==================
 
-*** zh
-
 * 界面优化
+* 移除内置 nowa 模块，减小体积
 * 更换下载地址
 * 增加包管理功能
 * 增加源策略
+* 增加自定义模板设置
+* 增加自定义命令
 * 增加 nowa 和 package.json 可视化配置
 * 工具官网上线
 
-*** en
-
-* support running customized npm scripts
-* support customized templates, also loading remote / local templates
-* visualized settings for development
-* visualized dependency management
-* installation package size reduce to 50%
 
 1.5.0 / 2017-03-31
 ==================
