@@ -16,7 +16,7 @@ export default {
     showPage: -1,  // 0 welcome ; 1 new page; 2 project; -1: preinit; 3 setting
     backPage: -1,
     showSideMask: false,
-    // showModModal: false,
+    showFeedBackModal: false,
     version: curVersion,
     newVersion: curVersion,
     upgradeUrl: '',

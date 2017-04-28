@@ -21,6 +21,12 @@
     margin-right: 15px;
     font-size: 14px;
     color: #666;
+    
+    &-bk{
+      display: block;
+      width: 100%;
+      margin-bottom: 4px;
+    }
   }
 
   input{
@@ -83,6 +89,21 @@
 
   input[type=radio]{
     width: 100px;
+  }
+
+  textarea{
+    width: 300px;
+    vertical-align: top;
+    height: 80px;
+    resize: none;
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #d9d9d9;
+    color: #666;
+
+    &:focus{
+      border-color: #108ee9;
+    }
   }
 }
 

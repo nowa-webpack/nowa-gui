@@ -1,15 +1,17 @@
 const { fork, spawn, exec } = require('child_process');
-const { join } = require('path');
+const { join, resolve } = require('path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
 const { tmpdir } = require('os');
+const npmRunPath = require('npm-run-path');
+
 
 const task = require('../task');
 const kill = require('./kill');
 const modules = require('./modules');
 const env = require('./env');
 const { getWin } = require('../windowManager');
-const { constants: { NPM_PATH, APP_PATH, NOWA_INSTALL_DIR }, isWin, isMac, isLinux } = require('../is');
+const { constants: { NPM_PATH, APP_PATH, NOWA_INSTALL_DIR, NODE_PATH }, isWin, isMac, isLinux } = require('../is');
 
 const exportFunc = {
 
@@ -87,10 +89,29 @@ const exportFunc = {
   },
 
   linkNowa() {
-    exec('npm link', { cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa'), env });
-    // fork(NPM_PATH, ['link'], {
-    //   cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa')
-    // });
+
+    if (isWin) {
+      const nodePath = join(NODE_PATH, 'node.exe');
+      const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', 'nowa', 'bin', 'nowa');
+
+      const target = join(npmRunPath.env().APPDATA, 'npm', 'nowa.cmd');
+
+      const str =
+      ` @ECHO OFF
+        @SETLOCAL
+        @SET PATHEXT=%PATHEXT:;.JS;=;%
+        "${nodePath}" "${srcNowa}" %*`
+
+      fs.writeFileSync(target, str, { mode: 0o775 });
+    } else {
+      const target = '/usr/local/bin/nowa';
+      const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', '.bin', 'nowa');
+      if (fs.existsSync(target)) {
+        fs.removeSync(target);
+      }
+      fs.symlinkSync(srcNowa, target);
+    }
+    // exec('npm link', { cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa'), env });
   },
 
   exec({ name, type }) {

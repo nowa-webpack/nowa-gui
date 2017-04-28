@@ -97,8 +97,9 @@ module.exports = {
   'foot.set': 'Setting',
   // 'foot.import': 'Import Project',
   'foot.add': 'New Project',
-  'foot.feedback': 'Feedback',
+  'foot.feedback': 'Issue',
   'foot.help': 'Help',
+  'foot.dingding': 'DingDing',
 
   'msg.installSuccess': 'Installed Successfully!',
   'msg.installFail': 'Installed Failed!',
@@ -147,4 +148,9 @@ module.exports = {
   'table.empty': 'No data.',
   'table.action.del': 'delete',
   'table.action.update': 'update',
+
+  'feedback.modal.title': 'Feedback',
+  'feedback.name': 'What\'s your name?',
+  'feedback.contact': 'How to contact with you?',
+  'feedback.content': 'What\'s your problem?',
 };

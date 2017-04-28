@@ -98,8 +98,9 @@ module.exports = {
   'foot.set': '工具设置',
   // 'foot.import': '导入项目',
   'foot.add': '新建项目',
-  'foot.feedback': '反馈',
+  'foot.feedback': 'Issue',
   'foot.help': '帮助',
+  'foot.dingding': '反馈',
 
   'msg.installSuccess': '安装成功！',
   'msg.installFail': '安装失败！',
@@ -149,4 +150,9 @@ module.exports = {
   'table.empty': '暂无数据',
   'table.action.del': '移除',
   'table.action.update': '更新',
+
+  'feedback.modal.title': '反馈',
+  'feedback.name': '怎么称呼您？',
+  'feedback.contact': '怎么联系您？',
+  'feedback.content': '您遇到了什么问题？',
 }

@@ -24,13 +24,18 @@ const MainPage = ({ showPage, dispatch, showSideMask }) => {
             />
           </Tooltip>
           <Tooltip placement="top" title={i18n('foot.feedback')} >
-            <Button type="default" icon="message" shape="circle"
+            <Button type="default" icon="github" shape="circle"
               onClick={() => shell.openExternal('https://github.com/nowa-webpack/nowa-gui/issues/new')}
+            />
+          </Tooltip>
+          <Tooltip placement="top" title={i18n('foot.dingding')} >
+            <Button type="default" icon="dingding" shape="circle"
+              onClick={() => dispatch({ type: 'layout/changeStatus', payload: { showFeedBackModal: true } })}
             />
           </Tooltip>
           <Tooltip placement="top" title={i18n('foot.help')} >
             <Button type="default" icon="question-circle-o" shape="circle"
-              onClick={() => shell.openExternal('https://github.com/nowa-webpack/nowa-gui/wiki')}
+              onClick={() => shell.openExternal('https://nowa-webpack.github.io/nowa/')}
             />
           </Tooltip>
         </div>

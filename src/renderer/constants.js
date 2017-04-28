@@ -58,20 +58,10 @@ const inner_url = [
 export const LOCAL_TEMP_PATHS = 'LOCAL_TEMP_PATHS';
 export const REMOTE_TEMP_URLS = 'REMOTE_TEMP_URLS';
 
+// export const DINGDING_TOKEN = 'be77cc501c1d5a466f91690266495a28b1a0e0cb654cc578cfd5a00dbd1b7850';
+export const DINGDING_TOKEN = '399b920a41af24d5c4d0e12f302a496a37e816bf7eaad10aa59fb93f8330cc78';
 
-// const strRegex =
-//   "^((https|http|ftp|rtsp|mms)?://)"
-//   + "?(([0-9a-zA-Z_!~*'().&=+$%-]+: )?[0-9a-zA-Z_!~*'().&=+$%-]+@)?" //ftp的user@
-//   + "(([0-9]{1,3}\.){3}[0-9]{1,3}" // IP形式的URL- 199.194.52.184 
-//   + "|" // 允许IP和DOMAIN（域名
-//   + "([0-9a-zA-Z_!~*'()-]+\.)*" // 域名- www.      
-//   + "([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\." // 二级域名
-//   + "[a-zA-Z]{2,6})" // first level domain- .com or .museum
-//   + "(:[0-9]{1,4})?" // 端口- :80
-//   + "((/?)|"
-//   + "(/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]+)+/?)$";
 
-// export const URL_MATCH = new RegExp(strRegex);
 export const URL_MATCH = /^((ht|f)tps?):\/\/([\w\-]+(\.[\w\-]+)*\/)*[\w\-]+(\.[\w\-]+)*\/?(\?([\w\-\.,@?^=%&:\/~\+#]*)+)?/;
 
 export const VERSION_MATCH = /^\d+\.\d+\.\d+([\.\-\w])*$/;

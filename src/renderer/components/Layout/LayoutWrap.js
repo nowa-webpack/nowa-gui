@@ -14,6 +14,7 @@ import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from 'gui-lo
 import request from 'gui-request';
 
 import DragPage from './DragPage';
+import FeedbackModal from './FeedbackModal';
 
 
 const { Header } = Layout;
@@ -156,7 +157,7 @@ class LayoutWrap extends Component {
   }
 
   render() {
-    const { showPage, current, children } = this.props;
+    const { showPage, current, children, showFeedBackModal, dispatch, version } = this.props;
     // const { online } = this.state;
     const closeBtn = (
       <div className="icn icn-x" key="0" onClick={() => windowManager.close()}>
@@ -188,7 +189,7 @@ class LayoutWrap extends Component {
 
             { showBD && <div className="bar-bd" /> }
 
-            <div className="logo" onClick={() => shell.openExternal('https://alixux.org/nowa/')} />
+            <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/html/gui.html')} />
 
             { showPage === 2 &&
               <div className="proj-info">
@@ -208,6 +209,7 @@ class LayoutWrap extends Component {
           { children }
         </Layout>
         <DragPage />
+        <FeedbackModal showModal={showFeedBackModal} dispatch={dispatch} version={version} />
       </Dropzone>
     );
   }
@@ -229,6 +231,7 @@ LayoutWrap.propTypes = {
   startWacthProject: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
+  showFeedBackModal: PropTypes.bool.isRequired,
 };
 
 export default connect(({ layout, project, setting }) => ({
@@ -239,5 +242,6 @@ export default connect(({ layout, project, setting }) => ({
   online: layout.online,
   registry: setting.registry,
   startWacthProject: project.startWacthProject,
-  upgradeUrl: layout.upgradeUrl
+  upgradeUrl: layout.upgradeUrl,
+  showFeedBackModal: layout.showFeedBackModal,
 }))(LayoutWrap);
