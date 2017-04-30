@@ -30,12 +30,16 @@ class PackageManager extends Component {
 
   getInitDependencies(pkg) {
     const { dependencies, devDependencies } = pkg;
-    const dp0 = Object.keys(dependencies).map(name => ({
-      name,
-      version: dependencies[name],
-    }));
-
     let dp1 = [];
+    let dp0 = [];
+
+    if (dependencies) {
+
+      dp0 = Object.keys(dependencies).map(name => ({
+        name,
+        version: dependencies[name],
+      }));
+    }
 
     if (devDependencies) {
       dp1 = Object.keys(devDependencies).map(name => ({

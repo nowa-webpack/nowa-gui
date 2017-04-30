@@ -167,7 +167,7 @@ class DependenceTable extends Component {
         safeUpdate: diff !== 'major'
       };
     }).sort((a, b) => b.update - a.update);
-    console.log(pkgs)
+    console.log(pkgs);
     return pkgs;
   }
 
