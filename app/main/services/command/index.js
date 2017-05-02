@@ -113,16 +113,12 @@ const exportFunc = {
         const linkFile = join(APP_PATH, 'task', 'link.js');
         const opt = {
           name: 'NowaGUI',
-          // icns: join(APP_PATH, 'assets')
-        }
+        };
 
         const sudoer = new Sudoer(opt);
 
-        sudo.exec('echo hello', options, function(error) {});
-
         sudoer.spawn(nodePath, [linkFile], { env })
           .then(function (cp) {
-
           })
         /*const target = '/usr/local/bin/nowa';
         const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', '.bin', 'nowa');
