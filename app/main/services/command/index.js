@@ -109,19 +109,21 @@ const exportFunc = {
 
         fs.writeFileSync(target, str, { mode: 0o775 });
       } else {
-        const nodePath = join(NODE_PATH, 'node');
-        const linkFile = join(APP_PATH, 'task', 'link.js');
-        const opt = {
-          name: 'NowaGUI',
-        };
+        const target = '/usr/local/bin/nowa';
+        if (!fs.existsSync(target)) {
+          const nodePath = join(NODE_PATH, 'node');
+          const linkFile = join(APP_PATH, 'task', 'link.js');
+          const opt = {
+            name: 'NowaGUI',
+          };
 
-        const sudoer = new Sudoer(opt);
+          const sudoer = new Sudoer(opt);
 
-        sudoer.spawn(nodePath, [linkFile], { env })
-          .then(function (cp) {
-            // console.log(cp.output.stdout)
-            cp.stdout.on('data', data => console.log(data.toString()));
-          })
+          sudoer.spawn(nodePath, [linkFile], { env })
+            .then(function (cp) {
+              cp.stdout.on('data', data => console.log(data.toString()));
+            });
+        }
         /*const target = '/usr/local/bin/nowa';
         const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', '.bin', 'nowa');
         if (fs.existsSync(target)) {
