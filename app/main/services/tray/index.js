@@ -23,15 +23,15 @@ const init = () => {
   const contextMenu = Menu.buildFromTemplate(basicTemplateMenu);
   tray.setContextMenu(contextMenu);
   tray.setToolTip('Nowa');
-  if (isWin) {
+  // if (isWin) {
     tray.on('click', () => {
       tray.popUpContextMenu();
     });
-  }
+  // }
   // tray.setPressedImage(macPressIconPath);
 };
 
-const updateTrayMenu = (project, status) => {
+const updateTrayMenu = (project, status, fromRenderer = false) => {
   const win = getWin();
   projMenu.map((mu) => {
     if (project.path === mu.id) {
@@ -46,7 +46,7 @@ const updateTrayMenu = (project, status) => {
         mu.submenu[1].enabled = false;
       }
 
-      win.webContents.send(`task-${status}`, { project });
+      if (!fromRenderer) win.webContents.send(`task-${status}`, { project });
     }
     return mu;
   });
@@ -76,7 +76,7 @@ const submenu = project => [{
 const setInitTrayMenu = (projects) => {
   const menus = projects.map(item => ({
     label: item.name,
-    icon: stopIconPath,
+    icon: item.start ? startIconPath : stopIconPath,
     id: item.path,
     submenu: submenu(item),
   }));
@@ -90,6 +90,7 @@ const setInitTrayMenu = (projects) => {
 module.exports = {
   init,
   setInitTrayMenu,
+  updateTrayMenu,
   destroy() {
     tray.destroy();
   }

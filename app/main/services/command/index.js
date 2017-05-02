@@ -89,32 +89,36 @@ const exportFunc = {
   },
 
   linkNowa() {
+    try {
+      if (isWin) {
+        const nodePath = join(NODE_PATH, 'node.exe');
+        const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', 'nowa', 'bin', 'nowa');
 
-    if (isWin) {
-      const nodePath = join(NODE_PATH, 'node.exe');
-      const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', 'nowa', 'bin', 'nowa');
+        const target = join(npmRunPath.env().APPDATA, 'npm', 'nowa.cmd');
 
-      const target = join(npmRunPath.env().APPDATA, 'npm', 'nowa.cmd');
+        if (fs.existsSync(target)) {
+          fs.removeSync(target);
+        }
 
-      if (fs.existsSync(target)) {
-        fs.removeSync(target);
+        const str =
+        ` @ECHO OFF
+          @SETLOCAL
+          @SET PATHEXT=%PATHEXT:;.JS;=;%
+          "${nodePath}" "${srcNowa}" %*`
+
+        fs.writeFileSync(target, str, { mode: 0o775 });
+      } else {
+        const target = '/usr/local/bin/nowa';
+        const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', '.bin', 'nowa');
+        if (fs.existsSync(target)) {
+          fs.removeSync(target);
+        }
+        fs.symlinkSync(srcNowa, target);
       }
-
-      const str =
-      ` @ECHO OFF
-        @SETLOCAL
-        @SET PATHEXT=%PATHEXT:;.JS;=;%
-        "${nodePath}" "${srcNowa}" %*`
-
-      fs.writeFileSync(target, str, { mode: 0o775 });
-    } else {
-      const target = '/usr/local/bin/nowa';
-      const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', '.bin', 'nowa');
-      if (fs.existsSync(target)) {
-        fs.removeSync(target);
-      }
-      fs.symlinkSync(srcNowa, target);
+    } catch (e) {
+      
     }
+
     // exec('npm link', { cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa'), env });
   },
 

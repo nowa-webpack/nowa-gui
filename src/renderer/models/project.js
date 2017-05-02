@@ -443,6 +443,8 @@ export default {
       
       projects.push(current);
 
+      tray.setInitTrayMenu(projects);
+
       yield put({
         type: 'changeStatus',
         payload: {
@@ -522,6 +524,8 @@ export default {
       const storeProjects = getLocalProjects();
 
       setLocalProjects(storeProjects.filter(item => item.path !== project.path));
+
+      tray.setInitTrayMenu(filter);
 
       if (filter.length) {
         yield put({
@@ -624,10 +628,10 @@ export default {
           payload: { project }
         });
         yield delay(1000);
-        // yield put({
-        //   type: 'task/start',
-        //   payload: { project }
-        // });
+        yield put({
+          type: 'task/start',
+          payload: { project }
+        });
       }
     },
     * refresh(o, { put, select }) {
@@ -679,10 +683,12 @@ export default {
     },
     * startedProject({ payload: { filePath } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
+      let project;
 
       projects.map((item) => {
         if (item.path === filePath) {
           item.start = true;
+          project = item;
         }
         return item;
       });
@@ -690,6 +696,12 @@ export default {
       if (current.path === filePath) {
         current.start = true;
       }
+
+      ipcRenderer.send('tray-change-status', {
+        project,
+        status: 'start',
+        fromRenderer: true,
+      });
 
       yield put({
         type: 'changeStatus',
@@ -703,10 +715,12 @@ export default {
     },
     * stoppedProject({ payload: { filePath } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
+      let project;
 
       projects.map((item) => {
         if (item.path === filePath) {
           item.start = false;
+          project = item;
         }
         return item;
       });
@@ -714,6 +728,12 @@ export default {
       if (current.path === filePath) {
         current.start = false;
       }
+
+      ipcRenderer.send('tray-change-status', {
+        project,
+        status: 'stop',
+        fromRenderer: true
+      });
 
       yield put({
         type: 'changeStatus',

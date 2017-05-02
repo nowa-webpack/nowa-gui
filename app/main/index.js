@@ -24,6 +24,10 @@ ipcMain.on('network-change-status', (event, online) => {
   }
 });
 
+ipcMain.on('tray-change-status', (event, { project, status, fromRenderer }) => {
+  tray.updateTrayMenu(project, status, fromRenderer);
+});
+
 app.on('ready', () => {
   menu.init();
   windowManager.create();
