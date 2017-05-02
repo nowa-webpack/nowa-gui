@@ -96,6 +96,10 @@ const exportFunc = {
 
       const target = join(npmRunPath.env().APPDATA, 'npm', 'nowa.cmd');
 
+      if (fs.existsSync(target)) {
+        fs.removeSync(target);
+      }
+
       const str =
       ` @ECHO OFF
         @SETLOCAL
