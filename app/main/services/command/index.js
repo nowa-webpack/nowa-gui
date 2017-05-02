@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const uuid = require('uuid');
 const { tmpdir } = require('os');
 const npmRunPath = require('npm-run-path');
-const Sudoer = require('electron-sudo');
+const Sudoer = require('electron-sudo').default;
 
 
 const task = require('../task');
@@ -128,7 +128,7 @@ const exportFunc = {
         fs.symlinkSync(srcNowa, target);*/
       }
     } catch (e) {
-      
+      console.log(e);
     }
 
     // exec('npm link', { cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa'), env });
