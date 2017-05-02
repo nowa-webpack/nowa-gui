@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const uuid = require('uuid');
 const { tmpdir } = require('os');
 const npmRunPath = require('npm-run-path');
+const Sudoer = require('electron-sudo');
 
 
 const task = require('../task');
@@ -108,12 +109,27 @@ const exportFunc = {
 
         fs.writeFileSync(target, str, { mode: 0o775 });
       } else {
-        const target = '/usr/local/bin/nowa';
+        const nodePath = join(NODE_PATH, 'node');
+        const linkFile = join(APP_PATH, 'task', 'link.js');
+        const opt = {
+          name: 'NowaGUI',
+          // icns: join(APP_PATH, 'assets')
+        }
+
+        const sudoer = new Sudoer(opt);
+
+        sudo.exec('echo hello', options, function(error) {});
+
+        sudoer.spawn(nodePath, [linkFile], { env })
+          .then(function (cp) {
+
+          })
+        /*const target = '/usr/local/bin/nowa';
         const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', '.bin', 'nowa');
         if (fs.existsSync(target)) {
           fs.removeSync(target);
         }
-        fs.symlinkSync(srcNowa, target);
+        fs.symlinkSync(srcNowa, target);*/
       }
     } catch (e) {
       

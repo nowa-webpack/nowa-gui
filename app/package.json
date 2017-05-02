@@ -21,7 +21,8 @@
     "node-fetch": "^1.6.3",
     "npm-run-path": "^2.0.2",
     "npminstall": "^2.26.4",
-    "semver": "^5.3.0"
+    "semver": "^5.3.0",
+    "electron-sudo": "^4.0.12"
   },
   "homepage": "https://github.com/nowa-webpack/nowa-gui",
   "author": {
