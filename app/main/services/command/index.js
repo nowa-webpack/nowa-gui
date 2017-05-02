@@ -119,6 +119,8 @@ const exportFunc = {
 
         sudoer.spawn(nodePath, [linkFile], { env })
           .then(function (cp) {
+            // console.log(cp.output.stdout)
+            cp.stdout.on('data', data => console.log(data.toString()));
           })
         /*const target = '/usr/local/bin/nowa';
         const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', '.bin', 'nowa');
