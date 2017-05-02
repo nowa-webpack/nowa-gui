@@ -89,6 +89,7 @@ class DependenceTable extends Component {
 
   async getVersions({ filePath, source, registry }) {
     const localPkgs = utils.getMoudlesVersion(filePath, source);
+    console.log('localPkgs', localPkgs)
     const netPkgs = await this.fetchMoudlesVersion(localPkgs, registry);
     return netPkgs;
   }

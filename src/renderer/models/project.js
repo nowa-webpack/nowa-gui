@@ -145,12 +145,18 @@ export default {
       try {
         let filePath;
         const { registry: globalRegistry } = yield select(state => state.setting);
+        const storeProjects = getLocalProjects();
 
         if (payload.filePath) {
           filePath = payload.filePath;
         } else {
           const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
           filePath = importPath[0];
+        }
+
+        if (storeProjects.find(item => item.path === filePath)) {
+          Message.error(i18n('msg.existed'));
+          return false;
         }
 
         if (!fs.existsSync(join(filePath, 'package.json'))) {
@@ -202,7 +208,7 @@ export default {
             }
           });
 
-          const storeProjects = getLocalProjects();
+          
 
           storeProjects.push({
             name: current.name,
