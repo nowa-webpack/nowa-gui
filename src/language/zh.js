@@ -98,9 +98,9 @@ module.exports = {
   'foot.set': '工具设置',
   // 'foot.import': '导入项目',
   'foot.add': '新建项目',
-  'foot.feedback': 'Issue',
+  'foot.feedback': '反馈',
   'foot.help': '帮助',
-  'foot.dingding': '反馈',
+  'foot.issue': 'Issue',
 
   'msg.installSuccess': '安装成功！',
   'msg.installFail': '安装失败！',

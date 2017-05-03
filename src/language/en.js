@@ -97,9 +97,9 @@ module.exports = {
   'foot.set': 'Setting',
   // 'foot.import': 'Import Project',
   'foot.add': 'New Project',
-  'foot.feedback': 'Issue',
+  'foot.feedback': 'Feedback',
   'foot.help': 'Help',
-  'foot.dingding': 'DingDing',
+  'foot.issue': 'Issue',
 
   'msg.installSuccess': 'Installed Successfully!',
   'msg.installFail': 'Installed Failed!',
