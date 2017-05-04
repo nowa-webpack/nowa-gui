@@ -1,10 +1,11 @@
 const { fork } = require('child_process');
 const { join } = require('path');
-const iconv = require('iconv-lite');
+// const iconv = require('iconv-lite');
 
 
 const env = require('./env');
 const config = require('../../config');
+const task = require('../task');
 
 const { getWin } = require('../windowManager');
 const { getPercent, getMockPercent, newLog } = require('../utils');
@@ -27,19 +28,31 @@ const progressInstall = ({ options = {}, sender, isTruthPercent = true, endCb })
   let percent = 0;
   let log = '';
 
+  if (sender === 'import') {
+    task.setTask('IMPORT_PROJECT', options.root, {
+      term,
+    });
+  }
+
   console.time(senderInstalling);
   term.stdout.on('data', (data) => {
+    const project = options.root;
     const str = data.toString();
     // const str = iconv.decode(data, 'gb2312');
     console.log(str);
     if (str.indexOf('INSTALL_PROGRESS') !== -1) {
       percent = isTruthPercent ? getPercent(str) : getMockPercent(str, percent);
     } else {
-      log = newLog(log, str);
+      // log = newLog(log, str);
+      if (sender === 'import') {
+        log = task.writeLog('IMPORT_PROJECT',  project, data);
+      } else {
+        log = newLog(log, str);
+      }
     }
 
     win.webContents.send(senderInstalling, {
-      project: options.root,
+      project,
       percent,
       log,
     });
@@ -47,8 +60,13 @@ const progressInstall = ({ options = {}, sender, isTruthPercent = true, endCb })
 
   term.stderr.on('data', (data) => {
     // log = newLog(log, iconv.decode(data, 'gb2312'));
-    log = newLog(log, data.toString());
+    // log = newLog(log, data.toString());
     console.log(data.toString());
+    if (sender === 'import') {
+      log = task.writeLog('IMPORT_PROJECT',  options.root, data);
+    } else {
+      log = newLog(log, data.toString());
+    }
     win.webContents.send(senderInstalling, {
       project: options.root,
       percent,

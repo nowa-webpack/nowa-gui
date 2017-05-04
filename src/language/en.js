@@ -25,8 +25,10 @@ module.exports = {
   'task.compile': 'Compile',
   'task.compass': 'Explore',
   'task.editor': 'Editor',
+  'task.terminal': 'Terminal',
   // 'task.clear': 'Clear',
-  'task.folder': process.platform === 'darwin' ? 'Finder' : 'Folder',
+  'task.remove': 'Remove Project',
+  'task.folder': process.platform === 'darwin' ? 'Reveal in Finder' : 'Reveal in Folder',
   'task.status.start': 'Running',
   'task.status.stop': 'Stopped',
 
@@ -58,6 +60,10 @@ module.exports = {
   'project.new.empty': 'No templates.',
   'project.new.addTempldate': 'Add Custom Template',
 
+  'project.import.title': 'Initializing for Project Import',
+  'project.import.info': 'Some dependencies of this project are uninstalled, please choose an appropriate NPM registry to install from.',
+  'project.import.install': 'Installing Dependencies',
+
   'template.modal.title': 'Custom Template Setting',
   'template.modal.local.title': 'Local Template',
   'template.modal.remote.title': 'Remote Template',
@@ -79,12 +85,13 @@ module.exports = {
   'form.override': 'Override',
   'form.import': 'Import',
 
-  'setting.modal.title': 'Setting Modal',
+  'setting.modal.title': 'Setting',
   'setting.language': 'Language',
   'setting.language.en': 'English',
   'setting.language.zh': '中文',
   'setting.version': 'App Version',
   'setting.editor': 'Editor',
+  'setting.registry': 'Registry',
   'setting.version.newest.tip': 'Newest',
 
   'foot.set': 'Setting',
@@ -92,6 +99,7 @@ module.exports = {
   'foot.add': 'New Project',
   'foot.feedback': 'Feedback',
   'foot.help': 'Help',
+  'foot.issue': 'Issue',
 
   'msg.installSuccess': 'Installed Successfully!',
   'msg.installFail': 'Installed Failed!',
@@ -134,10 +142,15 @@ module.exports = {
   'package.newest': 'Newest',
   'package.action': 'Action',
   'package.btn.updateAll': 'Batch Update',
-  'package.btn.install': 'Add New Package',
+  'package.btn.install': 'Add New Dependency',
   'package.update.tip': 'Are you sure to update this package?',
 
   'table.empty': 'No data.',
   'table.action.del': 'delete',
   'table.action.update': 'update',
+
+  'feedback.modal.title': 'Feedback',
+  'feedback.name': 'What\'s your name?',
+  'feedback.contact': 'How to contact with you?',
+  'feedback.content': 'What\'s your problem?',
 };

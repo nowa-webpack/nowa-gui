@@ -6,7 +6,7 @@ import Progress from 'antd/lib/progress';
 import Icon from 'antd/lib/icon';
 import i18n from 'i18n';
 
-const newLog = (oldLog, str) => oldLog + (ansiHTML(str) + '<br>');
+// const newLog = (oldLog, str) => oldLog + (ansiHTML(str) + '<br>');
 
 class Log extends Component {
 
@@ -49,6 +49,10 @@ class Log extends Component {
     } else {
       this.props.dispatch({
         type: 'init/finishedInstall',
+      });
+      this.props.dispatch({
+        type: 'layout/changeStatus',
+        payload: { showSideMask: false }
       });
     }
   }

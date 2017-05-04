@@ -1,33 +1,141 @@
-const { spawn, fork } = require('child_process');
-const { join } = require('path');
+const { fork, spawn, exec } = require('child_process');
+const { join, resolve } = require('path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
 const { tmpdir } = require('os');
+const npmRunPath = require('npm-run-path');
+const Sudoer = require('electron-sudo').default;
+
 
 const task = require('../task');
 const kill = require('./kill');
 const modules = require('./modules');
 const env = require('./env');
 const { getWin } = require('../windowManager');
-const { constants: { NPM_PATH }, isWin } = require('../is');
+const { constants: { NPM_PATH, APP_PATH, NOWA_INSTALL_DIR, NODE_PATH }, isWin, isMac, isLinux } = require('../is');
 
 const exportFunc = {
 
   openEditor(projectPath, editor, basePath) {
-    let editorPath = '';
+    let editorPath = basePath;
 
     if (editor === 'Sublime') {
-      editorPath = join(basePath, isWin ? 'subl.exe' : '/Contents/SharedSupport/bin/subl');
+      // editorPath = join(basePath, isWin ? 'subl.exe' : '/Contents/SharedSupport/bin/subl');
+      // editorPath = join(basePath, isWin ? 'sublime_text.exe' : '/Contents/SharedSupport/bin/subl');
+
+      if (isMac) {
+        editorPath = join(basePath, '/Contents/SharedSupport/bin/subl');
+      }
+
+      if (isWin) {
+        editorPath = basePath.indexOf('.exe') === -1 
+          ? join(basePath, 'sublime_text.exe') : basePath;
+      }
     }
 
     if (editor === 'VScode') {
-      editorPath = join(basePath, isWin ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code');
+      // editorPath = join(basePath, isWin ? 'bin/code.cmd' : '/Contents/Resources/app/bin/code');
+      // editorPath = join(basePath, isWin ? 'Code.exe' : '/Contents/Resources/app/bin/code');
+
+      if (isMac) {
+        editorPath = join(basePath, '/Contents/Resources/app/bin/code');
+      }
+
+      if (isWin) {
+        editorPath = basePath.indexOf('.exe') === -1 ? join(basePath, 'Code.exe') : basePath;
+      }
     }
 
-    return spawn(editorPath,
-      ['./'], {
-        cwd: projectPath,
-      });
+    if (editor === 'WebStorm') {
+      if (isMac) {
+        editorPath = join(basePath, '/Contents/MacOS/webstorm');
+      }
+    }
+
+    let term;
+
+    return new Promise((resolve, reject) => {
+      try {
+        if (editor === 'WebStorm') {
+          /*execSync(`${editorPath} ${projectPath}`,
+            {
+              cwd: projectPath,
+            });*/
+
+          term = exec(`${editorPath} ${projectPath}`, { cwd: projectPath });
+        } else {
+          term = spawn(editorPath, ['./'], { cwd: projectPath });
+        }
+        term.on('exit', () => {
+          console.log('exit ediotr');
+          resolve({ success: true });
+        });
+        // return true;
+      } catch (e) {
+        resolve({ success: false });
+        // return false;
+      }
+    });
+  },
+
+  openTerminal(cwd) {
+    if (isWin) {
+      const shell = process.env.comspec || 'cmd.exe';
+      exec(`start ${shell}`, { cwd });
+    } else if (isMac) {
+      exec(join(APP_PATH, 'task', 'terminal'), { cwd });
+    } else {
+      exec('/usr/bin/x-terminal-emulator', { cwd });
+    }
+  },
+
+  linkNowa() {
+    try {
+      if (isWin) {
+        const nodePath = join(NODE_PATH, 'node.exe');
+        const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', 'nowa', 'bin', 'nowa');
+
+        const target = join(npmRunPath.env().APPDATA, 'npm', 'nowa.cmd');
+
+        if (fs.existsSync(target)) {
+          fs.removeSync(target);
+        }
+
+        const str =
+        ` @ECHO OFF
+          @SETLOCAL
+          @SET PATHEXT=%PATHEXT:;.JS;=;%
+          "${nodePath}" "${srcNowa}" %*`
+
+        fs.writeFileSync(target, str, { mode: 0o775 });
+      } else {
+        const target = '/usr/local/bin/nowa';
+        if (!fs.existsSync(target)) {
+          const nodePath = join(NODE_PATH, 'node');
+          const linkFile = join(APP_PATH, 'task', 'link.js');
+          const opt = {
+            name: 'NowaGUI',
+          };
+
+          const sudoer = new Sudoer(opt);
+
+          sudoer.spawn(nodePath, [linkFile], { env })
+            .then(function (cp) {
+              cp.stdout.on('data', data => console.log(data.toString()));
+            });
+        }
+        /*const target = '/usr/local/bin/nowa';
+        const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', '.bin', 'nowa');
+        if (fs.existsSync(target)) {
+          fs.removeSync(target);
+        }
+        fs.symlinkSync(srcNowa, target);*/
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    // exec('npm link', { cwd: join(NOWA_INSTALL_DIR, 'node_modules', 'nowa'), env });
   },
 
   exec({ name, type }) {
@@ -48,8 +156,6 @@ const exportFunc = {
 
     const senderData = (data) => {
       const log = task.writeLog(type, name, data);
-      // const log = task.writeLog(type, name, iconv.decode(data, 'gb2312'));
-      // const log = task.writeLog(type, name, iconv.decode(data, 'UTF-8'));
       win.webContents.send('task-ouput', {
         name,
         log,

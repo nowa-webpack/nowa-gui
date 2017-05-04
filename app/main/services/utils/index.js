@@ -28,19 +28,39 @@ const getPercent = (str) => {
   const a = str.split('INSTALL_PROGRESS');
   const b = a[1].replace(/[\n\s]/g, '');
   const c = b.slice(1, b.length - 1).split(',').map(i => i.split(':'));
-  return (c[1][1] / c[0][1] * 100).toFixed(0);
+  return parseInt(c[1][1] / c[0][1] * 100);
 };
 
 const getMockPercent = (str, percent) => {
+  const p = getPercent(str) / 20;
+  const s = parseInt(Math.random() * 7);
+  if (p < 1 && percent + s < 60) {
+    percent += s;
+  } else {
+    if (p === 5 && percent < 100) {
+      percent += 5;
+    } else {
+      percent = p * 4 + 60;
+    }
+  }
+  return percent > 100 ? 100 : parseInt(percent);
+};
+
+/*const getMockPercent = (str, percent) => {
   const p = getPercent(str) / 25;
   const s = parseInt(Math.random() * 7);
   if (p === 0 && percent + s < 60) {
     percent += s;
   } else {
-    percent = p * 10 + 60;
+    if (p === 4 && percent < 100) {
+      percent += 5;
+    } else {
+      // percent = p * 10 + 60;
+      percent = p * 5 + 60;
+    }
   }
   return percent;
-};
+};*/
 
 const newLog = (oldLog, str) => oldLog + ansiHTML(str.replace(/\n/g, '<br>'));
 
@@ -57,13 +77,18 @@ const loadConfig = (promptConfigPath) => {
 const getMoudlesVersion = (filepath, dependencies) => {
   // const curPkg = loadConfig(join(filepath, 'package.json'));
   const modulePath = join(filepath, 'node_modules');
+
+  if (!fs.existsSync(modulePath)) {
+    return dependencies;
+  }
+  
   const pkgs = dependencies.map((item) => {
     // const pkg = loadConfig(join(modulePath, item.name, 'package.json'));
     const pkg = fs.readJsonSync(join(modulePath, item.name, 'package.json'));
     return Object.assign(item, { installedVersion: pkg.version });
   });
-
   return pkgs;
+
 };
 
 module.exports = {

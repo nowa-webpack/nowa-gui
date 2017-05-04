@@ -31,8 +31,8 @@ class SettingTab extends Component {
     const { activeKey } = this.state;
 
     return (
-      <div className="setting">
-        <Tabs type="card" className="setting-tabs"
+      <div className="proj-setting">
+        <Tabs type="card" className="proj-setting-tabs"
           activeKey={activeKey}
           onChange={index => this.setState({ activeKey: index })}
         >

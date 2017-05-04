@@ -8,6 +8,16 @@
 	width: 175px;
 	border-right: 1px solid #eee;
 	background-color: #fff;
+	
+	&-mask {
+		position: absolute;
+    width: 175px;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    top: 0;
+    left: 0;
+    cursor: not-allowed;
+	}
 }
 
 .ui-content{
@@ -112,7 +122,18 @@
 	
 }
 
-.set-modal{
+.setting{
+	background-color: #fff;
+	overflow-y: hidden;
+
+	&-title {
+    width: 500px;
+    padding: 10px;
+    margin: 20px auto 50px;
+    text-align: center;
+		font-size: 24px;
+    border-bottom: 1px solid #ddd;
+	}
 	.ui-form{
 		.form-item-grp{
 			margin-left: 132px;

@@ -5,6 +5,7 @@ const windowManager = require('./windowManager');
 const templatesManager = require('./templatesManager');
 const nowa = require('./nowa');
 const command = require('./command');
+const tray = require('./tray');
 
 
 module.exports = {
@@ -15,4 +16,5 @@ module.exports = {
   templatesManager,
   nowa,
   command,
+  tray,
 };

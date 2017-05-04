@@ -1,37 +1,32 @@
 import React, { Component, PropTypes } from 'react';
-import { remote, shell, ipcRenderer } from 'electron';
+import { remote, shell } from 'electron';
 import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
 import semver from 'semver';
-import classNames from 'classnames';
-import { join } from 'path';
 import Layout from 'antd/lib/layout';
-import Badge from 'antd/lib/badge';
 import { info, confirm } from 'antd/lib/modal';
 // import { hashHistory } from 'react-router';
 
 import i18n from 'i18n';
-import { hidePathString, readPkgJson, getPkgDependencies } from 'gui-util';
-import { IS_WIN, UPGRADE_URL } from 'gui-const';
+import { hidePathString } from 'gui-util';
+import { IS_WIN, UPGRADE_URL, EXTENSION_MAP } from 'gui-const';
 import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from 'gui-local';
 import request from 'gui-request';
 
 import DragPage from './DragPage';
+import FeedbackModal from './FeedbackModal';
 
 
 const { Header } = Layout;
-const { windowManager, command, utils } = remote.getGlobal('services');
-// const { registry } = remote.getGlobal('config');
-
+const { windowManager } = remote.getGlobal('services');
 
 class LayoutWrap extends Component {
   constructor(props) {
     super(props);
-    // this.state = {
-      // online: props.online,
-    // };
+    
     this.taskTimer;
     this.onDrop = this.onDrop.bind(this);
+    this.onDragOver = this.onDragOver.bind(this);
     this.getUpdateVersion = this.getUpdateVersion.bind(this);
   }
 
@@ -92,29 +87,17 @@ class LayoutWrap extends Component {
   }
 
   onDrop(acceptedFiles) {
-    const { dispatch, registry } = this.props;
+    const { dispatch, registry, current } = this.props;
     const filePath = acceptedFiles[0].path;
-
-    const pkgs = getPkgDependencies(readPkgJson(filePath));
-
-    const options = {
-      root: filePath,
-      registry,
-      pkgs,
-    };
     dispatch({
-      type: 'project/importProj',
+      type: 'project/importProjectFromFolder',
       payload: {
         filePath,
-        needInstall: true
       }
     });
-    command.notProgressInstall({
-      options,
-      sender: 'import',
-    });
-    
+
     this.onDragLeave();
+    
   }
 
   onDragOver() {
@@ -130,48 +113,51 @@ class LayoutWrap extends Component {
   getUpdateVersion() {
     const { dispatch, version, registry } = this.props;
     request(`${registry}/nowa-gui-version`)
-    // request('https://registry.npm.taobao.org/nowa-gui-version')
-      .then(({ data }) => {
-        const newVersion = data['dist-tags'].latest;
-        console.log('newVersion', newVersion);
+      .then(({ data, err }) => {
+        if (!err) {
+          const newVersion = data['dist-tags'].latest;
+          console.log('newVersion', newVersion);
 
-        if (data.download) {
-          dispatch({
-            type: 'layout/changeStatus',
-            payload: { upgradeUrl: data.download[process.platform] }
-          });
-        }
+          if (data.versions[newVersion].downloadDomain) {
+            dispatch({
+              type: 'layout/changeStatus',
+              // payload: { upgradeUrl: data.download[process.platform] }
+              payload: {
+                upgradeUrl: `${data.versions[newVersion].downloadDomain}/${newVersion}/NowaGUI.${EXTENSION_MAP[process.platform]}`
+              }
+            });
+          }
 
-        if (semver.lt(version, newVersion)) {
-          dispatch({
-            type: 'layout/changeStatus',
-            payload: { newVersion }
-          });
-        }
+          if (semver.lt(version, newVersion)) {
+            dispatch({
+              type: 'layout/changeStatus',
+              payload: { newVersion }
+            });
+          }
 
-        if (+getLocalUpdateFlag(version) !== 1) {
-          console.log(data)
-          const arr = data.readme.split('#').filter(i => !!i).map(i => i.split('*').slice(1));
+          if (+getLocalUpdateFlag(version) !== 1) {
+            const arr = data.readme.split('#').filter(i => !!i).map(i => i.split('*').slice(1));
 
-          const tip = getLocalLanguage() === 'zh' ? arr[0] : arr[1];
+            const tip = getLocalLanguage() === 'zh' ? arr[0] : arr[1];
 
-          info({
-            title: i18n('msg.updateTip'),
-            content: (
-              <ul className="update-tip">
-                {tip.map(item => <li key={item}>{item}</li>)}
-              </ul>),
-            onOk() {
-              setLocalUpdateFlag(version);
-            },
-            okText: i18n('form.ok'),
-          });
+            info({
+              title: i18n('msg.updateTip'),
+              content: (
+                <ul className="update-tip">
+                  {tip.map(item => <li key={item}>{item}</li>)}
+                </ul>),
+              onOk() {
+                setLocalUpdateFlag(version);
+              },
+              okText: i18n('form.ok'),
+            });
+          }
         }
       });
   }
 
   render() {
-    const { showPage, current, children } = this.props;
+    const { showPage, current, children, showFeedBackModal, dispatch, version } = this.props;
     // const { online } = this.state;
     const closeBtn = (
       <div className="icn icn-x" key="0" onClick={() => windowManager.close()}>
@@ -189,6 +175,8 @@ class LayoutWrap extends Component {
       </div>
     );
 
+    const showBD = showPage === 1 || showPage === 2;
+
     return (
       <Dropzone className="container"
         onDrop={this.onDrop}
@@ -199,9 +187,9 @@ class LayoutWrap extends Component {
         <Layout id="main-ctn">
           <Header className="top-bar">
 
-            { showPage > 0 && <div className="bar-bd" /> }
+            { showBD && <div className="bar-bd" /> }
 
-            <div className="logo" onClick={() => shell.openExternal('https://alixux.org/nowa/')} />
+            <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/html/gui.html')} />
 
             { showPage === 2 &&
               <div className="proj-info">
@@ -221,6 +209,7 @@ class LayoutWrap extends Component {
           { children }
         </Layout>
         <DragPage />
+        <FeedbackModal showModal={showFeedBackModal} dispatch={dispatch} version={version} />
       </Dropzone>
     );
   }
@@ -233,7 +222,8 @@ LayoutWrap.propTypes = {
   showPage: PropTypes.number.isRequired,
   current: PropTypes.shape({
     name: PropTypes.string,
-    path: PropTypes.string
+    path: PropTypes.string,
+    // loading: PropTypes.bool,
   }).isRequired,
   online: PropTypes.bool.isRequired,
   registry: PropTypes.string.isRequired,
@@ -241,15 +231,17 @@ LayoutWrap.propTypes = {
   startWacthProject: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
+  showFeedBackModal: PropTypes.bool.isRequired,
 };
 
-export default connect(({ layout, project }) => ({
+export default connect(({ layout, project, setting }) => ({
   showPage: layout.showPage,
   newVersion: layout.newVersion,
   version: layout.version,
   current: project.current,
   online: layout.online,
-  registry: layout.registry,
+  registry: setting.registry,
   startWacthProject: project.startWacthProject,
-  upgradeUrl: layout.upgradeUrl
+  upgradeUrl: layout.upgradeUrl,
+  showFeedBackModal: layout.showFeedBackModal,
 }))(LayoutWrap);

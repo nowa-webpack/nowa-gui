@@ -19,7 +19,7 @@ module.exports = webpackMerge(webpackCommon, {
 
   bail: true,
 
-  devtool: 'source-map',
+  // devtool: 'source-map',
 
   entry: {
     'app': [

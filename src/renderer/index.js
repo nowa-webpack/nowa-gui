@@ -8,6 +8,7 @@ import project from './models/project';
 import layout from './models/layout';
 import task from './models/task';
 import init from './models/init';
+import setting from './models/setting';
 
 import { IS_WIN } from './constants';
 
@@ -58,6 +59,7 @@ app.model(layout);
 app.model(project);
 app.model(task);
 app.model(init);
+app.model(setting);
 
 // 4. Router
 app.router(RouterConfig);

@@ -70,6 +70,20 @@ export default {
         });
       });
 
+      ipcRenderer.on('task-start', (event, { project }) => {
+        dispatch({
+          type: 'start',
+          payload: { project }
+        });
+      });
+
+      ipcRenderer.on('task-stop', (event, { project }) => {
+        dispatch({
+          type: 'stop',
+          payload: { project }
+        });
+      });
+
       /*ipcRenderer.on('task-finished', (event, { type }) => {
         if (success) {
           Message.success(`Exec ${type} successed!`);
@@ -110,6 +124,13 @@ export default {
     },
     * initRemoveCommand({ payload: { project } }, { put, select }) {
       const { commands } = yield select(state => state.task);
+
+      // command.clearLog({ name, type: logType });
+      // remoteCommand
+
+      Object.keys(commands[project.path]).forEach(type => {
+        remoteCommand.clearLog({ name: project.path, type });
+      });
 
       delete commands[project.path];
 
@@ -158,7 +179,7 @@ export default {
       });
     },
     * openEditor({ payload: { project } }, { put, select }) {
-      const { defaultEditor, editor } = yield select(state => state.layout);
+      const { defaultEditor, editor } = yield select(state => state.setting);
       const editorPath = editor[defaultEditor];
 
       if (!editorPath) {
@@ -168,33 +189,39 @@ export default {
 
         yield put({
           type: 'layout/changeStatus',
-          payload: { showSetModal: true }
+          payload: { showPage: 3 }
         });
       } else {
-        remoteCommand.openEditor(project.path, defaultEditor, editorPath);
+        const { success } = yield remoteCommand.openEditor(project.path, defaultEditor, editorPath);
+        if (!success) {
+          Message.error('Open editor failed, please check the editor path.');
+          yield delay(500);
+
+          yield put({
+            type: 'layout/showPage',
+            payload: { toPage: 3 }
+          });
+        }
       }
     },
-    * start({ payload: { project } }, { put }) {
+    * start({ payload: { project } }, { put, select }) {
+      const { commands } = yield select(state => state.task);
+      if (!project.start && commands[project.path].start) {
+        yield put({
+          type: 'execCustomCmd',
+          payload: {
+            type: 'start',
+            name: project.path
+          }
+        });
 
-      // const uid = yield remoteCommand.exec({
-      //   name: project.path,
-      //   type: 'start',
-      // });
-
-      yield put({
-        type: 'execCustomCmd',
-        payload: {
-          type: 'start',
-          name: project.path
-        }
-      });
-
-      yield put({
-        type: 'project/startedProject',
-        payload: {
-          filePath: project.path,
-        }
-      });
+        yield put({
+          type: 'project/startedProject',
+          payload: {
+            filePath: project.path,
+          }
+        });
+      }
     },
     * stop({ payload: { project } }, { put }) {
       yield put({
@@ -239,7 +266,7 @@ export default {
       //   }
       // });
     },
-    stopCustomCmd({ payload: { type, name } }, { put, select }) {
+    stopCustomCmd({ payload: { type, name } }) {
       remoteCommand.stop({
         name,
         type,
@@ -258,7 +285,6 @@ export default {
           }
         });
       }
-
     }
   },
 

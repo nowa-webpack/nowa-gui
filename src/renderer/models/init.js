@@ -139,7 +139,7 @@ export default {
         }
       });
 
-      templatesManager.custom.add({ type: remote, item });
+      templatesManager.custom.add({ type: 'remote', item });
 
       // application.addCustomTemplates({
       //   type: 'remote',
@@ -194,12 +194,14 @@ export default {
       });
     },
     * setUserAnswers({ payload }, { put, select }) {
-      const { extendsProj } = yield select(state => state.init);
+      const { extendsProj, sltItem } = yield select(state => state.init);
 
       let answers = { ...payload };
 
-      answers.npm = NPM_MAP[answers.registry];
-      answers.template = '';
+      // answers.npm = NPM_MAP[answers.registry];
+      answers.npm = answers.registry;
+      // answers.template = '';
+      answers.template = sltItem.path.replace(/\\/g, '\\\\');
 
       const config = gitConfig.sync(join(answers.projPath, '.git', 'config')) || {};
 
@@ -319,10 +321,9 @@ export default {
       yield delay(1500);
 
       yield put({
-        type: 'project/importProj',
+        type: 'project/importProjectFromInit',
         payload: {
           filePath,
-          needInstall: false,
           projectRegistry: installOptions.registry
         }
       });
@@ -333,7 +334,6 @@ export default {
           installOptions: {}
         }
       });
-      
     },
     * retryInstall(o, { put, select }) {
       const { installOptions } = yield select(state => state.init);
@@ -345,7 +345,37 @@ export default {
         endCb: null,
       });
     },
+    * initMod({ payload: { project, type, answers } }, { put, select }) {
+      // const { abc } = project;
+      const abc = fs.readJsonSync(join(project.path, 'abc.json'));
+      const sourceDir = join(abc.template, type);
 
+      const promptConfigPath = join(abc.template, `${type}.js`);
+      const prompt = utils.loadConfig(promptConfigPath);
+      let userAnswers = answers;
+      
+      if (prompt.answers) {
+        userAnswers = prompt.answers(answers, abc);
+      }
+
+      glob.sync('**', {
+        cwd: sourceDir,
+        nodir: true,
+        dot: true
+      }).forEach((source) => {
+        if (prompt.filter && prompt.filter(source, userAnswers) === false) {
+          return false;
+        }
+
+        const target = join(project.path, source.replace(/__(\w+)__/g, (match, offset) => userAnswers[offset]));
+
+        mkdirp.sync(dirname(target));
+
+        source = join(sourceDir, source);
+
+        writeFile(source, target, userAnswers);
+      });
+    },
    
   },
 

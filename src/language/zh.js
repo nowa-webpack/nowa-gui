@@ -16,7 +16,7 @@ module.exports = {
   'project.meta.version': '版本',
   'project.meta.homepage': '主页',
   'project.meta.repo': '项目地址',
-  'project.meta.npm_registry': 'npm源地址',
+  'project.meta.npm_registry': 'Npm源地址',
   'project.meta.others': '其他',
 
   'task.start': '启动',
@@ -24,8 +24,10 @@ module.exports = {
   'task.compile': '编译',
   'task.editor': '代码',
   'task.compass': '访问',
-  'task.folder': '打开',
+  'task.folder': '打开文件夹',
+  'task.terminal': '终端',
   // 'task.clear': '清理',
+  'task.remove': '删除项目',
   'task.status.start': '运行中',
   'task.status.stop': '停止',
 
@@ -34,7 +36,7 @@ module.exports = {
   'project.tab.server': '开发配置',
   'project.tab.build': '编译配置',
   'project.tab.console': '控制台',
-  'project.tab.package': '包管理',
+  'project.tab.package': '依赖管理',
   'project.tab.listen_log': '监听日志',
   'project.tab.compile_log': '编译输出',
   'project.tab.command_log': '选择命令窗口',
@@ -56,6 +58,11 @@ module.exports = {
   'project.new.empty': '当前无模版',
   'project.new.log.retry': '重试',
   'project.new.addTempldate': '添加自定义模版',
+
+  'project.import.title': '项目导入初始化',
+  'project.import.info': '检测到改项目有未安装的依赖，请选择合适的Npm安装源',
+  'project.import.install': '依赖安装',
+
 
   'template.modal.title': '自定义模版设置',
   'template.modal.local.title': '本地模版',
@@ -82,6 +89,7 @@ module.exports = {
   'setting.language.en': 'English',
   // 'setting.language': '语言',
   // 'setting.language.en': '英文',
+  'setting.registry': 'Npm源地址',
   'setting.language.zh': '中文',
   'setting.editor': '编辑器',
   'setting.version': '工具版本',
@@ -92,6 +100,7 @@ module.exports = {
   'foot.add': '新建项目',
   'foot.feedback': '反馈',
   'foot.help': '帮助',
+  'foot.issue': 'Issue',
 
   'msg.installSuccess': '安装成功！',
   'msg.installFail': '安装失败！',
@@ -121,14 +130,14 @@ module.exports = {
   'cmd.sider.title': '命令集',
   'cmd.modal.title': '添加命令',
   'cmd.select.opt': '选择命令窗口',
-  'cmd.meta.name': '命令名',
-  'cmd.meta.value': '命令体',
+  'cmd.meta.name': '名称',
+  'cmd.meta.value': '命令',
 
   'preinit.msg1': '初始化的时候必须要连接网络，请联网后重新打开应用。',
   'preinit.msg2': '{1} 后自动关闭应用',
   'preinit.waitInstall': '正在安装需要的依赖更新，大约需要半分钟时间，请耐心等待。',
 
-  'package.name': '包名',
+  'package.name': '依赖名',
   'package.current': '定义版本',
   'package.installed': '安装版本',
   'package.newest': '最新版本',
@@ -141,4 +150,9 @@ module.exports = {
   'table.empty': '暂无数据',
   'table.action.del': '移除',
   'table.action.update': '更新',
+
+  'feedback.modal.title': '反馈',
+  'feedback.name': '怎么称呼您？',
+  'feedback.contact': '怎么联系您？',
+  'feedback.content': '您遇到了什么问题？',
 }

@@ -30,12 +30,16 @@ class PackageManager extends Component {
 
   getInitDependencies(pkg) {
     const { dependencies, devDependencies } = pkg;
-    const dp0 = Object.keys(dependencies).map(name => ({
-      name,
-      version: dependencies[name],
-    }));
-
     let dp1 = [];
+    let dp0 = [];
+
+    if (dependencies) {
+
+      dp0 = Object.keys(dependencies).map(name => ({
+        name,
+        version: dependencies[name],
+      }));
+    }
 
     if (devDependencies) {
       dp1 = Object.keys(devDependencies).map(name => ({
@@ -50,12 +54,10 @@ class PackageManager extends Component {
     };
   }
 
-
-
   render() {
     const { activeKey, dependencies, devDependencies } = this.state;
-    const { project, dispatch, registry } = this.props;
-    const npm = REGISTRY_MAP[project.abc.npm] || registry;
+    const { project, dispatch, globalRegistry } = this.props;
+    const npm = REGISTRY_MAP[project.abc.npm] || project.registry || globalRegistry;
 
     const basicProps = {
       registry: npm,
@@ -64,8 +66,8 @@ class PackageManager extends Component {
     };
 
     return (
-      <div className="setting">
-        <Tabs type="card" className="setting-tabs"
+      <div className="proj-setting">
+        <Tabs type="card" className="proj-setting-tabs"
           defaultActiveKey={activeKey}
           onTabClick={index => this.setState({ activeKey: index })}
         >
@@ -87,9 +89,10 @@ PackageManager.propTypes = {
     path: PropTypes.string,
     pkg: PropTypes.object,
     abc: PropTypes.object,
+    registry: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
-  registry: PropTypes.string.isRequired,
+  globalRegistry: PropTypes.string.isRequired,
 };
 
 

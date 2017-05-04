@@ -22,7 +22,8 @@ function normalizeExecArgs(command, options) {
 
   if (process.platform === 'win32') {
     shell = process.env.comspec || 'cmd.exe';
-    args = ['/s', '/c', '"' + command + '"'];
+    // args = ['/s', '/c', '"' + command + '"'];
+    args = ['/s', '/c', `"${command}"`];
     options.windowsVerbatimArguments = true;
   } else {
     shell = '/bin/sh';

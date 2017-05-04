@@ -30,6 +30,7 @@ class ServerConfigForm extends Component {
       lazyload: typeof abc.lazyload === 'undefined' ? true : abc.lazyload,
       https: typeof abc.https === 'undefined' ? false : abc.https,
       open: typeof abc.open === 'undefined' ? false : abc.open,
+      src: typeof abc.src === 'undefined' ? 'src' : abc.src,
     };
 
     if (abc.buildvars && abc.buildvars.locale) {
@@ -70,7 +71,7 @@ class ServerConfigForm extends Component {
   
  
   render() {
-    const { entry, port, proxy, lazyload, https, open, localeList, defaultLocale } = this.state;
+    const { entry, port, proxy, lazyload, https, open, localeList, defaultLocale, src } = this.state;
     let localeDiv;
 
     if (defaultLocale) {
@@ -99,6 +100,14 @@ class ServerConfigForm extends Component {
           />
         </Tooltip>
         <form className="setting-form" >
+          <div className="setting-form-item sm">
+            <label className="setting-form-label">Src:</label>
+            <input type="text"
+              className="lg"
+              onChange={e => this.setState({ src: e.target.value })}
+              value={src}
+            />
+          </div>
           <div className="setting-form-item sm">
             <label className="setting-form-label">Lazyload:</label>
             <Switch size="default" checked={lazyload}
@@ -136,6 +145,7 @@ class ServerConfigForm extends Component {
               onChange={checked => this.setState({ https: checked })}
             />
           </div>
+          
           { localeDiv }
           <div className="setting-form-item lg">
             <label className="setting-form-label">Proxy:</label>

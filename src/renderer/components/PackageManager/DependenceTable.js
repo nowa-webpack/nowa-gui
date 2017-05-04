@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { remote, ipcRenderer } from 'electron';
+import { remote, ipcRenderer, shell } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Table from 'antd/lib/table';
@@ -23,21 +23,25 @@ const basicColumns = [{
   dataIndex: 'name',
   key: 'name',
   width: 250,
+  render: text =>
+    (
+      <a onClick={() => shell.openExternal(`https://www.npmjs.com/package/${text}`)}>{text}</a>
+    )
 }, {
   title: i18n('package.current'),
   dataIndex: 'version',
   key: 'version',
-  width: 90,
+  width: 100,
 }, {
   title: i18n('package.installed'),
   dataIndex: 'installedVersion',
   key: 'installedVersion',
-  width: 90,
+  width: 100,
 }, {
   title: i18n('package.newest'),
   dataIndex: 'netVersion',
   key: 'netVersion',
-  width: 90,
+  width: 100,
 }];
 
 
@@ -85,6 +89,7 @@ class DependenceTable extends Component {
 
   async getVersions({ filePath, source, registry }) {
     const localPkgs = utils.getMoudlesVersion(filePath, source);
+    console.log('localPkgs', localPkgs)
     const netPkgs = await this.fetchMoudlesVersion(localPkgs, registry);
     return netPkgs;
   }
@@ -127,12 +132,15 @@ class DependenceTable extends Component {
       const data = dataSource.map((item) => {
         const filter = pkgs.filter(p => p.name === item.name);
         if (filter.length > 0) {
-          item.version = `^${item.netVersion}`;
+          if (!item.safeUpdate) {
+            item.version = `^${item.netVersion}`;
+          }
           item.installedVersion = item.netVersion;
           item.update = false;
         }
         return item;
       });
+
       dispatch({
         type: 'project/updatePkgModules',
         payload: { pkgs, type }
@@ -143,9 +151,11 @@ class DependenceTable extends Component {
   }
 
   async fetchMoudlesVersion(modules, registry) {
+
     const repos = await Promise.all(
         modules.map(({ name }) => request(`${registry}/${name}/latest`))
       );
+    console.log(registry);
     const pkgs = modules.map(({ name, version, installedVersion }, i) => {
       const { data, err } = repos[i];
       const diff = semverDiff(installedVersion, data.version);
@@ -158,7 +168,7 @@ class DependenceTable extends Component {
         safeUpdate: diff !== 'major'
       };
     }).sort((a, b) => b.update - a.update);
-    
+    console.log(pkgs);
     return pkgs;
   }
 
@@ -167,11 +177,6 @@ class DependenceTable extends Component {
     return {
       root: filePath,
       registry,
-      // targetDir: filePath,
-      // storeDir: join(filePath, '.npminstall'),
-      // storeDir: join(filePath, 'node_modules', '.npminstall'),
-      // cacheDir: null,
-      // timeout: 5 * 60000,
     };
   }
 
@@ -183,7 +188,8 @@ class DependenceTable extends Component {
     if (args.length) {
       pkgs.push({
         name: args[0].name,
-        version: args[0].netVersion
+        version: args[0].netVersion,
+        safe: args[0].safeUpdate,
       });
     } else {
       const { dataSource, selectedRowKeys } = this.state;
@@ -339,41 +345,6 @@ class DependenceTable extends Component {
   }
 }
 
-// render: (update, record) => {
-//         let updateDiv;
-
-//         if (update) {
-//           if (record.safeUpdate) {
-//             updateDiv = (
-//               <span className="package-wrap-action update"
-//                 onClick={() => this.updatelModules(record)}
-//               >{i18n('table.action.update')}</span>);
-//           } else {
-//             updateDiv = (<Popconfirm
-//               placement="bottomRight"
-//               title={i18n('package.update.tip')}
-//               onConfirm={() => this.updatelModules(record)}
-//               okText={i18n('form.ok')}
-//               cancelText={i18n('form.cancel')}
-//             >
-//             <span className="package-wrap-action update-unsafe">{i18n('table.action.update')}</span>
-//             </Popconfirm>);
-//           }
-//         }
-
-//         return (
-//           <div>
-//             <Popconfirm
-//               placement="bottomRight"
-//               title={i18n('msg.removeTip')}
-//               onConfirm={() => this.removeModules(record)}
-//               okText={i18n('form.ok')}
-//               cancelText={i18n('form.cancel')}
-//             ><span className="package-wrap-action del">{i18n('table.action.del')}</span>
-//             </Popconfirm>
-//             { updateDiv }
-//           </div>);
-//       },
 
 
 DependenceTable.propTypes = {

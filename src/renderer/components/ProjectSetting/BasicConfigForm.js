@@ -2,10 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
-import classNames from 'classnames';
+import Select from 'antd/lib/select';
 import i18n from 'i18n';
 
-// import { upperFirstCha } from 'gui-util';
 import { VERSION_MATCH, NAME_MATCH } from 'gui-const';
 
 class BasicConfigForm extends Component {
@@ -62,22 +61,8 @@ class BasicConfigForm extends Component {
   }
  
   render() {
-    // const keys = Object.keys(this.state);
-    const { name, author, version, description, repo, homepage, license, registry} = this.state;
-
-    /*const fields = keys.map(item => (
-      <div className="form-item" key={item}>
-        <label className="form-label">{ item === 'repo' ? 'Repository' : upperFirstCha(item) }:</label>
-        <input type="text" className="lg"
-          onChange={e => {
-            const state = { ...this.state };
-            state[item] = e.target.value;
-            this.setState(state);
-          }}
-          value={this.state[item]}
-        />
-      </div>
-    ));*/
+    const { registryList } = this.props;
+    const { name, author, version, description, repo, homepage, license, registry } = this.state;
 
     return (
       <form className="setting-form" >
@@ -113,10 +98,16 @@ class BasicConfigForm extends Component {
         <hr className="setting-form-hr" />
         <div className="setting-form-item lg">
           <label className="setting-form-label">Registry:</label>
-          <input type="text"
-            onChange={e => this.setState({ registry: e.target.value })}
+          <Select
+            mode="combobox"
+            style={{ width: 495 }}
             value={registry}
-          />
+            filterOption={false}
+            onChange={value => this.setState({ registry: value })}
+          >
+            {registryList.map(item => 
+              <Select.Option value={item} key={item}>{item}</Select.Option>)}
+          </Select>
         </div>
         <hr className="setting-form-hr" />
         <div className="setting-form-item lg">
@@ -152,6 +143,13 @@ class BasicConfigForm extends Component {
   }
 }
 
+// defaultValue={registry}
+
+// <input type="text"
+//             onChange={e => this.setState({ registry: e.target.value })}
+//             value={registry}
+//           />
+
 BasicConfigForm.propTypes = {
   project: PropTypes.shape({
     pkg: PropTypes.object,
@@ -159,6 +157,10 @@ BasicConfigForm.propTypes = {
     registry: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
+  registryList: PropTypes.array.isRequired,
 };
 
-export default connect(({ project }) => ({ project: project.current }))(BasicConfigForm);
+export default connect(({ project, setting }) => ({
+  project: project.current,
+  registryList: setting.registryList,
+}))(BasicConfigForm);

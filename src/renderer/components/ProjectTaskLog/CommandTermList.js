@@ -87,7 +87,7 @@ class CommandTermList extends Component {
               key={name}
               onClick={() => this.changeLogType(name)}
             >
-              {name}
+              {name.length > 20 ? name.slice(0, 15) + '...' : name }
               <i className="iconfont icon-close-o"
                 onClick={(e) => {
                   e.stopPropagation();
