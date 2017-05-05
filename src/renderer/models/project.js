@@ -103,6 +103,12 @@ export default {
 
       tray.setInitTrayMenu(projects);
 
+      window.onbeforeunload = () => {
+        dispatch({
+          type: 'saveCurrent'
+        });
+      };
+
       const current = projects.filter(item => item.current);
 
       dispatch({
@@ -132,11 +138,7 @@ export default {
           });
         }
       });
-      window.onbeforeunload = () => {
-        dispatch({
-          type: 'saveCurrent'
-        });
-      };
+
     },
   },
 
@@ -484,14 +486,14 @@ export default {
 
       const storeProjects = getLocalProjects();
 
-      storeProjects.map((item) => {
+      const sp = storeProjects.map((item) => {
         if (item.path === filePath && 'loadingStep' in item) {
           return { name: item.name, path: item.path, registry: item.registry };
         }
-        return item;
+        return { ...item };
       });
 
-      setLocalProjects(storeProjects);
+      setLocalProjects(sp);
 
       yield put({
         type: 'changeStatus',
@@ -671,14 +673,19 @@ export default {
         });
       }
     },
-    * saveCurrent(o, { select }) {
+    * saveCurrent(o, { select, put }) {
       const { current } = yield select(state => state.project);
+
+      yield put({
+        type: 'changeStatus',
+        payload: { startWacthProject: false }
+      });
 
       const storeProjects = getLocalProjects();
 
       setLocalProjects(storeProjects.map((item) => {
         item.current = item.path === current.path;
-        return item;
+        return { ...item };
       }));
     },
     * startedProject({ payload: { filePath } }, { put, select }) {

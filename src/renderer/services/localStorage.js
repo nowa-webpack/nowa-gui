@@ -6,7 +6,7 @@ import {
 } from 'gui-const';
 import { remote } from 'electron';
 
-const { getConfig, writeConfig, setConfig } = remote.getGlobal('config');
+const { getConfig, setConfig } = remote.getGlobal('config');
 
 
 export const getStoreProjects = () => getConfig()[LOCAL_PROJECTS] || [];

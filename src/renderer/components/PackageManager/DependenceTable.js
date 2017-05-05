@@ -23,6 +23,7 @@ const basicColumns = [{
   dataIndex: 'name',
   key: 'name',
   width: 250,
+  sorter: (a, b) => a.name < b.name,
   render: text =>
     (
       <a onClick={() => shell.openExternal(`https://www.npmjs.com/package/${text}`)}>{text}</a>
@@ -252,6 +253,7 @@ class DependenceTable extends Component {
     const hasSelected = selectedRowKeys.length > 0;
     const rowSelection = {
       selectedRowKeys,
+
       onChange: (selectedRows) => {
         this.setState({ selectedRowKeys: selectedRows });
       },
