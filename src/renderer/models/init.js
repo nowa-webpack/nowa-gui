@@ -10,7 +10,6 @@ import Message from 'antd/lib/message';
 
 import i18n from 'i18n';
 import { delay, getPkgDependencies, readPkgJson } from 'gui-util';
-import { NPM_MAP } from 'gui-const';
 const { utils, command, templatesManager } = remote.getGlobal('services');
 
 const writeFile = (source, target, data) => {
@@ -282,23 +281,15 @@ export default {
         mkdirp.sync(dirname(target));
 
         source = join(sourceDir, source);
-        // console.log(source, target)
 
         writeFile(source, target, userAnswers);
       });
 
-      // const pkgJson = fs.readJsonSync(join(userAnswers.projPath, 'package.json'));
-
       const pkgs = getPkgDependencies(readPkgJson(userAnswers.projPath));
-      
 
       const installOptions = {
         root: userAnswers.projPath,
         registry: userAnswers.registry,
-        // targetDir: userAnswers.projPath,
-        // storeDir: join(userAnswers.projPath, '.npminstall'),
-        // cacheDir: null,
-        // timeout: 5 * 60000,
         pkgs,
       };
 

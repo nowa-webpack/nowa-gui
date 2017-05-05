@@ -17,17 +17,23 @@ export const delay = n => new Promise(resolve => setTimeout(resolve, n));
 
 export const getPkgDependencies = (pkgJson) => {
   const pkgs = [];
-  for (let name in pkgJson.dependencies) {
-    pkgs.push({
-      name,
-      version: pkgJson.dependencies[name]
+  const { dependencies, devDependencies } = pkgJson;
+
+  if (dependencies) {
+    Object.keys(dependencies).forEach((name) => {
+      pkgs.push({
+        name,
+        version: dependencies[name]
+      });
     });
   }
 
-  for (let name in pkgJson.devDependencies) {
-    pkgs.push({
-      name,
-      version: pkgJson.devDependencies[name]
+  if (devDependencies) {
+    Object.keys(devDependencies).forEach((name) => {
+      pkgs.push({
+        name,
+        version: devDependencies[name]
+      });
     });
   }
 

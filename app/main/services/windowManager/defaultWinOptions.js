@@ -2,7 +2,7 @@ const { join } = require('path');
 const { constants } = require('../is');
 module.exports = {
   browser: {
-    width: 900,
+    width: 902,
     height: 552,
     frame: false,
     show: false,
