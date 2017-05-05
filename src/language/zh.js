@@ -112,6 +112,8 @@ module.exports = {
   'msg.invalidTemplate': '非 Nowa 模板文件夹',
   'msg.existed': '该项已存在!',
   'msg.nameRequired': '名称不能为空!',
+  'msg.contactRequired': '联系方式不能为空!',
+  'msg.contentRequired': '内容不能为空!',
   'msg.importSuccess': '导入成功',
   'msg.importFailed': '导入失败',
   'msg.updateSuccess': '更新成功',

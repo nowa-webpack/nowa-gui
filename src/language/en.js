@@ -111,6 +111,8 @@ module.exports = {
   'msg.invalidTemplate': 'Invalied Template Folder!',
   'msg.existed': 'Already existed!',
   'msg.nameRequired': 'Name Required!',
+  'msg.contactRequired': 'Contact Required!',
+  'msg.contentRequired': 'Content Required!',
   'msg.importSuccess': 'Import Successfully!',
   'msg.importFailed': 'Import Failed!',
   'msg.updateSuccess': 'Update Successfully!',

@@ -1,7 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'dva';
-import { shell, remote } from 'electron';
-import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Modal from 'antd/lib/modal';
 import i18n from 'i18n';
@@ -30,6 +27,19 @@ class FeedbackModal extends Component {
     const that = this;
     const { nickname, contact, content } = that.state;
     const { version } = this.props;
+
+    if (!nickname) {
+      Message.error(i18n('msg.nameRequired'));
+      return false;
+    }
+    if (!contact) {
+      Message.error(i18n('msg.contactRequired'));
+      return false;
+    }
+    if (!content) {
+      Message.error(i18n('msg.contentRequired'));
+      return false;
+    }
     request(`https://oapi.dingtalk.com/robot/send?access_token=${DINGDING_TOKEN}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
