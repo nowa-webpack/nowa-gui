@@ -3,7 +3,7 @@ const { constants } = require('../is');
 module.exports = {
   browser: {
     width: 900,
-    height: 550,
+    height: 552,
     frame: false,
     show: false,
     resizable: false,
