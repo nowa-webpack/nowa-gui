@@ -3,8 +3,9 @@ import { remote, ipcRenderer, shell } from 'electron';
 import Button from 'antd/lib/button';
 import Message from 'antd/lib/message';
 import Table from 'antd/lib/table';
-// import Input from 'antd/lib/input';
 import Popconfirm from 'antd/lib/popconfirm';
+import Input from 'antd/lib/input';
+import Icon from 'antd/lib/icon';
 import semver from 'semver';
 import semverDiff from 'semver-diff';
 import { join } from 'path';
@@ -23,7 +24,11 @@ const basicColumns = [{
   dataIndex: 'name',
   key: 'name',
   width: 250,
-  sorter: (a, b) => a.name < b.name,
+  // filters: [{
+  //   text: 'react',
+  //   value: 'react',
+  // }],
+  // onFilter: (value, record) => record.name.indexOf(value) === 0,
   render: text =>
     (
       <a onClick={() => shell.openExternal(`https://www.npmjs.com/package/${text}`)}>{text}</a>
@@ -54,6 +59,8 @@ class DependenceTable extends Component {
       selectedRowKeys: [],
       installDp: '',
       showModal: false,
+      filterName: '',
+      dataSource: [],
       // isNewModule: false
     };
 
@@ -249,7 +256,7 @@ class DependenceTable extends Component {
   }
 
   render() {
-    const { loading, selectedRowKeys, dataSource, showModal } = this.state;
+    const { loading, selectedRowKeys, dataSource, showModal, filterName } = this.state;
     const hasSelected = selectedRowKeys.length > 0;
     const rowSelection = {
       selectedRowKeys,
@@ -315,20 +322,28 @@ class DependenceTable extends Component {
       },
     }];
 
+    const filterDataSource = dataSource.filter(item => item.name.indexOf(filterName) === 0);
+
     return (
        <div className="package-wrap">
-        <Button type="primary" size="small" className="new-btn"
-          onClick={() => this.setState({ showModal: true })}
-        >{i18n('package.btn.install')}</Button>
         <Button type="primary" onClick={() => this.updatelModules()} size="small"
           disabled={!hasSelected}
           className="udt-all-btn"
         >{i18n('package.btn.updateAll')}</Button>
+        <Button type="primary" ghost size="small" className="new-btn"
+          onClick={() => this.setState({ showModal: true })}
+        >{i18n('package.btn.install')}</Button>
+        <div className="search-input" >
+          <Input size="small"
+            prefix={<Icon type="search" />}
+            value={filterName} onChange={e => this.setState({ filterName: e.target.value })}
+          />
+        </div>
         <Table
           size="small"
           rowSelection={rowSelection}
           columns={columns}
-          dataSource={dataSource}
+          dataSource={filterDataSource}
           loading={loading}
           pagination={false}
           scroll={{ y: 286 }}
