@@ -31,6 +31,7 @@ ipcMain.on('tray-change-status', (event, { project, status, fromRenderer }) => {
 app.on('ready', () => {
   menu.init();
   windowManager.create();
+  command.linkNowa();
   tray.init();
   checkEncoding();
 });

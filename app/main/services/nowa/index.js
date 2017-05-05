@@ -97,7 +97,7 @@ const init = () => {
 
       fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, modules);
 
-      linkNowa();
+      // linkNowa();
     });
   } else {
     if (!config.online()) {
@@ -135,14 +135,14 @@ const init = () => {
             });
             fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, nowaJson);
             // if (!fs.existsSync(LINK_NOWA_PATH)) {
-              linkNowa();
+              // linkNowa();
             // }
           });
         }
       // don't need update
       } else {
         // if (!fs.existsSync(LINK_NOWA_PATH)) {
-          linkNowa();
+          // linkNowa();
         // }
         win.webContents.send('nowa-need-install', 2);
       }

@@ -2,7 +2,7 @@ const { fork, spawn, exec } = require('child_process');
 const { join, resolve } = require('path');
 const fs = require('fs-extra');
 const uuid = require('uuid');
-const { tmpdir } = require('os');
+const { tmpdir, homedir } = require('os');
 const npmRunPath = require('npm-run-path');
 const Sudoer = require('electron-sudo').default;
 
@@ -91,7 +91,36 @@ const exportFunc = {
 
   linkNowa() {
     try {
+      const bindir = join(NOWA_INSTALL_DIR, 'node_modules', '.bin');
+      const str = `export PATH = $PATH:${bindir}`;
       if (isWin) {
+        const term = exec(`echo %Path%`)
+        term.stdout.on('data', (data) => {
+          const prestr = data.toString();
+
+         if (prestr.indexOf(bindir) === -1) {
+            const bat = join(APP_PATH, 'task', 'env.bat');
+            exec(`${bat} ${bindir}`)
+          }
+        });
+
+      } else {
+        const bashPath = join(homedir(), '.bash_profile');
+
+        if (fs.existsSync(bashPath)) {
+          let prestr = fs.readFileSync(bashPath);
+          if (prestr.indexOf(bindir) === -1) {
+            prestr += `\n${str}`;
+
+            fs.writeFileSync(bashPath, prestr, { flag: 'a' });
+            exec('source ~/.bash_profile');
+          }
+        } else {
+          fs.writeFileSync(bashPath, str, { flag: 'a' });
+          exec('source ~/.bash_profile');
+        }
+      }
+      /*if (isWin) {
         const nodePath = join(NODE_PATH, 'node.exe');
         const srcNowa = join(NOWA_INSTALL_DIR, 'node_modules', 'nowa', 'bin', 'nowa');
 
@@ -129,8 +158,8 @@ const exportFunc = {
         if (fs.existsSync(target)) {
           fs.removeSync(target);
         }
-        fs.symlinkSync(srcNowa, target);*/
-      }
+        fs.symlinkSync(srcNowa, target);
+      }*/
     } catch (e) {
       console.log(e);
     }
