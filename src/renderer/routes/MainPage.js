@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
-import { shell } from 'electron';
+import { shell, remote } from 'electron';
 import Layout from 'antd/lib/layout';
 import Button from 'antd/lib/button';
 import Tooltip from 'antd/lib/tooltip';
+import Message from 'antd/lib/message';
 import i18n from 'i18n';
 
 
@@ -11,8 +12,14 @@ import ProjectDetailPage from './ProjectDetailPage';
 import NewProjectPage from './NewProjectPage';
 
 const { Sider } = Layout;
+const { utils } = remote.getGlobal('services');
+
 
 const MainPage = ({ showPage, dispatch, showSideMask }) => {
+  if (utils.nowaDiff()) {
+    Message.info(i18n('msg.nowaVersionTip'), 10);
+  }
+
   return (
     <Layout>
       <Sider className="ui-sider" width={175}>

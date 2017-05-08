@@ -1,9 +1,5 @@
 import { remote, ipcRenderer } from 'electron';
-import fs from 'fs-extra';
 
-import { SUBLIME, VSCODE } from 'gui-const';
-import { VSCODE_BASE_PATH, SUBLIME_BASE_PATH } from 'gui-const';
-import { getLocalEditor, getLocalEditorPath, setLocalEditorPath } from 'gui-local';
 
 const { utils } = remote.getGlobal('services');
 const curVersion = utils.getPackgeJson().version;

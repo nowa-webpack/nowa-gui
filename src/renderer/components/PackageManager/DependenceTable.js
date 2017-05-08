@@ -17,18 +17,12 @@ import { readPkgJson } from 'gui-util';
 import NewPackageModal from './NewPackageModal';
 
 const { utils, command } = remote.getGlobal('services');
-// const InputGroup = Input.Group;
 
 const basicColumns = [{
   title: i18n('package.name'),
   dataIndex: 'name',
   key: 'name',
   width: 250,
-  // filters: [{
-  //   text: 'react',
-  //   value: 'react',
-  // }],
-  // onFilter: (value, record) => record.name.indexOf(value) === 0,
   render: text =>
     (
       <a onClick={() => shell.openExternal(`https://www.npmjs.com/package/${text}`)}>{text}</a>
@@ -61,7 +55,6 @@ class DependenceTable extends Component {
       showModal: false,
       filterName: '',
       dataSource: [],
-      // isNewModule: false
     };
 
     this.onNewPkgFinished = this.onNewPkgFinished.bind(this);

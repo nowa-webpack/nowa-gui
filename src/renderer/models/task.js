@@ -164,19 +164,22 @@ export default {
     * removeSingleCommand({ payload: { cmd } }, { put, select }) {
       const { commands } = yield select(state => state.task);
       const { current } = yield select(state => state.project);
-      delete commands[current.path][cmd];
 
-      current.pkg.scripts = pickerCmd(commands[current.path]);
+      if (commands[current.path][cmd].running) {
+        Message.error(i18n('cmd.stop.tip'));
+      } else {
+        delete commands[current.path][cmd];
 
-      // current.pkg.scripts = { ...commands[current.path] };
+        current.pkg.scripts = pickerCmd(commands[current.path]);
 
-      writePkgJson(current.path, current.pkg);
+        writePkgJson(current.path, current.pkg);
 
-      // yield delay(500);
-      yield put({
-        type: 'changeStatus',
-        payload: { commands: { ...commands } }
-      });
+        // yield delay(500);
+        yield put({
+          type: 'changeStatus',
+          payload: { commands: { ...commands } }
+        });
+      }
     },
     * openEditor({ payload: { project } }, { put, select }) {
       const { defaultEditor, editor } = yield select(state => state.setting);

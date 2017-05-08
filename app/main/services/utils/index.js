@@ -2,6 +2,8 @@ const ejs = require('ejs');
 const { join } = require('path');
 const ansiHTML = require('ansi-html');
 const fs = require('fs-extra');
+const { homedir } = require('os');
+const semver = require('semver');
 const request = require('./request');
 const checkRegistry = require('./checkRegistry');
 const checkEncoding = require('./checkEncoding');
@@ -20,7 +22,7 @@ ansiHTML.setColors({
   darkgrey: '8dd5e4'
 });
 
-const { constants: { APP_PATH } } = require('../is');
+const { constants: { APP_PATH, NOWA_INSTALL_JSON_FILE, LINK_NOWA_PATH } } = require('../is');
 
 const delay = n => new Promise(resolve => setTimeout(resolve, n));
 
@@ -32,9 +34,11 @@ const getPercent = (str) => {
 };
 
 const getMockPercent = (str, percent) => {
-  const p = getPercent(str) / 20;
+  // const p = getPercent(str) / 20;
+  const p = getPercent(str) / 14;
   const s = parseInt(Math.random() * 7);
-  if (p < 1 && percent + s < 60) {
+  // if (p < 1 && percent + s < 60) {
+  if (p < 3 && percent + s < 60) {
     percent += s;
   } else {
     if (p === 5 && percent < 100) {
@@ -46,22 +50,6 @@ const getMockPercent = (str, percent) => {
   return percent > 100 ? 100 : parseInt(percent);
 };
 
-/*const getMockPercent = (str, percent) => {
-  const p = getPercent(str) / 25;
-  const s = parseInt(Math.random() * 7);
-  if (p === 0 && percent + s < 60) {
-    percent += s;
-  } else {
-    if (p === 4 && percent < 100) {
-      percent += 5;
-    } else {
-      // percent = p * 10 + 60;
-      percent = p * 5 + 60;
-    }
-  }
-  return percent;
-};*/
-
 const newLog = (oldLog, str) => oldLog + ansiHTML(str.replace(/\n/g, '<br>'));
 
 const loadConfig = (promptConfigPath) => {
@@ -72,7 +60,6 @@ const loadConfig = (promptConfigPath) => {
     return {};
   }
 };
-
 
 const getMoudlesVersion = (filepath, dependencies) => {
   // const curPkg = loadConfig(join(filepath, 'package.json'));
@@ -88,7 +75,29 @@ const getMoudlesVersion = (filepath, dependencies) => {
     return Object.assign(item, { installedVersion: pkg.version });
   });
   return pkgs;
+};
 
+const nowaDiff = () => {
+  if (!fs.existsSync(LINK_NOWA_PATH)) {
+    return false;
+  }
+
+  const nowaJson = fs.readJsonSync(NOWA_INSTALL_JSON_FILE);
+  const nowaGUIVer = nowaJson.nowa;
+  const nowaServerGUIVer = nowaJson['nowa-server'];
+
+  const nowaCliJson = fs.readJsonSync(join(homedir(), '.nowa', 'latest-versions.json'));
+  const nowaCliVer = nowaCliJson.versions.nowa;
+  const nowaServerCliVer = nowaCliJson.versions['nowa-server'];
+  if (semver.lt(nowaCliVer, nowaGUIVer)) {
+    return true;
+  }
+
+  if (semver.lt(nowaServerCliVer, nowaServerGUIVer)) {
+    return true;
+  }
+
+  return false;
 };
 
 module.exports = {
@@ -100,6 +109,8 @@ module.exports = {
   getMockPercent,
   newLog,
   loadConfig,
+
+  nowaDiff,
 
   getMoudlesVersion,
 

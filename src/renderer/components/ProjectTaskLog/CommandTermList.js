@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Button from 'antd/lib/button';
+import Popconfirm from 'antd/lib/popconfirm';
 import classNames from 'classnames';
 import i18n from 'i18n';
 
@@ -88,12 +89,15 @@ class CommandTermList extends Component {
               onClick={() => this.changeLogType(name)}
             >
               {name.length > 20 ? name.slice(0, 15) + '...' : name }
-              <i className="iconfont icon-close-o"
-                onClick={(e) => {
-                  e.stopPropagation();
+              <Popconfirm
+                placement="bottomRight"
+                title={i18n('msg.removeTip')}
+                onConfirm={() => {
                   this.removeCmd(name);
                 }}
-              />
+                okText={i18n('form.ok')}
+                cancelText={i18n('form.cancel')}
+              ><i className="iconfont icon-close-o" /></Popconfirm>
               { running
                 ? <i className="iconfont icon-pause" onClick={() => this.stopCmd(name)} />
                 : <i className="iconfont icon-play" onClick={() => this.startCmd(name)} />

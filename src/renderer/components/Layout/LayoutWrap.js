@@ -97,7 +97,6 @@ class LayoutWrap extends Component {
     });
 
     this.onDragLeave();
-    
   }
 
   onDragOver() {
@@ -189,7 +188,7 @@ class LayoutWrap extends Component {
 
             { showBD && <div className="bar-bd" /> }
 
-            <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/html/gui.html')} />
+            <div className="logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
 
             { showPage === 2 &&
               <div className="proj-info">

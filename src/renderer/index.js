@@ -1,7 +1,8 @@
 import dva from 'dva';
 import { ipcRenderer, remote } from 'electron';
 import Message from 'antd/lib/message';
-import { hashHistory } from 'react-router';
+import log from 'electron-log';
+// import { hashHistory } from 'react-router';
 
 import RouterConfig from './router';
 import project from './models/project';
@@ -46,7 +47,8 @@ ipcRenderer.on('main-err', (event, msg) => {
 // 1. Initialize
 const app = dva({
   onError(e) {
-    console.error(e)
+    console.error(e);
+    log.error(e);
     Message.error(e.stack, 6);
   },
 });

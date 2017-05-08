@@ -94,11 +94,11 @@ const exportFunc = {
       const bindir = join(NOWA_INSTALL_DIR, 'node_modules', '.bin');
       const str = `export PATH=$PATH:${bindir}`;
       if (isWin) {
-        const term = exec(`echo %Path%`)
+        const term = exec(`echo %Path%`);
         term.stdout.on('data', (data) => {
           const prestr = data.toString();
 
-         if (prestr.indexOf(bindir) === -1) {
+          if (prestr.indexOf(bindir) === -1) {
             const bat = join(APP_PATH, 'task', 'env.bat');
             exec(`${bat} ${bindir}`);
           }

@@ -9,13 +9,13 @@ const { join } = require('path');
 const { request } = require('../utils');
 const { constants } = require('../is');
 const { getWin } = require('../windowManager');
-const { progressInstall, linkNowa } = require('../command');
+const { progressInstall } = require('../command');
 const config = require('../../config');
 
-const { NOWA_INSTALL_DIR, NOWA_INSTALL_JSON_FILE, LINK_NOWA_PATH } = constants;
+const { NOWA_INSTALL_DIR, NOWA_INSTALL_JSON_FILE } = constants;
 
-const nowaPkg = ['nowa', 'nowa-init', 'nowa-server', 'nowa-build'];
-// const nowaPkg = ['nowa', 'nowa-server', 'nowa-build'];
+const nowaPkg = ['nowa', 'nowa-init', 'nowa-server', 'nowa-build', 'nowa-lib', 'nowa-dep'];
+// const nowaPkg = ['nowa', 'nowa-init', 'nowa-server', 'nowa-build'];
 const otherPkg = ['npm'];
 const needInstallPkgs = [...nowaPkg, ...otherPkg].map(name => ({ name, version: 'latest' }));
 
@@ -134,16 +134,12 @@ const init = () => {
               nowaJson[name] = newVersion;
             });
             fs.writeJsonSync(NOWA_INSTALL_JSON_FILE, nowaJson);
-            // if (!fs.existsSync(LINK_NOWA_PATH)) {
-              // linkNowa();
-            // }
+            
           });
         }
       // don't need update
       } else {
-        // if (!fs.existsSync(LINK_NOWA_PATH)) {
-          // linkNowa();
-        // }
+        
         win.webContents.send('nowa-need-install', 2);
       }
     });

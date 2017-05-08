@@ -120,6 +120,7 @@ module.exports = {
   'msg.updateFailed': '更新失败',
   'msg.removeTip': '确认删除？',
   'msg.templateErr': '模板正在下载，请稍候再试',
+  'msg.nowaVersionTip': '您当前安装的nowa命令行版本过低，为不影响使用，请全局卸载nowa命令行版本 `npm uninstall nowa -g`',
 
   'msg.editorPath': '请选择默认编辑器安装路径',
   'msg.editorNotExisted': '请在设置面板中配置编辑器路径',
@@ -134,6 +135,8 @@ module.exports = {
   'cmd.select.opt': '选择命令窗口',
   'cmd.meta.name': '名称',
   'cmd.meta.value': '命令',
+  'cmd.stop.tip': '请等待命令执行结束再删除。',
+
 
   'preinit.msg1': '初始化的时候必须要连接网络，请联网后重新打开应用。',
   'preinit.msg2': '{1} 后自动关闭应用',

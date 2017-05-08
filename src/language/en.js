@@ -119,6 +119,8 @@ module.exports = {
   'msg.updateFailed': 'Update Failed!',
   'msg.removeTip': 'Are you sure to remove this item?',
   'msg.templateErr': 'Template Files are downloading. Please try again later.',
+  'msg.nowaVersionTip': 'Your globally installed nowa-cli is outdated. For a better experience, please exec `npm uninstall nowa -g`',
+
 
   'msg.editorPath': 'Please set installation path of default editor!',
   'msg.editorNotExisted': 'Please go to the config pane to set EDITOR path.',
@@ -133,6 +135,7 @@ module.exports = {
   'cmd.select.opt': 'Command List',
   'cmd.meta.name': 'Command Name',
   'cmd.meta.value': 'Command Content',
+  'cmd.stop.tip': 'Please wait until this command is finished, then try it again.',
 
   'preinit.msg1': 'Internet connection is required during initialization, check your network & reopen APP.',
   'preinit.msg2': 'Shutdown in {1} seconds',
