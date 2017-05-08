@@ -2,6 +2,7 @@
 ==================
 * 修复 [#9](https://github.com/nowa-webpack/nowa-gui/issues/9)
 * 修复程序退出无法保存当前项目的bug
+* 对全局 nowa 版本进行判断
 
 
 1.7.1 / 2017-05-03
