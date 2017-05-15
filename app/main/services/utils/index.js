@@ -82,11 +82,17 @@ const nowaDiff = () => {
     return false;
   }
 
+  const oldPath = join(homedir(), '.nowa', 'latest-versions.json');
+
+  if (!fs.existsSync(oldPath)) {
+    return false;
+  }
+
   const nowaJson = fs.readJsonSync(NOWA_INSTALL_JSON_FILE);
   const nowaGUIVer = nowaJson.nowa;
   const nowaServerGUIVer = nowaJson['nowa-server'];
 
-  const nowaCliJson = fs.readJsonSync(join(homedir(), '.nowa', 'latest-versions.json'));
+  const nowaCliJson = fs.readJsonSync(oldPath);
   const nowaCliVer = nowaCliJson.versions.nowa;
   const nowaServerCliVer = nowaCliJson.versions['nowa-server'];
   if (semver.lt(nowaCliVer, nowaGUIVer)) {

@@ -2,6 +2,7 @@ import dva from 'dva';
 import { ipcRenderer, remote } from 'electron';
 import Message from 'antd/lib/message';
 import log from 'electron-log';
+
 // import { hashHistory } from 'react-router';
 
 import RouterConfig from './router';
