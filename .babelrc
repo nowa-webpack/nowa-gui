@@ -1,0 +1,17 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "electron": 1.6,
+      },
+      "loose": false, 
+      "modules": false,
+      "useBuiltIns": true
+    }],
+    "stage-2",
+    "react"
+  ],
+  "plugins": [
+    "transform-runtime"
+  ]
+}

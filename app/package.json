@@ -1,0 +1,16 @@
+{
+  "name": "NowaGUI",
+  "version": "1.7.3",
+  "description": "A tool for nowa developement.",
+  "productName": "ElectronWebpack",
+  "main": "./main.js",
+  "scripts": {
+    "postinstall": "npm rebuild --runtime=electron --target=1.6.6 --disturl=https://atom.io/download/atom-shell --build-from-source"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Poling",
+    "email": "466681097@qq.com"
+  },
+  "license": "ISC"
+}

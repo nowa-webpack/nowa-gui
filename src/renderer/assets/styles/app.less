@@ -1,0 +1,114 @@
+body {
+  font-size: 12px;
+  overflow: hidden;
+  min-width: 902px;
+  min-height: 552px;
+}
+
+#root {
+  height: 100%;
+  border: 1px solid #ddd;
+}
+
+#loading{
+  position: fixed;
+  top: 220px;
+  left: 50%;
+  margin-left: -20px;
+
+  i {
+    font-size: 40px;
+    color: #0c60aa;
+  }
+}
+
+.container{
+  height: 100%;
+  background-color: #fff;
+}
+
+
+#main-ctn{
+  height: 100%;
+  background-color: #fff;
+}
+
+.top-bar{
+  -webkit-app-region: drag;
+  position: relative;
+  background-color: #fff;
+  height: 40px;
+  line-height: 40px;
+  overflow-y: hidden;
+
+  &-division{
+    position: absolute;
+    width: 174px;
+    height: 40px;
+    top: 0;
+    left: 0;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+
+  &-logo{
+    -webkit-app-region: no-drag;
+    position: absolute;
+    display: block;
+    top: 8px;
+    width: 24px;
+    height: 24px;
+    background-image: url('../images/gray-logo.png');
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover{
+      cursor: pointer;
+      background-image: url('../images/blue-logo.png');
+      transition: background .2s;
+    }
+  }
+}
+
+.update-tip{
+  padding-left: 15px;
+  max-height: 250px;
+  overflow-y: auto; 
+  li{
+    list-style: disc;
+    line-height: 22px;
+  }
+}
+
+.ui-notification{
+  padding: 8px 12px;
+  .ant-notification-notice{
+    &-icon{
+      font-size: 20px;
+      line-height: 28px;
+    }
+
+    &-message{
+      font-size: 12px;
+      margin-bottom: 0;
+    }
+
+    &-with-icon{
+      .ant-notification-notice-message{
+        margin-left: 25px;
+      }
+    }
+  }
+}
+
+
+
+@import './form.less';
+@import './other-page.less';
+@import './setting.less';
+@import './project.less';
+@import './boilerplate.less';
+@import './modal.less';
+@import './importing.less';

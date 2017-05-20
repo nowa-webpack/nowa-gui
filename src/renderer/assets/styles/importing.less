@@ -1,0 +1,47 @@
+.importing{
+  text-align: center;
+  padding-top: 80px;
+  position: relative;
+
+  &-detail{
+    margin-top: 20px;
+    color: #999;
+    font-size: 14px;
+
+    &-err{
+      color: #f46e65;
+    }
+
+    &-btns{
+      margin-top: 10px;
+      button{
+        margin: 5px;
+      }
+    }
+  }
+
+  &-content{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 20px 10px 10px;
+    background-color: #254463;
+    color: #fff;
+
+    &-term{
+      transition: height .5s;
+      font-family: monospace;
+      text-align: left;
+      overflow-y: auto;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    &-clear{
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      cursor: pointer;
+    }
+  }
+}

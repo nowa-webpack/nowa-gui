@@ -1,0 +1,112 @@
+.ui-form{
+  width: 500px;
+  margin: 10px auto 0;
+
+  &-item{
+    margin-bottom: 25px;
+    text-align: left;
+
+    &-grp{
+      display: inline-block;
+      width: 300px;
+      vertical-align: middle;
+    }
+  }
+
+  &-label{
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+    margin-right: 15px;
+    font-size: 13px;
+    color: #666;
+
+    &-horizon{
+      display: block;
+      width: 100%;
+      margin-bottom: 4px;
+      font-size: 14px;
+      color: #666;
+    }
+  }
+
+  &-btns{
+    margin-left: 135px;
+
+    button{
+      margin-right: 10px;
+    }
+  }
+
+  &-checkbox-grp{
+    display: inline-block;
+    width: 300px;
+    text-align: left;
+    vertical-align: text-top;
+    margin-top: -2px;
+
+    .ant-checkbox-wrapper{
+      display: block;
+      width: 300px;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+
+    .ant-checkbox-input{
+      width: 300px;
+    }
+  }
+
+  .ant-input-group-addon{
+    cursor: pointer;
+  }
+
+  input[type=radio]{
+    width: 100px;
+  }
+
+  input{
+    padding: 5px;
+    height: 28px;
+    border-radius: 3px;
+    border: 1px solid #d9d9d9;
+    color: #666;
+    width: 200px;
+
+    &:focus{
+      border-color: #108ee9;
+    }
+
+    &.mx{
+      width: 350px;
+    }
+
+    &.lg{
+      width: 300px;
+    }
+
+    &.sm{
+      width: 100px;
+    }
+
+    &.disabled{
+      cursor: not-allowed;
+      background-color: #eee;
+    }
+  }
+
+  textarea{
+    width: 350px;
+    vertical-align: top;
+    height: 80px;
+    resize: none;
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #d9d9d9;
+    color: #666;
+
+    &:focus{
+      border-color: #108ee9;
+    }
+  }
+}

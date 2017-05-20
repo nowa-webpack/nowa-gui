@@ -1,0 +1,149 @@
+.drag {
+  height: 100%;
+  padding: 20px;
+  text-align: center;
+
+  .iconfont{
+    font-size: 50px;
+    margin-bottom: 20px;
+    color: #108ee9;
+  }
+
+  &-content{
+    height: 100%;
+    padding-top: 160px;
+    color: #999;
+    font-size: 12px;
+    border-radius:4px;
+    border:2px dashed #c6c6c6;
+  }
+  &-detail{
+    margin-top: 40px;
+    /*margin-bottom: 5px;*/
+    color: #666;
+    font-size: 16px;
+  }
+}
+
+.shutdown{
+  text-align: center;
+
+  &-content{
+    margin-top: 130px;
+    color: #999;
+    font-size: 14px;
+  }
+
+  .anticon{
+    font-size: 54px;
+    color: #f04134;
+  }
+
+  &-detail{
+    margin-top: 40px;
+    margin-bottom: 10px;
+  }
+}
+
+.preinit{
+  text-align: center;
+
+  &-content{
+    margin-top: 130px;
+    color: #999;
+    font-size: 14px;
+  }
+
+  &-detail{
+    margin-top: 40px;
+    margin-bottom: 10px;
+  }
+
+  &-err{
+    font-size: 14px;
+    font-weight: normal;
+    color: #f46e65;
+  }
+}
+
+.welcome{
+  text-align: center;
+
+  &-bg{
+    width: 100px;
+    height: 100px;
+    margin: 100px auto 15px;
+    background-image: url('../images/welcome.png');
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+  }
+  &-version{
+    font-size: 12px;
+    color: #d9d9d9;
+  }
+  &-description{
+    margin: 20px auto;
+    font-size: 18px;
+    color: #999;
+  }
+  &-btns{
+    button {
+      width: 250px;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.main{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40px;
+  bottom: 0;
+  background-color: #fff;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+
+  &-sider{
+    /*position: relative;
+    flex: 1 1 auto;
+    height: 100%;
+    width: 176px;*/
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    border-right: 1px solid #eee;
+    background-color: #fff;
+
+    &-mask{
+      position: absolute;
+      width: 175px;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.5);
+      top: 0;
+      left: 0;
+      cursor: not-allowed;
+    }
+  }
+
+  &-foot{
+    /*position: absolute;*/
+    /*bottom: 5px;*/
+    /*right: 0;*/
+    display: -webkit-box;
+    height: 40px;
+    line-height: 40px;
+    position: relative;
+
+    &-bg{
+      position: absolute;
+      right: 0;
+    }
+
+    .ant-btn{
+      font-size: 16px;
+      border-color: transparent;
+      margin-right: 4px;
+      color: #aaa;
+    }
+  }
+}

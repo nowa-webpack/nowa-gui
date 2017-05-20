@@ -1,0 +1,88 @@
+.project{
+
+  &-sider{
+    position: relative;
+    display: -webkit-box;
+    -webkit-box-flex: 1;
+    -webkit-box-orient:vertical;
+
+
+    &-title{
+      padding: 0 10px 0 16px;
+      font-size: 18px;
+      height: 50px;
+      width: 100%;
+      line-height: 50px;
+    }
+
+    &-btn{
+      float: right;
+      margin-top: 16px;
+      margin-left: 6px;
+      font-size: 10px;
+      border: 1px solid #cecece;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
+      cursor: pointer;
+
+      &:hover{
+        color: #108ee9;
+        border-color: #108ee9;
+        transition: all .5s;
+      }
+    }
+  }
+
+  &-list{
+    /*min-height: 426px;*/
+    overflow-y: auto;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-box-flex: 1;
+    /*display: -webkit-box;*/
+
+    &-item{
+      position: relative;
+      padding: 6px 2px 6px 16px;
+      cursor: pointer;
+      border-right: 2px solid #fff;
+      width: 100%;
+      height: 40px;
+
+      &:hover{
+        .project-list-item-name{
+          color: #108ee9;
+        }
+      }
+
+      &-name{
+        margin-left: 18px;
+        font-size: 12px;
+        line-height: 24px;
+        color: #666;
+      }
+
+      &-active{
+        background-color: #eaf7fe;
+        border-color: #2db7fa;
+        transition: background-color .5s;
+      }
+
+      .ant-badge{
+        position: absolute;
+        top: 9px;
+      }
+
+      .anticon-down{
+        float: right;
+        margin-top: 6px;
+        margin-right: 4px;
+        font-size: 10px;
+        color: #aaa;
+      }
+    }
+  }
+}
