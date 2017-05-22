@@ -7,7 +7,12 @@ import {
   SUBLIME, VSCODE, WEBSTORM,
   VSCODE_BASE_PATH, SUBLIME_BASE_PATH, WEBSTORM_BASE_PATH
 } from 'const-renderer-nowa';
-import { getLocalEditor, getLocalEditorPath, setLocalEditorPath } from 'store-renderer-nowa';
+import {
+  setLocalLanguage, getLocalLanguage,
+  getLocalEditor, getLocalEditorPath, setLocalEditorPath, setLocalEditor
+} from 'store-renderer-nowa';
+import { msgSuccess } from 'util-renderer-nowa';
+import i18n from 'i18n-renderer-nowa';
 
 
 export default {
@@ -79,6 +84,38 @@ export default {
           type: 'changeStatus',
           payload: { registry, registryList }
         });
+      }
+    },
+    * setValues({ payload }, { put, select }) {
+      const setting = yield select(state => state.setting);
+
+      const { defaultEditor, editor, language, registry } = payload;
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          defaultEditor,
+          editor
+        }
+      });
+
+      setLocalEditorPath(defaultEditor, editor[defaultEditor]);
+
+      if (defaultEditor !== setting.defaultEditor) {
+        setLocalEditor(defaultEditor);
+      }
+
+      if (registry !== setting.registry) {
+        yield put({
+          type: 'changeRegistry',
+          payload: { registry }
+        });
+      }
+      if (language !== getLocalLanguage()) {
+        setLocalLanguage(language);
+        window.location.reload();
+      } else {
+        msgSuccess(i18n('msg.updateSuccess'));
       }
     }
   },

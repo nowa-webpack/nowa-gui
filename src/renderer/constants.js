@@ -6,7 +6,7 @@ export const WELCOME_PAGE = 'WELCOME_PAGE';     // 欢迎页面
 export const SETTING_PAGE = 'SETTING_PAGE';     // 工具设置页面
 export const BOILERPLATE_PAGE = 'BOILERPLATE_PAGE';   // 新建项目页面
 export const PROJECT_PAGE = 'PROJECT_PAGE';     // 项目详情页面
-export const FEEDBACL_PAGE = 'FEEDBACL_PAGE';   // 反馈页面
+export const FEEDBACK_PAGE = 'FEEDBACK_PAGE';   // 反馈页面
 export const IMPORT_STEP1_PAGE = 'IMPORT_STEP1_PAGE';   // 确认源页面
 export const IMPORT_STEP2_PAGE = 'IMPORT_STEP2_PAGE';   // 安装项目依赖页面
 

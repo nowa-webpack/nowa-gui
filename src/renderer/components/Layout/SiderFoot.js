@@ -3,7 +3,7 @@ import Tooltip from 'antd/lib/tooltip';
 import Button from 'antd/lib/button';
 
 import i18n from 'i18n-renderer-nowa';
-import { SETTING_PAGE, FEEDBACL_PAGE } from 'const-renderer-nowa';
+import { SETTING_PAGE, FEEDBACK_PAGE } from 'const-renderer-nowa';
 import { openUrl } from 'util-renderer-nowa';
 
 
@@ -25,7 +25,7 @@ const SiderFoot = ({ dispatch }) => {
       </Tooltip>
       <Tooltip placement="top" title={i18n('foot.feedback')} >
         <Button type="default" icon="dingding" shape="circle"
-          onClick={() => gotoPage(FEEDBACL_PAGE)}
+          onClick={() => gotoPage(FEEDBACK_PAGE)}
         />
       </Tooltip>
       <Tooltip placement="top" title={i18n('foot.help')} >

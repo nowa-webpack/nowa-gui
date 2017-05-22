@@ -13,7 +13,7 @@ import LayoutWrap from '../components/Layout/Wrap';
 
 import {
   SHUTDOWN_PAGE, PREINIT_PAGE, BOILERPLATE_PAGE, PROJECT_PAGE, WELCOME_PAGE,
-  SETTING_PAGE, FEEDBACL_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE
+  SETTING_PAGE, FEEDBACK_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE
 } from 'const-renderer-nowa';
 
 
@@ -34,7 +34,7 @@ const IndexPage = ({ showPage, dispatch }) => {
     case SETTING_PAGE:
       mainbody = <SettingPage />;
       break;
-    case FEEDBACL_PAGE:
+    case FEEDBACK_PAGE:
       mainbody = <FeedbackPage dispatch={dispatch} />;
       break;
     case IMPORT_STEP1_PAGE:

@@ -48,21 +48,25 @@ export const saveNewPkg = (pkgs) => {
 };
 
 export const nowaDiff = () => {
-  const curNowa = readNowaVer();
+  const curNowa = readNowaVer().nowa;
+  // const oldNowaPath = join(homedir(), '.nowa', 'install', 'node_modules');
   const oldNowaPath = join(homedir(), '.nowa', 'latest-versions.json');
-  let isOld = false;
+  // let isOld = false;
   try {
     if (!existsSync(oldNowaPath)) {
-      return isOld;
+      return false;
     }
-    const oldNowa = readJsonSync(oldNowaPath).versions;
+    const oldNowa = readJsonSync(oldNowaPath).versions.nowa;
 
-    Object.keys(oldNowa).forEach((pkg) => {
-      if (lt(oldNowa[pkg], curNowa[pkg])) isOld = true;
-    });
-    return isOld;
+    return lt(oldNowa, curNowa);
+
+    // Object.keys(oldNowa).forEach((pkg) => {
+    //   if (lt(oldNowa[pkg], curNowa[pkg])) isOld = true;
+    // });
+    // return isOld;
   } catch (e) {
     log.error(e);
+    return false;
   }
 };
 

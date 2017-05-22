@@ -122,6 +122,7 @@ module.exports = {
   'msg.templateErr': 'Template Files are downloading. Please try again later.',
   'msg.nowaVersionTip': 'Your globally installed nowa-cli is outdated. For a better experience, please exec `npm uninstall nowa -g`',
   'msg.LinkInvalidation': 'Link Invalidation',
+  'msg.required': 'Required',
 
   'msg.editorPath': 'Please set installation path of default editor!',
   'msg.editorNotExisted': 'Please go to the config pane to set EDITOR path.',

@@ -11,7 +11,7 @@ import { openUrl, msgError, msgSuccess } from 'util-renderer-nowa';
 import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from 'store-renderer-nowa';
 import {
   PREINIT_PAGE, SHUTDOWN_PAGE, WELCOME_PAGE, BOILERPLATE_PAGE, PROJECT_PAGE,
-  EXTENSION_MAP, IMPORT_STEP2_PAGE
+  EXTENSION_MAP, IMPORT_STEP2_PAGE, SETTING_PAGE, FEEDBACK_PAGE,
 } from 'const-renderer-nowa';
 
 const { paths, nowa, requests } = remote.getGlobal('services');

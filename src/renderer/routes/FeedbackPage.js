@@ -1,41 +1,30 @@
 import React, { PropTypes, Component } from 'react';
 import Button from 'antd/lib/button';
-// import Message from 'antd/lib/message';
+import Form from 'antd/lib/form';
+import Input from 'antd/lib/input';
+import Col from 'antd/lib/col';
 
 import i18n from 'i18n-renderer-nowa';
-import { msgError } from 'util-renderer-nowa';
+
+const FormItem = Form.Item;
 
 class FeedbackPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      nickname: '',
-      contact: '',
-      content: '',
-    };
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
   handleSubmit() {
-    const { nickname, contact, content } = this.state;
-
-    if (!nickname) {
-      msgError(i18n('msg.nameRequired'));
-      return false;
-    }
-    if (!contact) {
-      msgError(i18n('msg.contactRequired'));
-      return false;
-    }
-    if (!content) {
-      msgError(i18n('msg.contentRequired'));
-      return false;
-    }
-    console.log(nickname, contact, content);
-    this.props.dispatch({
-      type: 'layout/sendFeedback',
-      payload: this.state
+    const that = this;
+    const { dispatch, form } = that.props;
+    form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+        dispatch({
+          type: 'layout/sendFeedback',
+          payload: values
+        });
+      }
     });
-    
   }
 
   goBack() {
@@ -43,36 +32,55 @@ class FeedbackPage extends Component {
   }
 
   render() {
-    const { nickname, contact, content } = this.state;
-
+    // const { nickname, contact, content } = this.state;
+    const { getFieldDecorator } = this.props.form;
     return (
       <div className="feedback">
         <h2 className="feedback-title">{i18n('feedback.modal.title')}</h2>
-        <form className="ui-form">
-          <div className="ui-form-item">
-            <label className="ui-form-label-horizon">{i18n('feedback.name')}</label>
-            <input type="text" className="mx" value={nickname}
-              onChange={e => this.setState({ nickname: e.target.value })}
-            />
-          </div>
-          <div className="ui-form-item">
-            <label className="ui-form-label-horizon">{i18n('feedback.contact')}</label>
-            <input type="text" className="mx" value={contact}
-              placeholder="phone, email"
-              onChange={e => this.setState({ contact: e.target.value })}
-            />
-          </div>
-          <div className="ui-form-item">
-            <label className="ui-form-label-horizon">{i18n('feedback.content')}</label>
-            <textarea value={content}
-              onChange={e => this.setState({ content: e.target.value })}
-            />
-          </div>
-          <div className="ui-form-btns">
+        <Form
+          className="ui-form"
+          layout="vertical"
+        >
+          <Col offset={3}>
+          <FormItem
+            label={i18n('feedback.name')}
+          >
+          {getFieldDecorator('nickname', {
+            rules: [
+              { required: true, message: i18n('msg.nameRequired') },
+            ],
+          })(
+            <Input placeholder="Nickname" />
+            )}
+          </FormItem>
+          <FormItem
+            label={i18n('feedback.contact')}
+          >
+          {getFieldDecorator('contact', {
+            rules: [
+              { required: true, message: i18n('msg.contactRequired') },
+            ],
+          })(
+            <Input placeholder="Email, Phone number" />
+            )}
+          </FormItem>
+          <FormItem
+            label={i18n('feedback.content')}
+          >
+          {getFieldDecorator('content', {
+            rules: [
+              { required: true, message: i18n('msg.contentRequired') },
+            ],
+          })(
+            <Input type="textarea" rows={4} />
+            )}
+          </FormItem>
+          <FormItem className="ui-form-btns">
             <Button type="primary" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
             <Button type="default" onClick={() => this.goBack()}>{i18n('form.back')}</Button>
-          </div>
-        </form>
+          </FormItem>
+          </Col>
+        </Form>
       </div>
     );
   }
@@ -80,6 +88,7 @@ class FeedbackPage extends Component {
 
 FeedbackPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  form: PropTypes.object.isRequired,
 };
 
-export default FeedbackPage;
+export default Form.create()(FeedbackPage);
