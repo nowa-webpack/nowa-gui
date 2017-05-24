@@ -78,29 +78,35 @@ const getMoudlesVersion = (filepath, dependencies) => {
 };
 
 const nowaDiff = () => {
-  if (!fs.existsSync(LINK_NOWA_PATH)) {
+  try {
+    if (!fs.existsSync(LINK_NOWA_PATH)) {
+      return false;
+    }
+
     return false;
-  }
 
-  const oldPath = join(homedir(), '.nowa', 'latest-versions.json');
+    /*const oldPath = join(homedir(), '.nowa', 'latest-versions.json');
 
-  if (!fs.existsSync(oldPath)) {
-    return false;
-  }
+    if (!fs.existsSync(oldPath)) {
+      return false;
+    }
 
-  const nowaJson = fs.readJsonSync(NOWA_INSTALL_JSON_FILE);
-  const nowaGUIVer = nowaJson.nowa;
-  const nowaServerGUIVer = nowaJson['nowa-server'];
+    const nowaJson = fs.readJsonSync(NOWA_INSTALL_JSON_FILE);
+    const nowaGUIVer = nowaJson.nowa;
+    const nowaServerGUIVer = nowaJson['nowa-server'];
 
-  const nowaCliJson = fs.readJsonSync(oldPath);
-  const nowaCliVer = nowaCliJson.versions.nowa;
-  const nowaServerCliVer = nowaCliJson.versions['nowa-server'];
-  if (semver.lt(nowaCliVer, nowaGUIVer)) {
-    return true;
-  }
+    const nowaCliJson = fs.readJsonSync(oldPath);
+    const nowaCliVer = nowaCliJson.versions.nowa;
+    const nowaServerCliVer = nowaCliJson.versions['nowa-server'];
+    if (semver.lt(nowaCliVer, nowaGUIVer)) {
+      return true;
+    }
 
-  if (semver.lt(nowaServerCliVer, nowaServerGUIVer)) {
-    return true;
+    if (semver.lt(nowaServerCliVer, nowaServerGUIVer)) {
+      return true;
+    }*/
+  } catch (e) {
+    console.log(e);
   }
 
   return false;

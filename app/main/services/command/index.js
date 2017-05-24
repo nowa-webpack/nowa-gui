@@ -109,12 +109,24 @@ const exportFunc = {
 
         if (fs.existsSync(bashPath)) {
           let prestr = fs.readFileSync(bashPath);
-          if (prestr.indexOf(bindir) === -1) {
-            prestr += `\n${str}`;
 
+          if (prestr.indexOf('export PATH=') === -1) {
+            prestr += `\n${str}`;
             fs.writeFileSync(bashPath, prestr, { flag: 'a' });
-            exec('source ~/.bash_profile');
+          } else {
+            prestr = prestr.toString()
+              .split('\n')
+              .map((item) => {
+                if (item.indexOf('export PATH=') !== -1 && item.indexOf(bindir) === -1) {
+                  item += `:${bindir}`;
+                }
+                return item;
+              }).join('\n');
+
+            fs.writeFileSync(bashPath, prestr);
           }
+          
+          exec('source ~/.bash_profile');
         } else {
           fs.writeFileSync(bashPath, str, { flag: 'a' });
           exec('source ~/.bash_profile');
