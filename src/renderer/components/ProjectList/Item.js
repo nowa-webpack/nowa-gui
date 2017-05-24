@@ -10,10 +10,14 @@ import { join } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
 import { PROJECT_PAGE } from 'const-renderer-nowa';
+import { hidePathString } from 'util-renderer-nowa';
 
 
-const Item = ({ project, projPath, dispatch }) => {
-
+const Item = ({
+  project,
+  projPath,
+  dispatch
+}) => {
   const { name, path, start, taskErr } = project;
   const isActive = projPath === path;
 
@@ -94,7 +98,7 @@ const Item = ({ project, projPath, dispatch }) => {
         </Dropdown>
       }
       { status }
-      <div className="project-list-item-name">{ name }</div>
+      <div className="project-list-item-name">{ hidePathString(name, 23) }</div>
     </div>
   );
 };

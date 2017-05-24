@@ -10,7 +10,9 @@ import {
 import SiderFoot from '../components/Layout/SiderFoot';
 import ProjectList from '../components/ProjectList/List';
 import BoilerplatePage from './BoilerplatePage';
+import ProjectPage from './ProjectPage';
 import ImportingLog from '../components/ImportSteps/ImportingLog';
+import CheckRegistry from '../components/ImportSteps/CheckRegistry';
 
 
 const { Sider } = Layout;
@@ -24,6 +26,14 @@ const MainPage = ({
   switch (showPage) {
     case BOILERPLATE_PAGE: {
       component = <BoilerplatePage />;
+      break;
+    }
+    case PROJECT_PAGE: {
+      component = <ProjectPage />;
+      break;
+    }
+    case IMPORT_STEP1_PAGE: {
+      component = <CheckRegistry />;
       break;
     }
     case IMPORT_STEP2_PAGE: {

@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import { ipcRenderer } from 'electron';
+import { connect } from 'dva';
+import ansiHTML from 'ansi-html';
 import Icon from 'antd/lib/icon';
 import Button from 'antd/lib/button';
 import { Content } from 'antd/lib/layout';
 import Progress from 'antd/lib/progress';
-import { connect } from 'dva';
+import { ipcRenderer } from 'electron';
+
 import i18n from 'i18n-renderer-nowa';
-import ansiHTML from 'ansi-html';
 
 class Log extends Component {
 
@@ -139,10 +140,3 @@ Log.propTypes = {
 };
 
 export default connect()(Log);
-/*
-export default connect(({ setting, projectCreate, layout }) => ({
-  // selectExtendsProj: projectCreate.selectExtendsProj,
-  // showModal: projectCreate.showOverwriteModal,
-  // defaultRegistry: setting.registry,
-  // registryList: setting.registryList,
-}))(Log);*/

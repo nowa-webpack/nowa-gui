@@ -1,4 +1,5 @@
 .project{
+  position: relative;
 
   &-sider{
     position: relative;
@@ -9,7 +10,7 @@
 
     &-title{
       padding: 0 10px 0 16px;
-      font-size: 18px;
+      font-size: 17px;
       height: 50px;
       width: 100%;
       line-height: 50px;
@@ -42,6 +43,7 @@
     width: 100%;
     display: -webkit-box;
     -webkit-box-flex: 1;
+    -webkit-box-orient: vertical;
     /*display: -webkit-box;*/
 
     &-item{
@@ -50,7 +52,7 @@
       cursor: pointer;
       border-right: 2px solid #fff;
       width: 100%;
-      height: 40px;
+      height: 36px;
 
       &:hover{
         .project-list-item-name{
@@ -82,6 +84,39 @@
         margin-right: 4px;
         font-size: 10px;
         color: #aaa;
+      }
+    }
+  }
+
+  &-top{
+    display: flex;
+    position: absolute;
+    height: 64px;
+    /*width: 300px;*/
+    top: 0;
+    padding: 5px 20px 10px 0px;
+    text-align: center;
+
+    &-task{
+      flex: 0 0 60px;
+      height: 60px;
+      margin-right: 10px;
+      color: #9b9b9b;
+      line-height: 1.3;
+      cursor: pointer;
+
+      &:hover{
+        color: #108ee9;
+        transition: color .5s;
+      }
+
+      &.disable{
+        color: #ddd;
+        /*cursor: not-allowed;*/
+      }
+
+      .iconfont{
+        font-size: 30px;
       }
     }
   }

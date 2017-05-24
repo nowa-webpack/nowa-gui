@@ -6,7 +6,7 @@ import Input from 'antd/lib/input';
 import Spin from 'antd/lib/spin';
 
 import i18n from 'i18n-renderer-nowa';
-import{ hideBoilerplateDesp } from 'util-renderer-nowa';
+import { hideBoilerplateDesp } from 'util-renderer-nowa';
 
 const InputGroup = Input.Group;
 
@@ -49,7 +49,6 @@ class Item extends Component {
         item: data.tags.filter(item => item.name === tag)[0],
       }
     });
-    // next();
   }
 
   render() {
@@ -109,7 +108,6 @@ class Item extends Component {
 
 Item.propTypes = {
   data: PropTypes.object,
-  // next: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 

@@ -39,7 +39,6 @@ class NewBoilerplateModal extends Component {
     this.state = {
       showModal: props.showModal,
       tabKey: 'local',
-      // selectType: props.selectType,
     };
 
     this.hideModal = this.hideModal.bind(this);
@@ -66,7 +65,6 @@ class NewBoilerplateModal extends Component {
       this.setState({
         showModal: next.showModal,
         tabKey: next.selectType === 'remote' ? 'remote' : 'local',
-        // selectType: next.selectType,
       });
     }
   }
@@ -115,19 +113,11 @@ class NewBoilerplateModal extends Component {
       });
     }
 
-    // this.remoteObj = getBasicRemoteObj();
-    // this.localObj = getBasicLocalObj();
-
     if (isDirty) {
       this.hideModal();
     } else {
       msgInfo(i18n('msg.contentRequired'));
     }
-
-    // if (!isDirty) {
-    //   this.hideModal();
-    //   return true;
-    // }
   }
 
   hideModal() {

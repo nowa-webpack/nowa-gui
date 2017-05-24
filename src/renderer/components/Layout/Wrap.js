@@ -19,20 +19,17 @@ class LayoutWrap extends Component {
     super(props);
     this.taskTimer;
     this.onDrop = this.onDrop.bind(this);
-    // this.onDragOver = this.onDragOver.bind(this);
-    // this.getUpdateVersion = this.getUpdateVersion.bind(this);
   }
 
   onDrop(acceptedFiles) {
     const { dispatch } = this.props;
-    const filePath = acceptedFiles[0].path;
-    console.log(filePath);
-    // dispatch({
-    //   type: 'project/importProjectFromFolder',
-    //   payload: {
-    //     filePath,
-    //   }
-    // });
+    const projPath = acceptedFiles[0].path;
+    dispatch({
+      type: 'projectCreate/folderImport',
+      payload: {
+        projPath,
+      }
+    });
 
     this.onDragLeave();
   }
@@ -84,7 +81,8 @@ class LayoutWrap extends Component {
 
             <div className="top-bar-logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
 
-            { showPage === PROJECT_PAGE &&
+            { 
+              showPage === PROJECT_PAGE &&
               <div className="top-bar-project">
                 <span className="top-bar-project-name">{current.name}</span>
                 <span className="top-bar-project-dir">({hidePathString((current.path || ''))})</span>
@@ -115,10 +113,10 @@ LayoutWrap.propTypes = {
   showPage: PropTypes.string.isRequired,
   online: PropTypes.bool.isRequired,
   registry: PropTypes.string.isRequired,
-  // current: PropTypes.shape({
-  //   name: PropTypes.string,
-  //   path: PropTypes.string,
-  // }).isRequired,
+  current: PropTypes.shape({
+    name: PropTypes.string,
+    path: PropTypes.string,
+  }).isRequired,
   // upgradeUrl: PropTypes.string.isRequired,
   // startWacthProject: PropTypes.bool.isRequired,
   // showFeedBackModal: PropTypes.bool.isRequired,
@@ -130,7 +128,7 @@ export default connect(({ layout, project, setting }) => ({
   showPage: layout.showPage,
   newVersion: layout.newVersion,
   version: layout.version,
-  // current: project.current,
+  current: project.current,
   online: layout.online,
   registry: setting.registry,
   // startWacthProject: project.startWacthProject,

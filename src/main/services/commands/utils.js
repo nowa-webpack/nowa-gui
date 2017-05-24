@@ -1,12 +1,8 @@
 import ansiHTML from 'ansi-html';
 
-import { render } from 'ejs';
-
 
 
 export const newLog = (oldLog, str) => oldLog + ansiHTML(str.replace(/\n/g, '<br>'));
-
-export const ejsRender = (tpl, data) => render(tpl, data);
 
 /*export const getTruePercent = (str) => {
   const a = str.split('INSTALL_PROGRESS');

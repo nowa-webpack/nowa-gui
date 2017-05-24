@@ -46,28 +46,17 @@ const Cards = ({
           type: 'boilerplate/changeStatus',
           payload: { showAddBoilerplateModal: true, addOrEditBoilerplateType: 'new' }
         })}
-      ><Icon type="plus" /></div>
+      ><Icon type="plus" />
+      </div>
     </Tooltip>
   </div>
 );
-
-    //   <div
-    //   className="boilerplate-card boilerplate-card-custom"
-    //   onClick={() => dispatch({ type: 'init/changeStatus', payload: { showTemplateModal: true } })}
-    // >
-    //   <div className="boilerplate-card-custom-body">
-    //     <Icon type="plus" />
-    //     <p className="boilerplate-card-custom-content">{i18n('project.new.addTempldate')}</p>
-    //   </div>
-    // </div>
- // <CustomTemplate />
 
 
 Cards.propTypes = {
   officialBoilerplates: PropTypes.array.isRequired,
   localBoilerplates: PropTypes.array.isRequired,
   remoteBoilerplates: PropTypes.array.isRequired,
-  // next: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 

@@ -1,12 +1,15 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
-// import Message from 'antd/lib/message';
-import Button from 'antd/lib/button';
 import Modal from 'antd/lib/modal';
+import Button from 'antd/lib/button';
 
 import i18n from 'i18n-renderer-nowa';
 
-const OverwriteModal = ({ showModal, overwriteFiles, dispatch }) => {
+const OverwriteModal = ({
+  showModal,
+  overwriteFiles,
+  dispatch
+}) => {
   const onCancel = () => dispatch({
     type: 'projectCreate/changeStatus',
     payload: { showOverwriteModal: false }
@@ -27,9 +30,11 @@ const OverwriteModal = ({ showModal, overwriteFiles, dispatch }) => {
         <Button key="onOverride" type="primary" onClick={onOverride}>{i18n('form.override')}</Button>,
       ]}
     >
-      <ul className="modal-overwrite-filelist">{
-        overwriteFiles.map(item => <li key={item}>{item}</li>)
-      }</ul>
+      <ul className="modal-overwrite-filelist">
+        {
+          overwriteFiles.map(item => <li key={item}>{item}</li>)
+        }
+      </ul>
     </Modal>
   );
 }

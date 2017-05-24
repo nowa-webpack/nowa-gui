@@ -1,8 +1,7 @@
-import React, { Component, PropTypes } from 'react';
-import { remote } from 'electron';
+import React, { PropTypes } from 'react';
+// import { remote } from 'electron';
 import { connect } from 'dva';
 
-// import i18n from 'i18n-renderer-nowa';
 import ShutdownPage from './ShutdownPage';
 import PreinitPage from './PreinitPage';
 import MainPage from './MainPage';
@@ -15,7 +14,6 @@ import {
   SHUTDOWN_PAGE, PREINIT_PAGE, BOILERPLATE_PAGE, PROJECT_PAGE, WELCOME_PAGE,
   SETTING_PAGE, FEEDBACK_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE
 } from 'const-renderer-nowa';
-
 
 
 const IndexPage = ({ showPage, dispatch }) => {

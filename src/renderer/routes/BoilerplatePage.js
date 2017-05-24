@@ -43,14 +43,6 @@ const BoilerplatePage = ({
       component = <BoilerplateSetting />;
       break;
     }
-    // case 2: {
-    //   // const compProps = {
-    //   //   dispatch,
-    //   //   prev: this.prev,
-    //   // };
-    //   component = <div />;
-    //   break;
-    // }
     default:
       component = <div />;
       break;

@@ -1,6 +1,6 @@
 const webpackMerge = require('webpack-merge');
 const BabiliPlugin = require('babili-webpack-plugin');
-// const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 
 const webpackCommon = require('./main.dev.conf');

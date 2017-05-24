@@ -4,7 +4,7 @@ import npminstall from 'npminstall';
 
 
 import config from 'config-main-nowa';
-import tasklog from '../tasklog';
+// import tasklog from '../tasklog';
 import mainWin from '../windowManager';
 // import { APP_PATH, NPM_PATH } from '../paths';
 import { getTruePercent, getFakePercent } from './utils';

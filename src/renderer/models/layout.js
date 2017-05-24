@@ -11,7 +11,7 @@ import { openUrl, msgError, msgSuccess } from 'util-renderer-nowa';
 import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from 'store-renderer-nowa';
 import {
   PREINIT_PAGE, SHUTDOWN_PAGE, WELCOME_PAGE, BOILERPLATE_PAGE, PROJECT_PAGE,
-  EXTENSION_MAP, IMPORT_STEP2_PAGE, SETTING_PAGE, FEEDBACK_PAGE,
+  EXTENSION_MAP, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE, SETTING_PAGE, FEEDBACK_PAGE,
 } from 'const-renderer-nowa';
 
 const { paths, nowa, requests } = remote.getGlobal('services');
@@ -92,7 +92,7 @@ export default {
     * afterInit(o, { put, select }) {
       console.log('afterInit');
 
-      const projects = yield select(state => state.project);
+      const { projects } = yield select(state => state.project);
       const showPage = projects.length > 0 ? PROJECT_PAGE : WELCOME_PAGE;
       // const showPage = projects.length > 0 ? PROJECT_PAGE : BOILERPLATE_PAGE;
 
@@ -121,12 +121,14 @@ export default {
         }
       });
 
-      yield put({
-        type: 'project/changeStatus',
-        payload: {
-          startWacthProject: false,
-        }
-      });
+      if (showPage !== PROJECT_PAGE) {
+        yield put({
+          type: 'project/changeStatus',
+          payload: {
+            startWacthProject: false,
+          }
+        });
+      }
     },
     * goBack(o, { put, select }) {
       const { backPage, showPage } = yield select(state => state.layout);
@@ -138,12 +140,15 @@ export default {
           showPage: backPage,
         }
       });
-      yield put({
-        type: 'project/changeStatus',
-        payload: {
-          startWacthProject: true,
-        }
-      });
+
+      if (backPage === PROJECT_PAGE) {
+        yield put({
+          type: 'project/changeStatus',
+          payload: {
+            startWacthProject: true,
+          }
+        });
+      }
     },
     // 检查更新
     * checkAppUpdate(o, { put, select }) {

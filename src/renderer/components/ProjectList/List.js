@@ -6,7 +6,12 @@ import i18n from 'i18n-renderer-nowa';
 import { BOILERPLATE_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE } from 'const-renderer-nowa';
 import Item from './Item';
 
-const List = ({ current, projects, showPage, dispatch }) => {
+const List = ({
+  current,
+  projects,
+  showPage,
+  dispatch
+}) => {
   const toNewPage = () => {
     dispatch({
       type: 'layout/changeStatus',
@@ -22,11 +27,10 @@ const List = ({ current, projects, showPage, dispatch }) => {
     });
   };
 
-  const importProject = () => dispatch(
-    {
-      type: 'project/importProjectFromFolder',
-      payload: { filePath: null, needInstall: true }
-    });
+  const importProject = () => dispatch({
+    type: 'projectCreate/folderImport',
+    payload: { projPath: null }
+  });
 
   const showSideMask = showPage === IMPORT_STEP1_PAGE || showPage === IMPORT_STEP2_PAGE;
 

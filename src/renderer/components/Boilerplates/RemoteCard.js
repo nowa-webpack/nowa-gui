@@ -9,44 +9,39 @@ import { hideBoilerplateDesp } from 'util-renderer-nowa';
 
 const InputGroup = Input.Group;
 
-const Item = ({ data, dispatch }) => {
-  const updateBoilerplate = () => dispatch(
-    {
-      type: 'boilerplate/updateRemote',
-      payload: data
-    });
+const Item = ({
+  data,
+  dispatch
+}) => {
+  const updateBoilerplate = () => dispatch({
+    type: 'boilerplate/updateRemote',
+    payload: data
+  });
 
-  const removeBoilerplate = () => dispatch(
-    {
-      type: 'boilerplate/remove',
-      payload: {
-        type: 'remote',
-        item: data
-      }
-    });
-  
+  const removeBoilerplate = () => dispatch({
+    type: 'boilerplate/remove',
+    payload: {
+      type: 'remote',
+      item: data
+    }
+  });
 
-  const showModal = () => {
-    dispatch({
-      type: 'boilerplate/changeStatus',
-      payload: {
-        showAddBoilerplateModal: true,
-        addOrEditBoilerplateType: 'remote',
-        editBoilplateData: data
-      }
-    });
-  };
+  const showModal = () => dispatch({
+    type: 'boilerplate/changeStatus',
+    payload: {
+      showAddBoilerplateModal: true,
+      addOrEditBoilerplateType: 'remote',
+      editBoilplateData: data
+    }
+  });
 
-  const handleCreate = () => {
-    dispatch({
-      type: 'projectCreate/selectBoilerplate',
-      payload: {
-        type: 'remote',
-        item: data,
-      }
-    });
-    // next();
-  };
+  const handleCreate = () => dispatch({
+    type: 'projectCreate/selectBoilerplate',
+    payload: {
+      type: 'remote',
+      item: data,
+    }
+  });
 
   return (
     <div

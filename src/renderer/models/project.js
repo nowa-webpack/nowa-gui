@@ -1,6 +1,6 @@
 import { remote, ipcRenderer } from 'electron';
 // import Message from 'antd/lib/message';
-import { join } from 'path';
+import { join, basename } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
 import { delay } from 'shared-nowa';
@@ -106,8 +106,25 @@ export default {
   },
 
   effects: {
-    * add({ payload: { projPath } }, { select, put }) {
+    * add({ payload }, { select, put }) {
       console.log('add project');
+      const projectInfo = getProjectInfoByPath(payload.projPath);
+
+      if (payload.registry) {
+        projectInfo.registry = payload.registry;
+      }
+
+      const projName = projectInfo.pkg.name || basename(payload.projPath);
+
+      const current = {
+        ...projectInfo,
+        start: false,
+        taskErr: false,
+        name: projName,
+      };
+
+      console.log(current)
+
       // yield put({
       //   type: 'layout/showPage',
       //   payload: { toPage: PROJECT_PAGE }

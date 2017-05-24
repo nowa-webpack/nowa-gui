@@ -8,7 +8,7 @@ import mainWin from './windowManager';
 import boilerplate from './boilerplate';
 import commands from './commands';
 import requests from './requests';
-import ejs from 'ejs';
+import { render } from 'ejs';
 // const loadModules = (promptConfigPath) => {
 //   try {
 //     delete require.cache[require.resolve(promptConfigPath)];
@@ -33,7 +33,7 @@ export default {
   commands,
   requests,
   ejsRender(tpl, data) {
-    return ejs.render(tpl, data);
+    return render(tpl, data);
   },
   // loadModules,
 };

@@ -5,17 +5,10 @@ import i18n from 'i18n-renderer-nowa';
 import { BOILERPLATE_PAGE } from 'const-renderer-nowa';
 
 const WelcomePage = ({ version, dispatch }) => {
-  const handleImport = () => {
-    try {
-      dispatch({
-        type: 'project/importProjectFromFolder',
-        payload: { filePath: null, needInstall: true },
-      });
-      
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const handleImport = () => dispatch({
+    type: 'projectCreate/folderImport',
+    payload: { projPath: null }
+  });
 
   const toNewPage = () => {
     dispatch({

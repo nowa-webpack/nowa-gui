@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { remote } from 'electron';
 import Button from 'antd/lib/button';
-// import Message from 'antd/lib/message';
 import Select from 'antd/lib/select';
 import Radio from 'antd/lib/radio';
 import Input from 'antd/lib/input';

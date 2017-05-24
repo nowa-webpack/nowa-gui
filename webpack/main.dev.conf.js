@@ -47,6 +47,7 @@ module.exports = webpackMerge(webpackCommon,
             options: {
               babelrc: false, // Tells webpack not to use the .babelrc file.
               presets: [
+                // 'es2015',
                 ['env', { targets: { electron: 1.6 }, modules: false }],
                 'stage-2',
               ],
@@ -56,6 +57,11 @@ module.exports = webpackMerge(webpackCommon,
             },
           }]
         },
+        // {
+        //   test: /\.js$/,
+        //   include: /node_modules/,
+        //   loader: 'octal-number-loader'
+        // },
         {
           test: /node_modules\/rc\/index\.js$/,
           loader: 'shebang-loader'

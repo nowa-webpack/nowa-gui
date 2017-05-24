@@ -1,15 +1,12 @@
 import glob from 'glob';
 import mkdirp from 'mkdirp';
-import { join, dirname } from 'path';
 import { remote } from 'electron';
 import gitConfig from 'git-config';
+import { join, dirname } from 'path';
 import { existsSync } from 'fs-extra';
-import Notification from 'antd/lib/notification';
 
 import i18n from 'i18n-renderer-nowa';
-import {
-  BOILERPLATE_PAGE, PROJECT_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE
-} from 'const-renderer-nowa';
+import { IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE } from 'const-renderer-nowa';
 import {
   msgError, msgSuccess, msgInfo, writeToFile, getPkgDependencies, readPkgJson
 } from 'util-renderer-nowa';
@@ -33,6 +30,83 @@ export default {
   },
 
   effects: {
+    * folderImport({ payload }, { put, select }) {
+      try {
+        let projPath = payload.projPath;
+
+        if (!projPath) {
+          const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+          projPath = importPath[0];
+        }
+
+        const { projects } = yield select(state => state.project);
+
+        const filter = projects.filter(n => n.path === projPath);
+
+        if (filter.length > 0) {
+          msgError(i18n('msg.existed'));
+          return false;
+        }
+
+        if (!existsSync(join(projPath, 'package.json'))) {
+          msgError(i18n('msg.invalidProject'));
+          return false;
+        }
+
+        let needInstall = false;
+
+        if (!existsSync(join(projPath, 'node_modules'))) {
+          needInstall = true;
+        } else {
+          const pkgs = getPkgDependencies(readPkgJson(projPath));
+          const pkgsFilter = pkgs.filter(item => !existsSync(join(projPath, 'node_modules', item.name)));
+          if (pkgsFilter.length) {
+            needInstall = true;
+          }
+        }
+
+        console.log('needInstall', needInstall);
+        if (needInstall) {
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              initSetting: { projPath }
+            }
+          });
+          yield put({
+            type: 'layout/showPage',
+            payload: { toPage: IMPORT_STEP1_PAGE }
+          });
+        } else {
+          yield put({
+            type: 'project/add',
+            payload: { projPath }
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      return true;
+    },
+    * checkRegistry({ payload: { registry } }, { put, select }) {
+      const { initSetting } = yield select(state => state.projectCreate);
+
+      initSetting.registry = registry;
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          initSetting: { ...initSetting }
+        }
+      });
+
+      yield put({
+        type: 'startInstallModules',
+        payload: {
+          isRetry: false
+        }
+      });
+    },
     * selectBoilerplate({ payload: { item, type } }, { put }) {
       const projPath = join(item.path, 'proj.js');
       let proj = {};

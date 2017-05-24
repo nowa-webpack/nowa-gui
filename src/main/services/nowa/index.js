@@ -1,14 +1,16 @@
 import mkdirp from 'mkdirp';
-import { join } from 'path';
+// import { join } from 'path';
 
 import Nowa from './nowa';
 import { existsNowa, writeNowaVer } from './utils';
-import { NOWA_INSTALL_DIR } from '../paths';
+import { writeFileSync } from 'fs';
+import { NOWA_INSTALL_DIR, NOWA_INSTALL_JSON_FILE } from '../paths';
 
 try {
   if (!existsNowa()) {
-    mkdirp.sync(join(NOWA_INSTALL_DIR, '.npminstall'));
+    mkdirp.sync(NOWA_INSTALL_DIR);
     writeNowaVer({});
+    // writeFileSync(NOWA_INSTALL_JSON_FILE, '{}');
   }
 } catch (e) {
   console.log(e);

@@ -10,8 +10,6 @@ import Input from 'antd/lib/input';
 import Checkbox from 'antd/lib/checkbox';
 
 import i18n from 'i18n-renderer-nowa';
-import { hidePathString, msgError } from 'util-renderer-nowa';
-import { NAME_MATCH } from 'const-renderer-nowa';
 import OverwriteModal from './OverwriteModal';
 
 const FormItem = Form.Item;
@@ -53,10 +51,10 @@ class Setting extends Component {
       const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
       const projName = basename(form.getFieldValue('projPath'));
       const projPath = join(importPath[0], projName);
-      // const input = document.getElementById('pathInput');
-      // input.focus();
-      // input.selectionStart = input.value.length;
-      // input.selectionEnd = input.value.length;
+      /*const input = document.getElementById('pathInput');
+      input.focus();
+      input.selectionStart = input.value.length;
+      input.selectionEnd = input.value.length;*/
       form.setFieldsValue({
         projPath
       });
@@ -66,11 +64,12 @@ class Setting extends Component {
   }
 
   goBack() {
-    this.props.dispatch({
+    const { dispatch } = this.props;
+    dispatch({
       type: 'projectCreate/changeStatus',
       payload: { processStep: 0 }
     });
-    this.props.dispatch({
+    dispatch({
       type: 'layout/changeStatus',
       payload: { showSideMask: false }
     });
@@ -81,7 +80,6 @@ class Setting extends Component {
     const { dispatch, form } = that.props;
     form.validateFields((err, { extraArgs, projPath, registry }) => {
       if (!err) {
-        // console.log('Received values of form: ', values);
         const name = basename(projPath);
         const obj = {};
         if (extraArgs) {
@@ -101,7 +99,6 @@ class Setting extends Component {
           payload: args
         });
       }
-
     });
   }
 
@@ -194,18 +191,6 @@ class Setting extends Component {
   }
 }
 
-/*<Input
-  id="pathInput"
-  value={showPath}
-  addonAfter={pathIcon}
-  onFocus={() => this.setState({ showPath: projPath })}
-  onBlur={() => this.setState({ showPath: hidePathString(projPath, 45) })}
-  onPressEnter={() => this.handleSubmit()}
-  onChange={e => this.setState({
-    projPath: e.target.value,
-    showPath: e.target.value
-  })}
-/>*/
 
 Setting.propTypes = {
   selectExtendsProj: PropTypes.object,
@@ -214,7 +199,6 @@ Setting.propTypes = {
   registryList: PropTypes.array.isRequired,
   form: PropTypes.object,
 };
-
 
 export default Form.create()(connect(({ setting, projectCreate }) => ({
   selectExtendsProj: projectCreate.selectExtendsProj,
