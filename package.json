@@ -20,7 +20,8 @@
     "pack:mac": "npm run prepack && build -m",
     "pack:win": "npm run prepack && build -w",
     "pack:linux": "npm run prepack && build -l",
-    "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app"
+    "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
+    "log": "git log --color --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s   %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit"
   },
   "keywords": [],
   "build": {

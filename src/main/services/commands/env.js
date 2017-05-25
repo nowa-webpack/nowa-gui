@@ -9,7 +9,10 @@ import { writeFileSync } from 'fs';
 fixPath();
 
 const npmEnv = npmRunPath.env();
-const pathEnv = [process.env.Path, npmEnv.PATH, BIN_PATH, NODE_PATH]
+// const pathEnv = [process.env.Path, npmEnv.PATH, BIN_PATH, NODE_PATH]
+//   .filter(p => !!p)
+//   .join(delimiter);
+const pathEnv = [process.env.Path, npmEnv.PATH, BIN_PATH]
   .filter(p => !!p)
   .join(delimiter);
 const env = { ...npmEnv, FORCE_COLOR: 1 };

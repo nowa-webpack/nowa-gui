@@ -148,6 +148,7 @@ class SettingPage extends Component {
           >
             {getFieldDecorator('registry', {
               initialValue: registry,
+              rules: [{ type: 'url' }],
               onChange: this.handleRegistryChange,
             })(
               <Select
@@ -194,8 +195,8 @@ class SettingPage extends Component {
           </FormItem>
           <br/><br/>
           <FormItem wrapperCol={{ offset: 6 }} className="ui-form-btns">
-            <Button type="primary" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
-            <Button type="default" onClick={() => this.goBack()}>{i18n('form.back')}</Button>
+            <Button type="primary" size="default" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+            <Button type="default" size="default" onClick={() => this.goBack()}>{i18n('form.back')}</Button>
           </FormItem>
         </Form>
        

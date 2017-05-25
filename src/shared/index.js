@@ -14,6 +14,16 @@ export const isLinux = is.linux();
 
 export const delay = n => new Promise(resolve => setTimeout(resolve, n));
 
+export const throttle = (fn, time) => {
+  let timer;
+  return function () {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(context, args), time);
+  };
+};
+
 // const DINGDING_TOKEN = 'be77cc501c1d5a466f91690266495a28b1a0e0cb654cc578cfd5a00dbd1b7850';
 
 // test token

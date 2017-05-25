@@ -70,8 +70,8 @@ const FeedbackPage = ({
           )}
         </FormItem>
         <FormItem className="ui-form-btns">
-          <Button type="primary" onClick={handleSubmit}>{i18n('form.submit')}</Button>
-          <Button type="default" onClick={goBack}>{i18n('form.back')}</Button>
+          <Button type="primary" size="default" onClick={handleSubmit}>{i18n('form.submit')}</Button>
+          <Button type="default" size="default" onClick={goBack}>{i18n('form.back')}</Button>
         </FormItem>
         </Col>
       </Form>

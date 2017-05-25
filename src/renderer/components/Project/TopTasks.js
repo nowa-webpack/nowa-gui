@@ -1,12 +1,8 @@
 import React, { PropTypes } from 'react';
-import { shell, remote } from 'electron';
 import { connect } from 'dva';
-import classNames from 'classnames';
 import i18n from 'i18n-renderer-nowa';
 
 import Opt from './TopTaskOpt';
-
-const { command } = remote.getGlobal('services');
 
 
 const TopTasks = ({
@@ -31,34 +27,7 @@ const TopTasks = ({
   };
 
   const openTerminal = () => dispatch({ type: 'task/terminal', payload: { project: current } });
-  // const hasBuildFunc = 'scripts' in pkg && 'build' in pkg.scripts;
-  // const hasStartFunc = 'scripts' in pkg && 'start' in pkg.scripts;
-
-  // const buildBtn = (<Opt />
-
-  /*let buildBtn;
-  let startBtn;
-
-  if (hasStartFunc) {
-    startBtn = !start
-      ? (<div className="project-top-task start" onClick={startProj}>
-          <i className="iconfont icon-play" /><br />{i18n('task.start')}
-        </div>)
-      : (<div className="project-top-task" onClick={stopProj}>
-          <i className="iconfont icon-stop" /><br />{i18n('task.stop')}
-        </div>);
-  } else {
-    startBtn = (
-      <Tooltip placement="top" title="Cannot find scripts.start in pacakge.json" >
-        <div className="project-top-task start disable">
-          <i className="iconfont icon-play" /><br />{i18n('task.start')}
-        </div>
-      </Tooltip>
-    );
-  }
-*/
-
-
+ 
   return (
     <div className="project-top">
       {
@@ -77,7 +46,6 @@ const TopTasks = ({
           icon="play"
         />
       }
-      
       <Opt
         name={i18n('task.compass')}
         disable={!start || !isNowa}
@@ -102,7 +70,7 @@ const TopTasks = ({
       <Opt
         name={i18n('task.terminal')}
         disable={false}
-        action={openEditor}
+        action={openTerminal}
         tip=""
         icon="terminal"
       />

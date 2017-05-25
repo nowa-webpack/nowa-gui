@@ -169,6 +169,7 @@ class Setting extends Component {
             {getFieldDecorator('registry', {
               initialValue: defaultRegistry,
               onChange: this.handleRegistryChange,
+              rules: [{ type: 'url' }],
             })(
               <Select
                 mode="combobox"
@@ -181,8 +182,8 @@ class Setting extends Component {
           </FormItem>
           { extendsHtml }
           <FormItem wrapperCol={{ offset: 6 }} className="ui-form-btns">
-            <Button type="primary" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
-            <Button type="default" onClick={() => this.goBack()}>{i18n('form.back')}</Button>
+            <Button type="primary" size="default" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
+            <Button type="default" size="default" onClick={() => this.goBack()}>{i18n('form.back')}</Button>
           </FormItem>
         </Form>
         <OverwriteModal />

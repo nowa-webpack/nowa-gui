@@ -6,3 +6,4 @@ app/nodes
 npm-debug.log
 release
 dll
+test

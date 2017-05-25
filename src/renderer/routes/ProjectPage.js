@@ -9,16 +9,17 @@ import Spin from 'antd/lib/spin';
 import i18n from 'i18n-renderer-nowa';
 
 import TopTasks from '../components/Project/TopTasks';
+import MainTab from '../components/Project/MainTab';
 
 const ProjectPage = ({
-  current,
-  logType,
-  dispatch,
-  commands,
+  // logType,
+  // dispatch,
+  // commands,
 }) => {
   return (
     <Content className="project">
       <TopTasks />
+      <MainTab />
     </Content>
   );
 };
@@ -26,8 +27,8 @@ const ProjectPage = ({
 
 ProjectPage.propTypes = {
   // logType: PropTypes.string.isRequired,
-  commands: PropTypes.object,
-  current: PropTypes.object.isRequired,
+  // commands: PropTypes.object,
+  // current: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 

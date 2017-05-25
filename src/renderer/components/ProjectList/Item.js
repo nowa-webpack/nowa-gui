@@ -15,7 +15,7 @@ import { hidePathString } from 'util-renderer-nowa';
 
 const Item = ({
   project,
-  projPath,
+  projPath = '',
   dispatch
 }) => {
   const { name, path, start, taskErr } = project;
@@ -25,7 +25,7 @@ const Item = ({
     dispatch({
       type: 'project/changeStatus',
       payload: {
-        current: project
+        current: { ...project }
       }
     });
     dispatch({
@@ -104,7 +104,7 @@ const Item = ({
 };
 
 Item.propTypes = {
-  projPath: PropTypes.string.isRequired,
+  projPath: PropTypes.string,
   project: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
 };

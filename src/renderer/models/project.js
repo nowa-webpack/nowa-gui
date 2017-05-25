@@ -29,6 +29,7 @@ const getProjectInfoByPath = (filePath) => {
     isNowa,
     abc,
     pkg,
+    path: filePath
   };
 
   if (isNowa) {
@@ -121,14 +122,168 @@ export default {
         start: false,
         taskErr: false,
         name: projName,
+        path: payload.projPath,
       };
 
-      console.log(current)
+      console.log(current);
 
-      // yield put({
-      //   type: 'layout/showPage',
-      //   payload: { toPage: PROJECT_PAGE }
+      const storeProjects = getLocalProjects();
+
+      storeProjects.push({
+        name: current.name,
+        path: current.path,
+        registry: current.registry,
+      });
+
+      setLocalProjects(storeProjects);
+
+      const { projects } = yield select(state => state.project);
+
+      projects.push(current);
+
+      tray.setInitTrayMenu(projects);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          projects,
+          current,
+          // startWacthProject: true
+        }
+      });
+
+      yield put({
+        type: 'layout/showPage',
+        payload: { toPage: PROJECT_PAGE }
+      });
+    },
+    * startedProject({ payload: { projPath } }, { put, select }) {
+      const { projects, current } = yield select(state => state.project);
+      let project;
+
+      projects.map((item) => {
+        if (item.path === projPath) {
+          item.start = true;
+          project = item;
+        }
+        return item;
+      });
+
+      if (current.path === projPath) {
+        current.start = true;
+      }
+
+      // ipcRenderer.send('tray-change-status', {
+      //   project,
+      //   status: 'start',
+      //   fromRenderer: true,
       // });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          projects: [...projects],
+          current: {
+            ...current,
+          }
+        }
+      });
+    },
+    * stoppedProject({ payload: { projPath } }, { put, select }) {
+      const { projects, current } = yield select(state => state.project);
+      let project;
+
+      projects.map((item) => {
+        if (item.path === projPath) {
+          item.start = false;
+          project = item;
+        }
+        return item;
+      });
+
+      if (current.path === projPath) {
+        current.start = false;
+      }
+
+      // ipcRenderer.send('tray-change-status', {
+      //   project,
+      //   status: 'stop',
+      //   fromRenderer: true
+      // });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          projects,
+          current: {
+            ...current,
+          }
+        }
+      });
+    },
+    * updatePackageJson({ payload: { project, data } }, { put }) {
+      const { registry, repo, ...others } = data;
+      const nameDiff = project.name !== data.name;
+      const registryDiff = project.registry !== registry;
+
+      if (nameDiff || registryDiff) {
+        if (project.isNowa && registryDiff) {
+          project.abc.npm = registry;
+          writeABCJson(project.path, project.abc);
+        }
+
+        project.name = data.name;
+        project.registry = registry;
+
+        const storeProjects = getLocalProjects();
+
+        storeProjects.map((item) => {
+          if (item.path === project.path) {
+            item.name = data.name;
+            item.registry = registry;
+          }
+          return item;
+        });
+        setLocalProjects(storeProjects);
+      }
+
+      const pkg = { ...project.pkg, ...others };
+
+      if (repo) {
+        pkg.repository.url = repo;
+      }
+
+      project.pkg = pkg;
+      writePkgJson(project.path, pkg);
+      yield put({
+        type: 'changeProjects',
+        payload: project
+      });
+    },
+    * updateABCJson({ payload: { project, abc } }, { put }) {
+      // const abc = { ...project.abc, ...data };
+      project.abc = abc;
+      writeABCJson(project.path, abc);
+      yield put({
+        type: 'changeProjects',
+        payload: project
+      });
+    },
+    * changeProjects({ payload }, { put, select } ) {
+      const { projects } = yield select(state => state.project);
+      const newProjects = projects.map((item) => {
+        if (item.path === payload.path) {
+          return payload;
+        }
+        return item;
+      });
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          current: { ...payload },
+          projects: [...newProjects],
+        }
+      });
     }
   },
 
