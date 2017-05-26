@@ -25,7 +25,7 @@ const Item = ({ data, dispatch }) => {
       payload: {
         showAddBoilerplateModal: true,
         addOrEditBoilerplateType: 'local',
-        editBoilplateData: data
+        editLocalBoilplateData: data
       }
     });
   };

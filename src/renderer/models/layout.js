@@ -93,8 +93,9 @@ export default {
       console.log('afterInit');
 
       const { projects } = yield select(state => state.project);
-      const showPage = projects.length > 0 ? PROJECT_PAGE : WELCOME_PAGE;
+      // const showPage = projects.length > 0 ? PROJECT_PAGE : WELCOME_PAGE;
       // const showPage = projects.length > 0 ? PROJECT_PAGE : BOILERPLATE_PAGE;
+      const showPage = BOILERPLATE_PAGE;
 
       yield put({
         type: 'changeStatus',

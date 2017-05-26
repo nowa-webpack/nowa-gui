@@ -31,7 +31,7 @@ const Item = ({
     payload: {
       showAddBoilerplateModal: true,
       addOrEditBoilerplateType: 'remote',
-      editBoilplateData: data
+      editRemoteBoilplateData: data
     }
   });
 

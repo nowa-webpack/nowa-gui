@@ -19,8 +19,8 @@ export default {
 
     showAddBoilerplateModal: false, // 显示新建脚手架模态框
     addOrEditBoilerplateType: 'new', // new 需要新建，local 需要修改本地，remote 需要修改远程
-    editBoilplateData: {}, // 需要修改的脚手架数据
-
+    editLocalBoilplateData: {}, // 需要修改的本地脚手架数据
+    editRemoteBoilplateData: {}, // 需要修改的远程脚手架数据
     
   },
 
@@ -40,30 +40,6 @@ export default {
         type: 'changeStatus',
         payload: { localBoilerplates, remoteBoilerplates }
       });
-    },
-    * updateRemote({ payload }, { select, put }) {
-      const { remoteBoilerplates } = yield select(state => state.boilerplate);
-      payload.loading = true;
-      remoteBoilerplates.map((item) => item.id === payload.id ? payload : item);
-
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          remoteBoilerplates: [...remoteBoilerplates]
-        }
-      });
-
-      const { success, data } = yield boilerplate.custom.updateRemote(payload);
-
-      if (success) {
-        msgSuccess(i18n('msg.updateSuccess'));
-        yield put({
-          type: 'changeStatus',
-          payload: {
-            remoteBoilerplates: data
-          }
-        });
-      }
     },
     * updateOffical({ payload: { tempName, tag } }, { select, put }) {
       const { officialBoilerplates } = yield select(state => state.boilerplate);
@@ -89,6 +65,30 @@ export default {
           type: 'changeStatus',
           payload: {
             officialBoilerplates: data
+          }
+        });
+      }
+    },
+    * updateRemote({ payload }, { select, put }) {
+      const { remoteBoilerplates } = yield select(state => state.boilerplate);
+      payload.loading = true;
+      remoteBoilerplates.map((item) => item.id === payload.id ? payload : item);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          remoteBoilerplates: [...remoteBoilerplates]
+        }
+      });
+
+      const { success, data } = yield boilerplate.custom.updateRemote(payload);
+
+      if (success) {
+        msgSuccess(i18n('msg.updateSuccess'));
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            remoteBoilerplates: data
           }
         });
       }
@@ -132,7 +132,7 @@ export default {
         .filter(item => item.path === payload.path || item.name === payload.name);
 
       if (filter.length > 0) {
-       msgError('Local Url or Name is already existed!');
+        msgError('Local Url or Name is already existed!');
         return;
       }
 
@@ -152,18 +152,18 @@ export default {
     },
     * editRemote({ payload }, { select, put }) {
       const { remoteBoilerplates } = yield select(state => state.boilerplate);
-      const old = remoteBoilerplates.filter(item => item.id === payload.id);
+      const old = remoteBoilerplates.filter(item => item.id === payload.id)[0];
 
       if (payload.remote !== old.remote) {
         payload.loading = true;
       }
 
-      remoteBoilerplates.map((item) => item.id === payload.id ? payload : item);
+      const newBoilerplates = remoteBoilerplates.map((item) => item.id === payload.id ? payload : item);
 
       yield put({
         type: 'changeStatus',
         payload: {
-          remoteBoilerplates: [...remoteBoilerplates]
+          remoteBoilerplates: [...newBoilerplates]
         }
       });
 
@@ -181,14 +181,14 @@ export default {
     },
     * editLocal({ payload }, { select, put }) {
       const { localBoilerplates } = yield select(state => state.boilerplate);
-      localBoilerplates.map((item) => item.id === payload.id ? payload : item);
+      const newBoilerplates = localBoilerplates.map((item) => item.id === payload.id ? payload : item);
 
-      yield boilerplate.custom.changeLocal(localBoilerplates);
+      yield boilerplate.custom.changeLocal(newBoilerplates);
 
       yield put({
         type: 'changeStatus',
         payload: {
-          localBoilerplates: [...localBoilerplates]
+          localBoilerplates: [...newBoilerplates]
         }
       });
     },

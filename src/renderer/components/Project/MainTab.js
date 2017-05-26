@@ -44,7 +44,7 @@ const Tab = ({
   return (
     <Tabs
       className="project-tabs"
-      defaultActiveKey="2"
+      defaultActiveKey="3"
       animated={false}
     >
       <TabPane tab={i18n('project.tab.console')} key="1" className="project-tabpane">

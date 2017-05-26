@@ -1,65 +1,145 @@
 import React, { Component, PropTypes } from 'react';
+// import { remote } from 'electron';
+import { basename } from 'path';
 import Input from 'antd/lib/input';
+import Form from 'antd/lib/form';
+import { connect } from 'dva';
+
 
 import i18n from 'i18n-renderer-nowa';
+import { hidePathString } from 'util-renderer-nowa';
+import { NAME_MATCH } from 'const-renderer-nowa';
 
-class Form extends Component {
+const FormItem = Form.Item;
+
+
+class RemoteForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { ...props.data };
+    this.state = {
+      changed: false,
+    };
+    this.changeName = this.changeName.bind(this);
+    this.changeDescription = this.changeDescription.bind(this);
+    this.changeUrl = this.changeUrl.bind(this);
+    this.sendData = this.sendData.bind(this);
   }
 
-  componentWillReceiveProps({ data }) {
-    if (data.name !== this.state.name) {
-      this.setState({ ...data });
+  componentWillReceiveProps(next) {
+    if (next.data !== this.props.data) {
+      next.form.setFieldsValue({
+        remote: next.data.remote,
+        name: next.data.name,
+        description: next.data.description,
+      });
     }
   }
 
-  changeData(props) {
-    this.setState(props);
-    this.props.onChangeData(props);
+  changeUrl(e) {
+    const { form } = this.props;
+    form.setFieldsValue({
+      remote: e.target.value
+    });
+    this.sendData();
   }
 
+  changeName(e) {
+    const { form } = this.props;
+    form.setFieldsValue({
+      name: e.target.value
+    });
+    this.sendData();
+  }
+
+  changeDescription(e) {
+    const { form } = this.props;
+    form.setFieldsValue({
+      description: e.target.value
+    });
+    this.sendData();
+  }
+
+  sendData() {
+    const { form, onChangeData } = this.props;
+    form.validateFields((err, data) => {
+      if (!err) {
+        onChangeData(data);
+      }
+    });
+  }
+
+
   render() {
-    const { name, description, remote } = this.state;
+    const { getFieldDecorator } = this.props.form;
+    const { name, description, remote } = this.props.data;
+
     return (
-      <form className="ui-form" >
-        <div className="ui-form-item">
-          <label className="ui-form-label">{i18n('template.modal.name')}:</label>
-          <Input className="lg"
-            onChange={e => this.changeData({ name: e.target.value })}
-            value={name}
-          />
-        </div>
-        <div className="ui-form-item">
-          <label className="ui-form-label">{i18n('template.modal.description')}:</label>
-          <Input className="lg"
-            onChange={e => this.changeData({ description: e.target.value })}
-            value={description}
-          />
-        </div>
-        <div className="ui-form-item">
-          <label className="ui-form-label">{i18n('template.modal.remote.path')}:</label>
-          <Input className="lg" placeholder="url"
-            onChange={e => this.changeData({ remote: e.target.value })}
-            value={remote}
-          />
-        </div>
-      </form>
+      <Form
+        className="ui-form"
+        layout="horizontal"
+        style={{ marginTop: 20 }}
+      >
+        <FormItem
+          label={i18n('template.modal.name')}
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 16 }}
+        >
+          {getFieldDecorator('name', {
+            initialValue: name,
+            onChange: this.changeName,
+            rules: [
+              { required: true, message: i18n('msg.required') },
+              { pattern: NAME_MATCH, message: i18n('msg.invalidName') },
+            ],
+          })(<Input />)}
+        </FormItem>
+        <FormItem
+          label={i18n('template.modal.description')}
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 16 }}
+        >
+          {getFieldDecorator('description', {
+            initialValue: description,
+            onChange: this.changeDescription
+          })(<Input />)}
+        </FormItem>
+        <FormItem
+          label={i18n('template.modal.remote.path')}
+          labelCol={{ span: 5 }}
+          wrapperCol={{ span: 16 }}
+        >
+          {getFieldDecorator('remote', {
+            initialValue: remote,
+            rules: [
+              { required: true, message: i18n('msg.required'), type: 'url' },
+            ],
+          })(<Input />)}
+        </FormItem>
+      </Form>
     );
   }
 }
 
-Form.propTypes = {
+RemoteForm.propTypes = {
   data: PropTypes.shape({
     name: PropTypes.string,
-    path: PropTypes.string,
+    // path: PropTypes.string,
     remote: PropTypes.string,
     description: PropTypes.string,
-    type: PropTypes.string,
+    // type: PropTypes.string,
   }).isRequired,
+  // dispatch: PropTypes.func.isRequired,
   onChangeData: PropTypes.func.isRequired,
+  form: PropTypes.shape({
+    getFieldDecorator: PropTypes.func,
+    setFieldsValue: PropTypes.func,
+    validateFields: PropTypes.func,
+  }).isRequired,
 };
 
-export default Form;
+export default Form.create()(RemoteForm);
+
+// export default Form.create()(connect(({ boilerplate }) => ({
+//   data: boilerplate.editRemoteBoilplateData,
+// }))(LocalForm));

@@ -21,6 +21,7 @@ export const hidePathString = (filePath, num: 70) => {
 };
 
 export const hideBoilerplateDesp = (str) => {
+  if (!str) return '';
   const size = str.length;
   if (size <= 45) return str;
   return str.slice(0, 42) + '...';

@@ -15,14 +15,14 @@ class SettingTab extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeKey: '2',
+      activeKey: '1',
     };
   }
 
   componentWillReceiveProps({ current }) {
     if (current.path !== this.props.current.path) {
       this.setState({
-        activeKey: '2'
+        activeKey: '1'
       });
     }
   }

@@ -163,7 +163,7 @@ BasicForm.propTypes = {
   registryList: PropTypes.array.isRequired,
 };
 
-export default  Form.create()(connect(({ project, setting }) => ({
+export default Form.create()(connect(({ project, setting }) => ({
   current: project.current,
   registryList: setting.registryList,
 }))(BasicForm));
