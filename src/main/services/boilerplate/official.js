@@ -69,7 +69,11 @@ const get = async function () {
     } catch (e) {
       log.error(e);
       mainWin.send('main-err', e);
-      return {};
+      if (manifest.official.length > 0) {
+        return manifest.official.filter(n => n.name === tempName)[0];
+      } else {
+        return null;
+      }
     }
   };
 
@@ -77,7 +81,7 @@ const get = async function () {
 
   if (!err) {
     const official = await Promise.all(repo.templates.map(getTemplate));
-    manifest.official = official;
+    manifest.official = official.filter(n => !!n);
 
     setMainifest(manifest);
 

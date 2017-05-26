@@ -45,7 +45,7 @@ log.clearLog('renderer');
 ipcRenderer.on('main-err', (event, msg) => {
   // Message.error(msg, 6);
   console.log(msg);
-  log.error(e.message);
+  log.error(msg);
 });
 
 // 1. Initialize

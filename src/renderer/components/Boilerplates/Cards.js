@@ -9,9 +9,9 @@ import RemoteCard from './RemoteCard';
 
 
 const Cards = ({ 
-  officialBoilerplates,
-  localBoilerplates,
-  remoteBoilerplates,
+  officialBoilerplates = [],
+  localBoilerplates = [],
+  remoteBoilerplates = [],
   dispatch
 }) => (
   <div className="boilerplate-cards">

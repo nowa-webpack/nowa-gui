@@ -4,6 +4,7 @@ import Modal from 'antd/lib/modal';
 import Tabs from 'antd/lib/tabs';
 
 import i18n from 'i18n-renderer-nowa';
+import { delay } from 'shared-nowa';
 import LocalForm from './LocalForm';
 import RemoteForm from './RemoteForm';
 
@@ -31,7 +32,6 @@ class NewBoilerplateModal extends Component {
     const { showModal, selectType } = this.props;
 
     if (next.showModal !== showModal || next.selectType !== selectType) {
-     
       this.remote = next.remoteItem || {};
       this.local = next.localItem || {};
 
@@ -71,11 +71,16 @@ class NewBoilerplateModal extends Component {
       type: 'boilerplate/changeStatus',
       payload: {
         showAddBoilerplateModal: false,
-        addOrEditBoilerplateType: 'new',
         editLocalBoilplateData: {},
         editRemoteBoilplateData: {},
       }
     });
+    delay(500).then(() => this.props.dispatch({
+      type: 'boilerplate/changeStatus',
+      payload: {
+        addOrEditBoilerplateType: 'new',
+      }
+    }));
     this.remote = {};
     this.local = {};
   }
