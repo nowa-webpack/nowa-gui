@@ -1,6 +1,7 @@
 import co from 'co';
 import { join } from 'path';
-import npminstall from 'npminstall';
+import npminstall from 'npminstall/lib/local_install';
+import npmuninstall from 'npminstall/lib/uninstall';
 
 
 import config from 'config-main-nowa';
@@ -12,18 +13,18 @@ import Logger from './logger';
 import log from '../applog';
 
 
-export default ({
+export const install = ({
   opt,
   fake = false,
   sender,
   sendProgress = () => {},
 }) => {
   const options = {
-    console: new Logger(sender),
     targetDir: opt.root,
     storeDir: join(opt.root, 'node_modules', '.npminstall'),
     timeout: 5 * 60000,
-    cacheDir: null,
+    // cacheDir: null,
+    // binDir: '/usr/local/bin',
     ...opt
   };
 
@@ -51,16 +52,35 @@ export default ({
         sendProgress(percent);
       }
     }, 1000);
-
+    
     yield npminstall(options);
 
     console.log('end install');
 
     return { err: false };
   }).catch((err) => {
-    log.error(err.message);
+    log.error(err);
     clearInterval(timer);
     if (sender) mainWin.send(`${sender}-failed`, err.message);
+    return { err: err.message };
+  });
+};
+
+export const uninstall = (opt) => {
+  const options = {
+    targetDir: opt.root,
+    storeDir: join(opt.root, 'node_modules', '.npminstall'),
+    // timeout: 5 * 60000,
+    ...opt
+  };
+
+  return co(function* () {
+    yield npmuninstall(options);
+    console.log('end uninstall');
+    return { err: false };
+  }).catch((err) => {
+    log.error(err.message);
+    // mainWin.send(`${sender}-failed`, err.message);
     return { err: err.message };
   });
 };

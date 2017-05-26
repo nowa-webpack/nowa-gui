@@ -1,7 +1,7 @@
 import env from './env';
 import kill from './kill';
 import encode from './encode';
-import install from './install';
+import { install, uninstall } from './install';
 import { fork, exec, spawn } from 'child_process';
 import { APP_PATH } from '../paths';
 import { join } from 'path';
@@ -85,6 +85,7 @@ const openEditor = (cwd, editor, basePath) => {
 export default {
   encode,
   install,
+  uninstall,
   openEditor,
   openTerminal,
 };

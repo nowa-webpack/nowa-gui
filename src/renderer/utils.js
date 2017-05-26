@@ -3,6 +3,7 @@ import { shell, remote } from 'electron';
 import { tmpdir } from 'os';
 import { readJsonSync, writeJsonSync, existsSync, readFileSync, writeFileSync } from 'fs-extra';
 import notification from 'antd/lib/notification';
+import { checkver } from 'shared-nowa';
 
 const { ejsRender } = remote.getGlobal('services');
 
@@ -64,6 +65,9 @@ export const writeABCJson = (filePath, abc) => {
   const abcPath = join(filePath, 'abc.json');
   const file = readJsonSync(abcPath);
   file.options = abc;
+  if (abc.template) {
+    file.options.template = abc.template.replace(/\\/g, '\\\\');
+  }
   writeJsonSync(abcPath, file);
 };
 
@@ -71,7 +75,7 @@ export const readPkgJson = filePath => readJsonSync(join(filePath, 'package.json
 export const writePkgJson = (filePath, pkg) => writeJsonSync(join(filePath, 'package.json'), pkg, { spaces: 2 });
 export const isNowaProject = filePath => existsSync(join(filePath, 'abc.json'));
 
-export const getPkgDependencies = (pkgJson) => {
+export const getMergedDependencies = (pkgJson) => {
   const pkgs = [];
   const { dependencies, devDependencies } = pkgJson;
 
@@ -96,8 +100,49 @@ export const getPkgDependencies = (pkgJson) => {
   return pkgs;
 };
 
+export const getSpiltDependencies = (pkgJson) => {
+  const { dependencies, devDependencies } = pkgJson;
+  let dp0 = [];
+  let dp1 = [];
+
+  if (dependencies) {
+    dp0 = Object.keys(dependencies).map(name => ({
+      name,
+      version: dependencies[name],
+    }));
+  }
+
+  if (devDependencies) {
+    dp1 = Object.keys(devDependencies).map(name => ({
+      name,
+      version: devDependencies[name],
+    }));
+  }
+
+  return {
+    dependencies: dp0,
+    devDependencies: dp1,
+  };
+};
+
+export const checkInstalledVersion = (pkgs, folder) => pkgs.map(
+  pkg => checkver.checkLocalVerison(pkg, folder)
+);
+
+export const checkLatestVersion = async function (pkgs, folder, registry) {
+  // (pkgs, folder, registry) => {
+  const locals = await checkInstalledVersion(pkgs, folder);
+  const res = await Promise.all(locals.map(pkg => checkver.checkNpmLatest(pkg, registry)));
+
+  return res;
+  // return pkgs.map((pkg) => {
+  //   const local = checkver.checkLocalVerison(pkg, folder);
+  //   return checkver.checkNpmLatest(local, registry);
+  // });
+};
+
 export const isAliProject = (pkgJson) => {
-  const pkgs = getPkgDependencies(pkgJson);
+  const pkgs = getMergedDependencies(pkgJson);
   const filter = pkgs.filter(item => /^@ali(pay|fe)?\//.test(item.name));
   return filter.length > 0;
 };

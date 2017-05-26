@@ -63,12 +63,11 @@ class BuildForm extends Component {
     });
   }
 
-  changeSkipminify = (value) => {
-    console.log(value);
+  changeSkipminify = (skipminify) => {
     this.props.form.setFieldsValue({
-      skipminify: value,
+      skipminify
     });
-    this.setState({ disabled: value });
+    this.setState({ skipminify });
   }
 
   render () {

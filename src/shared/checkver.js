@@ -43,7 +43,9 @@ const checkLocalVerison = (item, folder) => {
   try {
     const pkg = readJsonSync(pkgPath);
 
-    return Object.assign(item, { installedVersion: pkg.version });
+    return { ...item, installedVersion: pkg.version };
+
+    // return Object.assign(item, { installedVersion: pkg.version });
 
   } catch (e) {
 

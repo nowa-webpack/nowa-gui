@@ -8,7 +8,7 @@ import { existsSync } from 'fs-extra';
 import i18n from 'i18n-renderer-nowa';
 import { IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE } from 'const-renderer-nowa';
 import {
-  msgError, msgSuccess, msgInfo, writeToFile, getPkgDependencies, readPkgJson
+  msgError, msgSuccess, msgInfo, writeToFile, getMergedDependencies, readPkgJson
 } from 'util-renderer-nowa';
 
 const { commands } = remote.getGlobal('services');
@@ -58,7 +58,7 @@ export default {
         if (!existsSync(join(projPath, 'node_modules'))) {
           needInstall = true;
         } else {
-          const pkgs = getPkgDependencies(readPkgJson(projPath));
+          const pkgs = getMergedDependencies(readPkgJson(projPath));
           const pkgsFilter = pkgs.filter(item => !existsSync(join(projPath, 'node_modules', item.name)));
           if (pkgsFilter.length) {
             needInstall = true;
@@ -252,7 +252,7 @@ export default {
       console.log('startInstallModules');
       const { initSetting } = yield select(state => state.projectCreate);
 
-      const pkgs = getPkgDependencies(readPkgJson(initSetting.projPath));
+      const pkgs = getMergedDependencies(readPkgJson(initSetting.projPath));
 
       const opt = {
         root: initSetting.projPath,

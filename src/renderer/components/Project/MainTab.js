@@ -3,6 +3,7 @@ import Tabs from 'antd/lib/tabs';
 import i18n from 'i18n-renderer-nowa';
 
 import ProjectSetting from '../ProjectSetting/Tab';
+import ProjectDependency from '../ProjectDependency/Tab';
 // import CommandTermList from '../ProjectTaskLog/CommandTermList';
 // import Terminal from '../ProjectTaskLog/Terminal';
 // import PackageManager from '../PackageManager';
@@ -53,7 +54,8 @@ const Tab = ({
       <TabPane tab={i18n('project.tab.setting')} key="2" className="project-tabpane">
         <ProjectSetting />
       </TabPane>
-      <TabPane tab={i18n('project.tab.package')} key="3" className="project-tabpane"><div />
+      <TabPane tab={i18n('project.tab.package')} key="3" className="project-tabpane">
+        <ProjectDependency />
       </TabPane>
     </Tabs>
   );

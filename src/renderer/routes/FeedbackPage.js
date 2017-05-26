@@ -66,7 +66,7 @@ const FeedbackPage = ({
             { required: true, message: i18n('msg.contentRequired') },
           ],
         })(
-          <Input type="textarea" rows={4} />
+          <Input type="textarea" rows={4} autosize={false} />
           )}
         </FormItem>
         <FormItem className="ui-form-btns">

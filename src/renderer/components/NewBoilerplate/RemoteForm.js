@@ -124,12 +124,9 @@ class RemoteForm extends Component {
 RemoteForm.propTypes = {
   data: PropTypes.shape({
     name: PropTypes.string,
-    // path: PropTypes.string,
     remote: PropTypes.string,
     description: PropTypes.string,
-    // type: PropTypes.string,
   }).isRequired,
-  // dispatch: PropTypes.func.isRequired,
   onChangeData: PropTypes.func.isRequired,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
@@ -140,6 +137,3 @@ RemoteForm.propTypes = {
 
 export default Form.create()(RemoteForm);
 
-// export default Form.create()(connect(({ boilerplate }) => ({
-//   data: boilerplate.editRemoteBoilplateData,
-// }))(LocalForm));

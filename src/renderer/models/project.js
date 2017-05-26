@@ -7,7 +7,7 @@ import { delay } from 'shared-nowa';
 import {
   readABCJson, writeABCJson,
   readPkgJson, writePkgJson,
-  isNowaProject, isAliProject, getPkgDependencies,
+  isNowaProject, isAliProject,
   msgError, msgSuccess,
 } from 'util-renderer-nowa';
 import { getLocalProjects, setLocalProjects } from 'store-renderer-nowa';
@@ -261,7 +261,6 @@ export default {
       });
     },
     * updateABCJson({ payload: { project, abc } }, { put }) {
-      // const abc = { ...project.abc, ...data };
       project.abc = abc;
       writeABCJson(project.path, abc);
       yield put({
@@ -269,7 +268,7 @@ export default {
         payload: project
       });
     },
-    * changeProjects({ payload }, { put, select } ) {
+    * changeProjects({ payload }, { put, select }) {
       const { projects } = yield select(state => state.project);
       const newProjects = projects.map((item) => {
         if (item.path === payload.path) {
@@ -284,7 +283,45 @@ export default {
           projects: [...newProjects],
         }
       });
-    }
+    },
+    * uninstallPackage({ payload: { data, type } }, { put, select }) {
+      console.log('uninstallPackage', data.name);
+      const { current } = yield select(state => state.project);
+      const { pkg } = current;
+      delete pkg[type][data.name];
+      current.pkg = pkg;
+
+      yield put({
+        type: 'changeProjects',
+        payload: current
+      });
+
+      writePkgJson(current.path, pkg);
+
+      const opt = {
+        root: current.path,
+        pkgs: [data]
+      };
+
+      yield commands.uninstall(opt);
+    },
+    * updatePackage({ payload: { data, type } }, { put, select }) {
+      const { current } = yield select(state => state.project);
+
+      data.forEach(({ name, version }) => {
+        if (!current.pkg[type]) {
+          current.pkg[type] = {};
+        }
+        current.pkg[type][name] = version;
+      });
+
+      yield put({
+        type: 'changeProjects',
+        payload: current
+      });
+
+      writePkgJson(current.path, current.pkg);
+    },
   },
 
   reducers: {

@@ -92,7 +92,6 @@
     display: flex;
     position: absolute;
     height: 64px;
-    /*width: 300px;*/
     top: 0;
     padding: 5px 20px 10px 0px;
     text-align: center;
@@ -113,10 +112,12 @@
 
       &.disable{
         color: #ddd;
-        /*cursor: not-allowed;*/
+        cursor: not-allowed;
       }
 
       .iconfont{
+        display: inline-block;
+        height: 40px;
         font-size: 30px;
       }
     }
@@ -137,7 +138,7 @@
       float: right;
     }
     .ant-tabs-nav{
-      margin-right: 20px;
+      margin-right: 10px;
 
       .ant-tabs-tab{
         margin-right: 10px;
@@ -156,7 +157,7 @@
     background-color: #f5f5f5;
   }
 
-  &-setting{
+  &-sub{
     position: relative;
     height: 100%;
 
@@ -188,7 +189,7 @@
       .ant-tabs-content{
         position: absolute;
         bottom: 40px;
-        top: 32px;
+        top: 31px;
         width: 100%;
       }
     }
@@ -201,14 +202,45 @@
       height: 100%;
       background: #fff;
     }
+  }
 
-    &-help{
+  &-setting-help{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    
+    .action{
+      font-size: 18px;
+    }
+  }
+
+  &-dependency{
+    position: relative;
+    padding-top: 5px;
+
+    &-update-all{
+      margin-right: 10px;
+    }
+
+    &-search{
       position: absolute;
-      right: 20px;
-      top: 20px;
-      
-      .action{
-        font-size: 18px;
+      top: 5px;
+      right: 0;
+    }
+
+    &-table{
+      margin-top: 15px;
+    }
+
+    &-action{
+      margin-right: 10px;
+      &.ant-btn{
+        padding: 0px 0px;
+        width: 50px;
+        height: 26px;
+      }
+      &.del{
+        margin-right: 0px;
       }
     }
   }

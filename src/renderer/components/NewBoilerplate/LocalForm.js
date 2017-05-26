@@ -12,79 +12,6 @@ import { NAME_MATCH } from 'const-renderer-nowa';
 
 const FormItem = Form.Item;
 
-/*const LocalForm = ({
-  data,
-  form: {
-    getFieldDecorator,
-    setFieldsValue,
-    validateFields,
-  },
-  dispatch,
-  saveFlag,
-}) => {
-
-  const { name, description, path } = data;
-  
-  const selectPath = () => {
-    try {
-      const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
-
-      setFieldsValue({
-        path: importPath[0],
-        name: basename(importPath[0])
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const pathAddon = (<i className="iconfont icon-folder" onClick={selectPath} />);
-
-
-  return (
-    <Form
-      className="ui-form"
-      layout="horizontal"
-      style={{ marginTop: 20 }}
-    >
-      <FormItem
-        label={i18n('template.modal.name')}
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 16 }}
-      >
-        {getFieldDecorator('name', {
-          initialValue: name,
-          rules: [
-            { required: true, message: i18n('msg.required') },
-            { pattern: NAME_MATCH, message: i18n('msg.invalidName') },
-          ],
-        })(<Input />)}
-      </FormItem>
-      <FormItem
-        label={i18n('template.modal.description')}
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 16 }}
-      >
-        {getFieldDecorator('description', {
-          initialValue: description,
-        })(<Input />)}
-      </FormItem>
-      <FormItem
-        label={i18n('template.modal.local.path')}
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 16 }}
-      >
-        {getFieldDecorator('path', {
-          initialValue: hidePathString(path, 52),
-          rules: [
-            { required: true, message: i18n('msg.required') },
-          ],
-        })(<Input addonAfter={pathAddon} disabled />)}
-      </FormItem>
-    </Form>
-  );
-};*/
-
 class LocalForm extends Component {
 
   constructor(props) {
@@ -207,20 +134,13 @@ LocalForm.propTypes = {
     path: PropTypes.string,
     // remote: PropTypes.string,
     description: PropTypes.string,
-    // type: PropTypes.string,
   }).isRequired,
-  // dispatch: PropTypes.func.isRequired,
   onChangeData: PropTypes.func.isRequired,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
     setFieldsValue: PropTypes.func,
     validateFields: PropTypes.func,
   }).isRequired,
-  // saveFlag: PropTypes.bool.isRequired,
 };
 
 export default Form.create()(LocalForm);
-
-// export default Form.create()(connect(({ boilerplate }) => ({
-//   data: boilerplate.editLocalBoilplateData,
-// }))(LocalForm));
