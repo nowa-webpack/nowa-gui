@@ -4,6 +4,8 @@ import { APP_PATH } from '../paths';
 export const browserOptions = {
   width: 902,
   height: 552,
+  maxWidth: 1190,
+  maxHeight: 727,
   minWidth: 902,
   minHeight: 552,
   show: false,

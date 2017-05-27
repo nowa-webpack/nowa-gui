@@ -38,13 +38,11 @@
   }
 
   &-list{
-    /*min-height: 426px;*/
     overflow-y: auto;
     width: 100%;
     display: -webkit-box;
     -webkit-box-flex: 1;
     -webkit-box-orient: vertical;
-    /*display: -webkit-box;*/
 
     &-item{
       position: relative;
@@ -128,11 +126,15 @@
   }
 
   &-tabs{
-    position: absolute;
+    /*position: absolute;
     top: 30px;
     bottom: 0;
     right: 0;
-    left: 0;
+    left: 0;*/
+    display: flex;
+    padding-top: 30px;
+    flex-direction: column;
+    height: 100%;
 
     .ant-tabs-nav-wrap{
       float: right;
@@ -148,13 +150,16 @@
     .ant-tabs-bar{
       margin-bottom: 0;
     }
+
+    .ant-tabs-content{
+      background-color: #f5f5f5;
+      padding: 10px;
+      flex: 1;
+    }
   }
 
   &-tabpane{
-    position: absolute;
-    padding: 10px;
     height: 100%;
-    background-color: #f5f5f5;
   }
 
   &-sub{
@@ -162,10 +167,7 @@
     height: 100%;
 
     &-tabs{
-      position: absolute;
-      bottom: 0;
-      top: 0;
-      width: 100%;
+      height: 100%;
 
       &.ant-tabs-card{
 
@@ -187,27 +189,16 @@
       }
 
       .ant-tabs-content{
-        position: absolute;
-        bottom: 40px;
-        top: 31px;
-        width: 100%;
+        background-color: #fff;
+        height: 100%;
       }
-    }
-
-    &-tabpane{
-      position: absolute;
-      bottom: 0;
-      top: 0;
-      padding: 10px;
-      height: 100%;
-      background: #fff;
     }
   }
 
   &-setting-help{
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 50px;
     
     .action{
       font-size: 18px;
@@ -241,6 +232,81 @@
       }
       &.del{
         margin-right: 0px;
+      }
+    }
+  }
+
+  &-console{
+    display: flex;
+    height: 100%;
+  }
+
+  &-terminal{
+    flex: 1 1 auto;
+    background-color: #22354c;
+    position: relative;
+
+    &-btn{
+      position: absolute;
+      top: 10px;
+      width: 22px;
+      height: 22px;
+      line-height: 22px;
+      color: #7899b9;
+      border: 1px solid #7899b9;
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+      transition: color,border .5s;
+
+      &:hover{
+        border: 1px solid #d0e7ff;
+        color: #d0e7ff;
+        transition: all .5s;
+      }
+
+      &.clear{
+        right: 40px;
+      }
+
+      &.expand{
+        right: 10px;
+      }
+    }
+  }
+
+  &-commands{
+    flex: 0 1 200px;
+    margin-left: 10px;
+    background-color: #fff;
+    padding: 10px;
+    position: relative;
+
+    &.hidden{
+      display: none;
+    }
+
+    &-title{
+      font-weight: bold;
+      padding: 5px 0 10px;
+      margin-bottom: 5px;
+      font-size: 13px;
+      color: #999;
+      border-bottom: 1px solid #d2eafb;
+    }
+
+    &-add{
+      position: absolute;
+      top: 16px;
+      right: 10px;
+
+      &.ant-btn-sm{
+        width: 18px;
+        height: 18px;
+      }
+      
+      i{
+        font-size: 12px;
       }
     }
   }

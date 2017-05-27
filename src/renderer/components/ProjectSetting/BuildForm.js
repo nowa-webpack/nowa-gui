@@ -87,12 +87,13 @@ class BuildForm extends Component {
             <FormItem
               labelCol={{ span: 10 }}
               wrapperCol={{ span: 14 }}
-              label="Mangle"
-            >{getFieldDecorator('mangle', {
-              initialValue: mangle,
+              label="Keepconsole"
+            >{getFieldDecorator('keepconsole', {
+              initialValue: keepconsole,
               valuePropName: 'checked'
             })(<Switch size="default" />)}
             </FormItem>
+            
             <FormItem
               labelCol={{ span: 10 }}
               wrapperCol={{ span: 14 }}
@@ -115,9 +116,9 @@ class BuildForm extends Component {
             <FormItem
               labelCol={{ span: 10 }}
               wrapperCol={{ span: 14 }}
-              label="Keepconsole"
-            >{getFieldDecorator('keepconsole', {
-              initialValue: keepconsole,
+              label="Mangle"
+            >{getFieldDecorator('mangle', {
+              initialValue: mangle,
               valuePropName: 'checked'
             })(<Switch size="default" />)}
             </FormItem>

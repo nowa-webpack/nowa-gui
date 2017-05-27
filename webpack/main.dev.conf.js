@@ -22,7 +22,7 @@ module.exports = webpackMerge(webpackCommon,
     },
     module: {
       rules: [
-       /* {
+        /*{
           test: /\.js$/,
           include: srcDir,
           use: [{
@@ -47,12 +47,15 @@ module.exports = webpackMerge(webpackCommon,
             options: {
               babelrc: false, // Tells webpack not to use the .babelrc file.
               presets: [
-                // 'es2015',
                 ['env', { targets: { electron: 1.6 }, modules: false }],
                 'stage-2',
+                'babili'
               ],
               plugins: [
-                'transform-runtime'
+                'transform-runtime',
+                // 'syntax-object-rest-spread',
+                // 'add-module-exports',
+                // 'dynamic-import-webpack',
               ]
             },
           }]

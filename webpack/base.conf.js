@@ -25,36 +25,6 @@ module.exports = {
   },
   module: {
     rules: [
-      /*{
-        test: /\.(css|less)$/,
-        exclude: /node_modules/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              minimize: true,
-              importLoaders: 2,
-              sourceMap: true
-            },
-          },
-          'less-loader',
-        ]
-      },
-      {
-        test: /\.css$/,
-        include: /node_modules/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              minimize: true,
-              sourceMap: true
-            },
-          },
-        ]
-      },*/
       // WOFF Font
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
@@ -107,7 +77,12 @@ module.exports = {
       // Common Image Formats
       {
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
-        use: 'url-loader',
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 8192,
+          }
+        },
       }
     ]
   },

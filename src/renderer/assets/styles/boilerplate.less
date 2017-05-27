@@ -1,23 +1,35 @@
 .boilerplate{
   padding: 20px 0 0;
 
+  display: flex;
+  flex-direction: column;
+
+
   &-title{
     text-align: center;
     font-size: 18px;
+
+    flex: 0 1 20px;
   }
 
   .ant-steps{
     width: 570px;
     margin: 20px auto;
+
+    flex: 0 1 28px;
+  }
+
+  &-body{
+    display: flex;
+    overflow-y: auto;
+    margin-bottom: 20px;
   }
 
   &-cards{
     display: flex;
     flex-wrap: wrap;
-    padding: 0 50px;
-    overflow-y: auto;
-    max-height: 370px;
-    justify-content: space-between;
+    padding: 0 40px;
+    justify-content: space-around;
   }
 
   &-card{
@@ -55,10 +67,15 @@
 
     &-official{
       &-opt {
+        /*flex: 1;*/
         width: 33.3%;
         height: 35px;
         &.more{
           padding: 0 5px;
+        }
+
+        &:last-child{
+          width: 33.4%;
         }
       }
       &-update{
@@ -81,29 +98,12 @@
     }
 
     &-remote-opt{
-      width: 33.3%;
+      width: 33.33%;
       height: 35px;
       &.opt-lg{
         width: 50%;
       }
     }
-
-   /* &-custom{
-      background-color: #fbfbfb;
-      border: 1px dashed #ddd;
-      cursor: pointer;
-      border-radius: 4px;
-      color: #108ee9;
-      padding-top: 20px;
-
-      &-body{
-        text-align: center;
-        font-size: 34px;
-      }
-      &-content{
-        font-size: 14px;
-      }
-    }*/
 
     &-add{
       position: fixed;
@@ -171,7 +171,6 @@
 
   &-form{
     margin-top: 40px;
+    flex: 1;
   }
-
-
 }
