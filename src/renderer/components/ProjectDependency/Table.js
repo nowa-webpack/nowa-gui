@@ -322,8 +322,6 @@ class DependencyTable extends Component {
       />
     );
 
-    console.log(tableHeight);
-
     return (
       <div className="project-dependency">
         { online &&

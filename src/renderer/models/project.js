@@ -10,7 +10,10 @@ import {
   msgError, msgSuccess,
 } from 'util-renderer-nowa';
 import { getLocalProjects, setLocalProjects } from 'store-renderer-nowa';
-import { REGISTRY_MAP, NPM_MAP, URL_MATCH, PROJECT_PAGE, SETTING_PAGE } from 'const-renderer-nowa';
+import {
+  REGISTRY_MAP, NPM_MAP, URL_MATCH,
+  PROJECT_PAGE, SETTING_PAGE, WELCOME_PAGE
+} from 'const-renderer-nowa';
 
 const { commands, tray } = remote.getGlobal('services');
 // const config = remote.getGlobal('config');
@@ -320,6 +323,42 @@ export default {
       });
 
       writePkgJson(current.path, current.pkg);
+    },
+    * refresh(o, { put, select }) {
+      console.log('refresh project');
+      const storeProjects = getLocalProjects();
+      const { projects, current } = yield select(state => state.project);
+
+      if (storeProjects.length) {
+        if (storeProjects.length < projects.length) {
+          const newProjects = storeProjects.map(item =>
+            projects.filter(_item => _item.path === item.path)[0]
+          );
+          const changeCur = newProjects.filter(item => item.path === current.path);
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              projects: [...newProjects],
+              current: changeCur.length ? current : newProjects[0]
+            }
+          });
+        }
+      } else {
+        yield put({
+          type: 'layout/showPage',
+          payload: {
+            toPage: WELCOME_PAGE
+          }
+        });
+
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            projects: [],
+            current: {},
+          }
+        });
+      }
     },
   },
 

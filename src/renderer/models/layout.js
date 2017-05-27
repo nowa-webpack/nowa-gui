@@ -95,13 +95,12 @@ export default {
       console.log('afterInit');
 
       const { projects } = yield select(state => state.project);
-      const showPage = projects.length > 0 ? PROJECT_PAGE : WELCOME_PAGE;
+      const toPage = projects.length > 0 ? PROJECT_PAGE : WELCOME_PAGE;
       // const showPage = projects.length > 0 ? PROJECT_PAGE : BOILERPLATE_PAGE;
       // const showPage = BOILERPLATE_PAGE;
-
       yield put({
-        type: 'changeStatus',
-        payload: { showPage }
+        type: 'showPage',
+        payload: { toPage }
       });
 
       const showNowaTip = nowa.checkNowaCliVer();
@@ -124,14 +123,12 @@ export default {
         }
       });
 
-      if (showPage !== PROJECT_PAGE) {
-        yield put({
-          type: 'project/changeStatus',
-          payload: {
-            startWacthProject: false,
-          }
-        });
-      }
+      yield put({
+        type: 'project/changeStatus',
+        payload: {
+          startWacthProject: toPage === PROJECT_PAGE,
+        }
+      });
     },
     * goBack(o, { put, select }) {
       const { backPage, showPage } = yield select(state => state.layout);
@@ -144,14 +141,12 @@ export default {
         }
       });
 
-      if (backPage === PROJECT_PAGE) {
-        yield put({
-          type: 'project/changeStatus',
-          payload: {
-            startWacthProject: true,
-          }
-        });
-      }
+      yield put({
+        type: 'project/changeStatus',
+        payload: {
+          startWacthProject: backPage === PROJECT_PAGE,
+        }
+      });
     },
     // 检查更新
     * checkAppUpdate(o, { put, select }) {

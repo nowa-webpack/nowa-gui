@@ -20,6 +20,32 @@ class LayoutWrap extends Component {
     this.onDrop = this.onDrop.bind(this);
   }
 
+  componentDidMount() {
+    const { startWacthProject, dispatch } = this.props;
+    if (startWacthProject) {
+      this.taskTimer = setInterval(() => {
+        dispatch({
+          type: 'project/refresh',
+        });
+      }, 5000);
+    }
+  }
+
+  componentWillReceiveProps({ startWacthProject, dispatch }) {
+    // const { startWacthProject, dispatch } = this.props;
+    if (startWacthProject !== this.props.startWacthProject) {
+      if (!startWacthProject) {
+        clearInterval(this.taskTimer);
+      } else {
+        this.taskTimer = setInterval(() => {
+          dispatch({
+            type: 'project/refresh',
+          });
+        }, 5000);
+      }
+    }
+  }
+
   onDrop(acceptedFiles) {
     const { dispatch } = this.props;
     const projPath = acceptedFiles[0].path;
@@ -114,6 +140,7 @@ LayoutWrap.propTypes = {
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
+  startWacthProject: PropTypes.bool.isRequired,
 };
 
 export default connect(({ layout, project, setting }) => ({
@@ -123,7 +150,7 @@ export default connect(({ layout, project, setting }) => ({
   current: project.current,
   online: layout.online,
   registry: setting.registry,
-  // startWacthProject: project.startWacthProject,
+  startWacthProject: project.startWacthProject,
   // upgradeUrl: layout.upgradeUrl,
   // showFeedBackModal: layout.showFeedBackModal,
 }))(LayoutWrap);
