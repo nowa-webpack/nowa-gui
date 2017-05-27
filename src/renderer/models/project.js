@@ -99,12 +99,9 @@ export default {
         }
       });
 
-      // dispatch({
-      //   type: 'task/initCommands',
-      //   payload: {
-      //     projects,
-      //   }
-      // });
+      dispatch({
+        type: 'task/initCommands',
+      });
     },
   },
 

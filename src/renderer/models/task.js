@@ -6,12 +6,31 @@ import { SETTING_PAGE } from 'const-renderer-nowa';
 
 const { commands } = remote.getGlobal('services');
 
+const pickerCmd = (cmd) => {
+  const scripts = {};
+  Object.keys(cmd).forEach((item) => {
+    scripts[item] = cmd[item].value;
+  });
+  return scripts;
+};
+
+const mapCmd = (scripts) => {
+  const cmds = {};
+  Object.keys(scripts).forEach((item) => {
+    cmds[item] = {
+      value: scripts[item],
+      running: false,
+    };
+  });
+  return cmds;
+};
+
 export default {
 
   namespace: 'task',
 
   state: {
-    commands: {},
+    commandSet: {},
     taskType: 'start',
   },
 
@@ -87,6 +106,19 @@ export default {
     terminal({ payload: { project } }) {
       console.log('terminal', project.path);
       commands.openTerminal(project.path);
+    },
+    * initCommands(o, { put, select }) {
+      const { projects } = yield select(state => state.project);
+      const commandSet = {}; 
+      projects.forEach((item) => {
+        const { scripts } = item.pkg;
+        commandSet[item.path] = mapCmd(scripts);
+      });
+
+      yield put({
+        type: 'changeStatus',
+        payload: { commandSet }
+      });
     },
   },
 

@@ -8,8 +8,14 @@ import i18n from 'i18n-renderer-nowa';
 
 const List = ({
   visible,
-  onShowModal
+  onShowModal,
+  current: {
+    path
+  },
+  commandSet,
 }) => {
+  const cmdList = commandSet[path];
+  // console.log(cmdList);
   return (
     <div
       className={classNames({
@@ -61,16 +67,15 @@ const List = ({
 List.propTypes = {
   current: PropTypes.shape({
     path: PropTypes.string.isRequired,
-    pkg: PropTypes.object.isRequired,
+    // pkg: PropTypes.object.isRequired,
   }).isRequired,
-  // registry: PropTypes.string.isRequired,
+  commandSet: PropTypes.object.isRequired,
   visible: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
   onShowModal: PropTypes.func.isRequired,
 };
 
-export default connect(({ project, setting, layout }) => ({
+export default connect(({ project, task }) => ({
   current: project.current,
-  // registry: setting.registry,
-  // online: layout.online
+  commandSet: task.commandSet,
 }))(List);
