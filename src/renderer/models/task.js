@@ -11,11 +11,25 @@ export default {
   namespace: 'task',
 
   state: {
-
+    commands: {},
+    taskType: 'start',
   },
 
   subscriptions: {
     setup({ dispatch }) {
+      ipcRenderer
+        .on('task-start', (event, { project }) => {
+          dispatch({
+            type: 'start',
+            payload: { project }
+          });
+        })
+        .on('task-stop', (event, { project }) => {
+          dispatch({
+            type: 'stop',
+            payload: { project }
+          });
+        });
     },
   },
 

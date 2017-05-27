@@ -1,5 +1,4 @@
 import { remote, ipcRenderer } from 'electron';
-// import Message from 'antd/lib/message';
 import { join, basename } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
@@ -161,7 +160,7 @@ export default {
       const { projects, current } = yield select(state => state.project);
       let project;
 
-      projects.map((item) => {
+      const newProjects = projects.map((item) => {
         if (item.path === projPath) {
           item.start = true;
           project = item;
@@ -173,16 +172,16 @@ export default {
         current.start = true;
       }
 
-      // ipcRenderer.send('tray-change-status', {
-      //   project,
-      //   status: 'start',
-      //   fromRenderer: true,
-      // });
+      ipcRenderer.send('tray-change-status', {
+        project,
+        status: 'start',
+        fromRenderer: true,
+      });
 
       yield put({
         type: 'changeStatus',
         payload: {
-          projects: [...projects],
+          projects: [...newProjects],
           current: {
             ...current,
           }
@@ -193,7 +192,7 @@ export default {
       const { projects, current } = yield select(state => state.project);
       let project;
 
-      projects.map((item) => {
+      const newProjects = projects.map((item) => {
         if (item.path === projPath) {
           item.start = false;
           project = item;
@@ -205,16 +204,16 @@ export default {
         current.start = false;
       }
 
-      // ipcRenderer.send('tray-change-status', {
-      //   project,
-      //   status: 'stop',
-      //   fromRenderer: true
-      // });
+      ipcRenderer.send('tray-change-status', {
+        project,
+        status: 'stop',
+        fromRenderer: true
+      });
 
       yield put({
         type: 'changeStatus',
         payload: {
-          projects,
+          projects: [...newProjects],
           current: {
             ...current,
           }

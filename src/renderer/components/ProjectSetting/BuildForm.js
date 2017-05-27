@@ -13,6 +13,10 @@ import { openUrl } from 'util-renderer-nowa';
 
 
 const FormItem = Form.Item;
+const inlineFormItemLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 }
+};
 
 class BuildForm extends Component {
   constructor(props) {
@@ -74,6 +78,8 @@ class BuildForm extends Component {
     const { getFieldDecorator } = this.props.form;
     const { mangle, keepconsole, exportcss, skipminify, minifyExtension, dist } = this.state;
 
+    
+
     return (
       <Form className="setting-form">
         <Tooltip placement="top" title={i18n('foot.help')} >
@@ -83,39 +89,9 @@ class BuildForm extends Component {
           />
         </Tooltip>
         <Row className="setting-form-inline">
-          <Col span="10" offset="0">
+          <Col span="12" offset="0">
             <FormItem
-              labelCol={{ span: 10 }}
-              wrapperCol={{ span: 14 }}
-              label="Keepconsole"
-            >{getFieldDecorator('keepconsole', {
-              initialValue: keepconsole,
-              valuePropName: 'checked'
-            })(<Switch size="default" />)}
-            </FormItem>
-            
-            <FormItem
-              labelCol={{ span: 10 }}
-              wrapperCol={{ span: 14 }}
-              label="Exportcss"
-            >{getFieldDecorator('exportcss', {
-              initialValue: exportcss,
-              valuePropName: 'checked'
-            })(<Switch size="default" />)}
-            </FormItem>
-            <FormItem
-              labelCol={{ span: 10 }}
-              wrapperCol={{ span: 14 }}
-              label="Dist"
-            >{getFieldDecorator('dist', {
-              initialValue: dist,
-            })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span="10" offset="2">
-            <FormItem
-              labelCol={{ span: 10 }}
-              wrapperCol={{ span: 14 }}
+              {...inlineFormItemLayout}
               label="Mangle"
             >{getFieldDecorator('mangle', {
               initialValue: mangle,
@@ -123,8 +99,7 @@ class BuildForm extends Component {
             })(<Switch size="default" />)}
             </FormItem>
             <FormItem
-              labelCol={{ span: 10 }}
-              wrapperCol={{ span: 14 }}
+              {...inlineFormItemLayout}
               label="Skipminify"
             >{getFieldDecorator('skipminify', {
               initialValue: skipminify,
@@ -133,20 +108,45 @@ class BuildForm extends Component {
             })(<Switch size="default" />)}
             </FormItem>
             <FormItem
-              labelCol={{ span: 10 }}
-              wrapperCol={{ span: 14 }}
+              {...inlineFormItemLayout}
               label="MinifyExtension"
             >{getFieldDecorator('minifyExtension', {
               initialValue: minifyExtension,
             })(<Input disabled={skipminify} />)}
             </FormItem>
           </Col>
+          <Col span="12" offset="0">
+            <FormItem
+              {...inlineFormItemLayout}
+              label="Keepconsole"
+            >{getFieldDecorator('keepconsole', {
+              initialValue: keepconsole,
+              valuePropName: 'checked'
+            })(<Switch size="default" />)}
+            </FormItem>
+            
+            <FormItem
+              {...inlineFormItemLayout}
+              label="Exportcss"
+            >{getFieldDecorator('exportcss', {
+              initialValue: exportcss,
+              valuePropName: 'checked'
+            })(<Switch size="default" />)}
+            </FormItem>
+            <FormItem
+              {...inlineFormItemLayout}
+              label="Dist"
+            >{getFieldDecorator('dist', {
+              initialValue: dist,
+            })(<Input />)}
+            </FormItem>
+          </Col>
+         
         </Row>
         <FormItem wrapperCol={{ offset: 4 }} className="setting-form-btns">
           <Button
             type="primary"
             size="default"
-            style={{ marginLeft: 20 }}
             onClick={this.handleSubmit}
           >{i18n('form.submit')}</Button>
         </FormItem>

@@ -18,8 +18,8 @@ const ProjectPage = ({
 }) => {
   return (
     <Content className="project">
-      <TopTasks />
       <MainTab />
+      <TopTasks />
     </Content>
   );
 };

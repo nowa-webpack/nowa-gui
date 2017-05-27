@@ -31,7 +31,7 @@ const Item = ({
     dispatch({
       type: 'task/changeStatus',
       payload: {
-        logType: 'start'
+        taskType: 'start'
       }
     });
     dispatch({

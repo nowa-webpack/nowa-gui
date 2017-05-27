@@ -15,6 +15,16 @@ import { openUrl } from 'util-renderer-nowa';
 
 const FormItem = Form.Item;
 
+const inlineFormItemLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 }
+};
+
+const formItemLayout = {
+  labelCol: { span: 4 },
+  wrapperCol: { span: 16 },
+};
+
 class ServerForm extends Component {
   constructor(props) {
     super(props);
@@ -49,10 +59,6 @@ class ServerForm extends Component {
       state.localeList = abc.buildvars.locale;
       state.defaultLocale = abc.vars.locale;
     }
-    // else {
-    //   state.localeList = null;
-    //   state.defaultLocale = null;
-    // }
     return state;
   }
 
@@ -88,12 +94,12 @@ class ServerForm extends Component {
       localeDiv = (
         <FormItem
           labelCol={{ span: 4 }}
-          wrapperCol={{ span: 7 }}
+          wrapperCol={{ span: 8 }}
           label="Locale"
         >{getFieldDecorator('defaultLocale', {
           initialValue: defaultLocale,
         })(
-          <Select style={{ width: 185 }}>
+          <Select>
             { localeList.map(item =>
               <Select.Option key={item} value={item}>{ item }</Select.Option>)
             }
@@ -112,36 +118,32 @@ class ServerForm extends Component {
           />
         </Tooltip>
         <Row className="setting-form-inline">
-          <Col span="10" offset="0">
+          <Col span="12" offset="0">
             <FormItem
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
+              {...inlineFormItemLayout}
               label="Src"
             >{getFieldDecorator('src', {
               initialValue: src,
             })(<Input />)}
             </FormItem>
             <FormItem
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
+              {...inlineFormItemLayout}
               label="Port"
             >{getFieldDecorator('port', {
               initialValue: port,
             })(<Input />)}
             </FormItem>
             <FormItem
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
+              {...inlineFormItemLayout}
               label="Entry"
             >{getFieldDecorator('entry', {
               initialValue: entry,
             })(<Input />)}
             </FormItem>
           </Col>
-          <Col span="10" offset="2">
+          <Col span="12" offset="0">
             <FormItem
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
+              {...inlineFormItemLayout}
               label="Lazyload"
             >{getFieldDecorator('lazyload', {
               initialValue: lazyload,
@@ -149,8 +151,7 @@ class ServerForm extends Component {
             })(<Switch size="default" />)}
             </FormItem>
             <FormItem
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
+              {...inlineFormItemLayout}
               label="Open"
             >{getFieldDecorator('open', {
               initialValue: open,
@@ -158,8 +159,7 @@ class ServerForm extends Component {
             })(<Switch size="default" />)}
             </FormItem>
             <FormItem
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
+              {...inlineFormItemLayout}
               label="Https"
             >{getFieldDecorator('https', {
               initialValue: https,
@@ -171,8 +171,7 @@ class ServerForm extends Component {
         { localeDiv }
         <FormItem
           label="Proxy"
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 13 }}
+          {...formItemLayout}
         >
           {getFieldDecorator('proxy', {
             initialValue: proxy,

@@ -1,18 +1,17 @@
 import React, { Component, PropTypes } from 'react';
-import { remote, shell } from 'electron';
+import { remote } from 'electron';
 import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
 
 import { isWin } from 'shared-nowa';
 import i18n from 'i18n-renderer-nowa';
-import { hidePathString } from 'util-renderer-nowa';
+import { hidePathString, openUrl } from 'util-renderer-nowa';
 import { BOILERPLATE_PAGE, PROJECT_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE } from 'const-renderer-nowa';
 import DragPage from './DragPage';
 
 const { Header } = Layout;
 const { mainWin } = remote.getGlobal('services');
-
 
 class LayoutWrap extends Component {
   constructor(props) {
@@ -45,7 +44,7 @@ class LayoutWrap extends Component {
   }
 
   render() {
-    const { showPage, current, children, showFeedBackModal, dispatch, version } = this.props;
+    const { showPage, current, children} = this.props;
     const closeBtn = (
       <div className="top-bar-icn icn-x" key="0" onClick={() => mainWin.close()}>
         <i className="iconfont icon-x" />
@@ -57,7 +56,7 @@ class LayoutWrap extends Component {
       </div>
     );
     const maximizeBtn = (
-      <div className="top-bar-icn icn-max" key="2">
+      <div className="top-bar-icn icn-max" key="2" onClick={() => mainWin.toggleMaximize()}>
         <i className="iconfont icon-msnui-maximize" />
       </div>
     );
@@ -79,7 +78,7 @@ class LayoutWrap extends Component {
 
             { showDivision && <div className="top-bar-division" /> }
 
-            <div className="top-bar-logo" onClick={() => shell.openExternal('https://nowa-webpack.github.io/')} />
+            <div className="top-bar-logo" onClick={() => openUrl('https://nowa-webpack.github.io/')} />
 
             { 
               showPage === PROJECT_PAGE &&
@@ -108,18 +107,11 @@ class LayoutWrap extends Component {
 
 
 LayoutWrap.propTypes = {
-  version: PropTypes.string.isRequired,
-  newVersion: PropTypes.string.isRequired,
   showPage: PropTypes.string.isRequired,
-  online: PropTypes.bool.isRequired,
-  registry: PropTypes.string.isRequired,
   current: PropTypes.shape({
     name: PropTypes.string,
     path: PropTypes.string,
   }).isRequired,
-  // upgradeUrl: PropTypes.string.isRequired,
-  // startWacthProject: PropTypes.bool.isRequired,
-  // showFeedBackModal: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
 };

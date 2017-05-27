@@ -48,8 +48,11 @@ const initialTasks = async function (event, online) {
   }
 };
 
-ipcMain.on('network-change-status', initialTasks);
-
+ipcMain
+  .on('network-change-status', initialTasks)
+  .on('tray-change-status', (event, { project, status, fromRenderer }) => {
+    tray.updateTrayMenu(project, status, fromRenderer);
+  });
 
 app
   .on('ready', () => {

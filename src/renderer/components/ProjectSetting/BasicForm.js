@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import Input from 'antd/lib/input';
@@ -13,6 +13,15 @@ import { getLocalProjects } from 'store-renderer-nowa';
 
 
 const FormItem = Form.Item;
+const formItemLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 }
+};
+
+const longFormLayout = {
+  labelCol: { span: 4 },
+  wrapperCol: { span: 20 },
+};
 
 const BasicForm = ({
   current,
@@ -48,13 +57,14 @@ const BasicForm = ({
  
   const initRepo = pkg.repository ? (pkg.repository.url || '') : '';
 
+  
+
   return (
     <Form className="setting-form">
-      <Row className="setting-form-inline">
-        <Col span="10" offset="0">
+      <Row className="setting-form-inline" gutter={2}>
+        <Col span="12" offset="0">
           <FormItem
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
+            {...formItemLayout}
             label="Name"
             required
           >{getFieldDecorator('name', {
@@ -64,28 +74,24 @@ const BasicForm = ({
           })(<Input />)}
           </FormItem>
           <FormItem
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
+            {...formItemLayout}
             label="Version"
-            
           >{getFieldDecorator('version', {
             initialValue: pkg.version || '1.0.0',
             rules: [{ message: i18n('msg.invalidVersion'), pattern: VERSION_MATCH }]
           })(<Input />)}
           </FormItem>
         </Col>
-        <Col span="10" offset="2">
+        <Col span="12" offset="0">
           <FormItem
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
+            {...formItemLayout}
             label="Author"
           >{getFieldDecorator('author', {
             initialValue: pkg.author || '',
           })(<Input />)}
           </FormItem>
           <FormItem
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
+            {...formItemLayout}
             label="License"
           >{getFieldDecorator('license', {
             initialValue: pkg.license || 'MIT',
@@ -96,8 +102,7 @@ const BasicForm = ({
 
       <FormItem
         label="Registry"
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 18 }}
+        {...longFormLayout}
         required
       >
         {getFieldDecorator('registry', {
@@ -116,8 +121,7 @@ const BasicForm = ({
 
       <FormItem
         label="Description"
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 18 }}
+        {...longFormLayout}
       >
         {getFieldDecorator('description', {
           initialValue: pkg.description || '',
@@ -126,8 +130,7 @@ const BasicForm = ({
 
       <FormItem
         label="Repository"
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 18 }}
+        {...longFormLayout}
       >
         {getFieldDecorator('repo', {
           initialValue: initRepo,
@@ -136,8 +139,7 @@ const BasicForm = ({
 
       <FormItem
         label="Homepage"
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 18 }}
+        {...longFormLayout}
       >
         {getFieldDecorator('homepage', {
           initialValue: pkg.homepage,
@@ -149,7 +151,7 @@ const BasicForm = ({
       </FormItem>
     </Form>
   );
-}
+};
 
 
 BasicForm.propTypes = {

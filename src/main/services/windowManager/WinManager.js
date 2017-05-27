@@ -69,6 +69,17 @@ class WinManager {
     this.win.minimize();
   }
 
+  toggleMaximize() {
+    const isMaximized = this.win.isMaximized();
+
+    if (isMaximized) {
+      this.win.unmaximize();
+    } else {
+      this.win.maximize();
+    }
+
+    return !isMaximized;
+  }
 
   getSize(){
     return this.win.getSize();
