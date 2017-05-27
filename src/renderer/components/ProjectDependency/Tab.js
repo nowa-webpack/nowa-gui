@@ -28,6 +28,7 @@ class SettingTab extends Component {
         ...dp
       });
     }
+
   }
 
   render() {
@@ -68,5 +69,5 @@ SettingTab.propTypes = {
 export default connect(({ project, setting, layout }) => ({
   current: project.current,
   registry: setting.registry,
-  online: layout.online
+  online: layout.online,
 }))(SettingTab);

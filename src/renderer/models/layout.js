@@ -53,6 +53,8 @@ export default {
         ipcRenderer.send('network-change-status', online);
       };
 
+     
+
       window.addEventListener('online', onNetworkChange);
       window.addEventListener('offline', onNetworkChange);
 

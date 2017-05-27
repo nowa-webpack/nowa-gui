@@ -11,6 +11,7 @@ import semver from 'semver';
 import { join } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
+import { throttle } from 'shared-nowa';
 import {
   openUrl, checkInstalledVersion, checkLatestVersion, readPkgJson,
   msgError, msgSuccess
@@ -57,6 +58,7 @@ class DependencyTable extends Component {
       showModal: false,
       filterName: '',
       dataSource: [],
+      tableHeight: '286px',
     };
 
     this.columns = [];
@@ -65,16 +67,26 @@ class DependencyTable extends Component {
     this.getOnlineColumns = this.getOnlineColumns.bind(this);
     this.uninstallPackage = this.uninstallPackage.bind(this);
     this.installPackage = this.installPackage.bind(this);
+    this.onWindowResize = this.onWindowResize.bind(this);
   }
 
   componentDidMount() {
     this.initStatus(this.props);
+    this.onWindowResize();
+    window.addEventListener('resize', throttle(this.onWindowResize, 500));
   }
 
   componentWillReceiveProps(next) {
     if (next.online !== this.props.online || next.projPath !== this.props.projPath) {
       this.initStatus(next);
     }
+  }
+
+  onWindowResize() {
+    const height = document.body.clientHeight;
+    const tableHeight = height - 266 > 286 ? height - 266 : 286;
+
+    this.setState({ tableHeight: `${tableHeight}px` });
   }
 
   onHideModal() {
@@ -279,7 +291,7 @@ class DependencyTable extends Component {
   }
 
   render() {
-    const { loading, selectedRowKeys, dataSource, showModal, filterName } = this.state;
+    const { loading, selectedRowKeys, dataSource, showModal, filterName, tableHeight } = this.state;
     const { online } = this.props;
     const hasSelected = selectedRowKeys.length > 0;
 
@@ -309,6 +321,8 @@ class DependencyTable extends Component {
         onHideModal={this.onHideModal}
       />
     );
+
+    console.log(tableHeight);
 
     return (
       <div className="project-dependency">
@@ -340,8 +354,8 @@ class DependencyTable extends Component {
           dataSource={filterDataSource}
           loading={loading}
           pagination={false}
-          scroll={{ y: '286px' }}
           rowKey={record => record.name}
+          scroll={{ y: tableHeight }}
           locale={{
             emptyText: i18n('table.empty'),
           }}
@@ -352,6 +366,7 @@ class DependencyTable extends Component {
     );
   }
 }
+// 
 
 DependencyTable.propTypes = {
   source: PropTypes.array.isRequired,

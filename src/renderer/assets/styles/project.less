@@ -155,6 +155,7 @@
       background-color: #f5f5f5;
       padding: 10px;
       flex: 1;
+      height: 100%;
     }
   }
 
@@ -190,15 +191,21 @@
 
       .ant-tabs-content{
         background-color: #fff;
+        /*height: calc(100% - 36px);*/
         height: 100%;
       }
+    }
+    &-tabpane{
+      position: relative;
+      /*height: 100%;*/
+      /*padding-bottom: 30px;*/
     }
   }
 
   &-setting-help{
     position: absolute;
     right: 20px;
-    top: 50px;
+    top: 20px;
     
     .action{
       font-size: 18px;
@@ -208,6 +215,7 @@
   &-dependency{
     position: relative;
     padding-top: 5px;
+    height: calc(100% - 40px);
 
     &-update-all{
       margin-right: 10px;
