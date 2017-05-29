@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import Tabs from 'antd/lib/tabs';
 
 import i18n from 'i18n-renderer-nowa';
-
 import BasicForm from './BasicForm';
 import BuildForm from './BuildForm';
 import ServerForm from './ServerForm';

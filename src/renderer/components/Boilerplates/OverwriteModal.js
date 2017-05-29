@@ -37,7 +37,7 @@ const OverwriteModal = ({
       </ul>
     </Modal>
   );
-}
+};
 
 OverwriteModal.propTypes = {
   showModal: PropTypes.bool.isRequired,

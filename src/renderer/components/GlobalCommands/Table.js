@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import Button from 'antd/lib/button';
 import Table from 'antd/lib/table';
 import Popconfirm from 'antd/lib/popconfirm';
@@ -6,9 +6,8 @@ import Switch from 'antd/lib/switch';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import { connect } from 'dva';
+
 import i18n from 'i18n-renderer-nowa';
-
-
 
 const CommandTable = ({
   height,

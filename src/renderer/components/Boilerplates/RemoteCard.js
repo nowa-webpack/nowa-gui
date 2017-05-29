@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import Spin from 'antd/lib/spin';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
+
 import i18n from 'i18n-renderer-nowa';
 import { hideBoilerplateDesp } from 'util-renderer-nowa';
 
@@ -88,7 +89,6 @@ const Item = ({
 
 Item.propTypes = {
   data: PropTypes.object.isRequired,
-  // next: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 

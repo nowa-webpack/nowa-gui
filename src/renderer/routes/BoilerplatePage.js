@@ -1,9 +1,9 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import { Content } from 'antd/lib/layout';
 import Steps from 'antd/lib/steps';
-import i18n from 'i18n-renderer-nowa';
 
+import i18n from 'i18n-renderer-nowa';
 import BoilerplateCards from '../components/Boilerplates/Cards';
 import BoilerplateSetting from '../components/Boilerplates/Setting';
 import NewBoilerplateModal from '../components/NewBoilerplate/Modal';
@@ -25,7 +25,6 @@ const BoilerplatePage = ({
   dispatch,
   processStep,
 }) => {
-
   let component;
 
   switch (processStep) {

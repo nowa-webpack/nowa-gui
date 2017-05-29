@@ -110,44 +110,13 @@ export default {
       commands.openTerminal(project.path);
     },
     * initCommands(o, { put, select }) {
-      const { projects, current } = yield select(state => state.project);
-      // const { globalCommandSet } = yield select(state => state.task);
-      // const otherCmdKey = globalCommandSet.filter(item => item.apply);
+      const { projects } = yield select(state => state.project);
       const commandSet = {};
 
-      const newProjects = projects.map((item) => {
+      projects.forEach((item) => {
         const scripts = item.pkg.scripts ? item.pkg.scripts : {};
         commandSet[item.path] = mapCmd(scripts);
-
-        /*if (otherCmdKey.length) {
-          otherCmdKey.forEach(({ name, value }) => {
-            if (!scripts[name]) {
-              scripts[name] = value;
-              commandSet[item.path][name] = {
-                value,
-                running: false
-              };
-            }
-          });
-
-          item.pkg.scripts = scripts;
-
-          writePkgJson(item.path, item.pkg);
-        }*/
-
-        return item;
       });
-
-      /*if (otherCmdKey.length) {
-        const newCurrent = newProjects.filter(item => item.path === current.path)[0];
-        yield put({
-          type: 'project/changeStatus',
-          payload: {
-            current: newCurrent,
-            projects: newProjects,
-          }
-        });
-      }*/
 
       yield put({
         type: 'changeStatus',
@@ -278,12 +247,10 @@ export default {
     },
     * applyGlobalCommand({ payload: { cmd } }, { put, select }) {
       const { globalCommandSet } = yield select(state => state.task);
-      // let value = '';
 
       const newSet = globalCommandSet.map((item) => {
         if (item.name === cmd) {
           item.apply = true;
-          // value = item.value;
         }
         return item;
       });
@@ -302,11 +269,9 @@ export default {
     },
     * unapplyGlobalCommand({ payload: { cmd } }, { put, select }) {
       const { globalCommandSet } = yield select(state => state.task);
-      // let value = '';
       const newSet = globalCommandSet.map((item) => {
         if (item.name === cmd) {
           item.apply = false;
-          // value = item.value;
         }
         return item;
       });
@@ -339,8 +304,6 @@ export default {
           item.pkg.scripts[cmd] = globalCmdValue;
           commandSet[item.path][cmd] = { globalCmdValue, running: false };
         }
-
-        console.log(item.pkg.scripts);
 
         writePkgJson(item.path, item.pkg);
 

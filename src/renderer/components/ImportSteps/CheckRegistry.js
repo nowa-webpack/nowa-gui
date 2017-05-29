@@ -5,6 +5,7 @@ import Select from 'antd/lib/select';
 import Form from 'antd/lib/form';
 import Col from 'antd/lib/col';
 import { connect } from 'dva';
+
 import i18n from 'i18n-renderer-nowa';
 
 const FormItem = Form.Item;

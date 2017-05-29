@@ -2,10 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import Tabs from 'antd/lib/tabs';
 
-import i18n from 'i18n-renderer-nowa';
 import { getSpiltDependencies } from 'util-renderer-nowa';
-// import BasicForm from './BasicForm';
-// import BuildForm from './BuildForm';
 import Table from './Table';
 
 const TabPane = Tabs.TabPane;

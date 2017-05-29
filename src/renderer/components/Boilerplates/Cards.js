@@ -8,7 +8,7 @@ import LocalCard from './LocalCard';
 import RemoteCard from './RemoteCard';
 
 
-const Cards = ({ 
+const Cards = ({
   officialBoilerplates = [],
   localBoilerplates = [],
   remoteBoilerplates = [],

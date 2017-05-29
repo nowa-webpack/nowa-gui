@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-// import { connect } from 'dva';
-
-import i18n from 'i18n-renderer-nowa';
 
 import Terminal from './Terminal';
 import CommandList from './CommandList';
@@ -17,10 +14,6 @@ class ConsoleWrap extends Component {
     };
 
     this.onToggleConsole = this.onToggleConsole.bind(this);
-  }
-
-  componentWillReceiveProps() {
-    
   }
 
   onToggleConsole() {

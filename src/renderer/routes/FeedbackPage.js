@@ -35,7 +35,7 @@ const FeedbackPage = ({
         className="ui-form"
         layout="vertical"
       >
-        <Col offset={3}>
+        <Col offset={2} span={20}>
         <FormItem
           label={i18n('feedback.name')}
         >

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { remote } from 'electron';
 import Icon from 'antd/lib/icon';
+
 import i18n from 'i18n-renderer-nowa';
 import { removeLoading } from 'util-renderer-nowa';
 

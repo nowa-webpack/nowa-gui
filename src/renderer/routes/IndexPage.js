@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-// import { remote } from 'electron';
 import { connect } from 'dva';
 
 import ShutdownPage from './ShutdownPage';

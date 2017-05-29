@@ -1,17 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-// import { remote } from 'electron';
-import { basename } from 'path';
 import Input from 'antd/lib/input';
 import Form from 'antd/lib/form';
-import { connect } from 'dva';
-
 
 import i18n from 'i18n-renderer-nowa';
-import { hidePathString } from 'util-renderer-nowa';
 import { NAME_MATCH } from 'const-renderer-nowa';
 
 const FormItem = Form.Item;
-
 
 class RemoteForm extends Component {
 

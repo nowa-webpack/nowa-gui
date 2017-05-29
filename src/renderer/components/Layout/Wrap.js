@@ -4,8 +4,8 @@ import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
 
-import { isWin, throttle } from 'shared-nowa';
 import i18n from 'i18n-renderer-nowa';
+import { isWin, throttle } from 'shared-nowa';
 import { hidePathString, openUrl } from 'util-renderer-nowa';
 import { BOILERPLATE_PAGE, PROJECT_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE } from 'const-renderer-nowa';
 import DragPage from './DragPage';
@@ -162,6 +162,4 @@ export default connect(({ layout, project, setting }) => ({
   online: layout.online,
   registry: setting.registry,
   startWacthProject: project.startWacthProject,
-  // upgradeUrl: layout.upgradeUrl,
-  // showFeedBackModal: layout.showFeedBackModal,
 }))(LayoutWrap);

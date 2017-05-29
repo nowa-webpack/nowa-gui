@@ -1,11 +1,9 @@
-import React, { PropTypes, Component } from 'react';
-// import { remote } from 'electron';
+import React, { PropTypes } from 'react';
 import Layout from 'antd/lib/layout';
 import { connect } from 'dva';
 
-// import i18n from 'i18n-renderer-nowa';
 import {
-  BOILERPLATE_PAGE, PROJECT_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE, COMMAND_SETTING_PAGE
+  BOILERPLATE_PAGE, PROJECT_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE
 } from 'const-renderer-nowa';
 import SiderFoot from '../components/Layout/SiderFoot';
 import ProjectList from '../components/ProjectList/List';
@@ -16,7 +14,6 @@ import CheckRegistry from '../components/ImportSteps/CheckRegistry';
 
 
 const { Sider } = Layout;
-// const { mainWin } = remote.getGlobal('services');
 
 const MainPage = ({
   showPage,

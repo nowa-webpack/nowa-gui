@@ -3,43 +3,38 @@ import Button from 'antd/lib/button';
 import classNames from 'classnames';
 import Input from 'antd/lib/input';
 import Icon from 'antd/lib/icon';
+
 import i18n from 'i18n-renderer-nowa';
 import { hideBoilerplateDesp } from 'util-renderer-nowa';
 
 const InputGroup = Input.Group;
 
 const Item = ({ data, dispatch }) => {
-  const removeBoilerplate = () => dispatch(
-    {
-      type: 'boilerplate/remove',
-      payload: {
-        type: 'local',
-        item: data
-      }
-    });
+  const removeBoilerplate = () => dispatch({
+    type: 'boilerplate/remove',
+    payload: {
+      type: 'local',
+      item: data
+    }
+  });
   
+  const showModal = () => dispatch({
+    type: 'boilerplate/changeStatus',
+    payload: {
+      showAddBoilerplateModal: true,
+      addOrEditBoilerplateType: 'local',
+      editLocalBoilplateData: data
+    }
+  });
 
-  const showModal = () => {
-    dispatch({
-      type: 'boilerplate/changeStatus',
-      payload: {
-        showAddBoilerplateModal: true,
-        addOrEditBoilerplateType: 'local',
-        editLocalBoilplateData: data
-      }
-    });
-  };
+  const handleCreate = () => dispatch({
+    type: 'projectCreate/selectBoilerplate',
+    payload: {
+      type: 'local',
+      item: data,
+    }
+  });
 
-  const handleCreate = () => {
-    dispatch({
-      type: 'projectCreate/selectBoilerplate',
-      payload: {
-        type: 'local',
-        item: data,
-      }
-    });
-    // next();
-  };
   return (
     <div
       className={classNames({
@@ -72,11 +67,10 @@ const Item = ({ data, dispatch }) => {
       </InputGroup>
     </div>
   );
-}
+};
 
 Item.propTypes = {
   data: PropTypes.object.isRequired,
-  // next: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 

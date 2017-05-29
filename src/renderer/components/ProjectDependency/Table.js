@@ -7,7 +7,6 @@ import Input from 'antd/lib/input';
 import { join } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
-import { throttle } from 'shared-nowa';
 import {
   openUrl, checkInstalledVersion, checkLatestVersion, readPkgJson,
   msgError, msgSuccess
@@ -112,8 +111,9 @@ class DependencyTable extends Component {
                   onConfirm={() => this.updatePackage(record)}
                   okText={i18n('form.ok')}
                   cancelText={i18n('form.cancel')}
-                ><Button size="default" type="danger" 
-                  className="project-dependency-action">
+                ><Button size="default" type="danger"
+                  className="project-dependency-action"
+                  >
                   {i18n('table.action.update')}</Button>
                 </Popconfirm>
               );
