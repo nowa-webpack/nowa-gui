@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
 import Layout from 'antd/lib/layout';
 
-import { isWin } from 'shared-nowa';
+import { isWin, throttle } from 'shared-nowa';
 import i18n from 'i18n-renderer-nowa';
 import { hidePathString, openUrl } from 'util-renderer-nowa';
 import { BOILERPLATE_PAGE, PROJECT_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE } from 'const-renderer-nowa';
@@ -18,6 +18,7 @@ class LayoutWrap extends Component {
     super(props);
     this.taskTimer;
     this.onDrop = this.onDrop.bind(this);
+    this.onWindowResize = this.onWindowResize.bind(this);
   }
 
   componentDidMount() {
@@ -29,6 +30,8 @@ class LayoutWrap extends Component {
         });
       }, 5000);
     }
+
+    window.addEventListener('resize', throttle(this.onWindowResize, 500));
   }
 
   componentWillReceiveProps({ startWacthProject, dispatch }) {
@@ -44,6 +47,14 @@ class LayoutWrap extends Component {
         }, 5000);
       }
     }
+  }
+
+  onWindowResize() {
+    const windowHeight = document.body.clientHeight;
+    this.props.dispatch({
+      type: 'layout/changeStatus',
+      payload: { windowHeight }
+    });
   }
 
   onDrop(acceptedFiles) {

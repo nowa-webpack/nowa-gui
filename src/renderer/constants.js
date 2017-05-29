@@ -13,7 +13,7 @@ export const COMMAND_SETTING_PAGE = 'COMMAND_SETTING_PAGE';   // 设置全局命
 
 export const LOCAL_PROJECTS = 'LOCAL_PROJECTS';
 export const LANGUAGE = 'LANGUAGE';
-
+export const GLOBAL_COMMANDS = 'GLOBAL_COMMANDS';
 export const UPDATE_TIP = 'UPDATE_FLAG';
 
 export const EXTENSION_MAP = {

@@ -3,6 +3,7 @@ import i18n from 'i18n-renderer-nowa';
 import { msgError, writePkgJson } from 'util-renderer-nowa';
 import { delay } from 'shared-nowa';
 import { SETTING_PAGE } from 'const-renderer-nowa';
+import { getLocalCommands, setLocalCommands } from 'store-renderer-nowa';
 
 const { commands } = remote.getGlobal('services');
 
@@ -31,7 +32,7 @@ export default {
 
   state: {
     commandSet: {},
-    defaultCommandSet: {},
+    globalCommandSet: getLocalCommands(),
     taskType: 'start',
   },
 
@@ -110,32 +111,34 @@ export default {
     },
     * initCommands(o, { put, select }) {
       const { projects, current } = yield select(state => state.project);
-      const { defaultCommandSet } = yield select(state => state.task);
+      // const { globalCommandSet } = yield select(state => state.task);
+      // const otherCmdKey = globalCommandSet.filter(item => item.apply);
       const commandSet = {};
-      const otherCmdKey = Object.keys(defaultCommandSet);
 
       const newProjects = projects.map((item) => {
         const scripts = item.pkg.scripts ? item.pkg.scripts : {};
         commandSet[item.path] = mapCmd(scripts);
 
-        if (otherCmdKey.length) {
-          otherCmdKey.forEach((cmd) => {
-            scripts[cmd] = defaultCommandSet[cmd];
-            commandSet[item.path][cmd] = {
-              value: defaultCommandSet[cmd],
-              running: false
-            };
+        /*if (otherCmdKey.length) {
+          otherCmdKey.forEach(({ name, value }) => {
+            if (!scripts[name]) {
+              scripts[name] = value;
+              commandSet[item.path][name] = {
+                value,
+                running: false
+              };
+            }
           });
 
           item.pkg.scripts = scripts;
 
           writePkgJson(item.path, item.pkg);
-        }
+        }*/
 
         return item;
       });
 
-      if (otherCmdKey.length) {
+      /*if (otherCmdKey.length) {
         const newCurrent = newProjects.filter(item => item.path === current.path)[0];
         yield put({
           type: 'project/changeStatus',
@@ -144,7 +147,7 @@ export default {
             projects: newProjects,
           }
         });
-      }
+      }*/
 
       yield put({
         type: 'changeStatus',
@@ -153,19 +156,21 @@ export default {
     },
     * initAddCommands(o, { put, select }) {
       const { current } = yield select(state => state.project);
-      const { defaultCommandSet, commandSet } = yield select(state => state.task);
-      const otherCmdKey = Object.keys(defaultCommandSet);
+      const { globalCommandSet, commandSet } = yield select(state => state.task);
+      const otherCmdKey = globalCommandSet.filter(item => item.apply);
       const { pkg, path } = current;
 
       commandSet[path] = mapCmd(pkg.scripts || {});
 
       if (otherCmdKey.length) {
-        otherCmdKey.forEach((cmd) => {
-          pkg.scripts[cmd] = defaultCommandSet[cmd];
-          commandSet[path][cmd] = {
-            value: defaultCommandSet[cmd],
-            running: false
-          };
+        otherCmdKey.forEach(({ name, value }) => {
+          if (!pkg.scripts[name]) {
+            pkg.scripts[name] = value;
+            commandSet[path][name] = {
+              value,
+              running: false
+            };
+          }
         });
 
         writePkgJson(path, pkg);
@@ -238,6 +243,127 @@ export default {
       yield put({
         type: 'project/changeProjects',
         payload: current
+      });
+    },
+    * addGlobalCommand({ payload }, { put, select }) {
+      const { globalCommandSet } = yield select(state => state.task);
+      globalCommandSet.push({ ...payload, apply: false });
+
+      setLocalCommands(globalCommandSet);
+
+      yield put({
+        type: 'changeStatus',
+        payload: { globalCommandSet: [...globalCommandSet] }
+      });
+    },
+    * deleteGlobalCommand({ payload: { cmd } }, { put, select }) {
+      yield put({
+        type: 'unapplyGlobalCommand',
+        payload: { cmd }
+      });
+      const { globalCommandSet } = yield select(state => state.task);
+      const filter = globalCommandSet.filter(item => item.name !== cmd);
+
+      yield put({
+        type: 'changeStatus',
+        payload: { globalCommandSet: filter }
+      });
+
+      setLocalCommands(filter);
+
+      yield put({
+        type: 'changePackageJsonCommand',
+        payload: { cmd, type: 'delete' }
+      });
+    },
+    * applyGlobalCommand({ payload: { cmd } }, { put, select }) {
+      const { globalCommandSet } = yield select(state => state.task);
+      // let value = '';
+
+      const newSet = globalCommandSet.map((item) => {
+        if (item.name === cmd) {
+          item.apply = true;
+          // value = item.value;
+        }
+        return item;
+      });
+
+      setLocalCommands(newSet);
+
+      yield put({
+        type: 'changeStatus',
+        payload: { globalCommandSet: newSet }
+      });
+
+      yield put({
+        type: 'changePackageJsonCommand',
+        payload: { cmd, type: 'new' }
+      });
+    },
+    * unapplyGlobalCommand({ payload: { cmd } }, { put, select }) {
+      const { globalCommandSet } = yield select(state => state.task);
+      // let value = '';
+      const newSet = globalCommandSet.map((item) => {
+        if (item.name === cmd) {
+          item.apply = false;
+          // value = item.value;
+        }
+        return item;
+      });
+
+      setLocalCommands(newSet);
+
+      yield put({
+        type: 'changeStatus',
+        payload: { globalCommandSet: newSet }
+      });
+
+      yield put({
+        type: 'changePackageJsonCommand',
+        payload: { cmd, type: 'delete' }
+      });
+    },
+    * changePackageJsonCommand({ payload: { cmd, type } }, { put, select }) {
+      console.log('changePackageJsonCommand', cmd, type);
+      const { projects, current } = yield select(state => state.project);
+      const { commandSet, globalCommandSet } = yield select(state => state.task);
+      const globalCmdValue = globalCommandSet.filter(item => item.name === cmd)[0].value;
+      let newCurrent = {};
+
+      const newProjects = projects.map((item) => {
+        if (type === 'delete' && item.pkg.scripts[cmd] === globalCmdValue) {
+          delete item.pkg.scripts[cmd];
+          delete commandSet[item.path][cmd];
+        } else if (type === 'new' && !item.pkg.scripts[cmd]) {
+          console.log('added global cmd');
+          item.pkg.scripts[cmd] = globalCmdValue;
+          commandSet[item.path][cmd] = { globalCmdValue, running: false };
+        }
+
+        console.log(item.pkg.scripts);
+
+        writePkgJson(item.path, item.pkg);
+
+        if (item.path === current.path) {
+          newCurrent = item;
+        }
+
+        return item;
+      });
+
+      yield put({
+        type: 'project/changeStatus',
+        payload: {
+          projects: [...newProjects],
+          current: newCurrent
+        }
+      });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          commandSet: { ...commandSet }
+        }
       });
     },
 

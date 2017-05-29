@@ -1,13 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { remote } from 'electron';
 import Button from 'antd/lib/button';
-import Message from 'antd/lib/message';
 import Table from 'antd/lib/table';
 import Popconfirm from 'antd/lib/popconfirm';
 import Input from 'antd/lib/input';
-import Icon from 'antd/lib/icon';
-import semverDiff from 'semver-diff';
-import semver from 'semver';
 import { join } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
@@ -25,7 +21,6 @@ const basicColumns = [{
   title: i18n('package.name'),
   dataIndex: 'name',
   key: 'name',
-  // width: 250,
   render: text => (
     <a onClick={() => openUrl(`https://www.npmjs.com/package/${text}`)}>{text}</a>
   )
@@ -33,20 +28,12 @@ const basicColumns = [{
   title: i18n('package.current'),
   dataIndex: 'version',
   key: 'version',
-  // width: 100,
 }, {
   title: i18n('package.installed'),
   dataIndex: 'installedVersion',
   key: 'installedVersion',
-  // width: 100,
 }];
 
-// const netColumns = {
-//   title: i18n('package.newest'),
-//   dataIndex: 'latestVersion',
-//   key: 'latestVersion',
-//   // width: 100,
-// };
 
 class DependencyTable extends Component {
   constructor(props) {
@@ -58,7 +45,7 @@ class DependencyTable extends Component {
       showModal: false,
       filterName: '',
       dataSource: [],
-      tableHeight: '286px',
+      // tableHeight: '286px',
     };
 
     this.columns = [];
@@ -67,13 +54,13 @@ class DependencyTable extends Component {
     this.getOnlineColumns = this.getOnlineColumns.bind(this);
     this.uninstallPackage = this.uninstallPackage.bind(this);
     this.installPackage = this.installPackage.bind(this);
-    this.onWindowResize = this.onWindowResize.bind(this);
+    // this.onWindowResize = this.onWindowResize.bind(this);
   }
 
   componentDidMount() {
     this.initStatus(this.props);
-    this.onWindowResize();
-    window.addEventListener('resize', throttle(this.onWindowResize, 500));
+    // this.onWindowResize();
+    // window.addEventListener('resize', throttle(this.onWindowResize, 500));
   }
 
   componentWillReceiveProps(next) {
@@ -82,12 +69,12 @@ class DependencyTable extends Component {
     }
   }
 
-  onWindowResize() {
+  /*onWindowResize() {
     const height = document.body.clientHeight;
     const tableHeight = height - 266 > 286 ? height - 266 : 286;
 
     this.setState({ tableHeight: `${tableHeight}px` });
-  }
+  }*/
 
   onHideModal() {
     this.setState({ showModal: false });
@@ -229,7 +216,7 @@ class DependencyTable extends Component {
         return item;
       });
       dispatch({
-        type: 'project/updatePackage',
+        type: 'project/updateDepencies',
         payload: { data, type }
       });
       msgSuccess(i18n('msg.updateSuccess'));
@@ -282,7 +269,7 @@ class DependencyTable extends Component {
       const newDataSource = this.state.dataSource.concat(data);
 
       dispatch({
-        type: 'project/updatePackage',
+        type: 'project/updateDepencies',
         payload: { type, data }
       });
       msgSuccess(i18n('msg.installSuccess'));
@@ -291,8 +278,8 @@ class DependencyTable extends Component {
   }
 
   render() {
-    const { loading, selectedRowKeys, dataSource, showModal, filterName, tableHeight } = this.state;
-    const { online } = this.props;
+    const { loading, selectedRowKeys, dataSource, showModal, filterName } = this.state;
+    const { online, tableHeight } = this.props;
     const hasSelected = selectedRowKeys.length > 0;
 
     const filterDataSource = dataSource.filter(item => item.name.indexOf(filterName) === 0);
@@ -364,7 +351,6 @@ class DependencyTable extends Component {
     );
   }
 }
-// 
 
 DependencyTable.propTypes = {
   source: PropTypes.array.isRequired,
@@ -373,6 +359,7 @@ DependencyTable.propTypes = {
   projPath: PropTypes.string.isRequired,
   online: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
+  tableHeight: PropTypes.number.isRequired,
 };
 
 export default DependencyTable;

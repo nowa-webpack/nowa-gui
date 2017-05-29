@@ -2,14 +2,12 @@ import { join } from 'path';
 import { remote } from 'electron';
 import { existsSync } from 'fs-extra';
 import {
-  LOCAL_PROJECTS, LANGUAGE, UPDATE_TIP, EDITOR,
+  LOCAL_PROJECTS, LANGUAGE, UPDATE_TIP, GLOBAL_COMMANDS, EDITOR,
   SUBLIME, VSCODE, WEBSTORM, SUBLIME_PATH, VSCODE_PATH, WEBSTORM_PATH
 } from './constants';
 
 
-// import config from 'config-nowa';
 const config = remote.getGlobal('config');
-
 
 export const getStoreProjects = () => config.getItem(LOCAL_PROJECTS) || [];
 
@@ -65,3 +63,7 @@ export const getLocalUpdateFlag = () => {
 export const setLocalUpdateFlag = (version) => {
   config.setItem(UPDATE_TIP, `${version}|1`);
 };
+
+export const getLocalCommands = () => config.getItem(GLOBAL_COMMANDS) || [];
+
+export const setLocalCommands = (cmds) => config.setItem(GLOBAL_COMMANDS, cmds);

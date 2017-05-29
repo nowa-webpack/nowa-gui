@@ -85,6 +85,7 @@ module.exports = {
   'form.delete': 'Delete',
   'form.override': 'Override',
   'form.import': 'Import',
+  'form.add': 'Add',
 
   'setting.modal.title': 'Setting',
   'setting.language': 'Language',
@@ -141,6 +142,8 @@ module.exports = {
   'cmd.select.opt': 'Command List',
   'cmd.meta.name': 'Command Name',
   'cmd.meta.value': 'Command Content',
+  'cmd.meta.apply': 'Apply To all',
+  'cmd.meta.action': 'Action',
   'cmd.stop.tip': 'Please wait until this command is finished, then try it again.',
 
   'preinit.msg1': 'Internet connection is required during initialization, check your network & reopen APP.',

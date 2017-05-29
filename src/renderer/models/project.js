@@ -358,7 +358,7 @@ export default {
 
       yield commands.uninstall(opt);
     },
-    * updatePackage({ payload: { data, type } }, { put, select }) {
+    * updateDepencies({ payload: { data, type } }, { put, select }) {
       const { current } = yield select(state => state.project);
 
       data.forEach(({ name, version }) => {

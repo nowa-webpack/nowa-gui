@@ -58,27 +58,27 @@ const CommandModal = ({
     >
       <Form layout="vertical">
         <Row>
-        <Col span={5} offset={1}>
-        <FormItem
-          label={i18n('cmd.meta.name')}
-          required
-        >
-          {getFieldDecorator('name', {
-            rules: [{ required: true, message: i18n('msg.required') },
-              { validator: nameValid }]
-          })(<Input />)}
-        </FormItem>
-        </Col>
-        <Col span={16} offset={1}>
-        <FormItem
-          label={i18n('cmd.meta.value')}
-          required
-        >
-          {getFieldDecorator('value', {
-            rules: [{ required: true, message: i18n('msg.required') }]
-          })(<Input />)}
-        </FormItem>
-        </Col>
+          <Col span={5} offset={1}>
+            <FormItem
+              label={i18n('cmd.meta.name')}
+              required
+            >
+              {getFieldDecorator('name', {
+                rules: [{ required: true, message: i18n('msg.required') },
+                  { validator: nameValid }]
+              })(<Input />)}
+            </FormItem>
+            </Col>
+            <Col span={16} offset={1}>
+            <FormItem
+              label={i18n('cmd.meta.value')}
+              required
+            >
+              {getFieldDecorator('value', {
+                rules: [{ required: true, message: i18n('msg.required') }]
+              })(<Input />)}
+            </FormItem>
+          </Col>
         </Row>
       </Form>
     </Modal>

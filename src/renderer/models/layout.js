@@ -11,7 +11,7 @@ import { openUrl, msgError, msgSuccess } from 'util-renderer-nowa';
 import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from 'store-renderer-nowa';
 import {
   PREINIT_PAGE, SHUTDOWN_PAGE, WELCOME_PAGE, BOILERPLATE_PAGE, PROJECT_PAGE,
-  EXTENSION_MAP, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE, SETTING_PAGE, FEEDBACK_PAGE,
+  EXTENSION_MAP, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE, COMMAND_SETTING_PAGE, FEEDBACK_PAGE,
 } from 'const-renderer-nowa';
 
 const { paths, nowa, requests } = remote.getGlobal('services');
@@ -42,7 +42,8 @@ export default {
     newVersion: paths.APP_VERSION,
     showSideMask: false, // 遮住项目列表防止误操作
     upgradeUrl: '',  // app 更新地址
-    backPage: '', // 上一个页面
+    backPage: '', // 上一个页面,
+    windowHeight: 552, // 窗口高度
   },
 
   subscriptions: {
@@ -96,8 +97,7 @@ export default {
 
       const { projects } = yield select(state => state.project);
       const toPage = projects.length > 0 ? PROJECT_PAGE : WELCOME_PAGE;
-      // const showPage = projects.length > 0 ? PROJECT_PAGE : BOILERPLATE_PAGE;
-      // const showPage = BOILERPLATE_PAGE;
+      // const toPage = COMMAND_SETTING_PAGE;
       yield put({
         type: 'showPage',
         payload: { toPage }

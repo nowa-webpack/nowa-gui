@@ -16,11 +16,12 @@ class SettingTab extends Component {
     const dp = getSpiltDependencies(props.current.pkg);
     this.state = {
       activeKey: '1',
-      ...dp
+      ...dp,
+      tableHeight: props.height - 266 > 286 ? props.height - 266 : 286,
     };
   }
 
-  componentWillReceiveProps({ current }) {
+  componentWillReceiveProps({ current, height }) {
     if (current.path !== this.props.current.path) {
       const dp = getSpiltDependencies(current.pkg);
       this.setState({
@@ -29,12 +30,17 @@ class SettingTab extends Component {
       });
     }
 
+    if (height !== this.props.height) {
+      const tableHeight = height - 266 > 286 ? height - 266 : 286;
+
+      this.setState({ tableHeight: `${tableHeight}px` });
+    }
   }
 
   render() {
     const { current, online, registry, dispatch } = this.props;
-    const { activeKey, dependencies, devDependencies } = this.state;
-    const basicProps = { online, registry, projPath: current.path, dispatch };
+    const { activeKey, dependencies, devDependencies, tableHeight } = this.state;
+    const basicProps = { online, registry, projPath: current.path, dispatch, tableHeight };
 
     return (
       <div className="project-sub">
@@ -64,10 +70,12 @@ SettingTab.propTypes = {
   registry: PropTypes.string.isRequired,
   online: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
+  height: PropTypes.number.isRequired,
 };
 
 export default connect(({ project, setting, layout }) => ({
   current: project.current,
   registry: setting.registry,
   online: layout.online,
+  height: layout.windowHeight
 }))(SettingTab);

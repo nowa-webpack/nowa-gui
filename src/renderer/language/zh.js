@@ -84,6 +84,7 @@ module.exports = {
   'form.delete': '删除',
   'form.override': '覆盖',
   'form.import': '导入',
+  'form.add': '添加',
 
   'setting.modal.title': '设置',
   'setting.language': 'Language',
@@ -141,6 +142,8 @@ module.exports = {
   'cmd.select.opt': '选择命令窗口',
   'cmd.meta.name': '名称',
   'cmd.meta.value': '命令',
+  'cmd.meta.apply': '应用到所有',
+  'cmd.meta.action': '操作',
   'cmd.stop.tip': '请等待命令执行结束再删除。',
 
 
