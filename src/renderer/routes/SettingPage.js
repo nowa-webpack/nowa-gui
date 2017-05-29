@@ -213,7 +213,11 @@ SettingPage.propTypes = {
   registry: PropTypes.string.isRequired,
   registryList: PropTypes.array.isRequired,
   upgradeUrl: PropTypes.string.isRequired,
-  form: PropTypes.object.isRequired,
+  form: PropTypes.shape({
+    getFieldDecorator: PropTypes.func,
+    setFieldsValue: PropTypes.func,
+    validateFields: PropTypes.func,
+  }).isRequired,
   editor: PropTypes.shape({
     Sublime: PropTypes.string,
     VScode: PropTypes.string

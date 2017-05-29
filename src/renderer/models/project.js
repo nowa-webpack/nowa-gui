@@ -58,7 +58,6 @@ const getProjects = () => {
     const info = getProjectInfoByPath(project.path);
 
     return {
-      loadingStep: 0,
       start: false,
       // taskErr: false,
       ...info,
@@ -147,14 +146,69 @@ export default {
         payload: {
           projects,
           current,
-          // startWacthProject: true
         }
+      });
+
+      yield put({
+        type: 'task/initAddCommands',
+        // payload: {
+        //   project: current,
+        // }
       });
 
       yield put({
         type: 'layout/showPage',
         payload: { toPage: PROJECT_PAGE }
       });
+    },
+    * remove({ payload }, { select, put }) {
+      console.log('remove project', payload.name);
+      const { projects, current } = yield select(state => state.project);
+      const filter = projects.filter(item => item.path !== payload.path);
+
+
+      yield put({
+        type: 'task/initRemoveCommands',
+        payload: { project: payload }
+      });
+
+      if (payload.start) {
+        yield put({
+          type: 'task/execCommand',
+          payload: { project: payload, command: 'stop' }
+        });
+      }
+
+      const storeProjects = getLocalProjects();
+
+      setLocalProjects(storeProjects.filter(item => item.path !== payload.path));
+
+      tray.setInitTrayMenu(filter);
+
+      if (filter.length) {
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            projects: filter,
+            current: payload.path === current.path ? filter[0] : current
+          }
+        });
+      } else {
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            projects: [],
+            current: {}
+          }
+        });
+
+        yield put({
+          type: 'layout/changeStatus',
+          payload: {
+            showPage: WELCOME_PAGE
+          }
+        });
+      }
     },
     * startedProject({ payload: { projPath } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);

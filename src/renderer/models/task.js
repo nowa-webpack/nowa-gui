@@ -1,6 +1,6 @@
 import { ipcRenderer, remote } from 'electron';
 import i18n from 'i18n-renderer-nowa';
-import { msgError } from 'util-renderer-nowa';
+import { msgError, writePkgJson } from 'util-renderer-nowa';
 import { delay } from 'shared-nowa';
 import { SETTING_PAGE } from 'const-renderer-nowa';
 
@@ -31,6 +31,7 @@ export default {
 
   state: {
     commandSet: {},
+    defaultCommandSet: {},
     taskType: 'start',
   },
 
@@ -84,8 +85,8 @@ export default {
         yield delay(1000);
 
         yield put({
-          type: 'layout/changeStatus',
-          payload: { showPage: 3 }
+          type: 'layout/showPage',
+          payload: { toPage: SETTING_PAGE }
         });
       } else {
         const { success } = yield commands.openEditor(project.path, defaultEditor, editorPath);
@@ -108,18 +109,138 @@ export default {
       commands.openTerminal(project.path);
     },
     * initCommands(o, { put, select }) {
-      const { projects } = yield select(state => state.project);
-      const commandSet = {}; 
-      projects.forEach((item) => {
-        const { scripts } = item.pkg;
+      const { projects, current } = yield select(state => state.project);
+      const { defaultCommandSet } = yield select(state => state.task);
+      const commandSet = {};
+      const otherCmdKey = Object.keys(defaultCommandSet);
+
+      const newProjects = projects.map((item) => {
+        const scripts = item.pkg.scripts ? item.pkg.scripts : {};
         commandSet[item.path] = mapCmd(scripts);
+
+        if (otherCmdKey.length) {
+          otherCmdKey.forEach((cmd) => {
+            scripts[cmd] = defaultCommandSet[cmd];
+            commandSet[item.path][cmd] = {
+              value: defaultCommandSet[cmd],
+              running: false
+            };
+          });
+
+          item.pkg.scripts = scripts;
+
+          writePkgJson(item.path, item.pkg);
+        }
+
+        return item;
       });
+
+      if (otherCmdKey.length) {
+        const newCurrent = newProjects.filter(item => item.path === current.path)[0];
+        yield put({
+          type: 'project/changeStatus',
+          payload: {
+            current: newCurrent,
+            projects: newProjects,
+          }
+        });
+      }
 
       yield put({
         type: 'changeStatus',
         payload: { commandSet }
       });
     },
+    * initAddCommands(o, { put, select }) {
+      const { current } = yield select(state => state.project);
+      const { defaultCommandSet, commandSet } = yield select(state => state.task);
+      const otherCmdKey = Object.keys(defaultCommandSet);
+      const { pkg, path } = current;
+
+      commandSet[path] = mapCmd(pkg.scripts || {});
+
+      if (otherCmdKey.length) {
+        otherCmdKey.forEach((cmd) => {
+          pkg.scripts[cmd] = defaultCommandSet[cmd];
+          commandSet[path][cmd] = {
+            value: defaultCommandSet[cmd],
+            running: false
+          };
+        });
+
+        writePkgJson(path, pkg);
+
+        current.pkg = pkg;
+
+        yield put({
+          type: 'project/changeProjects',
+          payload: current
+        });
+      }
+
+      yield put({
+        type: 'changeStatus',
+        payload: { commandSet }
+      });
+    },
+    * initRemoveCommands({ payload: { project } }, { put, select }) {
+      const { commandSet } = yield select(state => state.task);
+      if (commandSet[project.path]) {
+        delete commandSet[project.path];
+      }
+      console.log(commandSet);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          commandSet: { ...commandSet }
+        }
+      });
+    },
+    * addCommand({ payload: { name, value } }, { put, select }) {
+      const { current } = yield select(state => state.project);
+      const { commandSet } = yield select(state => state.task);
+
+      const { path, pkg } = current;
+
+      commandSet[path][name] = { value, running: false };
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          commandSet: { ...commandSet }
+        }
+      });
+
+      pkg.scripts = pkg.scripts || {};
+
+      pkg.scripts[name] = value;
+
+      writePkgJson(path, pkg);
+
+      yield put({
+        type: 'project/changeProjects',
+        payload: current
+      });
+    },
+    * deleteCommand({ payload: { cmd } }, { put, select }) {
+      const { current } = yield select(state => state.project);
+      const { commandSet } = yield select(state => state.task);
+      const { path, pkg } = current;
+      if (commandSet[path][cmd]) {
+        delete commandSet[path][cmd];
+      }
+
+      delete pkg.scripts[cmd];
+
+      writePkgJson(path, pkg);
+
+      yield put({
+        type: 'project/changeProjects',
+        payload: current
+      });
+    },
+
   },
 
   reducers: {

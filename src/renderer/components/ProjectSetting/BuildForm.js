@@ -162,7 +162,11 @@ BuildForm.propTypes = {
     path: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired,
+  form: PropTypes.shape({
+    getFieldDecorator: PropTypes.func,
+    setFieldsValue: PropTypes.func,
+    validateFields: PropTypes.func,
+  }).isRequired,
 };
 
 export default Form.create()(connect(({ project }) => ({

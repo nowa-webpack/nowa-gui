@@ -57,8 +57,6 @@ const BasicForm = ({
  
   const initRepo = pkg.repository ? (pkg.repository.url || '') : '';
 
-  
-
   return (
     <Form className="setting-form">
       <Row className="setting-form-inline" gutter={2}>
@@ -161,7 +159,11 @@ BasicForm.propTypes = {
     registry: PropTypes.string,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired,
+  form: PropTypes.shape({
+    getFieldDecorator: PropTypes.func,
+    setFieldsValue: PropTypes.func,
+    validateFields: PropTypes.func,
+  }).isRequired,
   registryList: PropTypes.array.isRequired,
 };
 

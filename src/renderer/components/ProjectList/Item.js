@@ -49,7 +49,7 @@ const Item = ({
         onOk() {
           dispatch({
             type: 'project/remove',
-            payload: { project }
+            payload: project
           });
         },
         onCancel() {},

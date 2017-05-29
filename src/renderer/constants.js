@@ -9,6 +9,7 @@ export const PROJECT_PAGE = 'PROJECT_PAGE';     // 项目详情页面
 export const FEEDBACK_PAGE = 'FEEDBACK_PAGE';   // 反馈页面
 export const IMPORT_STEP1_PAGE = 'IMPORT_STEP1_PAGE';   // 确认源页面
 export const IMPORT_STEP2_PAGE = 'IMPORT_STEP2_PAGE';   // 安装项目依赖页面
+export const COMMAND_SETTING_PAGE = 'COMMAND_SETTING_PAGE';   // 设置全局命令页面
 
 export const LOCAL_PROJECTS = 'LOCAL_PROJECTS';
 export const LANGUAGE = 'LANGUAGE';

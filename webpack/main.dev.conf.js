@@ -66,7 +66,7 @@ module.exports = webpackMerge(webpackCommon,
         //   loader: 'octal-number-loader'
         // },
         {
-          test: /node_modules\/rc\/index\.js$/,
+          test: /\.js$/,
           loader: 'shebang-loader'
         }, {
           test: /\.node$/,

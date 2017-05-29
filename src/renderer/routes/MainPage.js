@@ -5,7 +5,7 @@ import { connect } from 'dva';
 
 // import i18n from 'i18n-renderer-nowa';
 import {
-  BOILERPLATE_PAGE, PROJECT_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE
+  BOILERPLATE_PAGE, PROJECT_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE, COMMAND_SETTING_PAGE
 } from 'const-renderer-nowa';
 import SiderFoot from '../components/Layout/SiderFoot';
 import ProjectList from '../components/ProjectList/List';
@@ -40,6 +40,11 @@ const MainPage = ({
       component = <ImportingLog />;
       break;
     }
+    // case COMMAND_SETTING_PAGE: {
+    //   console.log(1111)
+    //   component = <CommandSettingPage />;
+    //   break;
+    // }
     default:
       component = <div />;
       break;
