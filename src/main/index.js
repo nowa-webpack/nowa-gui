@@ -1,11 +1,11 @@
 import { app, ipcMain } from 'electron';
 import cnr from 'check-npm-registry';
 
-import { isDev } from 'shared-nowa';
+import { isDev, isMac } from 'shared-nowa';
 import services from './services';
 import config from './userConfig';
 
-const { menu, mainWin, log, tray, commands, nowa, requests, boilerplate } = services;
+const { menu, mainWin, log, tray, commands, nowa, requests } = services;
 
 log.clearLog('main');
 
@@ -72,13 +72,16 @@ app
     }
   })
   .on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-      app.quit();
+    console.log('window-all-closed');
+    if (!isMac) {
+      commands.clearNotMacTask(() => {
+        app.quit();
+      });
     }
   })
   .on('before-quit', () => {
     console.log('before quit');
-    // if (is.isMac) command.clearMacTask();
+    if (isMac) commands.clearMacTask();
     tray.destroy();
   });
 

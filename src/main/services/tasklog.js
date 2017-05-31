@@ -1,6 +1,6 @@
-import ansiHTML from 'ansi-html';
+// import ansiHTML from 'ansi-html';
 import iconv from 'iconv-lite';
-// import userConfig from '../../userConfig';
+
 import config from 'config-main-nowa';
 
 class TaskLog {
@@ -15,11 +15,11 @@ class TaskLog {
     return this.log[cmd];
   }
 
-  getTask(cmd, name) {
+  getTask(cmd, projPath) {
     const task = this.getCmd(cmd);
 
-    if (!task[name]) {
-      task[name] = {
+    if (!task[projPath]) {
+      task[projPath] = {
         term: null,
         uid: '',
         log: ''
@@ -27,28 +27,38 @@ class TaskLog {
       this.log[cmd] = task;
     }
 
-    return task[name];
+    return task[projPath];
   }
 
-  setTask(cmd, name, content) {
-    const task = this.getTask(cmd, name);
-    this.log[cmd][name] = Object.assign(task, content);
+  setTask(cmd, projPath, content) {
+    const task = this.getTask(cmd, projPath);
+    this.log[cmd][projPath] = Object.assign(task, content);
   }
 
-  writeLog(cmd, name, buf) {
-    const str = iconv.decode(buf, config.getItem('ENCODE'));
-    const task = this.getTask(cmd, name);
-
-    task.log += ansiHTML(str.replace(/\n/g, '<br>'));
-    this.log[cmd][name] = task;
+  writeLog(cmd, projPath, buf) {
+    const str = iconv.decode(new Buffer(buf), config.getItem('ENCODE'));
+    const task = this.getTask(cmd, projPath);
+    // task.log += ansiHTML(str.replace(/\n/g, '<br>'));
+    task.log += str;
+    this.log[cmd][projPath] = task;
     return task.log;
   }
 
-  clearLog(cmd, name) {
-    this.setTask(cmd, name, {
+  clearTerm(cmd, projPath) {
+    this.setTask(cmd, projPath, {
       term: null,
       uid: ''
     });
+  }
+
+  clearLog(cmd, projPath) {
+    this.setTask(cmd, projPath, {
+      log: ''
+    });
+  }
+
+  getlog() {
+    return this.log;
   }
 }
 

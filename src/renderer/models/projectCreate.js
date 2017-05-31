@@ -2,7 +2,7 @@ import glob from 'glob';
 import mkdirp from 'mkdirp';
 import { remote } from 'electron';
 import gitConfig from 'git-config';
-import { join, dirname } from 'path';
+import { join, dirname, basename } from 'path';
 import { existsSync } from 'fs-extra';
 
 import i18n from 'i18n-renderer-nowa';
@@ -41,9 +41,9 @@ export default {
 
         const { projects } = yield select(state => state.project);
 
-        const filter = projects.filter(n => n.path === projPath);
+        const isExisted = projects.some(n => n.path === projPath || n.name === basename(projPath));
 
-        if (filter.length > 0) {
+        if (isExisted) {
           msgError(i18n('msg.existed'));
           return false;
         }
@@ -59,8 +59,8 @@ export default {
           needInstall = true;
         } else {
           const pkgs = getMergedDependencies(readPkgJson(projPath));
-          const pkgsFilter = pkgs.filter(item => !existsSync(join(projPath, 'node_modules', item.name)));
-          if (pkgsFilter.length) {
+          const pkgsFilter = pkgs.some(item => !existsSync(join(projPath, 'node_modules', item.name)));
+          if (pkgsFilter) {
             needInstall = true;
           }
         }
@@ -133,9 +133,9 @@ export default {
         return false;
       }
       const { projects } = yield select(state => state.project);
-      const filter = projects.filter(n => n.path === payload.projPath);
+      const filter = projects.some(n => n.path === payload.projPath || n.name === payload.name);
 
-      if (filter.length > 0) {
+      if (filter) {
         msgError(i18n('msg.existed'));
         return false;
       }

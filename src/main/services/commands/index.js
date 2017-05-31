@@ -1,26 +1,10 @@
-import env from './env';
-import kill from './kill';
-import encode from './encode';
-import { install, uninstall } from './install';
-import { fork, exec, spawn } from 'child_process';
-import { APP_PATH } from '../paths';
 import { join } from 'path';
-import log from '../applog';
-
+import { exec, spawn } from 'child_process';
 import { isMac, isWin } from 'shared-nowa';
+import { APP_PATH } from '../paths';
+import encode from './encode';
+import * as tasks from './tasks';
 
-
-// console.log('modules',modules)
-
-// const testcmd = () => {
-//   const term = execFile(join(APP_PATH, 'task', 'test'), {
-//     silent: true,
-//   });
-
-//   term.stdout.on('data', (data) => {
-//     log.error(data.toString());
-//   });
-// };
 
 const openTerminal = (cwd) => {
   if (isWin) {
@@ -82,10 +66,11 @@ const openEditor = (cwd, editor, basePath) => {
   });
 };
 
+
+
 export default {
   encode,
-  install,
-  uninstall,
   openEditor,
   openTerminal,
+  ...tasks,
 };

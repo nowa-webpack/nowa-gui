@@ -39,7 +39,7 @@ export const removeLoading = () => {
 
 export const openUrl = url => shell.openExternal(url);
 
-export const getAddressByUID = (uid) => {
+export const getUrlByUID = (uid) => {
   const infoPath = join(tmpdir(), `.nowa-server-${uid}.json`);
   const info = readJsonSync(infoPath);
   return info.address;

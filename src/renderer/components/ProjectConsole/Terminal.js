@@ -1,10 +1,14 @@
 import React, { Component, PropTypes } from 'react';
+import { ipcRenderer, remote } from 'electron';
 import { connect } from 'dva';
+import ansiHTML from 'ansi-html';
 import Icon from 'antd/lib/icon';
 import Select from 'antd/lib/select';
 import classNames from 'classnames';
 
 import i18n from 'i18n-renderer-nowa';
+
+const { tasklog } = remote.getGlobal('services');
 
 const getCmdList = ({ current, commands }) => {
   const cmdList = commands[current.path];
@@ -17,36 +21,85 @@ class Terminal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showClear: true,
+      showClear: false,
       cmdNames: getCmdList(props),
       selectCmd: getSelectCmd(props.taskType),
+      log: '',
     };
     this.changeTerminalTab = this.changeTerminalTab.bind(this);
+    this.onReceiveLog = this.onReceiveLog.bind(this);
+  }
+
+  componentDidMount() {
+    ipcRenderer.on('task-output', this.onReceiveLog);
   }
 
   componentWillReceiveProps({ taskType, current, commands }) {
     if (taskType !== this.props.taskType && current.path === this.props.current.path) {
-      this.setState({
-        selectCmd: getSelectCmd(taskType),
-      });
+      const { log } = tasklog.getTask(taskType, current.path);
+
+      if (log.length > 0) {
+        this.setState({
+          log: ansiHTML(log.replace(/\n/g, '<br>')),
+          showClear: true,
+          selectCmd: getSelectCmd(taskType),
+        }, () => this.scrollToBottom());
+      } else {
+        this.setState({
+          log: '',
+          showClear: false,
+          selectCmd: getSelectCmd(taskType)
+        });
+      }
     }
 
     if (current.path !== this.props.current.path) {
+      const { log } = tasklog.getTask(taskType, current.path);
       
-      this.setState({
-        selectCmd: getSelectCmd(taskType),
-        cmdNames: getCmdList({ current, commands })
-      });
+      if (log.length > 0) {
+        this.setState({
+          log: ansiHTML(log.replace(/\n/g, '<br>')),
+          showClear: true,
+          selectCmd: getSelectCmd(taskType),
+          cmdNames: getCmdList({ current, commands }),
+        }, () => this.scrollToBottom());
+
+      } else {
+        this.setState({
+          log: '',
+          showClear: false,
+          selectCmd: getSelectCmd(taskType),
+          cmdNames: getCmdList({ current, commands })
+        });
+      }
     }
   }
 
-  // componentDidMount() {
-  //   this.setState({ cmdNames: getCmdList(this.props) });
-  // }
+  onReceiveLog(event, { command, projPath, text }) {
+    const { current, taskType } = this.props;
+    if (current.path === projPath && taskType === command) {
+      this.setState({ log: ansiHTML(text.replace(/\n/g, '<br>')), showClear: true }, () => this.scrollToBottom());
+    }
+  }
+
+  componentWillUmount() {
+    ipcRenderer.removeAllListeners(this.onReceiveLog);
+  }
   
 
   clearTerminal() {
+    const { taskType, current } = this.props;
+   
+    tasklog.clearLog(taskType, current.path);
+    this.setState({ log: '', showClear: false });
+  }
 
+  scrollToBottom() {
+    const prt = this.refs.wrap;
+    const ele = this.refs.terminal;
+    if (ele.offsetHeight > prt.clientHeight) {
+      prt.scrollTop = ele.clientHeight - prt.clientHeight;
+    }
   }
 
   changeTerminalTab(taskType) {
@@ -58,7 +111,7 @@ class Terminal extends Component {
 
   render() {
     const { expanded, onToggle, taskType } = this.props;
-    const { showClear, cmdNames, selectCmd } = this.state;
+    const { showClear, cmdNames, selectCmd, log } = this.state;
     const iconType = expanded ? 'shrink' : 'arrows-alt';
 
     return (
@@ -98,6 +151,10 @@ class Terminal extends Component {
             }
             </Select>
           }
+        </div>
+
+        <div className="project-terminal-content" ref="wrap">
+          <div dangerouslySetInnerHTML={{ __html: log }} ref="terminal" />
         </div>
       </div>
     );

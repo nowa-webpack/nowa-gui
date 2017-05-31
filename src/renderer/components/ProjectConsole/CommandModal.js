@@ -58,7 +58,7 @@ const CommandModal = ({
     >
       <Form layout="vertical">
         <Row>
-          <Col span={5} offset={1}>
+          <Col span={6} offset={1}>
             <FormItem
               label={i18n('cmd.meta.name')}
               required
@@ -69,7 +69,7 @@ const CommandModal = ({
               })(<Input />)}
             </FormItem>
             </Col>
-            <Col span={16} offset={1}>
+            <Col span={15} offset={1}>
             <FormItem
               label={i18n('cmd.meta.value')}
               required

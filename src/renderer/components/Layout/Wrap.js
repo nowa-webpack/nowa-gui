@@ -28,7 +28,7 @@ class LayoutWrap extends Component {
         dispatch({
           type: 'project/refresh',
         });
-      }, 5000);
+      }, 10000);
     }
 
     window.addEventListener('resize', throttle(this.onWindowResize, 500));
@@ -44,7 +44,7 @@ class LayoutWrap extends Component {
           dispatch({
             type: 'project/refresh',
           });
-        }, 5000);
+        }, 10000);
       }
     }
   }

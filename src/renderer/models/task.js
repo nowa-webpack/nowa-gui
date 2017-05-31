@@ -1,19 +1,20 @@
 import { ipcRenderer, remote } from 'electron';
+
 import i18n from 'i18n-renderer-nowa';
-import { msgError, writePkgJson } from 'util-renderer-nowa';
 import { delay } from 'shared-nowa';
 import { SETTING_PAGE } from 'const-renderer-nowa';
 import { getLocalCommands, setLocalCommands } from 'store-renderer-nowa';
+import { msgError, msgInfo, writePkgJson, openUrl, getUrlByUID } from 'util-renderer-nowa';
 
-const { commands } = remote.getGlobal('services');
+const { commands, tasklog } = remote.getGlobal('services');
 
-const pickerCmd = (cmd) => {
+/*const pickerCmd = (cmd) => {
   const scripts = {};
   Object.keys(cmd).forEach((item) => {
     scripts[item] = cmd[item].value;
   });
   return scripts;
-};
+};*/
 
 const mapCmd = (scripts) => {
   const cmds = {};
@@ -38,6 +39,7 @@ export default {
 
   subscriptions: {
     setup({ dispatch }) {
+
       ipcRenderer
         .on('task-start', (event, { project }) => {
           dispatch({
@@ -50,13 +52,37 @@ export default {
             type: 'stop',
             payload: { project }
           });
+        })
+        .on('task-end', (event, { command, projPath, finished }) => {
+          msgInfo(`Exec ${command} command ${finished ? 'finished' : 'stopped'}.`);
+
+          if (command === 'start') {
+            dispatch({
+              type: 'project/stoppedProject',
+              payload: { projPath }
+            });
+          }
+
+          dispatch({
+            type: 'changeCommandStatus',
+            payload: {
+              taskType: command,
+              projPath,
+              running: false
+            }
+          });
         });
     },
   },
 
   effects: {
     * execCommand({ payload: { projPath, command } }, { put, select }) {
-      console.log('execCommand', command);
+      console.log('execCommand', command, projPath);
+
+      yield commands.execCmd({
+        projPath,
+        command,
+      });
 
       yield put({
         type: 'changeCommandStatus',
@@ -67,8 +93,9 @@ export default {
         }
       });
     },
-    * stopExecCommand({ payload: { projPath, command } }, { put, select }) {
-      console.log('stopExecCommand', command);
+    * stopExecCommand({ payload }, { put, select }) {
+      console.log('stopExecCommand', payload.command);
+      yield commands.stopCmd(payload);
     },
     * stop({ payload: { project } }, { put }) {
       console.log('stop', project.path);
@@ -79,7 +106,7 @@ export default {
       });
 
       yield put({
-        type: 'project/stopExecCommand',
+        type: 'stopExecCommand',
         payload: { projPath: project.path, command: 'start' }
       });
     },
@@ -93,7 +120,7 @@ export default {
         });
 
         yield put({
-          type: 'project/execCommand',
+          type: 'execCommand',
           payload: { projPath: project.path, command: 'start' }
         });
       }
@@ -139,8 +166,12 @@ export default {
         }
       }
     },
-    * compass({ payload: { project } }, { put, select }) {
-      console.log('compass', project.path);
+    * compass({ payload: { projPath } }) {
+      console.log('compass', projPath);
+      const { uid } = tasklog.getTask('start', projPath);
+      yield delay(1000);
+      openUrl(getUrlByUID(uid));
+      // delay(1000).then(shell.openExternal(getAddressByUID(uid)));
     },
     terminal({ payload: { project } }) {
       console.log('terminal', project.path);

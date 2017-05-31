@@ -246,7 +246,8 @@
 
   &-terminal{
     position: relative;
-    flex: 1 1 auto;
+    flex: 2 0 auto;
+    height: 100%;
     padding: 10px;
     background-color: #22354c;
 
@@ -280,6 +281,7 @@
 
     &-tabs{
       color: #fff;
+      margin-bottom: 10px;
 
       &-item{
         display: inline-block;
@@ -314,10 +316,24 @@
     .ant-select-selection__rendered{
       line-height: 22px;
     }
+
+    &-content {
+      transition: height .5s;
+      font-family: monospace;
+      text-align: left;
+      overflow-y: auto;
+      /*flex: 1;*/
+      color: #fff;
+      position: absolute;
+      top: 40px;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+    }
   }
 
   &-commands{
-    flex: 0 1 200px;
+    flex: 0 0 200px;
     margin-left: 10px;
     background-color: #fff;
     padding: 10px;

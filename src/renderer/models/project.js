@@ -1,22 +1,24 @@
 import { remote, ipcRenderer } from 'electron';
 import { join, basename } from 'path';
+import { existsSync } from 'fs-extra';
 
 import i18n from 'i18n-renderer-nowa';
 import { delay } from 'shared-nowa';
+import { getLocalProjects, setLocalProjects } from 'store-renderer-nowa';
 import {
   readABCJson, writeABCJson,
   readPkgJson, writePkgJson,
   isNowaProject, isAliProject,
   msgError, msgSuccess,
 } from 'util-renderer-nowa';
-import { getLocalProjects, setLocalProjects } from 'store-renderer-nowa';
+
 import {
   REGISTRY_MAP, NPM_MAP, URL_MATCH,
   PROJECT_PAGE, SETTING_PAGE, WELCOME_PAGE
 } from 'const-renderer-nowa';
 
-const { commands, tray } = remote.getGlobal('services');
-// const config = remote.getGlobal('config');
+const { commands, tray, tasklog } = remote.getGlobal('services');
+
 
 const getProjectInfoByPath = (filePath) => {
   let abc = {};
@@ -79,6 +81,19 @@ export default {
   subscriptions: {
     setup({ dispatch }) {
       const projects = getProjects();
+      const taskStart = tasklog.getCmd('start');
+
+      if (taskStart) {
+        const keys = Object.keys(taskStart);
+        if (keys.length > 0) {
+          projects.map((item) => {
+            if (keys.some(n => n === item.path && taskStart[n].term)) {
+              item.start = true;
+            }
+            return item;
+          });
+        }
+      }
 
       tray.setInitTrayMenu(projects);
 
@@ -382,15 +397,16 @@ export default {
 
       if (storeProjects.length) {
         if (storeProjects.length < projects.length) {
-          const newProjects = storeProjects.map(item =>
-            projects.filter(_item => _item.path === item.path)[0]
-          );
-          const changeCur = newProjects.filter(item => item.path === current.path);
+          // const newProjects = storeProjects.forEach(item =>
+          //   projects.filter(_item => _item.path === item.path)[0]
+          // );
+          const newProjects = projects.filter(item => existsSync(join(item.path, 'package.json')));
+          const hasCur = newProjects.some(item => item.path === current.path);
           yield put({
             type: 'changeStatus',
             payload: {
               projects: [...newProjects],
-              current: changeCur.length ? current : newProjects[0]
+              current: hasCur ? current : newProjects[0]
             }
           });
         }

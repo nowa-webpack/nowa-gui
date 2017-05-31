@@ -14,12 +14,12 @@ const TopTasks = ({
   const hasStartFunc = pkg.scripts && pkg.scripts.start;
 
   const startProj = () => dispatch({ type: 'task/start', payload: { project: current } });
-  const buildProj = () => dispatch({ type: 'task/execCommand', payload: { command: 'build', project: current } });
+  const buildProj = () => dispatch({ type: 'task/execCommand', payload: { command: 'build', projPath: path } });
   const stopProj = () => dispatch({ type: 'task/stop', payload: { project: current } });
   const openEditor = () => dispatch({ type: 'task/editor', payload: { project: current } });
   const compassProj = () => {
     if (isNowa && start) {
-      dispatch({ type: 'task/compass', payload: { project: current } });
+      dispatch({ type: 'task/compass', payload: { projPath: path } });
       // const task = remote.require('./services/task');
       // const { uid } = task.getTask('start', path);
       // delay(1000).then(shell.openExternal(getAddressByUID(uid)));
