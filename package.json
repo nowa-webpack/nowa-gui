@@ -8,7 +8,7 @@
     "dev:dll": "./node_modules/.bin/webpack --config ./webpack/renderer.dll.conf.js",
     "dev:main": "./node_modules/.bin/webpack --config ./webpack/main.dev.conf.js -w",
     "show:main": "./node_modules/.bin/webpack --config ./webpack/main.dev.conf.js -j | webpack-bundle-size-analyzer",
-    "build:main": "./node_modules/.bin/webpack --config ./webpack/main.prod.conf.js",
+    "build:main": "./node_modules/.bin/webpack --config ./webpack/main.dev.conf.js",
     "build:renderer": "./node_modules/.bin/webpack --config ./webpack/renderer.prod.conf2.js",
     "show:renderer": "./node_modules/.bin/webpack --config ./webpack/renderer.prod.conf.js -j | webpack-bundle-size-analyzer",
     "build": "npm run build:main & npm run build:renderer",
@@ -19,7 +19,7 @@
     "pack": "npm run prepack && build --dir",
     "pack:mac": "npm run prepack && build -m",
     "pack:win": "npm run prepack && build -w",
-    "pack:linux": "npm run prepack && build -l",
+    "pack:linux": "npm run prepack && npm run build && build -l",
     "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "log": "git log --color --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s   %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit"
   },
