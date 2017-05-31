@@ -76,7 +76,7 @@ export default {
   },
 
   effects: {
-    * execCommand({ payload: { projPath, command } }, { put, select }) {
+    * execCommand({ payload: { projPath, command } }, { put }) {
       console.log('execCommand', command, projPath);
 
       yield commands.execCmd({
@@ -93,7 +93,7 @@ export default {
         }
       });
     },
-    * stopExecCommand({ payload }, { put, select }) {
+    * stopExecCommand({ payload }) {
       console.log('stopExecCommand', payload.command);
       yield commands.stopCmd(payload);
     },
@@ -171,7 +171,6 @@ export default {
       const { uid } = tasklog.getTask('start', projPath);
       yield delay(1000);
       openUrl(getUrlByUID(uid));
-      // delay(1000).then(shell.openExternal(getAddressByUID(uid)));
     },
     terminal({ payload: { project } }) {
       console.log('terminal', project.path);
