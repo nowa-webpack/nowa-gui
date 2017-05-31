@@ -12,8 +12,8 @@ const ProjectPage = () => (
 );
 
 
-ProjectPage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
+// ProjectPage.propTypes = {
+//   dispatch: PropTypes.func.isRequired,
+// };
 
 export default ProjectPage;

@@ -14,7 +14,7 @@ class SettingTab extends Component {
     this.state = {
       activeKey: '1',
       ...dp,
-      tableHeight: props.height - 266 > 286 ? props.height - 266 : 286,
+      tableHeight: `${props.height - 266 > 286 ? props.height - 266 : 286}px`,
     };
   }
 

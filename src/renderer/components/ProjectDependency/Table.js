@@ -359,7 +359,7 @@ DependencyTable.propTypes = {
   projPath: PropTypes.string.isRequired,
   online: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
-  tableHeight: PropTypes.number.isRequired,
+  tableHeight: PropTypes.string.isRequired,
 };
 
 export default DependencyTable;
