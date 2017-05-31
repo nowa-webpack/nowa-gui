@@ -8,6 +8,10 @@ import i18n from 'i18n-renderer-nowa';
 import { NAME_MATCH } from 'const-renderer-nowa';
 
 const FormItem = Form.Item;
+const formItemLayout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 16 }
+};
 
 class LocalForm extends Component {
 
@@ -80,14 +84,12 @@ class LocalForm extends Component {
 
     return (
       <Form
-        className="ui-form"
         layout="horizontal"
         style={{ marginTop: 20 }}
       >
         <FormItem
           label={i18n('template.modal.name')}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 16 }}
+          {...formItemLayout}
         >
           {getFieldDecorator('name', {
             initialValue: name,
@@ -100,8 +102,7 @@ class LocalForm extends Component {
         </FormItem>
         <FormItem
           label={i18n('template.modal.description')}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 16 }}
+          {...formItemLayout}
         >
           {getFieldDecorator('description', {
             initialValue: description,
@@ -110,8 +111,7 @@ class LocalForm extends Component {
         </FormItem>
         <FormItem
           label={i18n('template.modal.local.path')}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 16 }}
+          {...formItemLayout}
         >
           {getFieldDecorator('path', {
             initialValue: path,

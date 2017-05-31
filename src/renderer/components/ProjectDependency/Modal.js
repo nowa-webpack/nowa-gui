@@ -35,7 +35,6 @@ const NewPackageModal = ({
       cancelText={i18n('form.cancel')}
     >
       <Form
-        className="ui-form"
         layout="horizontal"
         style={{ marginTop: 15 }}
       >

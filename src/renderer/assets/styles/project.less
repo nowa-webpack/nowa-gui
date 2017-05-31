@@ -245,9 +245,10 @@
   }
 
   &-terminal{
-    flex: 1 1 auto;
-    background-color: #22354c;
     position: relative;
+    flex: 1 1 auto;
+    padding: 10px;
+    background-color: #22354c;
 
     &-btn{
       position: absolute;
@@ -276,6 +277,43 @@
         right: 10px;
       }
     }
+
+    &-tabs{
+      color: #fff;
+
+      &-item{
+        display: inline-block;
+        padding: 2px 10px;
+        margin-right: 10px;
+        background-color: #334e6e;
+        color: #7289A5;
+        border-radius: 10px;
+        font-size: 12px;
+        cursor: pointer;
+
+        &:hover,
+        &.active{
+          background-color: #395b86;
+          color: #e6e6e6;
+          transition: color .5s;
+        }
+      }
+    }
+
+    .ant-select-selection{
+      background-color: #334e6e;
+      border-color: #334e6e;
+      color: #e6e6e6;
+      border-radius: 10px;
+      height: 24px;
+    }
+    .ant-select-selection__placeholder{
+      color: #7289A5;
+    }
+
+    .ant-select-selection__rendered{
+      line-height: 22px;
+    }
   }
 
   &-commands{
@@ -303,11 +341,6 @@
       top: 15px;
       border: none;
 
-      &.ant-btn-sm{
-        /*width: 18px;*/
-        /*height: 18px;*/
-      }
-      
       i{
         font-size: 16px;
       }

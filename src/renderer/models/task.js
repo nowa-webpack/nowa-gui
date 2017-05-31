@@ -55,25 +55,62 @@ export default {
   },
 
   effects: {
-    * execCommand({ payload: { project, command } }, { put, select }) {
+    * execCommand({ payload: { projPath, command } }, { put, select }) {
       console.log('execCommand', command);
+
+      yield put({
+        type: 'changeCommandStatus',
+        payload: {
+          taskType: command,
+          projPath,
+          running: true,
+        }
+      });
     },
-    * stop({ payload: { project } }, { put, select }) {
+    * stopExecCommand({ payload: { projPath, command } }, { put, select }) {
+      console.log('stopExecCommand', command);
+    },
+    * stop({ payload: { project } }, { put }) {
       console.log('stop', project.path);
 
       yield put({
         type: 'project/stoppedProject',
         payload: { projPath: project.path }
       });
+
+      yield put({
+        type: 'project/stopExecCommand',
+        payload: { projPath: project.path, command: 'start' }
+      });
     },
     * start({ payload: { project } }, { put, select }) {
       console.log('start', project.path);
-      // const { projects, current } = yield select(state => state.project);
+      const { commandSet } = yield select(state => state.task);
+      if (!project.start && commandSet[project.path].start) {
+        yield put({
+          type: 'project/startedProject',
+          payload: { projPath: project.path }
+        });
 
-      yield put({
-        type: 'project/startedProject',
-        payload: { projPath: project.path }
-      });
+        yield put({
+          type: 'project/execCommand',
+          payload: { projPath: project.path, command: 'start' }
+        });
+      }
+    },
+    * changeCommandStatus({ payload: { taskType, projPath, running } }, { put, select }) {
+      const { commandSet } = yield select(state => state.task);
+
+      if (commandSet[projPath]) {
+        commandSet[projPath][taskType].running = running;
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            commandSet: { ...commandSet },
+            taskType
+          }
+        });
+      }
     },
     * editor({ payload: { project } }, { put, select }) {
       console.log('editor', project.path);

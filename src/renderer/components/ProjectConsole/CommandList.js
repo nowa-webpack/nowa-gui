@@ -10,9 +10,7 @@ import { COMMAND_SETTING_PAGE } from 'const-renderer-nowa';
 const List = ({
   visible,
   onShowModal,
-  current: {
-    path
-  },
+  current: { path },
   commandSet,
   taskType,
   dispatch
@@ -20,24 +18,25 @@ const List = ({
   const cmdList = commandSet[path];
   const cmdNames = Object.keys(cmdList).filter(cmd => cmd !== 'start' && cmd !== 'build');
 
-  const stopCmd = (cmd) => {
+  const stopCmd = cmd => dispatch({
+    type: 'task/stopExecCommand',
+    payload: { command: cmd, projPath: path }
+  });
 
-  };
+  const startCmd = cmd => dispatch({
+    type: 'task/execCommand',
+    payload: { command: cmd, projPath: path }
+  });
 
-  const startCmd = (cmd) => {
+  const deleteCmd = cmd => dispatch({
+    type: 'task/deleteCommand',
+    payload: { cmd }
+  });
 
-  };
-
-  const deleteCmd = (cmd) => {
-    dispatch({
-      type: 'task/deleteCommand',
-      payload: { cmd }
-    });
-  };
-
-  const changeTaskType = (cmd) => {
-
-  };
+  const changeTaskType = cmd => dispatch({
+    type: 'task/changeStatus',
+    payload: { taskType: cmd }
+  });
 
   const goCmdPage = () => dispatch({
     type: 'layout/showPage',

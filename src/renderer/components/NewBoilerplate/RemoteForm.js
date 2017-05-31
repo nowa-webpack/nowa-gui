@@ -7,6 +7,11 @@ import { NAME_MATCH } from 'const-renderer-nowa';
 
 const FormItem = Form.Item;
 
+const formItemLayout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 16 }
+};
+
 class RemoteForm extends Component {
 
   constructor(props) {
@@ -70,14 +75,12 @@ class RemoteForm extends Component {
 
     return (
       <Form
-        className="ui-form"
         layout="horizontal"
         style={{ marginTop: 20 }}
       >
         <FormItem
           label={i18n('template.modal.name')}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 16 }}
+          {...formItemLayout}
         >
           {getFieldDecorator('name', {
             initialValue: name,
@@ -90,8 +93,7 @@ class RemoteForm extends Component {
         </FormItem>
         <FormItem
           label={i18n('template.modal.description')}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 16 }}
+          {...formItemLayout}
         >
           {getFieldDecorator('description', {
             initialValue: description,
@@ -100,8 +102,7 @@ class RemoteForm extends Component {
         </FormItem>
         <FormItem
           label={i18n('template.modal.remote.path')}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 16 }}
+          {...formItemLayout}
         >
           {getFieldDecorator('remote', {
             initialValue: remote,
