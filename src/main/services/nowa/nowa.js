@@ -25,7 +25,7 @@ class Nowa {
       this.needInstallPkgs = [...this.iwant, 'npm'];
     }
     this.pkgSize = this.needInstallPkgs.length;
-    console.log('this.needInstallPkgs', this.needInstallPkgs, this.pkgSize);
+    console.log('needInstallPkgs', this.needInstallPkgs, this.pkgSize);
   }
 
   // 判断本地是否安装了所有的 nowa 组件

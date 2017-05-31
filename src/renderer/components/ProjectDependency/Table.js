@@ -53,13 +53,10 @@ class DependencyTable extends Component {
     this.getOnlineColumns = this.getOnlineColumns.bind(this);
     this.uninstallPackage = this.uninstallPackage.bind(this);
     this.installPackage = this.installPackage.bind(this);
-    // this.onWindowResize = this.onWindowResize.bind(this);
   }
 
   componentDidMount() {
     this.initStatus(this.props);
-    // this.onWindowResize();
-    // window.addEventListener('resize', throttle(this.onWindowResize, 500));
   }
 
   componentWillReceiveProps(next) {
@@ -68,19 +65,12 @@ class DependencyTable extends Component {
     }
   }
 
-  /*onWindowResize() {
-    const height = document.body.clientHeight;
-    const tableHeight = height - 266 > 286 ? height - 266 : 286;
-
-    this.setState({ tableHeight: `${tableHeight}px` });
-  }*/
-
   onHideModal() {
     this.setState({ showModal: false });
   }
 
   getOnlineColumns() {
-    const widths = ['33%', '15%', '15%', '15%', '22%'];
+    const widths = ['34%', '15%', '15%', '15%', '21%'];
     const columns = [
       ...basicColumns,
       {
