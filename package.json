@@ -51,11 +51,12 @@
       "output": "release"
     }
   },
+  "homepage": "https://github.com/nowa-webpack/nowa-gui",
   "author": {
     "name": "Poling",
     "email": "466681097@qq.com"
   },
-  "homepage": "https://github.com/nowa-webpack/nowa-gui",
+
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.24.1",

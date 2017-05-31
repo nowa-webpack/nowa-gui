@@ -1,3 +1,4 @@
+.vscode
 node_modules
 app/node_modules
 app/renderer
@@ -7,3 +8,4 @@ npm-debug.log
 release
 dll
 test
+

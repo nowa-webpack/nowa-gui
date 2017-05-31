@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import { remote, ipcRenderer } from 'electron';
 import notification from 'antd/lib/notification';
@@ -29,12 +30,20 @@ const getUpdateArgs = (newVersion, url) => ({
   placement: 'bottomRight',
   icon: <Icon type="download" style={{ color: '#108ee9' }} />,
 });
+=======
+import { remote, ipcRenderer } from 'electron';
+
+
+const { utils } = remote.getGlobal('services');
+const curVersion = utils.getPackgeJson().version;
+>>>>>>> 2dc4f9f8980517544d60bdf919e64c1148fbf5e9
 
 export default {
 
   namespace: 'layout',
 
   state: {
+<<<<<<< HEAD
     online: navigator.onLine,
     // globalMsg: '',
     showPage: PREINIT_PAGE, // 当前页面
@@ -44,10 +53,22 @@ export default {
     upgradeUrl: '',  // app 更新地址
     backPage: '', // 上一个页面,
     windowHeight: 552, // 窗口高度
+=======
+    showPage: -1,  // 0 welcome ; 1 new page; 2 project; -1: preinit; 3 setting
+    backPage: -1,
+    showSideMask: false,
+    showFeedBackModal: false,
+    version: curVersion,
+    newVersion: curVersion,
+    upgradeUrl: '',
+    online: false,
+    nowaPreFlag: -1, // -1 no-op, 0 close, 1: update, 2: no update
+>>>>>>> 2dc4f9f8980517544d60bdf919e64c1148fbf5e9
   },
 
   subscriptions: {
     setup({ dispatch }) {
+<<<<<<< HEAD
       const onNetworkChange = () => {
         const online = navigator.onLine;
         console.log(online ? 'online' : 'offline');
@@ -65,12 +86,42 @@ export default {
         dispatch({
           type: 'handleChangeNet',
           payload,
+=======
+
+      const onNetworkChange = () => {
+        const online = navigator.onLine;
+        console.log(online ? 'online' : 'offline');
+
+        dispatch({
+          type: 'changeStatus',
+          payload: { online }
+        });
+
+        ipcRenderer.send('network-change-status', online);
+      };
+
+      window.addEventListener('online', onNetworkChange);
+      window.addEventListener('offline', onNetworkChange);
+
+      dispatch({
+        type: 'init/fetchAllTemplates',
+      });
+
+      onNetworkChange();
+
+
+      ipcRenderer.on('nowa-need-install', (event, nowaPreFlag) => {
+        dispatch({
+          type: 'changeStatus',
+          payload: { nowaPreFlag }
+>>>>>>> 2dc4f9f8980517544d60bdf919e64c1148fbf5e9
         });
       });
     },
   },
 
   effects: {
+<<<<<<< HEAD
     * handleChangeNet({ payload: { ready, msg } }, { put, select }) {
       if (!ready) {
         yield put({
@@ -112,6 +163,8 @@ export default {
         type: 'checkAppUpdate',
       });
     },
+=======
+>>>>>>> 2dc4f9f8980517544d60bdf919e64c1148fbf5e9
     * showPage({ payload: { toPage } }, { put, select }) {
       const { showPage } = yield select(state => state.layout);
 
@@ -126,7 +179,11 @@ export default {
       yield put({
         type: 'project/changeStatus',
         payload: {
+<<<<<<< HEAD
           startWacthProject: toPage === PROJECT_PAGE,
+=======
+          startWacthProject: false,
+>>>>>>> 2dc4f9f8980517544d60bdf919e64c1148fbf5e9
         }
       });
     },
@@ -140,6 +197,7 @@ export default {
           showPage: backPage,
         }
       });
+<<<<<<< HEAD
 
       yield put({
         type: 'project/changeStatus',
@@ -213,10 +271,26 @@ export default {
         msgError(data.errmsg);
       }
     },
+=======
+      yield put({
+        type: 'project/changeStatus',
+        payload: {
+          startWacthProject: true,
+        }
+      });
+    }
+>>>>>>> 2dc4f9f8980517544d60bdf919e64c1148fbf5e9
   },
   reducers: {
     changeStatus(state, action) {
       return { ...state, ...action.payload };
     },
   },
+<<<<<<< HEAD
 };
+=======
+
+};
+
+
+>>>>>>> 2dc4f9f8980517544d60bdf919e64c1148fbf5e9
