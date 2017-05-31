@@ -42,7 +42,7 @@ const CommandTable = ({
     title: i18n('cmd.meta.name'),
     dataIndex: 'name',
     key: 'name',
-    width: '80px',
+    width: '120px',
   }, {
     title: i18n('cmd.meta.value'),
     dataIndex: 'value',

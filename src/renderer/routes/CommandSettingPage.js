@@ -15,9 +15,9 @@ const CommandSettingPage = ({
   const goBack = () => dispatch({ type: 'layout/goBack' });
   return (
     <Row className="commands">
-      <h2 className="commands-title">{i18n('全局命令设置')}</h2>
+      <h2 className="commands-title">{i18n('cmd.global.title')}</h2>
       <Col offset={1}>
-        <p className="commands-detail">在此设置的命令会应用于所有的项目</p>
+        <p className="commands-detail">{i18n('cmd.global.tip')}</p>
         <GlobalCommandsForm />
         <GlobalCommandsTable />
         <Button type="default" size="default" onClick={goBack}>{i18n('form.back')}</Button>

@@ -142,9 +142,11 @@ module.exports = {
   'cmd.select.opt': 'Command List',
   'cmd.meta.name': 'Command Name',
   'cmd.meta.value': 'Command Content',
-  'cmd.meta.apply': 'Apply To all',
+  'cmd.meta.apply': 'Unabled',
   'cmd.meta.action': 'Action',
   'cmd.stop.tip': 'Please wait until this command is finished, then try it again.',
+  'cmd.global.title': 'Global Commands Setting',
+  'cmd.global.tip': 'Settings down here will be applied to every project',
 
   'preinit.msg1': 'Internet connection is required during initialization, check your network & reopen APP.',
   'preinit.msg2': 'Shutdown in {1} seconds',

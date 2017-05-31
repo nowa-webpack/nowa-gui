@@ -47,7 +47,7 @@ module.exports = webpackMerge(webpackCommon,
             options: {
               babelrc: false, // Tells webpack not to use the .babelrc file.
               presets: [
-                ['env', { targets: { electron: 1.6 }, modules: false }],
+                ['env', { targets: { electron: '1.6.8' }, modules: false }],
                 'stage-2',
                 'babili'
               ],

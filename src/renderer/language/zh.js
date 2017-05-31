@@ -142,10 +142,11 @@ module.exports = {
   'cmd.select.opt': '选择命令窗口',
   'cmd.meta.name': '名称',
   'cmd.meta.value': '命令',
-  'cmd.meta.apply': '应用到所有',
+  'cmd.meta.apply': '启用',
   'cmd.meta.action': '操作',
   'cmd.stop.tip': '请等待命令执行结束再删除。',
-
+  'cmd.global.title': '全局命令设置',
+  'cmd.global.tip': '在此设置的命令会应用于所有的项目',
 
   'preinit.msg1': '初始化的时候必须要连接网络，请联网后重新打开应用。',
   'preinit.msg2': '{1} 后自动关闭应用',
