@@ -26,6 +26,7 @@ export const install = ({
     targetDir: opt.root,
     storeDir: join(opt.root, 'node_modules', '.npminstall'),
     timeout: 5 * 60000,
+    ignoreScripts: true,
     // cacheDir: null,
     // binDir: '/usr/local/bin',
     ...opt
