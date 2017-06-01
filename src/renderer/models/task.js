@@ -8,13 +8,6 @@ import { msgError, msgInfo, writePkgJson, openUrl, getUrlByUID } from 'util-rend
 
 const { commands, tasklog } = remote.getGlobal('services');
 
-/*const pickerCmd = (cmd) => {
-  const scripts = {};
-  Object.keys(cmd).forEach((item) => {
-    scripts[item] = cmd[item].value;
-  });
-  return scripts;
-};*/
 
 const mapCmd = (scripts) => {
   const cmds = {};
@@ -53,8 +46,12 @@ export default {
             payload: { project }
           });
         })
-        .on('task-end', (event, { command, projPath, finished }) => {
-          if (existsSync(projPath)) {
+        .on('task-end', (event, payload) => {
+          dispatch({
+            type: 'onTaskEnd',
+            payload
+          });
+          /*if (existsSync(projPath)) {
             msgInfo(`Exec ${command} command ${finished ? 'finished' : 'stopped'}.`);
 
             if (command === 'start') {
@@ -72,7 +69,7 @@ export default {
                 running: false
               }
             });
-          }
+          }*/
         });
     },
   },
@@ -174,6 +171,31 @@ export default {
       yield delay(1000);
       openUrl(getUrlByUID(uid));
     },
+    * onTaskEnd({ payload: { command, projPath, finished } }, { put, select }) {
+      if (existsSync(projPath)) {
+        msgInfo(`Exec ${command} command ${finished ? 'finished' : 'stopped'}.`);
+
+        if (command === 'start') {
+          const { projects } = yield select(state => state.project);
+
+          if (projects.some(item => item.path === projPath)) {
+            yield put({
+              type: 'project/stoppedProject',
+              payload: { projPath }
+            });
+
+            yield put({
+              type: 'changeCommandStatus',
+              payload: {
+                taskType: command,
+                projPath,
+                running: false
+              }
+            });
+          }
+        }
+      }
+    },
     terminal({ payload: { project } }) {
       console.log('terminal', project.path);
       commands.openTerminal(project.path);
@@ -243,20 +265,6 @@ export default {
         }
       });
     },
-    // * initRemoveCommands({ payload: { project: { path } } }, { put, select }) {
-    //   const { commandSet } = yield select(state => state.task);
-    //   if (commandSet[path]) {
-    //     Object.keys(commandSet[path]).forEach(cmd => tasklog.clearLog(cmd, path));
-    //     delete commandSet[path];
-    //   }
-
-    //   yield put({
-    //     type: 'changeStatus',
-    //     payload: {
-    //       commandSet: { ...commandSet }
-    //     }
-    //   });
-    // },
     * addCommand({ payload: { name, value } }, { put, select }) {
       const { current } = yield select(state => state.project);
       const { commandSet } = yield select(state => state.task);

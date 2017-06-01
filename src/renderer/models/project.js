@@ -188,8 +188,8 @@ export default {
 
       if (payload.start) {
         yield put({
-          type: 'task/execCommand',
-          payload: { project: payload, command: 'stop' }
+          type: 'task/stopExecCommand',
+          payload: { projPath: payload.path, command: 'start' }
         });
       }
 
