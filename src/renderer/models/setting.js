@@ -11,9 +11,9 @@ import {
   setLocalLanguage, getLocalLanguage,
   getLocalEditor, getLocalEditorPath, setLocalEditorPath, setLocalEditor
 } from 'store-renderer-nowa';
-import { msgSuccess } from 'util-renderer-nowa';
+import { msgSuccess, msgError } from 'util-renderer-nowa';
 import i18n from 'i18n-renderer-nowa';
-
+import { request } from 'shared-nowa';
 
 export default {
 
@@ -69,23 +69,6 @@ export default {
   },
 
   effects: {
-    * changeRegistry({ payload: { registry } }, { put, select }) {
-      const { registryList } = yield select(state => state.setting);
-      if (registryList.includes(registry)) {
-        yield put({
-          type: 'changeStatus',
-          payload: { registry }
-        });
-      } else {
-        registryList.push(registry);
-
-        config.setItem('REGISTRY_LIST', registryList);
-        yield put({
-          type: 'changeStatus',
-          payload: { registry, registryList }
-        });
-      }
-    },
     * setValues({ payload }, { put, select }) {
       const setting = yield select(state => state.setting);
 
@@ -106,11 +89,26 @@ export default {
       }
 
       if (registry !== setting.registry) {
+        if (!setting.registryList.includes(registry)) {
+          const { err } = yield request(registry);
+          if (err) {
+            msgError(i18n('msg.invalidRegistry'));
+            return false;
+          }
+          setting.registryList.push(registry);
+          config.setItem('REGISTRY_LIST', setting.registryList);
+          yield put({
+            type: 'changeStatus',
+            payload: { registryList: [...setting.registryList] }
+          });
+        }
+        config.setItem('REGISTRY', registry);
         yield put({
-          type: 'changeRegistry',
+          type: 'changeStatus',
           payload: { registry }
         });
       }
+      
       if (language !== getLocalLanguage()) {
         setLocalLanguage(language);
         window.location.reload();

@@ -1,5 +1,5 @@
 import { ipcRenderer, remote } from 'electron';
-
+import { existsSync } from 'fs-extra';
 import i18n from 'i18n-renderer-nowa';
 import { delay } from 'shared-nowa';
 import { SETTING_PAGE } from 'const-renderer-nowa';
@@ -54,23 +54,25 @@ export default {
           });
         })
         .on('task-end', (event, { command, projPath, finished }) => {
-          msgInfo(`Exec ${command} command ${finished ? 'finished' : 'stopped'}.`);
+          if (existsSync(projPath)) {
+            msgInfo(`Exec ${command} command ${finished ? 'finished' : 'stopped'}.`);
 
-          if (command === 'start') {
+            if (command === 'start') {
+              dispatch({
+                type: 'project/stoppedProject',
+                payload: { projPath }
+              });
+            }
+
             dispatch({
-              type: 'project/stoppedProject',
-              payload: { projPath }
+              type: 'changeCommandStatus',
+              payload: {
+                taskType: command,
+                projPath,
+                running: false
+              }
             });
           }
-
-          dispatch({
-            type: 'changeCommandStatus',
-            payload: {
-              taskType: command,
-              projPath,
-              running: false
-            }
-          });
         });
     },
   },
@@ -224,12 +226,15 @@ export default {
         payload: { commandSet }
       });
     },
-    * initRemoveCommands({ payload: { project } }, { put, select }) {
+    * initRemoveCommands({ payload }, { put, select }) {
       const { commandSet } = yield select(state => state.task);
-      if (commandSet[project.path]) {
-        delete commandSet[project.path];
-      }
-      console.log(commandSet);
+
+      payload.forEach(({ path }) => {
+        if (commandSet[path]) {
+          Object.keys(commandSet[path]).forEach(cmd => tasklog.clearLog(cmd, path));
+          delete commandSet[path];
+        }
+      });
 
       yield put({
         type: 'changeStatus',
@@ -238,6 +243,20 @@ export default {
         }
       });
     },
+    // * initRemoveCommands({ payload: { project: { path } } }, { put, select }) {
+    //   const { commandSet } = yield select(state => state.task);
+    //   if (commandSet[path]) {
+    //     Object.keys(commandSet[path]).forEach(cmd => tasklog.clearLog(cmd, path));
+    //     delete commandSet[path];
+    //   }
+
+    //   yield put({
+    //     type: 'changeStatus',
+    //     payload: {
+    //       commandSet: { ...commandSet }
+    //     }
+    //   });
+    // },
     * addCommand({ payload: { name, value } }, { put, select }) {
       const { current } = yield select(state => state.project);
       const { commandSet } = yield select(state => state.task);
@@ -266,15 +285,23 @@ export default {
     },
     * deleteCommand({ payload: { cmd } }, { put, select }) {
       const { current } = yield select(state => state.project);
-      const { commandSet } = yield select(state => state.task);
+      const { commandSet, taskType } = yield select(state => state.task);
       const { path, pkg } = current;
       if (commandSet[path][cmd]) {
         delete commandSet[path][cmd];
+        tasklog.clearLog(cmd, current.path);
       }
 
       delete pkg.scripts[cmd];
 
       writePkgJson(path, pkg);
+
+      if (taskType === cmd) {
+        yield put({
+          type: 'changeStatus',
+          payload: { taskType: 'start' }
+        });
+      }
 
       yield put({
         type: 'project/changeProjects',
@@ -294,11 +321,12 @@ export default {
     },
     * deleteGlobalCommand({ payload: { cmd } }, { put, select }) {
       yield put({
-        type: 'unapplyGlobalCommand',
-        payload: { cmd }
+        type: 'changePackageJsonCommand',
+        payload: { cmd, type: 'delete' }
       });
       const { globalCommandSet } = yield select(state => state.task);
       const filter = globalCommandSet.filter(item => item.name !== cmd);
+      
 
       yield put({
         type: 'changeStatus',
@@ -306,11 +334,6 @@ export default {
       });
 
       setLocalCommands(filter);
-
-      yield put({
-        type: 'changePackageJsonCommand',
-        payload: { cmd, type: 'delete' }
-      });
     },
     * applyGlobalCommand({ payload: { cmd } }, { put, select }) {
       const { globalCommandSet } = yield select(state => state.task);
@@ -328,7 +351,6 @@ export default {
         type: 'changeStatus',
         payload: { globalCommandSet: newSet }
       });
-
       yield put({
         type: 'changePackageJsonCommand',
         payload: { cmd, type: 'new' }

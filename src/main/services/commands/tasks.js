@@ -135,7 +135,7 @@ export const execCmd = ({ command, projPath }) => {
   // });
 };
 
-export const stopCmd = ({ command, projPath }) => {
+export const stopCmd = ({ command, projPath = '' }) => {
   console.log('stop', command, projPath);
   const task = tasklog.getTask(command, projPath);
   if (task.term) {
@@ -148,7 +148,7 @@ export const stopCmd = ({ command, projPath }) => {
 };
 
 export const clearNotMacTask = (cb) => {
-  console.log('clear task');
+  console.log('clear clearNotMacTask');
   const taskStart = tasklog.getCmd('start');
   let a = 0;
   let b = 0;
@@ -165,7 +165,7 @@ export const clearNotMacTask = (cb) => {
 };
 
 export const clearMacTask = () => {
-  console.log('clear task');
+  console.log('clear clearMacTask');
   const taskStart = tasklog.getCmd('start');
   Object.keys(taskStart).forEach((item) => {
     if (taskStart[item].term) {

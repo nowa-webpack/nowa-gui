@@ -22,7 +22,7 @@ const CommandModal = ({
   },
   dispatch
 }) => {
-  const cmdNames = Object.keys(commandSet[path]);
+  const cmdNames = Object.keys(commandSet[path] || {});
   const handleOk = () => {
     validateFields((err, data) => {
       if (!err) {

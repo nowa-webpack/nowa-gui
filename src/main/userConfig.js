@@ -1,12 +1,7 @@
 import mkdirp from 'mkdirp';
-// import { join } from 'path';
-// import { homedir } from 'os';
 import { existsSync, writeJsonSync, readJsonSync } from 'fs-extra';
 import { USER_CONFIG_PATH, DOT_NOWA_PATH } from './services/paths';
-// const DOT_NOWA_PATH = join(homedir(), '.nowa-gui');
-// const USER_CONFIG_PATH = join(DOT_NOWA_PATH, 'user_config.json');
 
-// const registryList = JSON.stringify([
 const registryList = [
   'http://registry.npm.taobao.org',
   'http://registry.npmjs.org',

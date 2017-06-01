@@ -15,7 +15,7 @@ const List = ({
   taskType,
   dispatch
 }) => {
-  const cmdList = commandSet[path];
+  const cmdList = commandSet[path] || {};
   const cmdNames = Object.keys(cmdList).filter(cmd => cmd !== 'start' && cmd !== 'build');
 
   const stopCmd = cmd => dispatch({
@@ -99,32 +99,6 @@ const List = ({
   );
 };
 
-
-/*class List extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-
-  }
-
-  componentWillReceiveProps() {
-    
-  }
-
-  render() {
-    const { visible } = this.props;
-    return (
-      <div
-        className={classNames({
-          'project-commands': true,
-          'visible': !visible,
-        })}
-      >
-      </div>
-    );
-  }
-}*/
 
 
 List.propTypes = {

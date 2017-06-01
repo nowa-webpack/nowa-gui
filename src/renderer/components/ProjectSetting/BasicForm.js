@@ -8,6 +8,7 @@ import Row from 'antd/lib/row';
 import Form from 'antd/lib/form';
 
 import i18n from 'i18n-renderer-nowa';
+import { request } from 'shared-nowa';
 import { VERSION_MATCH, NAME_MATCH } from 'const-renderer-nowa';
 import { getLocalProjects } from 'store-renderer-nowa';
 
@@ -54,6 +55,18 @@ const BasicForm = ({
       return;
     }
   };
+
+  // const registryValid = (rule, value, callback) => {
+  //   console.log(value);
+  //   if (!registryList.includes(value)) {
+  //     request(registry)
+  //       .then(({ err }) => {
+  //         if (err) callback(i18n('msg.invalidRegistry'));
+  //         callback();
+  //       });
+  //   }
+  //   callback();
+  // };
  
   const initRepo = pkg.repository ? (pkg.repository.url || '') : '';
 

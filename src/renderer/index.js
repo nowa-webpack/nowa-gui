@@ -17,8 +17,6 @@ import './assets/styles/base.css';
 import './assets/styles/app.less';
 
 
-// const { log } = remote.getGlobal('services');
-
 if (isWin) {
   import('./assets/styles/is-win.less');
 } else {
@@ -40,10 +38,6 @@ ansiHTML.setColors({
   darkgrey: 'ccc'
 });
 
-
-// log.clearLog('renderer');
-
-log.error('in renderer');
 
 ipcRenderer.on('main-err', (event, msg) => {
   console.log(msg);

@@ -110,6 +110,7 @@ module.exports = {
   'msg.invalidVersion': 'Invalied Version!',
   'msg.invalidName': 'Invalied Name!',
   'msg.invalidUrl': 'Invalied Url!',
+  'msg.invalidRegistry': 'Invalied Registry!',
   'msg.invalidTemplate': 'Invalied Template Folder!',
   'msg.existed': 'Already existed!',
   'msg.nameRequired': 'Name Required!',

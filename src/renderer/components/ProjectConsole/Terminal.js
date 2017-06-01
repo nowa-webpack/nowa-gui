@@ -35,6 +35,10 @@ class Terminal extends Component {
   }
 
   componentWillReceiveProps({ taskType, current, commands }) {
+    // const curCmdNames = Object.keys(commands[current.path]);
+    // const oldCmdName = Object.keys(this.props.commands[current.path]);
+
+    
     if (taskType !== this.props.taskType && current.path === this.props.current.path) {
       const { log } = tasklog.getTask(taskType, current.path);
 
@@ -43,12 +47,14 @@ class Terminal extends Component {
           log: ansiHTML(log.replace(/\n/g, '<br>')),
           showClear: true,
           selectCmd: getSelectCmd(taskType),
+          cmdNames: getCmdList({ current, commands }),
         }, () => this.scrollToBottom());
       } else {
         this.setState({
           log: '',
           showClear: false,
-          selectCmd: getSelectCmd(taskType)
+          selectCmd: getSelectCmd(taskType),
+          cmdNames: getCmdList({ current, commands }),
         });
       }
     }
@@ -176,6 +182,4 @@ export default connect(({ project, setting, task }) => ({
   current: project.current,
   commands: task.commandSet || {},
   taskType: task.taskType,
-  // registry: setting.registry,
-  // online: layout.online
 }))(Terminal);

@@ -18,8 +18,7 @@ export default function () {
       if (encodeMap[pageCode]) encode = encodeMap[pageCode];
       config.setItem('ENCODE', encode);
     } else {
-      
-      // const locale = execFileSync('locale', { env }).toString();
+      // const locale = execFileSync('env', { env }).toString();
       // log.error(locale);
       // const lang = stdout.split('\n')[0].split('"')[1];
       // const t = lang.split('\n')[0].split('"')[1];
