@@ -12,7 +12,7 @@ const { tasklog } = remote.getGlobal('services');
 
 const getCmdList = ({ current, commands }) => {
   const cmdList = commands[current.path];
-  return Object.keys(cmdList).filter(cmd => cmd !== 'start' && cmd !== 'build');
+  return Object.keys(cmdList).filter(cmd => cmd !== 'start' && cmd !== 'build') || [];
 };
 
 const getSelectCmd = (type) => type !== 'start' && type !== 'build' ? type : undefined;
@@ -141,16 +141,14 @@ class Terminal extends Component {
             })}
             onClick={() => this.changeTerminalTab('build')}
           >{i18n('project.tab.compile_log')}</div>
-          { cmdNames.length > 0 &&
-            <Select placeholder={i18n('cmd.select.opt')}
-              style={{ width: 120 }}
-              onChange={this.changeTerminalTab}
-              value={selectCmd}
-            >{
-              cmdNames.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>)
-            }
-            </Select>
+          <Select placeholder={i18n('cmd.select.opt')}
+            style={{ width: 120 }}
+            onChange={this.changeTerminalTab}
+            value={selectCmd}
+          >{
+            cmdNames.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>)
           }
+          </Select>
         </div>
 
         <div className="project-terminal-content" ref="wrap">

@@ -31,7 +31,7 @@ class Setting extends Component {
         this.baseExtraArgs[item.name] = item.default || false;
       });
     }
-    this.basePath = join(homedir(), 'NowaProject2', name);
+    this.basePath = join(homedir(), 'NowaProject', name);
 
     this.state = {
       description: 'An awesome project',

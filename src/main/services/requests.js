@@ -3,6 +3,8 @@ import MacAddress from 'get-mac-address';
 import { FEEDBACK_URL, request } from 'shared-nowa';
 import { APP_VERSION } from './paths';
 
+import log from './applog';
+
 const logServer = 'http://gm.mmstat.com/jstracker.3';
 const nick = hostname();
 
@@ -33,13 +35,16 @@ const feedback = async function ({ nickname, contact, content }) {
   });
 };
 
+log.error(MacAddress);
+
 const getPointArgs = () => {
   const params = {
     nick,
     url: 'log://uxdata/nowa/',
     msg: JSON.stringify({
       MAC: MacAddress.en0,
-      version: APP_VERSION
+      version: APP_VERSION,
+      os: process.platform,
     }),
     sampling: 1,
   };
