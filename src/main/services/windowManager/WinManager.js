@@ -15,6 +15,7 @@ class WinManager {
     this.win = new BrowserWindow(this.options);
     if (isDev) {
       this.win.loadURL(devWebUrl);
+      this.win.webContents.openDevTools();
     } else {
       this.win.loadURL(format({
         pathname: prodStaticUrl,
@@ -22,7 +23,6 @@ class WinManager {
         slashes: true,
       }));
     }
-    this.win.webContents.openDevTools();
 
     globalShortcut.register('CmdOrCtrl+Shift+8', () => {
       this.win.webContents.toggleDevTools();

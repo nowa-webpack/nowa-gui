@@ -112,6 +112,7 @@ module.exports = {
   'msg.invalidName': '名称只能为字母数字下划线短横杠',
   'msg.invalidUrl': 'Url 格式不正确',
   'msg.invalidTemplate': '非 Nowa 模板文件夹',
+  'msg.invalidRegistry': '源地址不正确',
   'msg.existed': '该项已存在!',
   'msg.nameRequired': '名称不能为空!',
   'msg.contactRequired': '联系方式不能为空!',

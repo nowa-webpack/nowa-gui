@@ -111,12 +111,7 @@ class ServerForm extends Component {
 
     return (
       <Form className="setting-form">
-        <Tooltip placement="top" title={i18n('foot.help')} >
-          <Button type="primary" icon="question" shape="circle" size="small" ghost
-            className="project-setting-help"
-            onClick={() => openUrl('http://groups.alidemo.cn/alinw-tools/nowa/ben_di_kai_fa.html')}
-          />
-        </Tooltip>
+        
         <Row className="setting-form-inline">
           <Col span="12" offset="0">
             <FormItem
@@ -178,7 +173,12 @@ class ServerForm extends Component {
             rules: [{ type: 'url' }],
           })(<Input />)}
         </FormItem>
-
+        <Tooltip placement="top" title={i18n('foot.help')} >
+          <Button type="primary" icon="question" shape="circle" size="small" ghost
+            className="project-setting-help"
+            onClick={() => openUrl('http://groups.alidemo.cn/alinw-tools/nowa/ben_di_kai_fa.html')}
+          />
+        </Tooltip>
         <FormItem wrapperCol={{ offset: 4 }} className="setting-form-btns">
           <Button
             type="primary"

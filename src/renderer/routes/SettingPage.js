@@ -188,17 +188,17 @@ class SettingPage extends Component {
   }
 
 
-  handleLanguageChange = (language) => {
-    this.props.form.setFieldsValue({
-      language,
-    });
-  }
-  handleRegistryChange = (registry) => {
-    console.log(registry);
-    this.props.form.setFieldsValue({
-      registry,
-    });
-  }
+  // handleLanguageChange = (language) => {
+  //   this.props.form.setFieldsValue({
+  //     language,
+  //   });
+  // }
+  // handleRegistryChange = (registry) => {
+  //   console.log(registry);
+  //   this.props.form.setFieldsValue({
+  //     registry,
+  //   });
+  // }
   handleEditorChange = (e) => {
     const { form, editor } = this.props;
     const defaultEditor = e.target.value;
@@ -264,7 +264,6 @@ class SettingPage extends Component {
           >
           {getFieldDecorator('language', {
             initialValue: DEFAULT_LANGUAGE,
-            onChange: this.handleLanguageChange,
           })(
             <Select>
               <Select.Option value={'en'}>{i18n('setting.language.en')}</Select.Option>
@@ -281,7 +280,6 @@ class SettingPage extends Component {
             {getFieldDecorator('registry', {
               initialValue: registry,
               rules: [{ type: 'url' }],
-              onChange: this.handleRegistryChange,
             })(
               <Select
                 mode="combobox"

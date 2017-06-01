@@ -60,7 +60,9 @@ class DependencyTable extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (next.online !== this.props.online || next.projPath !== this.props.projPath) {
+    if (next.online !== this.props.online
+      || next.projPath !== this.props.projPath
+      || next.registry !== this.props.registry) {
       this.initStatus(next);
     }
   }
@@ -230,14 +232,15 @@ class DependencyTable extends Component {
   }
 
   async installPackage({ name }) {
-    const { projPath, type, dispatch } = this.props;
+    const { projPath, type, dispatch, registry } = this.props;
     const set = new Set(name.split(',').filter(n => n.trim()));
     const pkgs = [...set].map(item => ({ name: item.trim(), version: 'latest' }));
     this.setState({ loading: true, showModal: false });
 
     const opt = {
       root: projPath,
-      pkgs
+      pkgs,
+      registry,
     };
 
     console.log(opt);
@@ -245,6 +248,7 @@ class DependencyTable extends Component {
 
     if (err) {
       msgError(i18n('msg.installFail'));
+      this.setState({ loading: false });
     } else {
       const data = pkgs.map((pkg) => {
         const { version } = readPkgJson(join(projPath, 'node_modules', pkg.name));

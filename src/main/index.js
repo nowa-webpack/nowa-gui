@@ -7,8 +7,6 @@ import config from './userConfig';
 
 const { menu, mainWin, log, tray, commands, nowa, requests } = services;
 
-log.clearLog('main');
-
 // 初始化任务， 必须在有网的判断下进行
 const initialTasks = async function (event, online) {
   console.log('network', online);
@@ -35,7 +33,9 @@ const initialTasks = async function (event, online) {
   if (online) {
     mainWin.send('is-ready', { ready: true });
     // 打点日志
-    if (!isDev) requests.sendPointLog();
+    if (!isDev) {
+      requests.sendPointLog();
+    }
     
 
   } else if (nowa.hasInstalledPkgs()) {

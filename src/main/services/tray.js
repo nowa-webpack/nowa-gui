@@ -30,23 +30,26 @@ const init = () => {
 };
 
 const updateTrayMenu = (project, status, fromRenderer = false) => {
-  projMenu.map((mu) => {
-    if (project.path === mu.id) {
-      if (status === 'start') {
-        mu.icon = startIconPath;
-        mu.submenu[0].enabled = false;
-        mu.submenu[1].enabled = true;
-      } else {
-        mu.icon = stopIconPath;
-        mu.submenu[0].enabled = true;
-        mu.submenu[1].enabled = false;
-      }
+  console.log('updateTrayMenu', status, fromRenderer);
+  if (!tray.isDestroyed()) {
+    projMenu.map((mu) => {
+      if (project.path === mu.id) {
+        if (status === 'start') {
+          mu.icon = startIconPath;
+          mu.submenu[0].enabled = false;
+          mu.submenu[1].enabled = true;
+        } else {
+          mu.icon = stopIconPath;
+          mu.submenu[0].enabled = true;
+          mu.submenu[1].enabled = false;
+        }
 
-      if (!fromRenderer) mainWin.send(`task-${status}`, { project });
-    }
-    return mu;
-  });
-  tray.setContextMenu(Menu.buildFromTemplate(projMenu));
+        if (!fromRenderer) mainWin.send(`task-${status}`, { project });
+      }
+      return mu;
+    });
+    tray.setContextMenu(Menu.buildFromTemplate(projMenu));
+  }
 };
 
 

@@ -12,7 +12,7 @@ const { tasklog } = remote.getGlobal('services');
 
 const getCmdList = ({ current, commands }) => {
   const cmdList = commands[current.path];
-  return Object.keys(cmdList).filter(cmd => cmd !== 'start' && cmd !== 'build');
+  return Object.keys(cmdList).filter(cmd => cmd !== 'start' && cmd !== 'build') || [];
 };
 
 const getSelectCmd = (type) => type !== 'start' && type !== 'build' ? type : undefined;
@@ -35,6 +35,10 @@ class Terminal extends Component {
   }
 
   componentWillReceiveProps({ taskType, current, commands }) {
+    // const curCmdNames = Object.keys(commands[current.path]);
+    // const oldCmdName = Object.keys(this.props.commands[current.path]);
+
+    
     if (taskType !== this.props.taskType && current.path === this.props.current.path) {
       const { log } = tasklog.getTask(taskType, current.path);
 
@@ -43,12 +47,14 @@ class Terminal extends Component {
           log: ansiHTML(log.replace(/\n/g, '<br>')),
           showClear: true,
           selectCmd: getSelectCmd(taskType),
+          cmdNames: getCmdList({ current, commands }),
         }, () => this.scrollToBottom());
       } else {
         this.setState({
           log: '',
           showClear: false,
-          selectCmd: getSelectCmd(taskType)
+          selectCmd: getSelectCmd(taskType),
+          cmdNames: getCmdList({ current, commands }),
         });
       }
     }
@@ -141,16 +147,14 @@ class Terminal extends Component {
             })}
             onClick={() => this.changeTerminalTab('build')}
           >{i18n('project.tab.compile_log')}</div>
-          { cmdNames.length > 0 &&
-            <Select placeholder={i18n('cmd.select.opt')}
-              style={{ width: 120 }}
-              onChange={this.changeTerminalTab}
-              value={selectCmd}
-            >{
-              cmdNames.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>)
-            }
-            </Select>
+          <Select placeholder={i18n('cmd.select.opt')}
+            style={{ width: 120 }}
+            onChange={this.changeTerminalTab}
+            value={selectCmd}
+          >{
+            cmdNames.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>)
           }
+          </Select>
         </div>
 
         <div className="project-terminal-content" ref="wrap">
@@ -178,6 +182,4 @@ export default connect(({ project, setting, task }) => ({
   current: project.current,
   commands: task.commandSet || {},
   taskType: task.taskType,
-  // registry: setting.registry,
-  // online: layout.online
 }))(Terminal);

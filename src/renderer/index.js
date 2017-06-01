@@ -1,8 +1,7 @@
 import dva from 'dva';
 <<<<<<< HEAD
 import ansiHTML from 'ansi-html';
-import Message from 'antd/lib/message';
-import { remote, ipcRenderer } from 'electron';
+import { ipcRenderer } from 'electron';
 
 import { isWin } from 'shared-nowa';
 import RouterConfig from './router';
@@ -12,11 +11,12 @@ import project from './models/project';
 import projectCreate from './models/projectCreate';
 import task from './models/task';
 import boilerplate from './models/boilerplate';
+import log from 'electron-log';
+
 import 'antd/dist/antd.min.css';
 import './assets/styles/base.css';
 import './assets/styles/app.less';
 
-const { log } = remote.getGlobal('services');
 
 if (isWin) {
   import('./assets/styles/is-win.less');
@@ -40,11 +40,7 @@ ansiHTML.setColors({
 });
 
 
-log.clearLog('renderer');
-
-
 ipcRenderer.on('main-err', (event, msg) => {
-  // Message.error(msg, 6);
   console.log(msg);
   log.error(msg);
 });
@@ -103,7 +99,6 @@ const app = dva({
     console.error(e);
 <<<<<<< HEAD
     log.error(e.message);
-    Message.error(e.message);
   },
 });
 

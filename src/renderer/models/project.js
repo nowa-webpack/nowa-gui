@@ -4,7 +4,7 @@ import { join, basename } from 'path';
 import { existsSync } from 'fs-extra';
 
 import i18n from 'i18n-renderer-nowa';
-import { delay } from 'shared-nowa';
+import { delay, request } from 'shared-nowa';
 import { getLocalProjects, setLocalProjects } from 'store-renderer-nowa';
 import {
   readABCJson, writeABCJson,
@@ -569,10 +569,9 @@ export default {
       const { projects, current } = yield select(state => state.project);
       const filter = projects.filter(item => item.path !== payload.path);
 
-
       yield put({
         type: 'task/initRemoveCommands',
-        payload: { project: payload }
+        payload: [payload]
       });
 
       if (payload.start) {
@@ -736,8 +735,8 @@ export default {
     },
     * stoppedProject({ payload: { projPath } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
-      let project;
 
+      let project;
       const newProjects = projects.map((item) => {
         if (item.path === projPath) {
           item.start = false;
@@ -766,12 +765,20 @@ export default {
         }
       });
     },
-    * updatePackageJson({ payload: { project, data } }, { put }) {
+    * updatePackageJson({ payload: { project, data } }, { put, select }) {
       const { registry, repo, ...others } = data;
       const nameDiff = project.name !== data.name;
       const registryDiff = project.registry !== registry;
 
       if (nameDiff || registryDiff) {
+        const { registryList } = yield select(state => state.setting);
+        if (!registryList.includes(registry)) {
+          const { err } = yield request(registry);
+          if (err) {
+            msgError(i18n('msg.invalidRegistry'));
+            return false;
+          }
+        }
         if (project.isNowa && registryDiff) {
           project.abc.npm = registry;
           writeABCJson(project.path, project.abc);
@@ -830,6 +837,7 @@ export default {
 
       project.pkg = pkg;
       writePkgJson(project.path, pkg);
+      msgSuccess(i18n('msg.updateSuccess'));
       yield put({
         type: 'changeProjects',
         payload: project
@@ -838,6 +846,7 @@ export default {
     * updateABCJson({ payload: { project, abc } }, { put }) {
       project.abc = abc;
       writeABCJson(project.path, abc);
+      msgSuccess(i18n('msg.updateSuccess'));
       yield put({
         type: 'changeProjects',
         payload: project
@@ -904,11 +913,23 @@ export default {
 
       if (storeProjects.length) {
         if (storeProjects.length < projects.length) {
-          // const newProjects = storeProjects.forEach(item =>
-          //   projects.filter(_item => _item.path === item.path)[0]
-          // );
+          
+          const delProjects = projects.filter(item => !existsSync(join(item.path, 'package.json')));
+
+          delProjects.forEach(({ path, pkg }) => {
+            Object.keys(pkg.scripts || {})
+              .forEach((command) => commands.stopCmd({ projPath: path, command }));
+          });
+
+          yield put({
+            type: 'task/initRemoveCommands',
+            payload: delProjects
+          });
+
           const newProjects = projects.filter(item => existsSync(join(item.path, 'package.json')));
           const hasCur = newProjects.some(item => item.path === current.path);
+
+          tray.setInitTrayMenu(newProjects);
           yield put({
             type: 'changeStatus',
             payload: {

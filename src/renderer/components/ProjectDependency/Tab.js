@@ -37,7 +37,13 @@ class SettingTab extends Component {
   render() {
     const { current, online, registry, dispatch } = this.props;
     const { activeKey, dependencies, devDependencies, tableHeight } = this.state;
-    const basicProps = { online, registry, projPath: current.path, dispatch, tableHeight };
+    const basicProps = {
+      online,
+      projPath: current.path,
+      dispatch,
+      tableHeight,
+      registry: current.registry || registry
+    };
 
     return (
       <div className="project-sub">
@@ -63,6 +69,7 @@ SettingTab.propTypes = {
   current: PropTypes.shape({
     path: PropTypes.string.isRequired,
     pkg: PropTypes.object.isRequired,
+    registry: PropTypes.string.isRequired,
   }).isRequired,
   registry: PropTypes.string.isRequired,
   online: PropTypes.bool.isRequired,

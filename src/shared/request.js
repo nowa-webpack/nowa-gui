@@ -23,11 +23,9 @@ function checkStatus(response) {
  */
 
 
-module.exports = (url, options) => {
-  return fetch(url, options)
-    .then(checkStatus)
-    .then(parseJSON)
-    .then(data => ({ data }))
-    .catch(err => ({ err }));
-};
+module.exports = (url, options) => fetch(url, options)
+  .then(checkStatus)
+  .then(parseJSON)
+  .then(data => ({ data }))
+  .catch(err => ({ err }));
 

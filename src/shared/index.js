@@ -24,12 +24,9 @@ export const throttle = (fn, time) => {
   };
 };
 
-// const DINGDING_TOKEN = 'be77cc501c1d5a466f91690266495a28b1a0e0cb654cc578cfd5a00dbd1b7850';
+const PROD_DINGDING_TOKEN = 'be77cc501c1d5a466f91690266495a28b1a0e0cb654cc578cfd5a00dbd1b7850';
 
 // test token
-const DINGDING_TOKEN = '399b920a41af24d5c4d0e12f302a496a37e816bf7eaad10aa59fb93f8330cc78';
+const DEV_DINGDING_TOKEN = '399b920a41af24d5c4d0e12f302a496a37e816bf7eaad10aa59fb93f8330cc78';
 
-export const FEEDBACK_URL = `https://oapi.dingtalk.com/robot/send?access_token=${DINGDING_TOKEN}`
-
-
-
+export const FEEDBACK_URL = `https://oapi.dingtalk.com/robot/send?access_token=${isDev ? DEV_DINGDING_TOKEN : PROD_DINGDING_TOKEN}`

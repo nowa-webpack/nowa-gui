@@ -6,6 +6,7 @@ import { join, dirname, basename } from 'path';
 import { existsSync } from 'fs-extra';
 
 import i18n from 'i18n-renderer-nowa';
+import { request } from 'shared-nowa';
 import { IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE } from 'const-renderer-nowa';
 import {
   msgError, msgSuccess, msgInfo, writeToFile, getMergedDependencies, readPkgJson
@@ -90,6 +91,15 @@ export default {
     },
     * checkRegistry({ payload: { registry } }, { put, select }) {
       const { initSetting } = yield select(state => state.projectCreate);
+      const { registryList } = yield select(state => state.setting);
+
+      if (!registryList.includes(registry)) {
+        const { err } = yield request(registry);
+        if (err) {
+          msgError(i18n('msg.invalidRegistry'));
+          return false;
+        }
+      }
 
       initSetting.registry = registry;
 
@@ -132,12 +142,23 @@ export default {
         msgError(i18n('project.new.networkTip'), 0);
         return false;
       }
+
       const { projects } = yield select(state => state.project);
       const filter = projects.some(n => n.path === payload.projPath || n.name === payload.name);
 
       if (filter) {
         msgError(i18n('msg.existed'));
         return false;
+      }
+
+      const { registryList } = yield select(state => state.setting);
+
+      if (!registryList.includes(payload.registry)) {
+        const { err } = yield request(payload.registry);
+        if (err) {
+          msgError(i18n('msg.invalidRegistry'));
+          return false;
+        }
       }
 
       const { selectExtendsProj, selectBoilerplate } = yield select(state => state.projectCreate);

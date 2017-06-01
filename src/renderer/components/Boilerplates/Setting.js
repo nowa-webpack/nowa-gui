@@ -31,7 +31,7 @@ class Setting extends Component {
         this.baseExtraArgs[item.name] = item.default || false;
       });
     }
-    this.basePath = join(homedir(), 'NowaProject2', name);
+    this.basePath = join(homedir(), 'NowaProject', name);
 
     this.state = {
       description: 'An awesome project',
@@ -126,6 +126,11 @@ class Setting extends Component {
     );
   }
 
+  // handleRegistryChange(value) {
+  //   const { registryList } = this.props;
+  //   console.log(value);
+  // }
+
   render() {
     const { selectExtendsProj, registryList, defaultRegistry } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -168,7 +173,6 @@ class Setting extends Component {
           >
             {getFieldDecorator('registry', {
               initialValue: defaultRegistry,
-              onChange: this.handleRegistryChange,
               rules: [{ type: 'url' }],
             })(
               <Select
@@ -198,7 +202,11 @@ Setting.propTypes = {
   dispatch: PropTypes.func.isRequired,
   defaultRegistry: PropTypes.string.isRequired,
   registryList: PropTypes.array.isRequired,
-  form: PropTypes.object,
+  form: PropTypes.shape({
+    getFieldDecorator: PropTypes.func,
+    setFieldsValue: PropTypes.func,
+    validateFields: PropTypes.func,
+  }).isRequired,
 };
 
 export default Form.create()(connect(({ setting, projectCreate }) => ({
