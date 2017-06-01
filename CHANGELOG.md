@@ -1,3 +1,15 @@
+1.7.3 / 2017-06-02
+==================
+* 修复 [#11](https://github.com/nowa-webpack/nowa-gui/issues/11)
+* 修复 [#12](https://github.com/nowa-webpack/nowa-gui/issues/12)
+* 在包管理页面可以安装多个新包
+* 内置node路径放到全局变量里
+* 不对全局 nowa 版本进行判断
+* 增加全局命令设置
+* UI升级
+* 表单全部替换成 antd form
+* 对 main 端进行打包，减小体积
+
 1.7.2 / 2017-05-08
 ==================
 * 修复 [#9](https://github.com/nowa-webpack/nowa-gui/issues/9)
