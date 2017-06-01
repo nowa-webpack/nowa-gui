@@ -1,5 +1,6 @@
 import { hostname } from 'os';
 import MacAddress from 'get-mac-address';
+
 import { FEEDBACK_URL, request } from 'shared-nowa';
 import { APP_VERSION } from './paths';
 
@@ -35,14 +36,16 @@ const feedback = async function ({ nickname, contact, content }) {
   });
 };
 
-log.error(MacAddress);
+const macAddr = Object.values(MacAddress).filter(n => n.indexOf('00:00:00:00') === -1);
+
+log.error(macAddr[0]);
 
 const getPointArgs = () => {
   const params = {
     nick,
     url: 'log://uxdata/nowa/',
     msg: JSON.stringify({
-      MAC: MacAddress.en0,
+      MAC: macAddr[0],
       version: APP_VERSION,
       os: process.platform,
     }),
