@@ -143,7 +143,7 @@ module.exports = {
   'cmd.select.opt': 'Command List',
   'cmd.meta.name': 'Command Name',
   'cmd.meta.value': 'Command Content',
-  'cmd.meta.apply': 'Unabled',
+  'cmd.meta.apply': 'Enabled',
   'cmd.meta.action': 'Action',
   'cmd.stop.tip': 'Please wait until this command is finished, then try it again.',
   'cmd.global.title': 'Global Commands Setting',
