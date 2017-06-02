@@ -14,6 +14,10 @@ import OverwriteModal from './OverwriteModal';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
+const formItemLayout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 18 }
+};
 
 class Setting extends Component {
 
@@ -114,8 +118,7 @@ class Setting extends Component {
     return (
       <FormItem
         label={i18n('project.meta.others')}
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 16 }}
+        {...formItemLayout}
       >
       {getFieldDecorator('extraArgs', {
         onChange: this.changeExtraArgs
@@ -150,8 +153,7 @@ class Setting extends Component {
         >
           <FormItem
             label={i18n('project.meta.path')}
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 16 }}
+            {...formItemLayout}
           >
             {getFieldDecorator('projPath', {
               initialValue: this.basePath,
@@ -168,8 +170,7 @@ class Setting extends Component {
           </FormItem>
           <FormItem
             label={i18n('project.meta.npm_registry')}
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 16 }}
+            {...formItemLayout}
           >
             {getFieldDecorator('registry', {
               initialValue: defaultRegistry,
@@ -185,7 +186,7 @@ class Setting extends Component {
             )}
           </FormItem>
           { extendsHtml }
-          <FormItem wrapperCol={{ offset: 6 }} className="ui-form-btns">
+          <FormItem wrapperCol={{ offset: 5 }} className="ui-form-btns">
             <Button type="primary" size="default" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
             <Button type="default" size="default" onClick={() => this.goBack()}>{i18n('form.back')}</Button>
           </FormItem>
