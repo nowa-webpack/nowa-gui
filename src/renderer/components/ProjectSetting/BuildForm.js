@@ -42,6 +42,7 @@ class BuildForm extends Component {
       keepconsole: typeof abc.keepconsole === 'undefined' ? false : abc.keepconsole,
       exportcss: typeof abc.exportcss === 'undefined' ? true : abc.exportcss,
       skipminify: typeof abc.skipminify === 'undefined' ? false : abc.skipminify,
+      analyse: typeof abc.analyse === 'undefined' ? false : abc.analyse,
     };
 
     if (!state.skipminify) {
@@ -76,9 +77,7 @@ class BuildForm extends Component {
 
   render () {
     const { getFieldDecorator } = this.props.form;
-    const { mangle, keepconsole, exportcss, skipminify, minifyExtension, dist } = this.state;
-
-    
+    const { mangle, keepconsole, exportcss, skipminify, minifyExtension, dist, analyse } = this.state;
 
     return (
       <Form className="setting-form">
@@ -92,6 +91,7 @@ class BuildForm extends Component {
               valuePropName: 'checked'
             })(<Switch size="default" />)}
             </FormItem>
+            
             <FormItem
               {...inlineFormItemLayout}
               label="Skipminify"
@@ -108,8 +108,23 @@ class BuildForm extends Component {
               initialValue: minifyExtension,
             })(<Input disabled={skipminify} />)}
             </FormItem>
+            <FormItem
+              {...inlineFormItemLayout}
+              label="Dist"
+            >{getFieldDecorator('dist', {
+              initialValue: dist,
+            })(<Input />)}
+            </FormItem>
           </Col>
           <Col span="12" offset="0">
+            <FormItem
+              {...inlineFormItemLayout}
+              label="Analyse"
+            >{getFieldDecorator('analyse', {
+              initialValue: analyse,
+              valuePropName: 'checked'
+            })(<Switch size="default" />)}
+            </FormItem>
             <FormItem
               {...inlineFormItemLayout}
               label="Keepconsole"
@@ -127,13 +142,7 @@ class BuildForm extends Component {
               valuePropName: 'checked'
             })(<Switch size="default" />)}
             </FormItem>
-            <FormItem
-              {...inlineFormItemLayout}
-              label="Dist"
-            >{getFieldDecorator('dist', {
-              initialValue: dist,
-            })(<Input />)}
-            </FormItem>
+            
           </Col>
          
         </Row>
