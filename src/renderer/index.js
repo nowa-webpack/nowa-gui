@@ -25,7 +25,7 @@ if (isWin) {
 
 
 ansiHTML.setColors({
-  reset: ['254463'], // FOREGROUND-COLOR or [FOREGROUND-COLOR] or [, BACKGROUND-COLOR] or [FOREGROUND-COLOR, BACKGROUND-COLOR]
+  reset: ['eee', '22354c'], // FOREGROUND-COLOR or [FOREGROUND-COLOR] or [, BACKGROUND-COLOR] or [FOREGROUND-COLOR, BACKGROUND-COLOR]
   // black: 'aaa', // String
   red: 'ea8484',
   green: '44a195',

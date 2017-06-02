@@ -175,24 +175,24 @@ export default {
       if (existsSync(projPath)) {
         msgInfo(`Exec ${command} command ${finished ? 'finished' : 'stopped'}.`);
 
-        if (command === 'start') {
-          const { projects } = yield select(state => state.project);
+        const { projects } = yield select(state => state.project);
 
-          if (projects.some(item => item.path === projPath)) {
+        if (projects.some(item => item.path === projPath)) {
+          if (command === 'start') {
             yield put({
               type: 'project/stoppedProject',
               payload: { projPath }
             });
-
-            yield put({
-              type: 'changeCommandStatus',
-              payload: {
-                taskType: command,
-                projPath,
-                running: false
-              }
-            });
           }
+          
+          yield put({
+            type: 'changeCommandStatus',
+            payload: {
+              taskType: command,
+              projPath,
+              running: false
+            }
+          });
         }
       }
     },

@@ -22,7 +22,7 @@ const env = { ...npmEnv, FORCE_COLOR: 1 };
 if (isWin) {
   env.Path = pathEnv;
 } else {
-  env.PATH = pathEnv;
+  env.PATH = `${pathEnv}:/usr/local/bin`;
 }
 
 try {
