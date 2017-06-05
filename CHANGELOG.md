@@ -1,4 +1,4 @@
-1.7.3 / 2017-06-02
+1.7.3 / 2017-06-05
 ==================
 * 修复 [#11](https://github.com/nowa-webpack/nowa-gui/issues/11)
 * 修复 [#12](https://github.com/nowa-webpack/nowa-gui/issues/12)
