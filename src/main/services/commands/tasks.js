@@ -75,11 +75,13 @@ export const uninstall = (opt) => {
     targetDir: opt.root,
     storeDir: join(opt.root, 'node_modules', '.npminstall'),
     // timeout: 5 * 60000,
-    ...opt
+    ...opt,
+    binDir: join(opt.root, 'node_modules', '.bin'),
   };
 
   return co(function* () {
-    yield npmuninstall(options);
+    const data = yield npmuninstall(options);
+    console.log(data)
     console.log('end uninstall');
     return { err: false };
   }).catch((err) => {
