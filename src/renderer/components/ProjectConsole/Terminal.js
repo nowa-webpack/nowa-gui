@@ -20,12 +20,14 @@ const getSelectCmd = (type) => type !== 'start' && type !== 'build' ? type : und
 class Terminal extends Component {
   constructor(props) {
     super(props);
+    const { log } = tasklog.getTask(props.taskType, props.current.path);
     this.state = {
       showClear: false,
       cmdNames: getCmdList(props),
       selectCmd: getSelectCmd(props.taskType),
-      log: '',
+      log: ansiHTML(log.replace(/\n/g, '<br>')),
     };
+
     this.changeTerminalTab = this.changeTerminalTab.bind(this);
     this.onReceiveLog = this.onReceiveLog.bind(this);
   }

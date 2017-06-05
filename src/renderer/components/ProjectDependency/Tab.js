@@ -69,7 +69,7 @@ SettingTab.propTypes = {
   current: PropTypes.shape({
     path: PropTypes.string.isRequired,
     pkg: PropTypes.object.isRequired,
-    registry: PropTypes.string.isRequired,
+    registry: PropTypes.string,
   }).isRequired,
   registry: PropTypes.string.isRequired,
   online: PropTypes.bool.isRequired,

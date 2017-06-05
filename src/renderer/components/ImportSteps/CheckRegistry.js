@@ -40,13 +40,13 @@ const CheckRegistry = ({
         className="ui-form"
         layout="horizontal"
       >
-        <Col offset={6} span={16} style={{ marginBottom: 20 }}>
+        <Col offset={6} span={18} style={{ marginBottom: 20 }}>
           <p className="importing-detail-err">{i18n('project.import.info')}</p>
         </Col>
         <FormItem
           label={i18n('project.meta.npm_registry')}
           labelCol={{ span: 6 }}
-          wrapperCol={{ span: 16 }}
+          wrapperCol={{ span: 18 }}
         >
           {getFieldDecorator('registry', {
             initialValue: defaultRegistry,
@@ -62,7 +62,7 @@ const CheckRegistry = ({
           )}
         </FormItem>
         <FormItem wrapperCol={{ offset: 6 }} className="ui-form-btns">
-          <Button type="primary" onClick={handleSubmit}>{i18n('project.import.install')}</Button>
+          <Button type="primary" onClick={handleSubmit} size="default">{i18n('project.import.install')}</Button>
         </FormItem>
       </Form>
     </Content>
