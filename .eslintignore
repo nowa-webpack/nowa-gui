@@ -1,7 +1,6 @@
-node_modules
+node_modules/
 webpack
-dll
+release
 app
 static
-nodes
-release
+dll

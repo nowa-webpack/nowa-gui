@@ -52,11 +52,14 @@
       "output": "release"
     }
   },
-  "lint-staged": {
-    "*.js": [
+  "lint-staged22": {
+    "src/**/*.{js,jsx}": [
       "prettier --trailing-comma es5 --single-quote --write",
       "git add"
     ]
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}.js": ["eslint", "git add"]
   },
   "author": {
     "name": "Poling",

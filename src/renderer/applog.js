@@ -3,7 +3,7 @@ import moment from 'moment';
 import { join } from 'path';
 import { homedir } from 'os';
 import log from 'electron-log';
-import { existsSync, readdirSync, removeSync } from 'fs-extra';
+import { existsSync } from 'fs-extra';
 
 const type = 'renderer';
 const logFolder = join(homedir(), '.nowa-gui', `${type}logs`);
