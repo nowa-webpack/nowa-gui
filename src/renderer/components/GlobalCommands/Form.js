@@ -20,7 +20,6 @@ const CommandForm = ({
     validateFields,
   }
 }) => {
-  // const cmdNames = Object.keys(globalCommandSet);
   const handleSubmit = () => {
     validateFields((err, data) => {
       if (!err) {
