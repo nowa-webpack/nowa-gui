@@ -7,7 +7,6 @@ import { checkver } from 'shared-nowa';
 
 const { ejsRender } = remote.getGlobal('services');
 
-
 export const hidePathString = (filePath, num: 70) => {
 
   if (!filePath) return '';
