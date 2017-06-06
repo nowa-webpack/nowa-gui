@@ -31,7 +31,8 @@ export const checkNpmVer = async function (pkgs) {
 export const getInstallOpt = pkgs =>
   ({
     root: NOWA_INSTALL_DIR,
-    registry: config.getItem('REGISTRY'),
+    // registry: config.getItem('REGISTRY'),
+    registry: 'http://registry.npm.alibaba-inc.com',
     trace: false,
     pkgs,
   });
