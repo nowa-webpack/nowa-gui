@@ -87,7 +87,8 @@ module.exports = {
   'form.import': 'Import',
   'form.add': 'Add',
 
-  'setting.modal.title': 'Setting',
+  // 'setting.modal.title': 'Setting',
+  'setting.basic.title': 'Basic Setting',
   'setting.language': 'Language',
   'setting.language.en': 'English',
   'setting.language.zh': '中文',
@@ -95,6 +96,9 @@ module.exports = {
   'setting.editor': 'Editor',
   'setting.registry': 'Registry',
   'setting.version.newest.tip': 'Newest',
+
+  'setting.cmd.title': 'Commands Setting',
+
 
   'foot.set': 'Setting',
   // 'foot.import': 'Import Project',

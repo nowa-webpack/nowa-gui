@@ -38,10 +38,10 @@ const List = ({
     payload: { taskType: cmd }
   });
 
-  const goCmdPage = () => dispatch({
-    type: 'layout/showPage',
-    payload: { toPage: COMMAND_SETTING_PAGE }
-  });
+  // const goCmdPage = () => dispatch({
+  //   type: 'layout/showPage',
+  //   payload: { toPage: COMMAND_SETTING_PAGE }
+  // });
 
   return (
     <div
@@ -51,14 +51,7 @@ const List = ({
       })}
     >
       <h3 className="project-commands-title">{i18n('cmd.sider.title')}</h3>
-      <Button
-        icon="setting"
-        type="dashed"
-        shape="circle"
-        size="small"
-        className="project-commands-btn set"
-        onClick={goCmdPage}
-      />
+      
       <Button
         icon="plus"
         type="dashed"

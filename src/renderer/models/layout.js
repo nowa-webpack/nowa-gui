@@ -11,7 +11,7 @@ import { openUrl, msgError, msgSuccess } from 'util-renderer-nowa';
 import { getLocalUpdateFlag, setLocalUpdateFlag, getLocalLanguage } from 'store-renderer-nowa';
 import {
   PREINIT_PAGE, SHUTDOWN_PAGE, WELCOME_PAGE, BOILERPLATE_PAGE, PROJECT_PAGE,
-  EXTENSION_MAP, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE, COMMAND_SETTING_PAGE, FEEDBACK_PAGE,
+  EXTENSION_MAP, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE, SETTING_PAGE, FEEDBACK_PAGE,
 } from 'const-renderer-nowa';
 
 const { paths, nowa, requests } = remote.getGlobal('services');
@@ -97,7 +97,7 @@ export default {
 
       const { projects } = yield select(state => state.project);
       const toPage = projects.length > 0 ? PROJECT_PAGE : WELCOME_PAGE;
-      // const toPage = COMMAND_SETTING_PAGE;
+      // const toPage = SETTING_PAGE;
       yield put({
         type: 'showPage',
         payload: { toPage }

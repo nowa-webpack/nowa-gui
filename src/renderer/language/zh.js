@@ -86,7 +86,8 @@ module.exports = {
   'form.import': '导入',
   'form.add': '添加',
 
-  'setting.modal.title': '设置',
+  'setting.basic.title': '基本设置',
+  // 'setting.modal.title': '设置',
   'setting.language': 'Language',
   'setting.language.en': 'English',
   // 'setting.language': '语言',
@@ -96,6 +97,8 @@ module.exports = {
   'setting.editor': '编辑器',
   'setting.version': '工具版本',
   'setting.version.newest.tip': '最新',
+
+  'setting.cmd.title': '全局命令设置',
 
   'foot.set': '工具设置',
   // 'foot.import': '导入项目',
