@@ -44,7 +44,7 @@ const NewPackageModal = ({
           label={i18n('package.name')}
         >{getFieldDecorator('name', {
           rules: [{ required: true, message: i18n('msg.required') }]
-        })(<Input placeholder="package, [package]" />)}
+        })(<Input placeholder="package1, package2@version" />)}
         </FormItem>
       </Form>
     </Modal>

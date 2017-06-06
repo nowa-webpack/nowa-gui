@@ -234,7 +234,11 @@ class DependencyTable extends Component {
   async installPackage({ name }) {
     const { projPath, type, dispatch, registry } = this.props;
     const set = new Set(name.split(',').filter(n => n.trim()));
-    const pkgs = [...set].map(item => ({ name: item.trim(), version: 'latest' }));
+    // const pkgs = [...set].map(item => ({ name: item.trim(), version: 'latest' }));
+    const pkgs = [...set].map((item) => {
+      const str = item.trim().split('@');
+      return { name: str[0], version: str[1] ? str[1] : 'latest' };
+    });
     this.setState({ loading: true, showModal: false });
 
     const opt = {
