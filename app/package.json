@@ -1,6 +1,6 @@
 {
   "name": "NowaGUI",
-  "version": "1.7.3",
+  "version": "1.8.0",
   "description": "A tool for nowa developement.",
   "productName": "ElectronWebpack",
   "main": "./main.js",

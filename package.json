@@ -1,6 +1,6 @@
 {
   "name": "NowaGUI",
-  "version": "1.7.3",
+  "version": "1.8.0",
   "description": "A tool for nowa developement.",
   "scripts": {
     "postinstall": "install-app-deps",
@@ -21,6 +21,7 @@
     "pack:win": "npm run prepack && build -w",
     "pack:linux": "npm run prepack && npm run build && build -l",
     "precommit": "lint-staged",
+    "lint": "eslint --ext .js src",
     "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "log": "git log --color --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s   %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit"
   },
@@ -59,7 +60,7 @@
     ]
   },
   "lint-staged": {
-    "src/**/*.{js,jsx}.js": ["eslint", "git add"]
+    "*": ["eslint src", "git add"]
   },
   "author": {
     "name": "Poling",

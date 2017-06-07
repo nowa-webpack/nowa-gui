@@ -4,7 +4,6 @@ module.exports = {
   'welcome.description': 'Drag your project folder here to import.',
   'welcome.notice': 'Only support NOWA project!',
 
-
   'project.list.title': 'Projects',
   'project.list.empty': 'Drag NOWA project folder here',
   'project.list.add': 'New NOWA Project',
@@ -28,7 +27,9 @@ module.exports = {
   'task.terminal': 'Terminal',
   // 'task.clear': 'Clear',
   'task.remove': 'Remove Project',
-  'task.folder': process.platform === 'darwin' ? 'Reveal in Finder' : 'Reveal in Folder',
+  'task.folder': process.platform === 'darwin'
+    ? 'Reveal in Finder'
+    : 'Reveal in Folder',
   'task.status.start': 'Running',
   'task.status.stop': 'Stopped',
 
@@ -59,10 +60,12 @@ module.exports = {
   'project.new.log.retry': 'Retry',
   'project.new.empty': 'No templates.',
   'project.new.addTempldate': 'Add Custom Template',
-  'project.new.networkTip': 'Internet connection is required during creating a project, please check your network',
+  'project.new.networkTip':
+    'Internet connection is required during creating a project, please check your network',
 
   'project.import.title': 'Initializing for Project Import',
-  'project.import.info': 'Some dependencies of this project are uninstalled, please choose an appropriate NPM registry to install from.',
+  'project.import.info':
+    'Some dependencies of this project are uninstalled, please choose an appropriate NPM registry to install from.',
   'project.import.install': 'Installing Dependencies',
 
   'template.modal.title': 'Custom Template Setting',
@@ -74,7 +77,6 @@ module.exports = {
   'template.modal.description': 'Description',
 
   'template.setting.modal.title': 'Override these files?',
-  
 
   'form.submit': 'Submit',
   'form.reset': 'Reset',
@@ -97,8 +99,17 @@ module.exports = {
   'setting.registry': 'Registry',
   'setting.version.newest.tip': 'Newest',
 
-  'setting.cmd.title': 'Commands Setting',
+  'setting.cmd.title': 'Command Setting',
 
+  'setting.plugin.title': 'Plugins Setting',
+  'setting.plugin.apply': 'Apply',
+  'setting.plugin.name': 'Plugin Name',
+  'setting.plugin.version': 'Plugin Version',
+  'setting.plugin.newest': 'Plugin Newest',
+  'setting.plugin.action': 'Action',
+  'setting.plugin.download': 'Download',
+  'setting.plugin.update': 'Update',
+  'setting.plugin.update.tip': 'Are you sure to update this plugin?',
 
   'foot.set': 'Setting',
   // 'foot.import': 'Import Project',
@@ -126,7 +137,8 @@ module.exports = {
   'msg.updateFailed': 'Update Failed!',
   'msg.removeTip': 'Are you sure to remove this item?',
   'msg.templateErr': 'Template Files are downloading. Please try again later.',
-  'msg.nowaVersionTip': 'Your globally installed nowa-cli is outdated. For a better experience, please exec `npm uninstall nowa -g`',
+  'msg.nowaVersionTip':
+    'Your globally installed nowa-cli is outdated. For a better experience, please exec `npm uninstall nowa -g`',
   'msg.LinkInvalidation': 'Link Invalidation',
   'msg.required': 'Required',
 
@@ -141,7 +153,6 @@ module.exports = {
   'msg.updateCnt2': 'Download',
   'msg.updateTitle': 'Update Tip',
 
-
   'cmd.sider.title': 'Command List',
   'cmd.modal.title': 'Add a command',
   'cmd.select.opt': 'Command List',
@@ -149,13 +160,16 @@ module.exports = {
   'cmd.meta.value': 'Command Content',
   'cmd.meta.apply': 'Enabled',
   'cmd.meta.action': 'Action',
-  'cmd.stop.tip': 'Please wait until this command is finished, then try it again.',
+  'cmd.stop.tip':
+    'Please wait until this command is finished, then try it again.',
   'cmd.global.title': 'Global Commands Setting',
   'cmd.global.tip': 'Settings down here will be applied to every project',
 
-  'preinit.msg1': 'Internet connection is required during initialization, check your network & reopen APP.',
+  'preinit.msg1':
+    'Internet connection is required during initialization, check your network & reopen APP.',
   'preinit.msg2': 'Shutdown in {1} seconds',
-  'preinit.waitInstall': 'Installing NOWA dependencies, please wait for about half a minute.',
+  'preinit.waitInstall':
+    'Installing NOWA dependencies, please wait for about half a minute.',
 
   'package.name': 'Name',
   'package.current': 'Current',
@@ -171,8 +185,8 @@ module.exports = {
   'table.action.update': 'update',
 
   'feedback.modal.title': 'Feedback',
-  'feedback.name': 'What\'s your name?',
+  'feedback.name': "What's your name?",
   'feedback.contact': 'How to contact with you?',
-  'feedback.content': 'What\'s your problem?',
+  'feedback.content': "What's your problem?",
   'feedback.success': ' Send Successfully!',
 };

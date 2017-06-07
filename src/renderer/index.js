@@ -7,6 +7,7 @@ import RouterConfig from './router';
 import layout from './models/layout';
 import setting from './models/setting';
 import project from './models/project';
+import plugin from './models/plugin';
 import projectCreate from './models/projectCreate';
 import task from './models/task';
 import boilerplate from './models/boilerplate';
@@ -16,13 +17,11 @@ import 'antd/dist/antd.min.css';
 import './assets/styles/base.css';
 import './assets/styles/app.less';
 
-
 if (isWin) {
   import('./assets/styles/is-win.less');
 } else {
   import('./assets/styles/is-mac.less');
 }
-
 
 ansiHTML.setColors({
   reset: ['fff', '22354c'], // FOREGROUND-COLOR or [FOREGROUND-COLOR] or [, BACKGROUND-COLOR] or [FOREGROUND-COLOR, BACKGROUND-COLOR]
@@ -35,9 +34,8 @@ ansiHTML.setColors({
   // cyan: '28c2e4',
   cyan: '8dd5e4',
   // lightgrey: '888',
-  darkgrey: 'ccc'
+  darkgrey: 'ccc',
 });
-
 
 ipcRenderer.on('main-err', (event, msg) => {
   console.log(msg);
@@ -60,5 +58,6 @@ app.model(project);
 app.model(projectCreate);
 app.model(task);
 app.model(boilerplate);
+app.model(plugin);
 
 app.start('#root');

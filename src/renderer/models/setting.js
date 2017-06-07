@@ -1,22 +1,30 @@
 import { remote, ipcRenderer } from 'electron';
 import { existsSync } from 'fs-extra';
-
-const config = remote.getGlobal('config');
+import { lt } from 'semver';
 
 import {
-  SUBLIME, VSCODE, WEBSTORM,
-  VSCODE_BASE_PATH, SUBLIME_BASE_PATH, WEBSTORM_BASE_PATH
+  SUBLIME,
+  VSCODE,
+  WEBSTORM,
+  VSCODE_BASE_PATH,
+  SUBLIME_BASE_PATH,
+  WEBSTORM_BASE_PATH,
 } from 'const-renderer-nowa';
 import {
-  setLocalLanguage, getLocalLanguage,
-  getLocalEditor, getLocalEditorPath, setLocalEditorPath, setLocalEditor
+  setLocalLanguage,
+  getLocalLanguage,
+  getLocalEditor,
+  getLocalEditorPath,
+  setLocalEditorPath,
+  setLocalEditor,
 } from 'store-renderer-nowa';
 import { msgSuccess, msgError } from 'util-renderer-nowa';
 import i18n from 'i18n-renderer-nowa';
 import { request } from 'shared-nowa';
 
-export default {
+const config = remote.getGlobal('config');
 
+export default {
   namespace: 'setting',
 
   state: {
@@ -28,20 +36,32 @@ export default {
     },
     registry: 'https://registry.npm.taobao.org',
     registryList: [],
+    // pluginList: [],
+    // fetchPluginLoading: false,
+    // atAli: false,
   },
 
   subscriptions: {
     setup({ dispatch }) {
       if (!getLocalEditorPath(SUBLIME)) {
-        setLocalEditorPath(SUBLIME, existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : '');
+        setLocalEditorPath(
+          SUBLIME,
+          existsSync(SUBLIME_BASE_PATH) ? SUBLIME_BASE_PATH : ''
+        );
       }
 
       if (!getLocalEditorPath(VSCODE)) {
-        setLocalEditorPath(VSCODE, existsSync(VSCODE_BASE_PATH) ? VSCODE_BASE_PATH : '');
+        setLocalEditorPath(
+          VSCODE,
+          existsSync(VSCODE_BASE_PATH) ? VSCODE_BASE_PATH : ''
+        );
       }
 
       if (!getLocalEditorPath(WEBSTORM)) {
-        setLocalEditorPath(WEBSTORM, existsSync(WEBSTORM_BASE_PATH) ? WEBSTORM_BASE_PATH : '');
+        setLocalEditorPath(
+          WEBSTORM,
+          existsSync(WEBSTORM_BASE_PATH) ? WEBSTORM_BASE_PATH : ''
+        );
       }
 
       dispatch({
@@ -52,24 +72,20 @@ export default {
             VScode: getLocalEditorPath(VSCODE),
             WebStorm: getLocalEditorPath(WEBSTORM),
           },
-        }
+        },
       });
 
       ipcRenderer.on('check-registry', (event, registry) => {
         dispatch({
           type: 'changeStatus',
-          payload: { registry, registryList: config.getItem('REGISTRY_LIST') }
+          payload: { registry, registryList: config.getItem('REGISTRY_LIST') },
         });
-        // dispatch({
-        //   type: 'init/fetchOnlineTemplates',
-        // });
       });
-
     },
   },
 
   effects: {
-    * setValues({ payload }, { put, select }) {
+    *setValues({ payload }, { put, select }) {
       const setting = yield select(state => state.setting);
 
       const { defaultEditor, editor, language, registry } = payload;
@@ -78,8 +94,8 @@ export default {
         type: 'changeStatus',
         payload: {
           defaultEditor,
-          editor
-        }
+          editor,
+        },
       });
 
       setLocalEditorPath(defaultEditor, editor[defaultEditor]);
@@ -99,29 +115,27 @@ export default {
           config.setItem('REGISTRY_LIST', setting.registryList);
           yield put({
             type: 'changeStatus',
-            payload: { registryList: [...setting.registryList] }
+            payload: { registryList: [...setting.registryList] },
           });
         }
         config.setItem('REGISTRY', registry);
         yield put({
           type: 'changeStatus',
-          payload: { registry }
+          payload: { registry },
         });
       }
-      
+
       if (language !== getLocalLanguage()) {
         setLocalLanguage(language);
         window.location.reload();
       } else {
         msgSuccess(i18n('msg.updateSuccess'));
       }
-    }
+    },
   },
   reducers: {
     changeStatus(state, action) {
       return { ...state, ...action.payload };
     },
   },
-
 };
-

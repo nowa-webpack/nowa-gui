@@ -2,21 +2,33 @@ import { join } from 'path';
 import { remote } from 'electron';
 import { existsSync } from 'fs-extra';
 import {
-  LOCAL_PROJECTS, LANGUAGE, UPDATE_TIP, GLOBAL_COMMANDS, EDITOR,
-  SUBLIME, VSCODE, WEBSTORM, SUBLIME_PATH, VSCODE_PATH, WEBSTORM_PATH
+  LOCAL_PROJECTS,
+  LANGUAGE,
+  UPDATE_TIP,
+  GLOBAL_COMMANDS,
+  EDITOR,
+  SUBLIME,
+  VSCODE,
+  WEBSTORM,
+  SUBLIME_PATH,
+  VSCODE_PATH,
+  WEBSTORM_PATH,
+  APPLYED_PLUGINS,
 } from './constants';
-
 
 const config = remote.getGlobal('config');
 
 export const getStoreProjects = () => config.getItem(LOCAL_PROJECTS) || [];
 
-export const setLocalProjects = projects => config.setItem(LOCAL_PROJECTS, projects);
+export const setLocalProjects = projects =>
+  config.setItem(LOCAL_PROJECTS, projects);
 
 export const getLocalProjects = () => {
   const projects = getStoreProjects();
   // 检查项目是否存在
-  const filter = projects.filter(project => existsSync(join(project.path, 'package.json')));
+  const filter = projects.filter(project =>
+    existsSync(join(project.path, 'package.json'))
+  );
 
   setLocalProjects(filter);
 
@@ -29,7 +41,7 @@ export const setLocalLanguage = language => config.setItem(LANGUAGE, language);
 export const getLocalEditor = () => config.getItem(EDITOR);
 export const setLocalEditor = editor => config.setItem(EDITOR, editor);
 
-export const getLocalEditorPath = (editor) => {
+export const getLocalEditorPath = editor => {
   if (editor === SUBLIME) {
     return config.getItem(SUBLIME_PATH);
   }
@@ -60,10 +72,15 @@ export const getLocalUpdateFlag = () => {
   return 0;
 };
 
-export const setLocalUpdateFlag = (version) => {
+export const setLocalUpdateFlag = version => {
   config.setItem(UPDATE_TIP, `${version}|1`);
 };
 
 export const getLocalCommands = () => config.getItem(GLOBAL_COMMANDS) || [];
 
-export const setLocalCommands = (cmds) => config.setItem(GLOBAL_COMMANDS, cmds);
+export const setLocalCommands = cmds => config.setItem(GLOBAL_COMMANDS, cmds);
+
+export const getLocalPlugins = () => config.getItem(APPLYED_PLUGINS) || [];
+
+export const setLocalPlugins = plugins =>
+  config.setItem(APPLYED_PLUGINS, plugins);

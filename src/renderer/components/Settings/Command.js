@@ -8,18 +8,17 @@ import i18n from 'i18n-renderer-nowa';
 import GlobalCommandsForm from '../GlobalCommands/Form';
 import GlobalCommandsTable from '../GlobalCommands/Table';
 
-
-const CommandSettingPage = ({
-  dispatch
-}) => {
+const CommandSettingPage = ({ dispatch }) => {
   const goBack = () => dispatch({ type: 'layout/goBack' });
   return (
-    <Row className="commands">
+    <Row className="setting-commands">
       <Col offset={1}>
-        <p className="commands-detail">{i18n('cmd.global.tip')}</p>
+        <p className="setting-commands-detail">{i18n('cmd.global.tip')}</p>
         <GlobalCommandsForm />
         <GlobalCommandsTable />
-        <Button type="default" size="default" onClick={goBack}>{i18n('form.back')}</Button>
+        <Button type="default" size="default" onClick={goBack}>
+          {i18n('form.back')}
+        </Button>
       </Col>
     </Row>
   );

@@ -8,31 +8,39 @@ import { join } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
 import {
-  openUrl, checkInstalledVersion, checkLatestVersion, readPkgJson,
-  msgError, msgSuccess
+  openUrl,
+  checkInstalledVersion,
+  checkLatestVersion,
+  readPkgJson,
+  msgError,
+  msgSuccess,
 } from 'util-renderer-nowa';
 import DependencyModal from './Modal';
 
 const { commands } = remote.getGlobal('services');
 const Search = Input.Search;
 
-const basicColumns = [{
-  title: i18n('package.name'),
-  dataIndex: 'name',
-  key: 'name',
-  render: text => (
-    <a onClick={() => openUrl(`https://www.npmjs.com/package/${text}`)}>{text}</a>
-  )
-}, {
-  title: i18n('package.current'),
-  dataIndex: 'version',
-  key: 'version',
-}, {
-  title: i18n('package.installed'),
-  dataIndex: 'installedVersion',
-  key: 'installedVersion',
-}];
-
+const basicColumns = [
+  {
+    title: i18n('package.name'),
+    dataIndex: 'name',
+    key: 'name',
+    render: text =>
+      <a onClick={() => openUrl(`https://www.npmjs.com/package/${text}`)}>
+        {text}
+      </a>,
+  },
+  {
+    title: i18n('package.current'),
+    dataIndex: 'version',
+    key: 'version',
+  },
+  {
+    title: i18n('package.installed'),
+    dataIndex: 'installedVersion',
+    key: 'installedVersion',
+  },
+];
 
 class DependencyTable extends Component {
   constructor(props) {
@@ -40,11 +48,9 @@ class DependencyTable extends Component {
     this.state = {
       loading: true,
       selectedRowKeys: [],
-      // installDp: '',
       showModal: false,
       filterName: '',
       dataSource: [],
-      // tableHeight: '286px',
     };
 
     this.columns = [];
@@ -60,9 +66,11 @@ class DependencyTable extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (next.online !== this.props.online
-      || next.projPath !== this.props.projPath
-      || next.registry !== this.props.registry) {
+    if (
+      next.online !== this.props.online ||
+      next.projPath !== this.props.projPath ||
+      next.registry !== this.props.registry
+    ) {
       this.initStatus(next);
     }
   }
@@ -90,10 +98,14 @@ class DependencyTable extends Component {
           if (needUpdate) {
             if (record.updateType !== 'major') {
               updateDiv = (
-                <Button size="default" type="primary"
-                  className="project-dependency-action" 
+                <Button
+                  size="default"
+                  type="primary"
+                  className="project-dependency-action"
                   onClick={() => this.updatePackage(record)}
-                >{i18n('table.action.update')}</Button>
+                >
+                  {i18n('table.action.update')}
+                </Button>
               );
             } else {
               updateDiv = (
@@ -103,35 +115,52 @@ class DependencyTable extends Component {
                   onConfirm={() => this.updatePackage(record)}
                   okText={i18n('form.ok')}
                   cancelText={i18n('form.cancel')}
-                ><Button size="default" type="danger"
-                  className="project-dependency-action"
+                >
+                  <Button
+                    size="default"
+                    type="danger"
+                    className="project-dependency-action"
                   >
-                  {i18n('table.action.update')}</Button>
+                    {i18n('table.action.update')}
+                  </Button>
                 </Popconfirm>
               );
             }
           } else {
             updateDiv = (
-              <Button disabled className="project-dependency-action" size="default">
+              <Button
+                disabled
+                className="project-dependency-action"
+                size="default"
+              >
                 {i18n('table.action.update')}
-              </Button>);
+              </Button>
+            );
           }
 
           return (
             <div>
-              { updateDiv }
+              {updateDiv}
               <Popconfirm
                 placement="bottomRight"
                 title={i18n('msg.removeTip')}
                 onConfirm={() => this.uninstallPackage(record)}
                 okText={i18n('form.ok')}
                 cancelText={i18n('form.cancel')}
-              ><Button size="default" type="danger" ghost className="project-dependency-action del">{i18n('table.action.del')}</Button>
+              >
+                <Button
+                  size="default"
+                  type="danger"
+                  ghost
+                  className="project-dependency-action del"
+                >
+                  {i18n('table.action.del')}
+                </Button>
               </Popconfirm>
             </div>
           );
-        }
-      }
+        },
+      },
     ];
 
     return columns.map((col, i) => {
@@ -149,17 +178,24 @@ class DependencyTable extends Component {
         title: i18n('package.action'),
         key: 'action',
         dataIndex: 'update',
-        render: (update, record) => (
+        render: (update, record) =>
           <Popconfirm
             placement="bottomRight"
             title={i18n('msg.removeTip')}
             onConfirm={() => this.uninstallPackage(record)}
             okText={i18n('form.ok')}
             cancelText={i18n('form.cancel')}
-          ><Button size="default" type="danger" ghost className="project-dependency-action del">{i18n('table.action.del')}</Button>
-          </Popconfirm>
-        )
-      }
+          >
+            <Button
+              size="default"
+              type="danger"
+              ghost
+              className="project-dependency-action del"
+            >
+              {i18n('table.action.del')}
+            </Button>
+          </Popconfirm>,
+      },
     ];
 
     return columns.map((col, i) => {
@@ -175,7 +211,7 @@ class DependencyTable extends Component {
     const filter = dataSource.filter(item => item.name !== name);
     dispatch({
       type: 'project/uninstallPackage',
-      payload: { data: { name, version: installedVersion }, type }
+      payload: { data: { name, version: installedVersion }, type },
     });
     this.setState({ dataSource: filter });
   }
@@ -185,7 +221,7 @@ class DependencyTable extends Component {
     const { selectedRowKeys, dataSource } = this.state;
     const args = [...arguments];
     let pkgs = [];
-    
+
     if (args.length) {
       pkgs = args.map(({ name }) => ({ name, version: 'latest' }));
     } else {
@@ -196,7 +232,7 @@ class DependencyTable extends Component {
     this.setState({ loading: true });
     const { err } = await commands.install({ opt });
     if (!err) {
-      const data = dataSource.map((item) => {
+      const data = dataSource.map(item => {
         const filter = pkgs.filter(p => p.name === item.name);
         if (filter.length > 0) {
           if (item.updateType === 'major') {
@@ -209,7 +245,7 @@ class DependencyTable extends Component {
       });
       dispatch({
         type: 'project/updateDepencies',
-        payload: { data, type }
+        payload: { data, type },
       });
       msgSuccess(i18n('msg.updateSuccess'));
       this.setState({ loading: false, dataSource: data, selectedRowKeys: [] });
@@ -235,7 +271,7 @@ class DependencyTable extends Component {
     const { projPath, type, dispatch, registry } = this.props;
     const set = new Set(name.split(',').filter(n => n.trim()));
     // const pkgs = [...set].map(item => ({ name: item.trim(), version: 'latest' }));
-    const pkgs = [...set].map((item) => {
+    const pkgs = [...set].map(item => {
       const str = item.trim().split('@');
       return { name: str[0], version: str[1] ? str[1] : 'latest' };
     });
@@ -254,21 +290,23 @@ class DependencyTable extends Component {
       msgError(i18n('msg.installFail'));
       this.setState({ loading: false });
     } else {
-      const data = pkgs.map((pkg) => {
-        const { version } = readPkgJson(join(projPath, 'node_modules', pkg.name));
+      const data = pkgs.map(pkg => {
+        const { version } = readPkgJson(
+          join(projPath, 'node_modules', pkg.name)
+        );
         return {
           name: pkg.name,
           version: `^${version}`,
           installedVersion: version,
           latestVersion: version,
-          needUpdate: false
+          needUpdate: false,
         };
       });
       const newDataSource = this.state.dataSource.concat(data);
 
       dispatch({
         type: 'project/updateDepencies',
-        payload: { type, data }
+        payload: { type, data },
       });
       msgSuccess(i18n('msg.installSuccess'));
       this.setState({ dataSource: newDataSource, loading: false });
@@ -276,18 +314,27 @@ class DependencyTable extends Component {
   }
 
   render() {
-    const { loading, selectedRowKeys, dataSource, showModal, filterName } = this.state;
+    const {
+      loading,
+      selectedRowKeys,
+      dataSource,
+      showModal,
+      filterName,
+    } = this.state;
     const { online, tableHeight } = this.props;
     const hasSelected = selectedRowKeys.length > 0;
 
-    const filterDataSource = dataSource.filter(item => item.name.indexOf(filterName) === 0);
+    const filterDataSource = dataSource.filter(
+      item => item.name.indexOf(filterName) === 0
+    );
 
     const extraProps = {};
 
     if (online) {
       extraProps.rowSelection = {
         selectedRowKeys,
-        onChange: selectedRows => this.setState({ selectedRowKeys: selectedRows }),
+        onChange: selectedRows =>
+          this.setState({ selectedRowKeys: selectedRows }),
         onSelectAll: (selected, selectedRows, changeRows) => {
           if (changeRows.length === 0) {
             this.setState({ selectedRowKeys: [] });
@@ -299,28 +346,34 @@ class DependencyTable extends Component {
       };
     }
 
-    const ModalGen = () => (
+    const ModalGen = () =>
       <DependencyModal
         showModal={showModal}
         onHandleOK={this.installPackage}
         onHideModal={this.onHideModal}
-      />
-    );
+      />;
 
     return (
       <div className="project-dependency">
-        { online &&
+        {online &&
           <Button
             onClick={() => this.updatePackage()}
             type="primary"
             size="small"
             disabled={!hasSelected}
             className="project-dependency-update-all"
-          >{i18n('package.btn.updateAll')}</Button>
-        }
-        <Button type="primary" ghost size="small" className="project-dependency-new"
+          >
+            {i18n('package.btn.updateAll')}
+          </Button>}
+        <Button
+          type="primary"
+          ghost
+          size="small"
+          className="project-dependency-new"
           onClick={() => this.setState({ showModal: true })}
-        >{i18n('package.btn.install')}</Button>
+        >
+          {i18n('package.btn.install')}
+        </Button>
         <div className="project-dependency-search">
           <Search
             placeholder="Package names"

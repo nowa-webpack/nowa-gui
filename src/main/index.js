@@ -8,7 +8,7 @@ import config from './userConfig';
 const { menu, mainWin, log, tray, commands, nowa, requests } = services;
 
 // 初始化任务， 必须在有网的判断下进行
-const initialTasks = async function (event, online) {
+const initialTasks = async function(event, online) {
   console.log('network', online);
   config.setItem('ONLINE', online);
 
@@ -21,7 +21,7 @@ const initialTasks = async function (event, online) {
     } else {
       mainWin.send('is-ready', {
         ready: false,
-        msg: 'SYSTEM_OFFLINE'
+        msg: 'SYSTEM_OFFLINE',
       });
 
       return;
@@ -35,15 +35,17 @@ const initialTasks = async function (event, online) {
     // 打点日志
     if (!isDev) {
       requests.sendPointLog();
+      setInterval(() => {
+        log.error('sendPointLog');
+        requests.sendPointLog();
+      }, 12 * 60 * 60 * 1000);
     }
-    
-
   } else if (nowa.hasInstalledPkgs()) {
     mainWin.send('is-ready', { ready: true });
   } else {
     mainWin.send('is-ready', {
       ready: false,
-      msg: 'SYSTEM_OFFLINE'
+      msg: 'SYSTEM_OFFLINE',
     });
   }
 };
