@@ -1,6 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 
+import {
+  SHUTDOWN_PAGE, PREINIT_PAGE, BOILERPLATE_PAGE, PROJECT_PAGE, WELCOME_PAGE,
+  SETTING_PAGE, FEEDBACK_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE
+} from 'const-renderer-nowa';
+
 import ShutdownPage from './ShutdownPage';
 import PreinitPage from './PreinitPage';
 import MainPage from './MainPage';
@@ -8,13 +13,7 @@ import WelcomePage from './WelcomePage';
 import SettingPage from './SettingPage';
 import FeedbackPage from './FeedbackPage';
 import LayoutWrap from '../components/Layout/Wrap';
-import CommandSettingPage from './CommandSettingPage';
-
-
-import {
-  SHUTDOWN_PAGE, PREINIT_PAGE, BOILERPLATE_PAGE, PROJECT_PAGE, WELCOME_PAGE,
-  SETTING_PAGE, FEEDBACK_PAGE, IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE, COMMAND_SETTING_PAGE
-} from 'const-renderer-nowa';
+// import CommandSettingPage from './CommandSettingPage';
 
 
 const IndexPage = ({ showPage, dispatch }) => {
@@ -33,9 +32,9 @@ const IndexPage = ({ showPage, dispatch }) => {
     case SETTING_PAGE:
       mainbody = <SettingPage />;
       break;
-    case COMMAND_SETTING_PAGE:
-      mainbody = <CommandSettingPage />;
-      break;
+    // case COMMAND_SETTING_PAGE:
+    //   mainbody = <CommandSettingPage />;
+      // break;
     case FEEDBACK_PAGE:
       mainbody = <FeedbackPage dispatch={dispatch} />;
       break;
