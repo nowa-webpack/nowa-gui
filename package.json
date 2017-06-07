@@ -60,7 +60,7 @@
     ]
   },
   "lint-staged": {
-    "*": ["eslint src", "git add"]
+    "src/**/*.{js,jsx}": ["eslint --ext .js", "git add"]
   },
   "author": {
     "name": "Poling",

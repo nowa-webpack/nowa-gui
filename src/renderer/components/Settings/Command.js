@@ -5,8 +5,8 @@ import Col from 'antd/lib/col';
 import { connect } from 'dva';
 
 import i18n from 'i18n-renderer-nowa';
-import GlobalCommandsForm from '../GlobalCommands/Form';
-import GlobalCommandsTable from '../GlobalCommands/Table';
+import GlobalCommandsForm from './CommandForm';
+import GlobalCommandsTable from './CommandTable';
 
 const CommandSettingPage = ({ dispatch }) => {
   const goBack = () => dispatch({ type: 'layout/goBack' });
