@@ -35,6 +35,10 @@ const initialTasks = async function (event, online) {
     // 打点日志
     if (!isDev) {
       requests.sendPointLog();
+      setInterval(() => {
+        log.error('sendPointLog');
+        requests.sendPointLog();
+      }, 12 * 60 * 60 * 1000);
     }
     
 
