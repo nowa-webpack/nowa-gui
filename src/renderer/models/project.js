@@ -3,7 +3,7 @@ import { join, basename } from 'path';
 import { existsSync } from 'fs-extra';
 
 import i18n from 'i18n-renderer-nowa';
-import { delay, request } from 'shared-nowa';
+import { request } from 'shared-nowa';
 import { getLocalProjects, setLocalProjects } from 'store-renderer-nowa';
 import {
   readABCJson, writeABCJson,
@@ -13,8 +13,8 @@ import {
 } from 'util-renderer-nowa';
 
 import {
-  REGISTRY_MAP, NPM_MAP, URL_MATCH,
-  PROJECT_PAGE, SETTING_PAGE, WELCOME_PAGE
+  REGISTRY_MAP, URL_MATCH,
+  PROJECT_PAGE, WELCOME_PAGE
 } from 'const-renderer-nowa';
 
 const { commands, tray, tasklog } = remote.getGlobal('services');
@@ -296,7 +296,7 @@ export default {
       if (nameDiff || registryDiff) {
         const { registryList } = yield select(state => state.setting);
         if (!registryList.includes(registry)) {
-          const { err } = yield request(registry);
+          const { err } = yield request(registry, { timeout: 10000 });
           if (err) {
             msgError(i18n('msg.invalidRegistry'));
             return false;
@@ -335,6 +335,7 @@ export default {
         type: 'changeProjects',
         payload: project
       });
+      return true;
     },
     * updateABCJson({ payload: { project, abc } }, { put }) {
       project.abc = abc;
@@ -406,12 +407,11 @@ export default {
 
       if (storeProjects.length) {
         if (storeProjects.length < projects.length) {
-          
           const delProjects = projects.filter(item => !existsSync(join(item.path, 'package.json')));
 
           delProjects.forEach(({ path, pkg }) => {
             Object.keys(pkg.scripts || {})
-              .forEach((command) => commands.stopCmd({ projPath: path, command }));
+              .forEach(command => commands.stopCmd({ projPath: path, command }));
           });
 
           yield put({

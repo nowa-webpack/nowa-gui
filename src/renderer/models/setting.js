@@ -1,6 +1,6 @@
 import { remote, ipcRenderer } from 'electron';
 import { existsSync } from 'fs-extra';
-import { lt } from 'semver';
+// import { lt } from 'semver';
 
 import {
   SUBLIME,
@@ -85,7 +85,7 @@ export default {
   },
 
   effects: {
-    *setValues({ payload }, { put, select }) {
+    * setValues({ payload }, { put, select }) {
       const setting = yield select(state => state.setting);
 
       const { defaultEditor, editor, language, registry } = payload;
@@ -106,7 +106,7 @@ export default {
 
       if (registry !== setting.registry) {
         if (!setting.registryList.includes(registry)) {
-          const { err } = yield request(registry);
+          const { err } = yield request(registry, { timeout: 10000 });
           if (err) {
             msgError(i18n('msg.invalidRegistry'));
             return false;
@@ -131,6 +131,8 @@ export default {
       } else {
         msgSuccess(i18n('msg.updateSuccess'));
       }
+
+      return true;
     },
   },
   reducers: {

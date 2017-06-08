@@ -4,13 +4,13 @@ import { lt } from 'semver';
 
 import { REGISTRY_MAP } from 'const-renderer-nowa';
 import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
-import { msgSuccess, msgError } from 'util-renderer-nowa';
+import { msgError } from 'util-renderer-nowa';
 import i18n from 'i18n-renderer-nowa';
 import { request } from 'shared-nowa';
 
 const { commands, paths } = remote.getGlobal('services');
 
-const checkNpmLatest = async function(item, registry) {
+async function checkNpmLatest(item, registry) {
   const { err, data } = await request(`${registry}/${item.name}/latest`);
   if (!err) {
     item.newest = data.version;
@@ -26,7 +26,7 @@ const checkNpmLatest = async function(item, registry) {
   }
 
   return item;
-};
+}
 
 export default {
   namespace: 'plugin',
@@ -51,14 +51,23 @@ export default {
   },
 
   effects: {
-    *checkAli(o, { put, select }) {
+    * checkAli(o, { put, select }) {
       console.log('checkAli');
-      const { err } = yield request(REGISTRY_MAP.tnpm);
+      yield put({
+        type: 'changeStatus',
+        payload: { loading: true },
+      });
+      const { err } = yield request(REGISTRY_MAP.tnpm, {
+        timeout: 10000
+      });
+      console.log(err);
       const atAli = !err;
 
       const { registry } = yield select(state => state.setting);
+
       const { data } = yield request(`${registry}/nowa-gui-plugins/latest`);
       let npmPluginList = data.plugins;
+      console.log('npmPluginList', npmPluginList);
 
       yield put({
         type: 'changeStatus',
@@ -77,13 +86,13 @@ export default {
         },
       });
     },
-    *fetch({ payload: { npmPluginList, registry } }, { put, select }) {
+    * fetch({ payload: { npmPluginList, registry } }, { put, select }) {
       const { pluginList } = yield select(state => state.plugin);
 
-      yield put({
-        type: 'changeStatus',
-        payload: { loading: true },
-      });
+      // yield put({
+      //   type: 'changeStatus',
+      //   payload: { loading: true },
+      // });
 
       const newList = npmPluginList.map(({ name, type }) => {
         const filter = pluginList.filter(n => n.name === name);
@@ -111,15 +120,15 @@ export default {
         payload: { pluginList: res, loading: false },
       });
     },
-    *install({ payload }, { put, select }) {
+    * install({ payload }, { put, select }) {
       console.log('installPlugin', payload);
       const { atAli } = yield select(state => state.plugin);
       const { registry } = yield select(state => state.setting);
 
-      yield put({
-        type: 'changeStatus',
-        payload: { loading: true },
-      });
+      // yield put({
+      //   type: 'changeStatus',
+      //   payload: { loading: true },
+      // });
 
       // if (payload.type === 'cli') {
 
@@ -153,7 +162,7 @@ export default {
       }
       // }
     },
-    *update({ payload }, { put }) {
+    * update({ payload }, { put }) {
       console.log('updateplugin', payload);
 
       payload.version = payload.newest;
@@ -169,7 +178,7 @@ export default {
         storePlugin.map(item => (item.name === payload.name ? payload : item))
       );
     },
-    *apply({ payload: { record, checked } }, { put }) {
+    * apply({ payload: { record, checked } }, { put }) {
       console.log('applyPlugin', record);
 
       record.apply = checked;
@@ -185,9 +194,9 @@ export default {
         storePlugin.map(item => (item.name === record.name ? record : item))
       );
     },
-    *changePluginList({ payload }, { put, select }) {
+    * changePluginList({ payload }, { put, select }) {
       const { pluginList } = yield select(state => state.plugin);
-      const newList = pluginList.map(item => {
+      const newList = pluginList.map((item) => {
         if (item.name === payload.name) {
           return payload;
         }
