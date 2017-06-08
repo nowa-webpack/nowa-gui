@@ -1,6 +1,7 @@
 import { remote } from 'electron';
 // import { existsSync } from 'fs-extra';
 import { lt } from 'semver';
+// import { join } from 'path';
 
 import { REGISTRY_MAP } from 'const-renderer-nowa';
 import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
@@ -67,7 +68,6 @@ export default {
 
       const { data } = yield request(`${registry}/nowa-gui-plugins/latest`);
       let npmPluginList = data.plugins;
-      console.log('npmPluginList', npmPluginList);
 
       yield put({
         type: 'changeStatus',
@@ -88,12 +88,6 @@ export default {
     },
     * fetch({ payload: { npmPluginList, registry } }, { put, select }) {
       const { pluginList } = yield select(state => state.plugin);
-
-      // yield put({
-      //   type: 'changeStatus',
-      //   payload: { loading: true },
-      // });
-
       const newList = npmPluginList.map(({ name, type }) => {
         const filter = pluginList.filter(n => n.name === name);
         if (filter.length > 0) {
@@ -108,9 +102,12 @@ export default {
           needUpdate: false,
         };
       });
+
       const filter = pluginList.filter(
         item => !npmPluginList.some(n => n.name === item.name)
       );
+
+
       const res = yield Promise.all(
         newList.concat(filter).map(item => checkNpmLatest(item, registry))
       );
@@ -125,10 +122,10 @@ export default {
       const { atAli } = yield select(state => state.plugin);
       const { registry } = yield select(state => state.setting);
 
-      // yield put({
-      //   type: 'changeStatus',
-      //   payload: { loading: true },
-      // });
+      yield put({
+        type: 'changeStatus',
+        payload: { loading: true },
+      });
 
       // if (payload.type === 'cli') {
 

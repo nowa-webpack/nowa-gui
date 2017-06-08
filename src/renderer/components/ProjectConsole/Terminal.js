@@ -15,7 +15,9 @@ const getCmdList = ({ current, commands }) => {
   return Object.keys(cmdList).filter(cmd => cmd !== 'start' && cmd !== 'build') || [];
 };
 
-const getSelectCmd = (type) => type !== 'start' && type !== 'build' ? type : undefined;
+function getSelectCmd(type) {
+  return type !== 'start' && type !== 'build' ? type : undefined;
+}
 
 class Terminal extends Component {
   constructor(props) {
@@ -39,8 +41,6 @@ class Terminal extends Component {
   componentWillReceiveProps({ taskType, current, commands }) {
     // const curCmdNames = Object.keys(commands[current.path]);
     // const oldCmdName = Object.keys(this.props.commands[current.path]);
-
-    
     if (taskType !== this.props.taskType && current.path === this.props.current.path) {
       const { log } = tasklog.getTask(taskType, current.path);
 
@@ -63,7 +63,6 @@ class Terminal extends Component {
 
     if (current.path !== this.props.current.path) {
       const { log } = tasklog.getTask(taskType, current.path);
-      
       if (log.length > 0) {
         this.setState({
           log: ansiHTML(log.replace(/\n/g, '<br>')),
@@ -71,7 +70,6 @@ class Terminal extends Component {
           selectCmd: getSelectCmd(taskType),
           cmdNames: getCmdList({ current, commands }),
         }, () => this.scrollToBottom());
-
       } else {
         this.setState({
           log: '',
@@ -84,6 +82,7 @@ class Terminal extends Component {
   }
 
   onReceiveLog(event, { command, projPath, text }) {
+    // console.log(this);
     const { current, taskType } = this.props;
     if (current.path === projPath && taskType === command) {
       this.setState({ log: ansiHTML(text.replace(/\n/g, '<br>')), showClear: true }, () => this.scrollToBottom());
@@ -93,11 +92,9 @@ class Terminal extends Component {
   componentWillUmount() {
     ipcRenderer.removeAllListeners(this.onReceiveLog);
   }
-  
 
   clearTerminal() {
     const { taskType, current } = this.props;
-   
     tasklog.clearLog(taskType, current.path);
     this.setState({ log: '', showClear: false });
   }
@@ -124,12 +121,11 @@ class Terminal extends Component {
 
     return (
       <div className="project-terminal">
-
         <div className="project-terminal-btn expand"
           onClick={() => onToggle()}
         ><Icon type={iconType} /></div>
 
-        { showClear && 
+        { showClear &&
           <div className="project-terminal-btn clear"
             onClick={() => this.clearTerminal()}
           ><i className="iconfont icon-clear" /></div>
@@ -180,7 +176,7 @@ Terminal.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-export default connect(({ project, setting, task }) => ({
+export default connect(({ project, task }) => ({
   current: project.current,
   commands: task.commandSet || {},
   taskType: task.taskType,
