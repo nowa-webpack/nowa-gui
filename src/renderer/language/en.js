@@ -109,6 +109,7 @@ module.exports = {
   'setting.plugin.action': 'Action',
   'setting.plugin.download': 'Download',
   'setting.plugin.update': 'Update',
+  'setting.plugin.reinstall': 'Reinstall',
   'setting.plugin.update.tip': 'Are you sure to update this plugin?',
 
   'foot.set': 'Setting',

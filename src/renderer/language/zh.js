@@ -106,6 +106,7 @@ module.exports = {
   'setting.plugin.newest': '最新版本',
   'setting.plugin.action': '操作',
   'setting.plugin.download': '下载',
+  'setting.plugin.reinstall': '重装',
   'setting.plugin.update': '更新',
   'setting.plugin.update.tip': '确认更新到改版本吗？',
 

@@ -1,15 +1,15 @@
-import React, { Component, PropTypes } from 'react';
-import { remote } from 'electron';
+import React, { PropTypes } from 'react';
+// import { remote } from 'electron';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import Table from 'antd/lib/table';
 import Popconfirm from 'antd/lib/popconfirm';
-import Input from 'antd/lib/input';
-import Switch from 'antd/lib/switch';
-import { join } from 'path';
+// import Input from 'antd/lib/input';
+// import Switch from 'antd/lib/switch';
+// import { join } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
-// import { getApplyedPlugins } from 'store-renderer-nowa';
+
 
 const PluginTable = ({
   dispatch,
@@ -20,12 +20,13 @@ const PluginTable = ({
 }) => {
   const installPlugin = payload =>
     dispatch({ type: 'plugin/install', payload });
-  const updateplugin = payload => dispatch({ type: 'plugin/update', payload });
-  const applyPlugin = (checked, record) =>
-    dispatch({
-      type: 'plugin/apply',
-      payload: { checked, record },
-    });
+  const updatePlugin = payload => dispatch({ type: 'plugin/update', payload });
+  const reinstallPlugin = payload => dispatch({ type: 'plugin/reinstall', payload });
+  // const applyPlugin = (checked, record) =>
+  //   dispatch({
+  //     type: 'plugin/apply',
+  //     payload: { checked, record },
+  //   });
   const goBack = () => dispatch({ type: 'layout/goBack' });
 
   const basicColumns = [
@@ -84,7 +85,7 @@ const PluginTable = ({
               <Popconfirm
                 placement="bottomRight"
                 title={i18n('setting.plugin.update.tip')}
-                onConfirm={() => updateplugin(record)}
+                onConfirm={() => updatePlugin(record)}
                 okText={i18n('form.ok')}
                 cancelText={i18n('form.cancel')}
               >
@@ -97,14 +98,17 @@ const PluginTable = ({
                 </Button>
               </Popconfirm>
             );
-          } else {
-            return (
-              <Button disabled className="setting-plugin-action" size="small">
-                {i18n('setting.plugin.update')}
-              </Button>
-            );
           }
-        },
+          return (
+            <Button
+              onClick={() => reinstallPlugin(record)}
+              className="setting-plugin-action"
+              size="small"
+            >
+              {i18n('setting.plugin.reinstall')}
+            </Button>
+          );
+        }
       },
     ];
 
@@ -160,17 +164,15 @@ const PluginTable = ({
 
 PluginTable.propTypes = {
   pluginList: PropTypes.array.isRequired,
-  registry: PropTypes.string.isRequired,
   online: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
   tableHeight: PropTypes.string.isRequired,
 };
 
-export default connect(({ setting, layout, plugin }) => ({
+export default connect(({ layout, plugin }) => ({
   pluginList: plugin.pluginList,
-  registry: setting.registry,
-  // atAli: plugin.atAli,
+  // registry: setting.registry,
   loading: plugin.loading,
   online: layout.online,
   tableHeight: `${layout.windowHeight - 270}px`,

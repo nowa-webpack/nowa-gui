@@ -85,7 +85,7 @@ export const getLocalPlugins = () => {
   const plugins = config.getItem(APPLYED_PLUGINS) || [];
   // 检查项目是否存在
   const filter = plugins.filter(plugin =>
-    existsSync(join(paths.BIN_PATH, plugin.name))
+    existsSync(join(paths.BIN_PATH, plugin.cli))
   );
 
   setLocalPlugins(filter);

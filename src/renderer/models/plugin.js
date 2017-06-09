@@ -7,7 +7,7 @@ import { REGISTRY_MAP } from 'const-renderer-nowa';
 import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
 import { msgError } from 'util-renderer-nowa';
 import i18n from 'i18n-renderer-nowa';
-import { request } from 'shared-nowa';
+import { request, delay } from 'shared-nowa';
 
 const { commands, paths } = remote.getGlobal('services');
 
@@ -65,15 +65,14 @@ export default {
         npmPluginList = npmPluginList.filter(item => item.origin === 'common');
       }
 
-      const newList = npmPluginList.map(({ name, type }) => {
-        const filter = pluginList.filter(n => n.name === name);
+      const newList = npmPluginList.map((item) => {
+        const filter = pluginList.filter(n => n.name === item.name);
         if (filter.length > 0) {
           return filter[0];
         }
 
         return {
-          name,
-          type,
+          ...item,
           installed: false,
           apply: false,
           needUpdate: false,
@@ -139,6 +138,20 @@ export default {
         });
       }
       // }
+    },
+    * reinstall({ payload }, { put }) {
+      console.log('reinstallPlugin', payload);
+      const opt = {
+        root: paths.NOWA_INSTALL_DIR,
+        pkgs: [{ name: payload.name, version: payload.version }]
+      };
+
+      yield commands.uninstall(opt);
+      yield delay(1000);
+      yield put({
+        type: 'install',
+        payload
+      });
     },
     * update({ payload }, { put }) {
       console.log('updateplugin', payload);

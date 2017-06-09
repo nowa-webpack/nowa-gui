@@ -354,6 +354,7 @@ export default {
         }
         return item;
       });
+      tray.setInitTrayMenu(newProjects);
       yield put({
         type: 'changeStatus',
         payload: {
