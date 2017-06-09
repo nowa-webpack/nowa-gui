@@ -32,6 +32,7 @@
     "comma-dangle": "off",
     "no-global-assign": "off",
     "no-unsafe-negation": "off",
-    "label-has-for": "off"
+    "label-has-for": "off",
+    "eqeqeq": "off"
   }
 }
