@@ -12,11 +12,12 @@ import { TEMPLATES_DIR } from '../paths';
 import { getMainifest, setMainifest } from './manifest';
 
 
-const get = async function () {
-  console.log('get official boilerplate');
+const get = async function ({
+  type = 'official',
+  registry = config.getItem('REGISTRY'),
+}) {
+  console.log(`get ${type} boilerplate`);
   const manifest = getMainifest();
-  const registry = config.getItem('REGISTRY');
-
   const getTemplate = async function (tempName) {
     const { data: pkg, err } = await request(`${registry}/${tempName}`);
     try {
@@ -56,7 +57,7 @@ const get = async function () {
               removeSync(join(tempPath, dir));
             });
         } else {
-          const manifestItem = manifest.official.filter(n => n.name === tempName)[0];
+          const manifestItem = manifest[type].filter(n => n.name === tempName)[0];
           const oldVersion = manifestItem.tags.filter(n => n.name === tag)[0].version;
           o.version = oldVersion;
           o.update = lt(oldVersion, version);
@@ -69,30 +70,30 @@ const get = async function () {
     } catch (e) {
       log.error(e);
       mainWin.send('main-err', e);
-      if (manifest.official.length > 0) {
-        return manifest.official.filter(n => n.name === tempName)[0];
-      } else {
-        return null;
+      if (manifest[type].length > 0) {
+        return manifest[type].filter(n => n.name === tempName)[0];
       }
+      return null;
     }
   };
 
-  const { data: repo, err } = await request(`${registry}/nowa-gui-templates/latest`);
+  const url = `${registry}/${type === 'ali' ? '@ali/' : ''}nowa-gui-templates/latest`;
+
+  const { data: repo, err } = await request(url);
 
   if (!err) {
-    const official = await Promise.all(repo.templates.map(getTemplate));
-    manifest.official = official.filter(n => !!n);
+    const boilerplate = await Promise.all(repo.templates.map(getTemplate));
+    manifest[type] = boilerplate.filter(n => !!n);
 
     setMainifest(manifest);
 
-    return official;
+    return boilerplate;
 
     // mainWin.send('load-official-templates', manifest);
-  } else {
-    log.error(err);
-    mainWin.send('main-err', err);
-    return manifest.official || [];
   }
+  log.error(err);
+  mainWin.send('main-err', err);
+  return manifest[type] || [];
 };
 
 const update = async function (tempName, tag) {

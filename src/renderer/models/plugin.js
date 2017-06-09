@@ -35,7 +35,7 @@ export default {
   state: {
     pluginList: [],
     loading: false,
-    atAli: false,
+    // atAli: false,
   },
 
   subscriptions: {
@@ -52,7 +52,7 @@ export default {
   },
 
   effects: {
-    * checkAli(o, { put, select }) {
+    /** checkAli(o, { put, select }) {
       console.log('checkAli');
       yield put({
         type: 'changeStatus',
@@ -85,8 +85,8 @@ export default {
           registry: atAli ? REGISTRY_MAP.tnpm : registry,
         },
       });
-    },
-    * fetch({ payload: { npmPluginList, registry } }, { put, select }) {
+    },*/
+    /** fetch({ payload: { npmPluginList, registry } }, { put, select }) {
       const { pluginList } = yield select(state => state.plugin);
       const newList = npmPluginList.map(({ name, type }) => {
         const filter = pluginList.filter(n => n.name === name);
@@ -107,6 +107,47 @@ export default {
         item => !npmPluginList.some(n => n.name === item.name)
       );
 
+
+      const res = yield Promise.all(
+        newList.concat(filter).map(item => checkNpmLatest(item, registry))
+      );
+
+      yield put({
+        type: 'changeStatus',
+        payload: { pluginList: res, loading: false },
+      });
+    },*/
+    * fetch(o, { put, select }) {
+      console.log('fetch plugins');
+      const { atAli } = yield select(state => state.layout);
+      const { registry } = yield select(state => state.setting);
+      const { pluginList } = yield select(state => state.plugin);
+
+      const { data } = yield request(`${registry}/nowa-gui-plugins/latest`);
+      let npmPluginList = data.plugins;
+
+      if (!atAli) {
+        npmPluginList = npmPluginList.filter(item => item.origin === 'common');
+      }
+
+      const newList = npmPluginList.map(({ name, type }) => {
+        const filter = pluginList.filter(n => n.name === name);
+        if (filter.length > 0) {
+          return filter[0];
+        }
+
+        return {
+          name,
+          type,
+          installed: false,
+          apply: false,
+          needUpdate: false,
+        };
+      });
+
+      const filter = pluginList.filter(
+        item => !npmPluginList.some(n => n.name === item.name)
+      );
 
       const res = yield Promise.all(
         newList.concat(filter).map(item => checkNpmLatest(item, registry))

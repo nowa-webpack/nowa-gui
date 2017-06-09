@@ -17,13 +17,9 @@ import {
   PREINIT_PAGE,
   SHUTDOWN_PAGE,
   WELCOME_PAGE,
-  BOILERPLATE_PAGE,
   PROJECT_PAGE,
   EXTENSION_MAP,
-  IMPORT_STEP1_PAGE,
-  IMPORT_STEP2_PAGE,
-  SETTING_PAGE,
-  FEEDBACK_PAGE,
+  REGISTRY_MAP
 } from 'const-renderer-nowa';
 
 const { paths, nowa, requests } = remote.getGlobal('services');
@@ -32,7 +28,7 @@ const getUpdateArgs = (newVersion, url) => ({
   message: i18n('msg.updateTitle'),
   description: (
     <div>
-      {i18n('msg.updateCnt1', newVersion, paths.APP_VERSION)}
+      {i18n('msg.updateCnt1', newVersion, paths.APP_VERSION)}&bnsp;
       <a onClick={() => openUrl(url)}>{i18n('msg.updateCnt2')}</a>
     </div>
   ),
@@ -54,6 +50,7 @@ export default {
     upgradeUrl: '', // app 更新地址
     backPage: '', // 上一个页面,
     windowHeight: 552, // 窗口高度
+    atAli: false,
   },
 
   subscriptions: {
@@ -61,10 +58,6 @@ export default {
       const onNetworkChange = () => {
         const online = navigator.onLine;
         console.log(online ? 'online' : 'offline');
-        // dispatch({
-        //   type: 'changeStatus',
-        //   payload: { online }
-        // });
         ipcRenderer.send('network-change-status', online);
       };
 
@@ -83,7 +76,7 @@ export default {
   },
 
   effects: {
-    *handleChangeNet({ payload: { ready, msg } }, { put, select }) {
+    * handleChangeNet({ payload: { ready, msg } }, { put, select }) {
       if (!ready) {
         yield put({
           type: 'changeStatus',
@@ -108,13 +101,13 @@ export default {
             type: 'boilerplate/fetchOfficial',
           });
           yield put({
-            type: 'plugin/checkAli',
+            type: 'checkAli',
           });
         }
       }
     },
     // nowa 安装结束后
-    *afterInit(o, { put, select }) {
+    * afterInit(o, { put, select }) {
       console.log('afterInit');
 
       const { projects } = yield select(state => state.project);
@@ -134,7 +127,7 @@ export default {
         type: 'checkAppUpdate',
       });
     },
-    *showPage({ payload: { toPage } }, { put, select }) {
+    * showPage({ payload: { toPage } }, { put, select }) {
       const { showPage } = yield select(state => state.layout);
 
       yield put({
@@ -152,7 +145,7 @@ export default {
         },
       });
     },
-    *goBack(o, { put, select }) {
+    * goBack(o, { put, select }) {
       const { backPage, showPage } = yield select(state => state.layout);
 
       yield put({
@@ -171,7 +164,7 @@ export default {
       });
     },
     // 检查更新
-    *checkAppUpdate(o, { put, select }) {
+    * checkAppUpdate(o, { put, select }) {
       const { registry } = yield select(state => state.setting);
       const { data, err } = yield request(`${registry}/nowa-gui-version`);
       const version = paths.APP_VERSION;
@@ -228,7 +221,7 @@ export default {
       }
     },
     // 发送反馈
-    *sendFeedback({ payload }, { put }) {
+    * sendFeedback({ payload }, { put }) {
       const { data, err } = yield requests.feedback(payload);
 
       if (err) return;
@@ -240,6 +233,31 @@ export default {
       } else {
         msgError(data.errmsg);
       }
+    },
+    * checkAli(o, { put }) {
+      console.log('checkAli');
+      yield put({
+        type: 'plugin/changeStatus',
+        payload: { loading: true },
+      });
+      const { err } = yield request(REGISTRY_MAP.tnpm, {
+        timeout: 10000
+      });
+      const atAli = !err;
+      yield put({
+        type: 'changeStatus',
+        payload: { atAli },
+      });
+
+      if (atAli) {
+        yield put({
+          type: 'boilerplate/fetchAli',
+        });
+      }
+
+      yield put({
+        type: 'plugin/fetch',
+      });
     },
   },
   reducers: {
