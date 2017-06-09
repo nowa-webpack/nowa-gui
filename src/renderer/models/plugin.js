@@ -11,7 +11,7 @@ import { request } from 'shared-nowa';
 
 const { commands, paths } = remote.getGlobal('services');
 
-async function checkNpmLatest(item, registry) {
+async function checkPluginLatest(item, registry) {
   const { err, data } = await request(`${registry}/${item.name}/latest`);
   if (!err) {
     item.newest = data.version;
@@ -52,71 +52,6 @@ export default {
   },
 
   effects: {
-    /** checkAli(o, { put, select }) {
-      console.log('checkAli');
-      yield put({
-        type: 'changeStatus',
-        payload: { loading: true },
-      });
-      const { err } = yield request(REGISTRY_MAP.tnpm, {
-        timeout: 10000
-      });
-      console.log(err);
-      const atAli = !err;
-
-      const { registry } = yield select(state => state.setting);
-
-      const { data } = yield request(`${registry}/nowa-gui-plugins/latest`);
-      let npmPluginList = data.plugins;
-
-      yield put({
-        type: 'changeStatus',
-        payload: { atAli },
-      });
-
-      if (!atAli) {
-        npmPluginList = npmPluginList.filter(item => item.origin === 'common');
-      }
-
-      yield put({
-        type: 'fetch',
-        payload: {
-          npmPluginList,
-          registry: atAli ? REGISTRY_MAP.tnpm : registry,
-        },
-      });
-    },*/
-    /** fetch({ payload: { npmPluginList, registry } }, { put, select }) {
-      const { pluginList } = yield select(state => state.plugin);
-      const newList = npmPluginList.map(({ name, type }) => {
-        const filter = pluginList.filter(n => n.name === name);
-        if (filter.length > 0) {
-          return filter[0];
-        }
-
-        return {
-          name,
-          type,
-          installed: false,
-          apply: false,
-          needUpdate: false,
-        };
-      });
-
-      const filter = pluginList.filter(
-        item => !npmPluginList.some(n => n.name === item.name)
-      );
-
-
-      const res = yield Promise.all(
-        newList.concat(filter).map(item => checkNpmLatest(item, registry))
-      );
-
-      yield put({
-        type: 'changeStatus',
-        payload: { pluginList: res, loading: false },
-      });
-    },*/
     * fetch(o, { put, select }) {
       console.log('fetch plugins');
       const { atAli } = yield select(state => state.layout);
@@ -149,8 +84,10 @@ export default {
         item => !npmPluginList.some(n => n.name === item.name)
       );
 
+      const npm = atAli ? REGISTRY_MAP.tnpm : registry;
+
       const res = yield Promise.all(
-        newList.concat(filter).map(item => checkNpmLatest(item, registry))
+        newList.concat(filter).map(item => checkPluginLatest(item, npm))
       );
 
       yield put({
@@ -160,7 +97,7 @@ export default {
     },
     * install({ payload }, { put, select }) {
       console.log('installPlugin', payload);
-      const { atAli } = yield select(state => state.plugin);
+      const { atAli } = yield select(state => state.layout);
       const { registry } = yield select(state => state.setting);
 
       yield put({
@@ -172,7 +109,10 @@ export default {
 
       const opt = {
         root: paths.NOWA_INSTALL_DIR,
-        pkgs: [{ name: payload.name, version: payload.newest }],
+        pkgs: [{
+          name: payload.name,
+          version: payload.newest === 'null' ? 'latest' : payload.newest
+        }],
         registry: atAli ? REGISTRY_MAP.tnpm : registry,
       };
 

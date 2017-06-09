@@ -32,6 +32,8 @@ export const install = ({
     ...opt
   };
 
+  console.log(options);
+
   if (sender) {
     options.console = new Logger(sender);
   }
@@ -42,8 +44,8 @@ export const install = ({
   return co(function* () {
     timer = setInterval(() => {
       const progresses = options.progresses;
-      percent = fake 
-        ? getFakePercent(progresses, percent, opt.pkgs.length) 
+      percent = fake
+        ? getFakePercent(progresses, percent, opt.pkgs.length)
         : getTruePercent(progresses);
       console.log('percent', percent);
 
@@ -56,7 +58,6 @@ export const install = ({
         sendProgress(percent);
       }
     }, 1000);
-    
     yield npminstall(options);
 
     console.log('end install');
@@ -81,7 +82,7 @@ export const uninstall = (opt) => {
 
   return co(function* () {
     const data = yield npmuninstall(options);
-    console.log(data)
+    console.log(data);
     console.log('end uninstall');
     return { err: false };
   }).catch((err) => {
@@ -159,7 +160,7 @@ export const clearNotMacTask = (cb) => {
       a++;
       kill(taskStart[item].term.pid, 'SIGKILL', () => {
         b++;
-        if (a ===b) cb();
+        if (a === b) cb();
       });
     }
   });
