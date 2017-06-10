@@ -31,12 +31,18 @@ try {
     term.stdout.on('data', (data) => {
       const prestr = data.toString();
       const bat = join(APP_PATH, 'task', 'env.bat');
+      const notExistsBin = prestr.indexOf(BIN_PATH) === -1;
+      const notExistsNODE = prestr.indexOf(NODE_PATH) === -1;
+      if (notExistsBin && notExistsNODE) {
+        const p = `${BIN_PATH};${NODE_PATH}`;
+        exec(`${bat} ${p}`);
+      }
 
-      if (prestr.indexOf(BIN_PATH) === -1) {
+      if (notExistsBin && !notExistsNODE) {
         exec(`${bat} ${BIN_PATH}`);
       }
 
-      if (prestr.indexOf(NODE_PATH) === -1) {
+      if (!notExistsBin && notExistsNODE) {
         exec(`${bat} ${NODE_PATH}`);
       }
     });
