@@ -4,11 +4,12 @@ import cnr from 'check-npm-registry';
 import { isDev, isMac } from 'shared-nowa';
 import services from './services';
 import config from './userConfig';
+import updator from './updator';
 
 const { menu, mainWin, log, tray, commands, nowa, requests } = services;
 
 // 初始化任务， 必须在有网的判断下进行
-const initialTasks = async function(event, online) {
+const initialTasks = async function (event, online) {
   console.log('network', online);
   config.setItem('ONLINE', online);
 
@@ -32,6 +33,7 @@ const initialTasks = async function(event, online) {
 
   if (online) {
     mainWin.send('is-ready', { ready: true });
+    updator();
     // 打点日志
     if (!isDev) {
       requests.sendPointLog();
