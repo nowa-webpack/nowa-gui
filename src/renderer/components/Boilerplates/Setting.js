@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import { join, basename } from 'path';
+import { join } from 'path';
 import { remote } from 'electron';
 import { homedir } from 'os';
 import Button from 'antd/lib/button';
@@ -10,13 +10,14 @@ import Input from 'antd/lib/input';
 import Checkbox from 'antd/lib/checkbox';
 
 import i18n from 'i18n-renderer-nowa';
+import { NAME_MATCH } from 'const-renderer-nowa';
 import OverwriteModal from './OverwriteModal';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 18 }
+  labelCol: { span: 4, offset: 3 },
+  wrapperCol: { span: 12 }
 };
 
 class Setting extends Component {
@@ -25,17 +26,9 @@ class Setting extends Component {
     super(props);
     const { selectExtendsProj } = props;
 
-    const name = 'untitled';
-    // const name = '';
+    this.basePath = join(homedir(), 'NowaProject');
 
     this.baseExtraArgs = {};
-
-    if (Object.keys(selectExtendsProj).length) {
-      selectExtendsProj.prompts.forEach((item) => {
-        this.baseExtraArgs[item.name] = item.default || false;
-      });
-    }
-    this.basePath = join(homedir(), 'NowaProject', name);
 
     this.state = {
       description: 'An awesome project',
@@ -44,27 +37,75 @@ class Setting extends Component {
       homepage: '',
       repository: '',
     };
+    this.hasPrompts = Object.keys(selectExtendsProj).length && selectExtendsProj.prompts;
+
+    if (this.hasPrompts) {
+      selectExtendsProj.prompts.forEach((item) => {
+        this.baseExtraArgs[item.name] = item.default || false;
+      });
+    }
 
     this.getExtendsHtml = this.getExtendsHtml.bind(this);
     this.goBack = this.goBack.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
   }
 
-  selectPath() {
-    try {
-      const { form } = this.props;
-      const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
-      const projName = basename(form.getFieldValue('projPath'));
-      const projPath = join(importPath[0], projName);
-      /*const input = document.getElementById('pathInput');
-      input.focus();
-      input.selectionStart = input.value.length;
-      input.selectionEnd = input.value.length;*/
-      form.setFieldsValue({
-        projPath
+  getExtendsHtml() {
+    const { selectExtendsProj, form } = this.props;
+    const { getFieldDecorator, getFieldValue } = form;
+    const filterConfirm = selectExtendsProj.prompts.filter(item => item.type === 'confirm');
+    const filterInput = selectExtendsProj.prompts.filter(item => item.type === 'input');
+    const html = [];
+
+    if (filterConfirm.length) {
+      const options = filterConfirm.map((item) => {
+        const label = item.message;
+        const value = item.name;
+        return { label, value };
       });
-    } catch (err) {
-      console.log(err);
+      html.push(
+        <FormItem
+          label={i18n('project.meta.others')}
+          {...formItemLayout}
+          key="confirm"
+        >
+        {getFieldDecorator('extraArgs', {
+          onChange: this.changeExtraArgs
+        })(
+          <CheckboxGroup options={options} />
+        )}
+        </FormItem>
+      );
     }
+
+    if (filterInput.length) {
+      filterInput.forEach((item) => {
+        if (item.typeLink) {
+          const linkValue = getFieldValue(item.typeLink.key);
+          const initialValue = item.typeLink.onChange(linkValue || 'untitled');
+          html.push(
+            <FormItem
+              label={item.message}
+              {...formItemLayout}
+              key={item.name}
+            >{getFieldDecorator(item.name, {
+              initialValue
+            })(<Input />)}</FormItem>
+          );
+        } else {
+          html.push(
+            <FormItem
+              label={item.message}
+              {...formItemLayout}
+              key={item.name}
+            >{getFieldDecorator(item.name, {
+            })(<Input />)}</FormItem>
+          );
+        }
+      });
+    }
+
+    return html;
   }
 
   goBack() {
@@ -79,23 +120,56 @@ class Setting extends Component {
     });
   }
 
+  selectPath() {
+    try {
+      const { form } = this.props;
+      const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+      // const projName = basename(form.getFieldValue('projPath'));
+      // const projPath = join(importPath[0], projName);
+      /*
+      const input = document.getElementById('pathInput');
+      input.focus();
+      input.selectionStart = input.value.length;
+      input.selectionEnd = input.value.length;
+      */
+      this.basePath = importPath[0];
+      const name = form.getFieldValue('name');
+      form.setFieldsValue({
+        projPath: join(importPath[0], name),
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  handleNameChange(e) {
+    const { form } = this.props;
+    const name = e.target.value;
+    // console.log(this.baseExtraArgs);
+
+    form.setFieldsValue({
+      name,
+      projPath: join(this.basePath, name)
+    });
+  }
+
   handleSubmit() {
     const that = this;
     const { dispatch, form } = that.props;
-    form.validateFields((err, { extraArgs, projPath, registry }) => {
+    // form.validateFields((err, { extraArgs, name, projPath, registry }) => {
+    form.validateFields((err, { extraArgs, ...others }) => {
       if (!err) {
-        const name = basename(projPath);
         const obj = {};
         if (extraArgs) {
-          extraArgs.forEach((name) => obj[name] = true);
+          extraArgs.forEach((arg) => {
+            obj[arg] = true;
+          });
         }
         const args = {
-          projPath,
-          registry,
-          name,
           ...this.state,
           ...this.baseExtraArgs,
           ...obj,
+          ...others,
         };
         console.log(args);
         dispatch({
@@ -106,40 +180,13 @@ class Setting extends Component {
     });
   }
 
-  getExtendsHtml() {
-    const { selectExtendsProj, form } = this.props;
-    const { getFieldDecorator } = form;
-    const options = selectExtendsProj.prompts.map((item) => {
-      const label = item.message;
-      const value = item.name;
-      return { label, value };
-    });
-
-    return (
-      <FormItem
-        label={i18n('project.meta.others')}
-        {...formItemLayout}
-      >
-      {getFieldDecorator('extraArgs', {
-        onChange: this.changeExtraArgs
-      })(
-        <CheckboxGroup options={options} />
-      )}
-      </FormItem>
-    );
-  }
-
-  // handleRegistryChange(value) {
-  //   const { registryList } = this.props;
-  //   console.log(value);
-  // }
 
   render() {
-    const { selectExtendsProj, registryList, defaultRegistry } = this.props;
+    const { registryList, defaultRegistry } = this.props;
     const { getFieldDecorator } = this.props.form;
     let extendsHtml;
 
-    if (Object.keys(selectExtendsProj).length) {
+    if (this.hasPrompts) {
       extendsHtml = this.getExtendsHtml();
     }
 
@@ -148,9 +195,21 @@ class Setting extends Component {
     return (
       <div className="boilerplate-form">
         <Form
-          className="ui-form"
           layout="horizontal"
         >
+          <FormItem
+            label={i18n('project.meta.name')}
+            {...formItemLayout}
+            required
+          >
+            {getFieldDecorator('name', {
+              initialValue: 'untitled',
+              rules: [
+                { message: i18n('msg.invalidName'), pattern: NAME_MATCH, required: true },
+              ],
+              onChange: this.handleNameChange
+            })(<Input />)}
+          </FormItem>
           <FormItem
             label={i18n('project.meta.path')}
             {...formItemLayout}
@@ -162,9 +221,9 @@ class Setting extends Component {
               ],
             })(
               <Input
+                disabled
                 id="pathInput"
                 addonAfter={pathIcon}
-                onPressEnter={() => this.handleSubmit()}
               />
             )}
           </FormItem>
@@ -186,7 +245,7 @@ class Setting extends Component {
             )}
           </FormItem>
           { extendsHtml }
-          <FormItem wrapperCol={{ offset: 5 }} className="ui-form-btns">
+          <FormItem wrapperCol={{ offset: 7 }} className="ui-form-btns">
             <Button type="primary" size="default" onClick={() => this.handleSubmit()}>{i18n('form.submit')}</Button>
             <Button type="default" size="default" onClick={() => this.goBack()}>{i18n('form.back')}</Button>
           </FormItem>
@@ -199,7 +258,7 @@ class Setting extends Component {
 
 
 Setting.propTypes = {
-  selectExtendsProj: PropTypes.object,
+  selectExtendsProj: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   defaultRegistry: PropTypes.string.isRequired,
   registryList: PropTypes.array.isRequired,

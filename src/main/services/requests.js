@@ -1,16 +1,15 @@
 import { hostname } from 'os';
 import MacAddress from 'get-mac-address';
-
 import { FEEDBACK_URL, request } from 'shared-nowa';
-import { APP_VERSION } from './paths';
 
+import { APP_VERSION } from './paths';
 import log from './applog';
 
 const logServer = 'http://gm.mmstat.com/jstracker.3';
 const nick = hostname();
 
 const feedback = async function ({ nickname, contact, content }) {
-  return await request(FEEDBACK_URL, {
+  const res = await request(FEEDBACK_URL, {
     method: 'POST',
     mode: 'cors',
     headers: {
@@ -34,6 +33,7 @@ const feedback = async function ({ nickname, contact, content }) {
       }
     })
   });
+  return res;
 };
 
 const macAddr = Object.values(MacAddress).filter(n => n.indexOf('00:00:00:00') === -1);
@@ -61,6 +61,7 @@ const sendPointLog = () => {
   const queryStr = getPointArgs();
   request(`${logServer}?${queryStr}`);
 };
+
 
 export default {
   feedback,

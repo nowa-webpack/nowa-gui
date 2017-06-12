@@ -3,7 +3,7 @@
   "presets": [
     ["env", {
       "targets": {
-        "electron": 1.6,
+        "electron": "1.6.8",
       },
       "loose": false, 
       "modules": false,

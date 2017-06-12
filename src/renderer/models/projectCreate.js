@@ -9,7 +9,7 @@ import i18n from 'i18n-renderer-nowa';
 import { request } from 'shared-nowa';
 import { IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE } from 'const-renderer-nowa';
 import {
-  msgError, msgSuccess, msgInfo, writeToFile, getMergedDependencies, readPkgJson
+  msgError, writeToFile, getMergedDependencies, readPkgJson
 } from 'util-renderer-nowa';
 
 const { commands } = remote.getGlobal('services');
@@ -94,7 +94,7 @@ export default {
       const { registryList } = yield select(state => state.setting);
 
       if (!registryList.includes(registry)) {
-        const { err } = yield request(registry);
+        const { err } = yield request(registry, { timeout: 10000 });
         if (err) {
           msgError(i18n('msg.invalidRegistry'));
           return false;
@@ -116,6 +116,7 @@ export default {
           isRetry: false
         }
       });
+      return true;
     },
     * selectBoilerplate({ payload: { item, type } }, { put }) {
       const projPath = join(item.path, 'proj.js');
@@ -154,7 +155,7 @@ export default {
       const { registryList } = yield select(state => state.setting);
 
       if (!registryList.includes(payload.registry)) {
-        const { err } = yield request(payload.registry);
+        const { err } = yield request(payload.registry, { timeout: 10000 });
         if (err) {
           msgError(i18n('msg.invalidRegistry'));
           return false;
@@ -196,8 +197,7 @@ export default {
           type: 'copyFilesToTarget',
         });
       }
-
-      return;
+      return true;
     },
     * checkOverwiteFiles(o, { put, select }) {
       console.log('checkOverwiteFiles');
@@ -262,6 +262,7 @@ export default {
         source = join(sourceDir, source);
 
         writeToFile(source, target, initSetting);
+        return true;
       });
 
       yield put({

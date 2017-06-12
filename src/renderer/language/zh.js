@@ -64,7 +64,6 @@ module.exports = {
   'project.import.info': '检测到改项目有未安装的依赖，请选择合适的Npm安装源',
   'project.import.install': '依赖安装',
 
-
   'template.modal.title': '自定义模版设置',
   'template.modal.local.title': '本地模版',
   'template.modal.remote.title': '远程模版',
@@ -86,7 +85,8 @@ module.exports = {
   'form.import': '导入',
   'form.add': '添加',
 
-  'setting.modal.title': '设置',
+  'setting.basic.title': '基本设置',
+  // 'setting.modal.title': '设置',
   'setting.language': 'Language',
   'setting.language.en': 'English',
   // 'setting.language': '语言',
@@ -96,6 +96,19 @@ module.exports = {
   'setting.editor': '编辑器',
   'setting.version': '工具版本',
   'setting.version.newest.tip': '最新',
+
+  'setting.cmd.title': '全局命令设置',
+
+  'setting.plugin.title': '插件设置',
+  'setting.plugin.apply': '应用',
+  'setting.plugin.name': '插件名',
+  'setting.plugin.version': '插件版本',
+  'setting.plugin.newest': '最新版本',
+  'setting.plugin.action': '操作',
+  'setting.plugin.download': '下载',
+  'setting.plugin.reinstall': '重装',
+  'setting.plugin.update': '更新',
+  'setting.plugin.update.tip': '确认更新到改版本吗？',
 
   'foot.set': '工具设置',
   // 'foot.import': '导入项目',
@@ -123,7 +136,8 @@ module.exports = {
   'msg.updateFailed': '更新失败',
   'msg.removeTip': '确认删除？',
   'msg.templateErr': '模板正在下载，请稍候再试',
-  'msg.nowaVersionTip': '您当前安装的nowa命令行版本过低，为不影响使用，请全局卸载nowa命令行版本 `npm uninstall nowa -g`',
+  'msg.nowaVersionTip':
+    '您当前安装的nowa命令行版本过低，为不影响使用，请全局卸载nowa命令行版本 `npm uninstall nowa -g`',
   'msg.LinkInvalidation': '链接失效',
   'msg.required': '不能为空',
 
@@ -162,7 +176,6 @@ module.exports = {
   'package.btn.install': '安装新依赖',
   'package.update.tip': '确认更新到改版本吗？',
 
-
   'table.empty': '暂无数据',
   'table.action.del': '移除',
   'table.action.update': '更新',
@@ -172,4 +185,4 @@ module.exports = {
   'feedback.contact': '怎么联系您？',
   'feedback.content': '您遇到了什么问题？',
   'feedback.success': '反馈发送成功',
-}
+};

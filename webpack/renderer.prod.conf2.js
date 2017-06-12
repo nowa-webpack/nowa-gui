@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const DefinePlugin = require('webpack/lib/DefinePlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const AnalyzerPlugin = require('webpack-bundle-size-analyzer').WebpackBundleSizeAnalyzerPlugin;
 // const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const { resolve } = require('path');
 
@@ -93,9 +94,11 @@ module.exports = webpackMerge(webpackCommon,
         }
       }),
       new BabiliPlugin(),
-      new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-        reportFilename: resolve(__dirname, 'analyzer-report.html'),
-      })
+      // new BundleAnalyzerPlugin({
+      //   analyzerMode: 'static',
+      //   reportFilename: resolve(__dirname, 'analyzer-report.html'),
+      // }),
+      // new AnalyzerPlugin('./reports/plain-report.txt')
+      new AnalyzerPlugin(resolve(__dirname, 'plain-report.txt'))
     ],
 });

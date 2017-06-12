@@ -21,7 +21,7 @@ const initialTasks = async function (event, online) {
     } else {
       mainWin.send('is-ready', {
         ready: false,
-        msg: 'SYSTEM_OFFLINE'
+        msg: 'SYSTEM_OFFLINE',
       });
 
       return;
@@ -40,14 +40,12 @@ const initialTasks = async function (event, online) {
         requests.sendPointLog();
       }, 12 * 60 * 60 * 1000);
     }
-    
-
   } else if (nowa.hasInstalledPkgs()) {
     mainWin.send('is-ready', { ready: true });
   } else {
     mainWin.send('is-ready', {
       ready: false,
-      msg: 'SYSTEM_OFFLINE'
+      msg: 'SYSTEM_OFFLINE',
     });
   }
 };
@@ -65,6 +63,7 @@ app
     tray.init();
     commands.encode();
     log.error('app ready');
+    log.error('app test update');
   })
   .on('activate', () => {
     if (mainWin.getWin() === null) {

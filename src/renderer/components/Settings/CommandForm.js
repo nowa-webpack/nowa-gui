@@ -14,27 +14,22 @@ const FormItem = Form.Item;
 const CommandForm = ({
   globalCommandSet,
   dispatch,
-  form: {
-    getFieldDecorator,
-    setFieldsValue,
-    validateFields,
-  }
+  form: { getFieldDecorator, setFieldsValue, validateFields },
 }) => {
-  // const cmdNames = Object.keys(globalCommandSet);
   const handleSubmit = () => {
     validateFields((err, data) => {
       if (!err) {
         console.log(data);
         dispatch({
           type: 'task/addGlobalCommand',
-          payload: data
+          payload: data,
         });
         setFieldsValue({ name: '', value: '' });
       }
     });
   };
   const nameValid = (rule, value, callback) => {
-    if (!(NAME_MATCH.test(value))) {
+    if (!NAME_MATCH.test(value)) {
       callback(i18n('msg.invalidName'));
     }
     if (globalCommandSet.filter(({ name }) => name === value).length) {
@@ -44,41 +39,39 @@ const CommandForm = ({
   };
 
   return (
-    <Form layout="vertical" className="commands-form">
+    <Form layout="vertical" className="setting-commands-form">
       <Row>
         <Col span={4} offset={0}>
-          <FormItem
-            label={i18n('cmd.meta.name')}
-            required
-          >
+          <FormItem label={i18n('cmd.meta.name')} required>
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: i18n('msg.required') },
-                { validator: nameValid }]
+              rules: [
+                { required: true, message: i18n('msg.required') },
+                { validator: nameValid },
+              ],
             })(<Input />)}
           </FormItem>
         </Col>
         <Col span={14} offset={1}>
-          <FormItem
-            label={i18n('cmd.meta.value')}
-            required
-          >
+          <FormItem label={i18n('cmd.meta.value')} required>
             {getFieldDecorator('value', {
-              rules: [{ required: true, message: i18n('msg.required') }]
+              rules: [{ required: true, message: i18n('msg.required') }],
             })(<Input />)}
           </FormItem>
         </Col>
         <Col span={3} offset={1}>
           <Button
-            type="primary" size="default"
-            className="commands-submit"
+            type="primary"
+            size="large"
+            className="setting-commands-submit"
             onClick={handleSubmit}
-          >{i18n('form.add')}</Button>
+          >
+            {i18n('form.add')}
+          </Button>
         </Col>
       </Row>
     </Form>
   );
 };
-
 
 CommandForm.propTypes = {
   globalCommandSet: PropTypes.array.isRequired,
@@ -90,7 +83,8 @@ CommandForm.propTypes = {
   }).isRequired,
 };
 
-export default Form.create()(connect(({ task }) => ({
-  globalCommandSet: task.globalCommandSet || [],
-}))(CommandForm));
-
+export default Form.create()(
+  connect(({ task }) => ({
+    globalCommandSet: task.globalCommandSet || [],
+  }))(CommandForm)
+);

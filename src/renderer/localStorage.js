@@ -2,21 +2,34 @@ import { join } from 'path';
 import { remote } from 'electron';
 import { existsSync } from 'fs-extra';
 import {
-  LOCAL_PROJECTS, LANGUAGE, UPDATE_TIP, GLOBAL_COMMANDS, EDITOR,
-  SUBLIME, VSCODE, WEBSTORM, SUBLIME_PATH, VSCODE_PATH, WEBSTORM_PATH
+  LOCAL_PROJECTS,
+  LANGUAGE,
+  UPDATE_TIP,
+  GLOBAL_COMMANDS,
+  EDITOR,
+  SUBLIME,
+  VSCODE,
+  WEBSTORM,
+  SUBLIME_PATH,
+  VSCODE_PATH,
+  WEBSTORM_PATH,
+  APPLYED_PLUGINS,
 } from './constants';
 
-
 const config = remote.getGlobal('config');
+const { paths } = remote.getGlobal('services');
 
 export const getStoreProjects = () => config.getItem(LOCAL_PROJECTS) || [];
 
-export const setLocalProjects = projects => config.setItem(LOCAL_PROJECTS, projects);
+export const setLocalProjects = projects =>
+  config.setItem(LOCAL_PROJECTS, projects);
 
 export const getLocalProjects = () => {
   const projects = getStoreProjects();
   // 检查项目是否存在
-  const filter = projects.filter(project => existsSync(join(project.path, 'package.json')));
+  const filter = projects.filter(project =>
+    existsSync(join(project.path, 'package.json'))
+  );
 
   setLocalProjects(filter);
 
@@ -54,16 +67,27 @@ export const setLocalEditorPath = (editor, editorPath) => {
   config.setItem(defaultPath, editorPath);
 };
 
-export const getLocalUpdateFlag = () => {
-  const str = config.getItem(UPDATE_TIP);
-  if (str) return str.split('|')[1];
-  return 0;
+export const getLocalUpdateFlag = (version) => {
+  const str = config.getItem(UPDATE_TIP) || '';
+  const readed = ~str.indexOf(version);
+  return !readed;
 };
 
-export const setLocalUpdateFlag = (version) => {
-  config.setItem(UPDATE_TIP, `${version}|1`);
-};
+export const setLocalUpdateFlag = version => config.setItem(UPDATE_TIP, `${version}|1`);
 
 export const getLocalCommands = () => config.getItem(GLOBAL_COMMANDS) || [];
 
-export const setLocalCommands = (cmds) => config.setItem(GLOBAL_COMMANDS, cmds);
+export const setLocalCommands = cmds => config.setItem(GLOBAL_COMMANDS, cmds);
+
+export const setLocalPlugins = plugins => config.setItem(APPLYED_PLUGINS, plugins);
+
+export const getLocalPlugins = () => {
+  const plugins = config.getItem(APPLYED_PLUGINS) || [];
+  // 检查项目是否存在
+  const filter = plugins.filter(plugin =>
+    existsSync(join(paths.BIN_PATH, plugin.cli))
+  );
+
+  setLocalPlugins(filter);
+  return filter;
+};

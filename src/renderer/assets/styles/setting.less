@@ -10,11 +10,66 @@
   overflow-y: hidden;
   width: 80%;
   margin: 0 auto;
-  &-title{
-    .title();
+  
+  &-basic{
+    &-version{
+      margin-right: 8px;
+    }
   }
-  &-version{
-    margin-right: 8px;
+
+  &-tabs{
+    .ant-tabs-bar{
+      width: 80%;
+      margin: 20px auto 40px;
+    }
+    .ant-tabs-nav-scroll{
+      /*padding-left: 10%;*/
+    }
+    .ant-tabs-nav-container{
+      /*text-align: center;*/
+      padding-left: 2%;
+    }
+    .ant-tabs-nav{
+      /*float: none;*/
+      width: 100%;
+    }
+
+    .ant-tabs-tab{
+      width: 30%;
+      text-align: center;
+    }
+  }
+
+  &-commands{
+    overflow-y: hidden;
+    /*width: 80%;*/
+    margin: 0 auto;
+
+    &-title{
+      .title();
+      width: 100%;
+    }
+    &-detail{
+      text-align: center;
+      color: #f04134;
+      margin-bottom: 0px;
+    }
+    &-table{
+      margin-bottom: 20px;
+    }
+    &-submit{
+      position: relative;
+      top: 40px;
+    }
+  }
+
+  &-plugin{
+    &-table{
+      margin-bottom: 20px;
+    }
+    &-action{
+      width: 70px;
+    }
   }
 }
 
@@ -26,10 +81,9 @@
     .title();
   }
 }
-
+/*
 .commands {
   overflow-y: hidden;
-  width: 80%;
   margin: 0 auto;
 
   &-title{
@@ -48,4 +102,4 @@
     position: relative;
     top: 40px;
   }
-}
+}*/

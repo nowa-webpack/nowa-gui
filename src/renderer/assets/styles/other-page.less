@@ -107,9 +107,11 @@
   border-right: 1px solid #ddd;
 
   &-sider{
-   
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
+    display: flex;
+    flex-direction: column;
+    
+    /*display: -webkit-box;
+    -webkit-box-orient: vertical;*/
     border-right: 1px solid #eee;
     background-color: #fff;
 
@@ -126,10 +128,11 @@
 
   &-foot{
     
-    display: -webkit-box;
-    height: 40px;
-    line-height: 40px;
     position: relative;
+    flex: 0 0 40px;
+    /*display: -webkit-box;*/
+    /*height: 40px;*/
+    line-height: 40px;
 
     &-bg{
       position: absolute;
@@ -141,6 +144,16 @@
       border-color: transparent;
       margin-right: 4px;
       color: #aaa;
+    }
+  }
+  &-spin{
+    height: 100%;
+    >div>.ant-spin{
+      /*top: 20%;*/
+      max-height: none;
+    }
+    .ant-spin-container{
+      height: 100%;
     }
   }
 }

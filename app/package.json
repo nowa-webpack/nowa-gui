@@ -1,16 +1,28 @@
 {
+<<<<<<< HEAD
   "name": "NowaGUI",
   "version": "1.7.4",
+=======
+  "name": "nowa-gui-version",
+  "version": "1.8.0",
+>>>>>>> v6
   "description": "A tool for nowa developement.",
   "productName": "ElectronWebpack",
   "main": "./main.js",
   "scripts": {
-    "postinstall": "npm rebuild --runtime=electron --target=1.6.6 --disturl=https://atom.io/download/atom-shell --build-from-source"
+    "postinstall": "npm rebuild --runtime=electron --target=1.6.8 --disturl=https://atom.io/download/atom-shell --build-from-source"
   },
   "keywords": [],
   "author": {
     "name": "Poling",
     "email": "466681097@qq.com"
   },
+  "downloadDomain": "https://alixux.org/downloads",
+  "download": {
+    "darwin": "https://alixux.org/downloads/nowa-gui.dmg",
+    "win32": "https://alixux.org/downloads/nowa-gui.exe",
+    "linux": "https://alixux.org/downloads/nowa-gui.deb"
+  },
+  "innerUpdate": true,
   "license": "ISC"
 }

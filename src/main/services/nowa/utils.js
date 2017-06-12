@@ -2,9 +2,10 @@ import { join } from 'path';
 import { lt } from 'semver';
 import { homedir } from 'os';
 import { readJsonSync, writeJsonSync, existsSync } from 'fs-extra';
-import { NOWA_INSTALL_JSON_FILE, NOWA_INSTALL_DIR, NODE_MODULES_PATH } from '../paths';
 import { checkver } from 'shared-nowa';
 import config from 'config-main-nowa';
+
+import { NOWA_INSTALL_JSON_FILE, NOWA_INSTALL_DIR, NODE_MODULES_PATH } from '../paths';
 import log from '../applog';
 
 export const readNowaVer = () => readJsonSync(NOWA_INSTALL_JSON_FILE);

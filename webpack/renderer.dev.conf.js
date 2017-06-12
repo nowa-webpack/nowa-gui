@@ -1,8 +1,9 @@
+const { resolve } = require('path');
 const webpackMerge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
 const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlugin');
-const { resolve } = require('path');
+// const AnalyzerPlugin = require('webpack-bundle-size-analyzer').WebpackBundleSizeAnalyzerPlugin;
 
 const webpackCommon = require('./base.conf');
 
@@ -84,7 +85,7 @@ module.exports = webpackMerge(webpackCommon,
         manifest: require(resolve(__dirname, '..', 'dll', 'manifest.dll.json')),
         sourceType: 'var',
       }),
-     
+      // new AnalyzerPlugin(resolve(__dirname, 'plain-report.txt')),
       new HotModuleReplacementPlugin(),
     ]
   });

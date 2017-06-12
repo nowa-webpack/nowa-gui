@@ -5,7 +5,6 @@
     "browser": true,
     "node": true
   },
-  "installedESLint": true,
   "plugins": [
     "react"
   ],
@@ -13,6 +12,7 @@
     "global-require": "off",
     "import/no-unresolved": "off",
     "import/no-extraneous-dependencies": "off",
+    "import/extensions": "off",
     "no-console": "off",
     "no-underscore-dangle": "off",
     "no-new-func": "off",
@@ -24,10 +24,16 @@
     "react/jsx-indent": "off",
     "react/jsx-first-prop-new-line": "off",
     "react/jsx-filename-extension": "off",
+    "react/forbid-prop-types": "off",
+    "react/no-string-refs": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
     "no-restricted-syntax": "off",
     "comma-dangle": "off",
     "no-global-assign": "off",
     "no-unsafe-negation": "off",
-    "label-has-for": "off"
+    "label-has-for": "off",
+    "eqeqeq": "off",
+    "class-methods-use-this": "off",
+    "no-bitwise": "off"
   }
 }

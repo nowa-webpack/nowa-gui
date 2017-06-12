@@ -12,11 +12,20 @@ const Cards = ({
   officialBoilerplates = [],
   localBoilerplates = [],
   remoteBoilerplates = [],
+  aliBoilerplates = [],
   dispatch
 }) => (
   <div className="boilerplate-cards">
     { officialBoilerplates.length > 0
       && officialBoilerplates.map(item =>
+        <OfficialCard
+          key={item.name}
+          data={item}
+          dispatch={dispatch}
+        />)
+    }
+    { aliBoilerplates.length > 0
+      && aliBoilerplates.map(item =>
         <OfficialCard
           key={item.name}
           data={item}
@@ -55,6 +64,7 @@ const Cards = ({
 
 Cards.propTypes = {
   officialBoilerplates: PropTypes.array.isRequired,
+  aliBoilerplates: PropTypes.array.isRequired,
   localBoilerplates: PropTypes.array.isRequired,
   remoteBoilerplates: PropTypes.array.isRequired,
   dispatch: PropTypes.func.isRequired,

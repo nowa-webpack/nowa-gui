@@ -1,6 +1,10 @@
 {
   "name": "NowaGUI",
+<<<<<<< HEAD
   "version": "1.7.4",
+=======
+  "version": "1.8.0",
+>>>>>>> v6
   "description": "A tool for nowa developement.",
   "scripts": {
     "postinstall": "install-app-deps",
@@ -20,6 +24,7 @@
     "pack:mac": "npm run prepack && build -m",
     "pack:win": "npm run prepack && build -w",
     "pack:linux": "npm run prepack && npm run build && build -l",
+    "lint": "eslint --ext .js src",
     "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "log": "git log --color --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s   %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit"
   },
@@ -29,6 +34,15 @@
     "appId": "com.alibaba-inc.nowa-gui",
     "asar": false,
     "rebuild": true,
+    "files": [
+      "assets/",
+      "node_modules/",
+      "nodes/",
+      "renderer/",
+      "task/",
+      "main.js",
+      "package.json"
+    ],
     "win": {
       "target": [
         "nsis"
@@ -51,7 +65,22 @@
       "output": "release"
     }
   },
+<<<<<<< HEAD
   "homepage": "https://github.com/nowa-webpack/nowa-gui",
+=======
+  "lint-staged22": {
+    "src/**/*.{js,jsx}": [
+      "prettier --trailing-comma es5 --single-quote --write",
+      "git add"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "eslint --ext .js",
+      "git add"
+    ]
+  },
+>>>>>>> v6
   "author": {
     "name": "Poling",
     "email": "466681097@qq.com"
@@ -60,6 +89,7 @@
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.3",
     "babel-loader": "^7.0.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-dynamic-import-webpack": "^1.0.1",
@@ -74,21 +104,25 @@
     "clean-webpack-plugin": "^0.1.16",
     "cross-env": "^4.0.0",
     "css-loader": "^0.28.1",
-    "ejs": "^2.5.6",
     "electron": "^1.6.8",
     "electron-builder": "^13.11.1",
     "electron-is": "^2.4.0",
     "electron-log": "^2.2.4",
     "electron-rebuild": "^1.5.10",
+    "eslint": "^3.19.0",
+    "eslint-plugin-react": "^7.0.1",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",
     "fix-path": "^2.1.0",
     "html-webpack-plugin": "^2.28.0",
+    "husky": "^0.13.4",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
+    "lint-staged": "^3.6.0",
     "moment": "^2.18.1",
     "node-loader": "^0.6.0",
     "octal-number-loader": "^0.1.4",
+    "prettier": "^1.4.2",
     "react-hot-loader": "^3.0.0-beta.7",
     "shebang-loader": "0.0.1",
     "style-loader": "^0.17.0",
@@ -101,18 +135,19 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "git-config": "0.0.7",
     "antd": "^2.10.0",
     "check-npm-registry": "^1.0.4",
     "date-diff": "^0.1.3",
     "date-formatter": "^0.1.1",
     "download": "^6.0.0",
     "dva": "^1.2.1",
+    "ejs": "^2.5.6",
     "fs-extra": "^3.0.1",
     "get-mac-address": "^1.0.0",
+    "git-config": "0.0.7",
     "i18n-helper": "^1.2.0",
     "npm-run-path": "^2.0.2",
-    "npminstall": "^2.30.1",
+    "npminstall": "^3.0.1",
     "react": "^15.4.2",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.1"

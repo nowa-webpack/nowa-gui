@@ -3,7 +3,9 @@ import { remote } from 'electron';
 import uuidV4 from 'uuid/v4';
 
 import i18n from 'i18n-renderer-nowa';
-import { msgError, msgInfo, msgSuccess } from 'util-renderer-nowa';
+import { msgError, msgSuccess } from 'util-renderer-nowa';
+import { REGISTRY_MAP } from 'const-renderer-nowa';
+
 const { boilerplate } = remote.getGlobal('services');
 const preManifest = boilerplate.getMainifest();
 
@@ -16,17 +18,17 @@ export default {
     officialBoilerplates: preManifest.official || [],
     localBoilerplates: preManifest.local || [],
     remoteBoilerplates: preManifest.remote || [],
+    aliBoilerplates: [],
 
     showAddBoilerplateModal: false, // 显示新建脚手架模态框
     addOrEditBoilerplateType: 'new', // new 需要新建，local 需要修改本地，remote 需要修改远程
     editLocalBoilplateData: {}, // 需要修改的本地脚手架数据
     editRemoteBoilplateData: {}, // 需要修改的远程脚手架数据
-    
   },
 
   effects: {
     * fetchOfficial(o, { put }) {
-      const officialBoilerplates = yield boilerplate.official.get();
+      const officialBoilerplates = yield boilerplate.official.get({ type: 'official' });
       yield put({
         type: 'changeStatus',
         payload: { officialBoilerplates }
@@ -39,6 +41,16 @@ export default {
       yield put({
         type: 'changeStatus',
         payload: { localBoilerplates, remoteBoilerplates }
+      });
+    },
+    * fetchAli(o, { put }) {
+      const aliBoilerplates = yield boilerplate.official.get({
+        type: 'ali',
+        registry: REGISTRY_MAP.tnpm
+      });
+      yield put({
+        type: 'changeStatus',
+        payload: { aliBoilerplates }
       });
     },
     * updateOffical({ payload: { tempName, tag } }, { select, put }) {
@@ -72,7 +84,10 @@ export default {
     * updateRemote({ payload }, { select, put }) {
       const { remoteBoilerplates } = yield select(state => state.boilerplate);
       payload.loading = true;
-      remoteBoilerplates.map((item) => item.id === payload.id ? payload : item);
+      remoteBoilerplates.map((item) => {
+        if (item.id === payload.id) return payload;
+        return item;
+      });
 
       yield put({
         type: 'changeStatus',
@@ -97,7 +112,6 @@ export default {
       const { remoteBoilerplates } = yield select(state => state.boilerplate);
       const filter = remoteBoilerplates
         .filter(n => n.remote === payload.remote || n.name === payload.name);
-      
       if (filter.length > 0) {
         msgError('Remote Url or Name is already existed!');
         return;
@@ -158,7 +172,10 @@ export default {
         payload.loading = true;
       }
 
-      const newBoilerplates = remoteBoilerplates.map((item) => item.id === payload.id ? payload : item);
+      const newBoilerplates = remoteBoilerplates.map((item) => {
+        if (item.id === payload.id) return payload;
+        return item;
+      });
 
       yield put({
         type: 'changeStatus',
@@ -181,7 +198,10 @@ export default {
     },
     * editLocal({ payload }, { select, put }) {
       const { localBoilerplates } = yield select(state => state.boilerplate);
-      const newBoilerplates = localBoilerplates.map((item) => item.id === payload.id ? payload : item);
+      const newBoilerplates = localBoilerplates.map((item) => {
+        if (item.id === payload.id) return payload;
+        return item;
+      });
 
       yield boilerplate.custom.changeLocal(newBoilerplates);
 
@@ -219,8 +239,6 @@ export default {
         });
       }
     },
-    
-
   },
 
   reducers: {
