@@ -5,7 +5,6 @@
     "browser": true,
     "node": true
   },
-  "installedESLint": true,
   "plugins": [
     "react"
   ],

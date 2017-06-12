@@ -61,7 +61,7 @@ const CommandForm = ({
         <Col span={3} offset={1}>
           <Button
             type="primary"
-            size="default"
+            size="large"
             className="setting-commands-submit"
             onClick={handleSubmit}
           >
