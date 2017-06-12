@@ -69,7 +69,8 @@ const CommandForm = ({
         </Col>
         <Col span={3} offset={1}>
           <Button
-            type="primary" size="default"
+            type="primary"
+            size="large"
             className="commands-submit"
             onClick={handleSubmit}
           >{i18n('form.add')}</Button>
@@ -93,4 +94,3 @@ CommandForm.propTypes = {
 export default Form.create()(connect(({ task }) => ({
   globalCommandSet: task.globalCommandSet || [],
 }))(CommandForm));
-
