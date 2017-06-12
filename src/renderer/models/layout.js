@@ -1,56 +1,59 @@
-import React from 'react';
+// import React from 'react';
+import { join } from 'path';
+import { readFileSync } from 'fs';
+// import { info } from 'antd/lib/modal';
 import { remote, ipcRenderer } from 'electron';
-import notification from 'antd/lib/notification';
-import { info } from 'antd/lib/modal';
-import Icon from 'antd/lib/icon';
-import { lt } from 'semver';
+// import notification from 'antd/lib/notification';
+
+// import { lt } from 'semver';
 
 import i18n from 'i18n-renderer-nowa';
 import { request, delay } from 'shared-nowa';
-import { openUrl, msgError, msgSuccess } from 'util-renderer-nowa';
+// import { openUrl, msgError, msgSuccess } from 'util-renderer-nowa';
+import { msgError, msgSuccess } from 'util-renderer-nowa';
 import {
   getLocalUpdateFlag,
-  setLocalUpdateFlag,
-  getLocalLanguage,
+  // setLocalUpdateFlag,
+  // getLocalLanguage,
 } from 'store-renderer-nowa';
 import {
   PREINIT_PAGE,
   SHUTDOWN_PAGE,
   WELCOME_PAGE,
   PROJECT_PAGE,
-  EXTENSION_MAP,
+  // EXTENSION_MAP,
   REGISTRY_MAP
 } from 'const-renderer-nowa';
 
-const { paths, nowa, requests } = remote.getGlobal('services');
+const { paths, nowa, requests, updator } = remote.getGlobal('services');
 
-const getUpdateArgs = (newVersion, url) => ({
-  message: i18n('msg.updateTitle'),
-  description: (
-    <div>
-      {i18n('msg.updateCnt1', newVersion, paths.APP_VERSION)}&bnsp;
-      <a onClick={() => openUrl(url)}>{i18n('msg.updateCnt2')}</a>
-    </div>
-  ),
-  duration: 0,
-  placement: 'bottomRight',
-  icon: <Icon type="download" style={{ color: '#108ee9' }} />,
-});
+// const getUpdateArgs = (newVersion, url) => ({
+//   message: i18n('msg.updateTitle'),
+//   description: (
+//     <div>
+//       {i18n('msg.updateCnt1', newVersion, paths.APP_VERSION)}&bnsp;
+//       <a onClick={() => openUrl(url)}>{i18n('msg.updateCnt2')}</a>
+//     </div>
+//   ),
+//   duration: 0,
+//   placement: 'bottomRight',
+//   icon: <Icon type="download" style={{ color: '#108ee9' }} />,
+// });
 
 export default {
   namespace: 'layout',
 
   state: {
     online: navigator.onLine,
-    // globalMsg: '',
     showPage: PREINIT_PAGE, // 当前页面
     version: paths.APP_VERSION,
     newVersion: paths.APP_VERSION,
-    showSideMask: false, // 遮住项目列表防止误操作
     upgradeUrl: '', // app 更新地址
+    innerUpdate: '', // 应用内自更新
+    showSideMask: false, // 遮住项目列表防止误操作
     backPage: '', // 上一个页面,
     windowHeight: 552, // 窗口高度
-    atAli: false,
+    atAli: false, // 在阿里内网
   },
 
   subscriptions: {
@@ -164,8 +167,45 @@ export default {
       });
     },
     // 检查更新
-    * checkAppUpdate(o, { put, select }) {
-      const { registry } = yield select(state => state.setting);
+    * checkAppUpdate(o, { put }) {
+      const { update, ...others } = yield updator.checkAPPUpdate();
+      if (update) {
+        // 显示更新提示
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            ...others
+          }
+        });
+      }
+      // 展示更新公告
+      console.log(getLocalUpdateFlag(others.version));
+      if (getLocalUpdateFlag(others.version) != 1) {
+        const readme = readFileSync(join(paths.APP_PATH, 'readme.md'), 'utf-8');
+        // const arr = readme.split('#').filter(i => !!i).map(i => i.split('*').slice(1));
+        // const tip = getLocalLanguage() === 'zh' ? arr[0] : arr[1];
+        console.log(readme);
+        // const arr = data.readme
+        //   .split('#')
+        //   .filter(i => !!i)
+        //   .map(i => i.split('*').slice(1));
+        // const tip = getLocalLanguage() === 'zh' ? arr[0] : arr[1];
+
+        // info({
+        //   width: 450,
+        //   title: i18n('msg.updateTip'),
+        //   content: (
+        //     <ul className="update-tip">
+        //       {tip.map(item => <li key={item}>{item}</li>)}
+        //     </ul>
+        //   ),
+        //   onOk() {
+        //     setLocalUpdateFlag(version);
+        //   },
+        //   okText: i18n('form.ok'),
+        // });
+      }
+     /* const { registry } = yield select(state => state.setting);
       const { data, err } = yield request(`${registry}/nowa-gui-version`);
       const version = paths.APP_VERSION;
 
@@ -218,8 +258,10 @@ export default {
           },
           okText: i18n('form.ok'),
         });
-      }
+      }*/
     },
+    // * updateAPP() {
+    // },
     // 发送反馈
     * sendFeedback({ payload }, { put }) {
       const { data, err } = yield requests.feedback(payload);

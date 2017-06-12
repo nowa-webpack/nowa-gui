@@ -10,7 +10,7 @@ import { connect } from 'dva';
 import i18n from 'i18n-renderer-nowa';
 import { getLocalLanguage } from 'store-renderer-nowa';
 import { VSCODE, SUBLIME, WEBSTORM } from 'const-renderer-nowa';
-import { openUrl, hidePathString } from 'util-renderer-nowa';
+import { hidePathString } from 'util-renderer-nowa';
 
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
@@ -72,7 +72,7 @@ class BasicSetting extends Component {
     this.props.dispatch({ type: 'layout/goBack' });
   }
 
-  handleEditorChange = e => {
+  handleEditorChange = (e) => {
     const { form, editor } = this.props;
     const defaultEditor = e.target.value;
     form.setFieldsValue({
@@ -83,12 +83,16 @@ class BasicSetting extends Component {
     });
   };
 
+  updateAPP() {
+    this.props.dispatch({ type: 'layout/updateAPP' });
+  }
+
   render() {
     const { shouldAppUpdate } = this.state;
     const {
       version,
       newVersion,
-      upgradeUrl,
+      // upgradeUrl,
       registryList,
       registry,
       editor,
@@ -115,7 +119,7 @@ class BasicSetting extends Component {
               type="primary"
               size="small"
               icon="download"
-              onClick={() => openUrl(upgradeUrl)}
+              onClick={() => this.updateAPP()}
             >
               {newVersion}
             </Button>}
@@ -207,7 +211,7 @@ BasicSetting.propTypes = {
   defaultEditor: PropTypes.string.isRequired,
   registry: PropTypes.string.isRequired,
   registryList: PropTypes.array.isRequired,
-  upgradeUrl: PropTypes.string.isRequired,
+  // upgradeUrl: PropTypes.string.isRequired,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
     setFieldsValue: PropTypes.func,
@@ -223,7 +227,7 @@ export default Form.create()(
   connect(({ layout, setting }) => ({
     version: layout.version,
     newVersion: layout.newVersion,
-    upgradeUrl: layout.upgradeUrl,
+    // upgradeUrl: layout.upgradeUrl,
     defaultEditor: setting.defaultEditor,
     editor: setting.editor,
     registry: setting.registry,

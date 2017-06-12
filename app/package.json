@@ -1,6 +1,6 @@
 {
-  "name": "NowaGUI",
-  "version": "1.8.0",
+  "name": "nowa-gui-version-test",
+  "version": "1.0.0",
   "description": "A tool for nowa developement.",
   "productName": "ElectronWebpack",
   "main": "./main.js",
@@ -12,5 +12,12 @@
     "name": "Poling",
     "email": "466681097@qq.com"
   },
+  "downloadDomain": "https://alixux.org/downloads",
+  "download": {
+    "darwin": "https://alixux.org/downloads/nowa-gui.dmg",
+    "win32": "https://alixux.org/downloads/nowa-gui.exe",
+    "linux": "https://alixux.org/downloads/nowa-gui.deb"
+  },
+  "innerUpdate": true,
   "license": "ISC"
 }
