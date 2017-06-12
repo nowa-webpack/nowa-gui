@@ -32,8 +32,13 @@
     "asar": false,
     "rebuild": true,
     "files": [
-      "assets/", "node_modules/", "nodes/", "renderer/",
-      "task/", "main.js", "package.json"
+      "assets/",
+      "node_modules/",
+      "nodes/",
+      "renderer/",
+      "task/",
+      "main.js",
+      "package.json"
     ],
     "win": {
       "target": [
