@@ -10,18 +10,8 @@ import requests from './requests';
 import commands from './commands';
 import mainWin from './windowManager';
 import boilerplate from './boilerplate';
-// const loadModules = (promptConfigPath) => {
-//   try {
-//     delete require.cache[require.resolve(promptConfigPath)];
-//     const a = require(promptConfigPath);
+import updator from './updator';
 
-//     console.log(a);
-//     return a;
-//     // return require(promptConfigPath);
-//   } catch (err) {
-//     return {};
-//   }
-// };
 
 export default {
   menu,
@@ -34,6 +24,7 @@ export default {
   commands,
   requests,
   tasklog,
+  updator,
   ejsRender(tpl, data) {
     return render(tpl, data);
   },

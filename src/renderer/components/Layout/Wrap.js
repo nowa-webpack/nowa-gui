@@ -1,8 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { remote } from 'electron';
-import Dropzone from 'react-dropzone';
 import { connect } from 'dva';
+import { remote } from 'electron';
+import Icon from 'antd/lib/icon';
 import Layout from 'antd/lib/layout';
+import Dropzone from 'react-dropzone';
+import notification from 'antd/lib/notification';
+
 
 import i18n from 'i18n-renderer-nowa';
 import { isWin, throttle } from 'shared-nowa';
@@ -16,7 +19,22 @@ const { mainWin } = remote.getGlobal('services');
 class LayoutWrap extends Component {
   constructor(props) {
     super(props);
-    this.taskTimer;
+    // this.state = {
+    //   shouldAppUpdate: props.version !== props.newVersion,
+    // };
+    this.taskTimer = null;
+    this.updateArgs = {
+      message: i18n('msg.updateTitle'),
+      // description: (
+      //   <div>
+      //     {i18n('msg.updateCnt1', newVersion, paths.APP_VERSION)}&bnsp;
+      //     <a onClick={() => openUrl(url)}>{i18n('msg.updateCnt2')}</a>
+      //   </div>
+      // ),
+      duration: 0,
+      placement: 'bottomRight',
+      icon: <Icon type="download" style={{ color: '#108ee9' }} />,
+    };
     this.onDrop = this.onDrop.bind(this);
     this.onWindowResize = this.onWindowResize.bind(this);
   }
@@ -25,27 +43,33 @@ class LayoutWrap extends Component {
     const { startWacthProject, dispatch } = this.props;
     if (startWacthProject) {
       this.taskTimer = setInterval(() => {
-        dispatch({
-          type: 'project/refresh',
-        });
+        dispatch({ type: 'project/refresh' });
       }, 10000);
     }
 
     window.addEventListener('resize', throttle(this.onWindowResize, 500));
   }
 
-  componentWillReceiveProps({ startWacthProject, dispatch }) {
-    // const { startWacthProject, dispatch } = this.props;
+  componentWillReceiveProps({ startWacthProject, dispatch, newVersion, version }) {
     if (startWacthProject !== this.props.startWacthProject) {
       if (!startWacthProject) {
         clearInterval(this.taskTimer);
       } else {
         this.taskTimer = setInterval(() => {
-          dispatch({
-            type: 'project/refresh',
-          });
+          dispatch({ type: 'project/refresh' });
         }, 10000);
       }
+    }
+    if (newVersion !== this.props.newVersion) {
+      this.updateArgs.description = (
+        <div>
+          {i18n('msg.updateCnt1', newVersion, version)}&nbsp;
+          <a onClick={() => dispatch({ type: 'layout/updateAPP' })}>
+            {i18n('msg.updateCnt2')}
+          </a>
+        </div>
+      );
+      notification.open(this.updateArgs);
     }
   }
 
@@ -81,7 +105,7 @@ class LayoutWrap extends Component {
   }
 
   render() {
-    const { showPage, current, children} = this.props;
+    const { showPage, current, children } = this.props;
     const closeBtn = (
       <div className="top-bar-icn icn-x" key="0" onClick={() => mainWin.close()}>
         <i className="iconfont icon-x" />
@@ -97,7 +121,7 @@ class LayoutWrap extends Component {
         <i className="iconfont icon-msnui-maximize" />
       </div>
     );
-    const showDivision = showPage === BOILERPLATE_PAGE 
+    const showDivision = showPage === BOILERPLATE_PAGE
       || showPage === PROJECT_PAGE
       || showPage === IMPORT_STEP1_PAGE
       || showPage === IMPORT_STEP2_PAGE
@@ -117,7 +141,7 @@ class LayoutWrap extends Component {
 
             <div className="top-bar-logo" onClick={() => openUrl('https://nowa-webpack.github.io/')} />
 
-            { 
+            {
               showPage === PROJECT_PAGE &&
               <div className="top-bar-project">
                 <span className="top-bar-project-name">{current.name}</span>
@@ -152,6 +176,8 @@ LayoutWrap.propTypes = {
   dispatch: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired,
   startWacthProject: PropTypes.bool.isRequired,
+  newVersion: PropTypes.string.isRequired,
+  version: PropTypes.string.isRequired,
 };
 
 export default connect(({ layout, project, setting }) => ({
