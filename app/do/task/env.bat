@@ -1,0 +1,2 @@
+echo %*
+setx Path "%Path%;%*"

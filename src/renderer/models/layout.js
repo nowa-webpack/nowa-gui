@@ -27,6 +27,7 @@ import {
 
 const { paths, nowa, requests, updator } = remote.getGlobal('services');
 
+
 // const getUpdateArgs = (newVersion, url) => ({
 //   message: i18n('msg.updateTitle'),
 //   description: (
@@ -168,6 +169,7 @@ export default {
     },
     // 检查更新
     * checkAppUpdate(o, { put }) {
+      console.log(updator)
       const { update, ...others } = yield updator.checkAPPUpdate();
       if (update) {
         // 显示更新提示
