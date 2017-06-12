@@ -24,7 +24,7 @@ class Updator {
 
   async check() {
     const registry = config.getItem('REGISTRY');
-    const { data, err } = await request(`${registry}/nowa-gui-version-test/latest`);
+    const { data, err } = await request(`${registry}/nowa-gui-version/latest`);
 
     if (err) {
       log.error(err);
@@ -48,7 +48,6 @@ class Updator {
   }
 
   async override() {
-
     const target = APP_PATH;
     try {
       const files = await download(this.remoteUrl, target);
@@ -56,9 +55,9 @@ class Updator {
       copySync(join(target, dir), target);
       removeSync(join(target, dir));
       return { err: false, msg: '' };
-    } catch(e) {
-      log.error('download err', e)
-      return { err:true, msg: e.message };
+    } catch (e) {
+      log.error('download err', e);
+      return { err: true, msg: e.message };
     }
   }
 }

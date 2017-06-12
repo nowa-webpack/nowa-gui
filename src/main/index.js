@@ -63,6 +63,7 @@ app
     tray.init();
     commands.encode();
     log.error('app ready');
+    log.error('app test update');
   })
   .on('activate', () => {
     if (mainWin.getWin() === null) {
