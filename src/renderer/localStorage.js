@@ -68,11 +68,9 @@ export const setLocalEditorPath = (editor, editorPath) => {
 };
 
 export const getLocalUpdateFlag = (version) => {
-  const str = config.getItem(UPDATE_TIP);
+  const str = config.getItem(UPDATE_TIP) || '';
   const readed = ~str.indexOf(version);
-  // if (readed)
-  // if (str) return str.split('|')[1];
-  return readed;
+  return !readed;
 };
 
 export const setLocalUpdateFlag = version => config.setItem(UPDATE_TIP, `${version}|1`);
