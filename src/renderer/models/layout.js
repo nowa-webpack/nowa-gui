@@ -202,12 +202,11 @@ export default {
         });
         if (err) {
           msgError(msg);
-          return false;
         } else {
           msgSuccess('更新成功，应用将在2秒后重启');
           yield delay(2000);
           remote.app.relaunch();
-          remote.app.exit(0)
+          remote.app.exit(0);
         }
       } else {
         openUrl(upgradeUrl);
