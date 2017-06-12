@@ -9,3 +9,4 @@ dll
 test
 webpack/analyzer-report.html
 webpack/plain-report.txt
+package-lock.json

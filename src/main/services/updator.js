@@ -1,52 +1,28 @@
 import { lt } from 'semver';
-// import { join, dirname } from 'path';
-// import { copySync, removeSync } from 'fs-extra';
+import { join, dirname } from 'path';
+import { copySync, removeSync } from 'fs-extra';
 
 import config from 'config-main-nowa';
 import { request } from 'shared-nowa';
 
-// import { APP_PATH, APP_VERSION } from './paths';
-import { APP_VERSION } from './paths';
 import log from './applog';
 import mainWin from './windowManager';
-// import download from './boilerplate/download';
+import download from './boilerplate/download';
+import { APP_PATH, APP_VERSION } from './paths';
 
-/*
-async function update() {
-  const { data: pkg, err } = await request(`${config.getItem('REGISTRY')}/nowa-gui/latest`);
-  try {
-    if (err) throw err;
-    const target = join(APP_PATH, 'do');
-    download(pkg.dist.tarball, target)
-      .then((files) => {
-        const dir = dirname(files[1].path);
-        console.log(dir);
-        copySync(join(target, dir), target);
-        removeSync(join(target, dir));
-      });
-  } catch (e) {
-    log.error(e);
-    mainWin.send('main-err', e);
-  }
-}*/
 
-// const EXTENSION_MAP = {
-//   win32: 'exe',
-//   darwin: 'dmg',
-//   linux: 'deb',
-// };
+const extension = {
+  win32: 'exe',
+  darwin: 'dmg',
+  linux: 'deb',
+};
 
 class Updator {
   constructor() {
-    // super();
-    this.extension = {
-      win32: 'exe',
-      darwin: 'dmg',
-      linux: 'deb',
-    };
+    this.remoteUrl = '';
   }
 
-  async checkAPPUpdate() {
+  async check() {
     const registry = config.getItem('REGISTRY');
     const { data, err } = await request(`${registry}/nowa-gui-version-test/latest`);
 
@@ -57,6 +33,7 @@ class Updator {
     }
 
     const { version, innerUpdate } = data;
+    this.remoteUrl = data.dist.tarball;
 
     if (lt(APP_VERSION, version)) {
       return {
@@ -64,12 +41,26 @@ class Updator {
         innerUpdate,
         newVersion: version,
         upgradeUrl: innerUpdate ? ''
-          : `${data.downloadDomain}/${version}/NowaGUI.${this.extension[process.platform]}`
+          : `${data.downloadDomain}/${version}/NowaGUI.${extension[process.platform]}`
       };
     }
     return { update: false };
   }
 
+  async override() {
+
+    const target = APP_PATH;
+    try {
+      const files = await download(this.remoteUrl, target);
+      const dir = dirname(files[1].path);
+      copySync(join(target, dir), target);
+      removeSync(join(target, dir));
+      return { err: false, msg: '' };
+    } catch(e) {
+      log.error('download err', e)
+      return { err:true, msg: e.message };
+    }
+  }
 }
 
 export default new Updator();

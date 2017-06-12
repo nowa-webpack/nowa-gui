@@ -5,6 +5,7 @@ import Icon from 'antd/lib/icon';
 import Layout from 'antd/lib/layout';
 import Dropzone from 'react-dropzone';
 import notification from 'antd/lib/notification';
+import Spin from 'antd/lib/spin';
 
 
 import i18n from 'i18n-renderer-nowa';
@@ -24,13 +25,8 @@ class LayoutWrap extends Component {
     // };
     this.taskTimer = null;
     this.updateArgs = {
+      key: 'update',
       message: i18n('msg.updateTitle'),
-      // description: (
-      //   <div>
-      //     {i18n('msg.updateCnt1', newVersion, paths.APP_VERSION)}&bnsp;
-      //     <a onClick={() => openUrl(url)}>{i18n('msg.updateCnt2')}</a>
-      //   </div>
-      // ),
       duration: 0,
       placement: 'bottomRight',
       icon: <Icon type="download" style={{ color: '#108ee9' }} />,
@@ -64,7 +60,10 @@ class LayoutWrap extends Component {
       this.updateArgs.description = (
         <div>
           {i18n('msg.updateCnt1', newVersion, version)}&nbsp;
-          <a onClick={() => dispatch({ type: 'layout/updateAPP' })}>
+          <a onClick={() => {
+            dispatch({ type: 'layout/updateAPP' });
+            notification.close('update');
+          }}>
             {i18n('msg.updateCnt2')}
           </a>
         </div>
@@ -105,7 +104,7 @@ class LayoutWrap extends Component {
   }
 
   render() {
-    const { showPage, current, children } = this.props;
+    const { showPage, current, children, loading } = this.props;
     const closeBtn = (
       <div className="top-bar-icn icn-x" key="0" onClick={() => mainWin.close()}>
         <i className="iconfont icon-x" />
@@ -135,6 +134,7 @@ class LayoutWrap extends Component {
         onClick={e => e.preventDefault()}
       >
         <Layout id="main-ctn" style={{ display: 'block' }}>
+          <Spin spinning={loading} size="large" wrapperClassName="main-spin">
           <Header className="top-bar">
 
             { showDivision && <div className="top-bar-division" /> }
@@ -159,6 +159,7 @@ class LayoutWrap extends Component {
             </div>
           </Header>
           { children }
+          </Spin>
         </Layout>
         <DragPage />
       </Dropzone>
@@ -178,6 +179,7 @@ LayoutWrap.propTypes = {
   startWacthProject: PropTypes.bool.isRequired,
   newVersion: PropTypes.string.isRequired,
   version: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default connect(({ layout, project, setting }) => ({
@@ -188,4 +190,5 @@ export default connect(({ layout, project, setting }) => ({
   online: layout.online,
   registry: setting.registry,
   startWacthProject: project.startWacthProject,
+  loading: layout.loading,
 }))(LayoutWrap);

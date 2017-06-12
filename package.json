@@ -20,7 +20,6 @@
     "pack:mac": "npm run prepack && build -m",
     "pack:win": "npm run prepack && build -w",
     "pack:linux": "npm run prepack && npm run build && build -l",
-    
     "lint": "eslint --ext .js src",
     "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "log": "git log --color --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s   %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit"
@@ -102,9 +101,7 @@
     "electron-is": "^2.4.0",
     "electron-log": "^2.2.4",
     "electron-rebuild": "^1.5.10",
-    "eslint": "^4.0.0",
-    "eslint-config-airbnb": "^15.0.1",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint": "^3.19.0",
     "eslint-plugin-react": "^7.0.1",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",

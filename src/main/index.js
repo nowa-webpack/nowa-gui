@@ -4,7 +4,6 @@ import cnr from 'check-npm-registry';
 import { isDev, isMac } from 'shared-nowa';
 import services from './services';
 import config from './userConfig';
-// import updator from './updator';
 
 const { menu, mainWin, log, tray, commands, nowa, requests } = services;
 
