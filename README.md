@@ -17,21 +17,32 @@ https://nowa-webpack.github.io/
 ## setup
 
 ```bash
-npm install
-npm run dev
+npm install -r http://registry.npm.taobao.org
 
 ```
 
 in another terminal
 
-if you first run this project, please run it at first.
+if you firstly run this project, please run it at first.
 ```bash
-npm run prepack
+npm run dev:dll
+```
+
+don't forget to modify the file `node_modules/rc/index.js`:
+
+```
+// if(!module.parent) {
+//   console.log(
+//     JSON.stringify(module.exports(process.argv[2]), false, 2)
+//   )
+// }
 ```
 
 then run
 
 ```bash
+npm run dev:renderer
+npm run dev:main
 npm start
 
 ```
@@ -50,6 +61,12 @@ npm run packer:mac
 ```
 
 * in windows
+
+```bash
+npm run packer:win
+```
+
+* in linux
 
 ```bash
 npm run packer:win

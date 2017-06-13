@@ -140,6 +140,7 @@ module.exports = {
     '您当前安装的nowa命令行版本过低，为不影响使用，请全局卸载nowa命令行版本 `npm uninstall nowa -g`',
   'msg.LinkInvalidation': '链接失效',
   'msg.required': '不能为空',
+  'msg.relaunch': '更新成功，应用将在2秒后重启。',
 
   'msg.editorPath': '请选择默认编辑器安装路径',
   'msg.editorNotExisted': '请在设置面板中配置编辑器路径',

@@ -1,4 +1,5 @@
 # zh
-* 修复 windows 下无法使用 nowa 命令的 bug
+* 集成 vdev
+* 支持应用内自更新
 # en
 * Fix a bug that causes nowa command unavailable on windows
