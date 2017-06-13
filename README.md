@@ -24,6 +24,7 @@ npm install -r http://registry.npm.taobao.org
 in another terminal
 
 if you firstly run this project, please run it at first.
+
 ```bash
 npm run dev:dll
 ```
@@ -44,6 +45,7 @@ then run
 npm run dev:renderer
 npm run dev:main
 npm start
+
 
 ```
 
@@ -69,11 +71,6 @@ npm run packer:win
 * in linux
 
 ```bash
-npm run packer:win
+npm run packer:linux
+
 ```
-
-
-
-
-
-
