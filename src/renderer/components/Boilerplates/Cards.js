@@ -22,6 +22,7 @@ const Cards = ({
           key={item.name}
           data={item}
           dispatch={dispatch}
+          type="official"
         />)
     }
     { aliBoilerplates.length > 0
@@ -30,6 +31,7 @@ const Cards = ({
           key={item.name}
           data={item}
           dispatch={dispatch}
+          type="ali"
         />)
     }
     { remoteBoilerplates.length > 0
