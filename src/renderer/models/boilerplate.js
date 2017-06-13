@@ -83,10 +83,11 @@ export default {
       });
 
       const { success, data } = yield boilerplate.official.update({
-        name, tag, type,
-        registry: type ==='ali' ? REGISTRY_MAP.tnpm : ''
+        name,
+        tag,
+        type,
+        registry: type === 'ali' ? REGISTRY_MAP.tnpm : registry
       });
-      
       if (success) {
         msgSuccess(i18n('msg.updateSuccess'));
         yield put({
