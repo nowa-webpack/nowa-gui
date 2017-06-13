@@ -33,7 +33,7 @@ const get = async function ({
         defaultTag,
         description,
         homepage: homepage.slice(4, homepage.length - 4),
-        type: 'OFFICIAL',
+        type: type === 'official' ? 'OFFICIAL' : 'ALI',
         loading: false,
       };
 
@@ -96,22 +96,23 @@ const get = async function ({
   return manifest[type] || [];
 };
 
-const update = async function (tempName, tag) {
-  console.log('update official boilerplate');
+const update = async function ({ name, tag, type, registry = config.getItem('REGISTRY') }) {
+  console.log(`update ${type} boilerplate`);
   const manifest = getMainifest();
-  const registry = config.getItem('REGISTRY');
-
+  console.log(`${registry}/${name}/${tag}`);
   try {
-    const { data: pkg, err } = await request(`${registry}/${tempName}/${tag}`);
+    
+    const { data: pkg, err } = await request(`${registry}/${name}/${tag}`);
+    console.log(err, pkg)
 
     if (err) throw err;
 
     const newVersion = pkg.version;
-    const name = `${tempName}-${tag}`;
+    const name = `${name}-${tag}`;
     const folder = join(TEMPLATES_DIR, name);
 
-    manifest.official.map((item) => {
-      if (item.name === tempName) {
+    manifest[type].map((item) => {
+      if (item.name === name) {
         item.tags = item.tags.map((_t) => {
           if (_t.name === tag) {
             _t.update = false;
@@ -127,15 +128,15 @@ const update = async function (tempName, tag) {
     setMainifest(manifest);
 
     const files = await download(pkg.dist.tarball, folder);
-      // .then((files) => {
     const dir = dirname(files[1].path);
+
     copySync(join(folder, dir), folder);
     removeSync(join(folder, dir));
-      // });
     return {
       success: true,
-      data: manifest.official
+      data: manifest[type]
     };
+    return { success: false, };
   } catch (err) {
     log.error(err);
     mainWin.send('main-err', err);

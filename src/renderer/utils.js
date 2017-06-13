@@ -73,7 +73,7 @@ export const writeABCJson = (filePath, abc) => {
   if (abc.template) {
     file.options.template = abc.template.replace(/\\/g, '\\\\');
   }
-  writeJsonSync(abcPath, file);
+  writeJsonSync(abcPath, file, { spaces: 2 });
 };
 
 export const readPkgJson = filePath =>

@@ -28,12 +28,13 @@ class Item extends Component {
   }
 
   updateBoilerplate() {
-    const { dispatch, data } = this.props;
+    const { dispatch, data, type } = this.props;
     dispatch({
       type: 'boilerplate/updateOffical',
       payload: {
-        tempName: data.name,
-        tag: this.state.tag
+        name: data.name,
+        tag: this.state.tag,
+        type
       }
     });
     this.setState({ shouldUpdate: false });
@@ -109,6 +110,7 @@ class Item extends Component {
 Item.propTypes = {
   data: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 export default Item;

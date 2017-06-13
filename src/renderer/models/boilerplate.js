@@ -53,30 +53,46 @@ export default {
         payload: { aliBoilerplates }
       });
     },
-    * updateOffical({ payload: { tempName, tag } }, { select, put }) {
-      const { officialBoilerplates } = yield select(state => state.boilerplate);
-      officialBoilerplates.map((item) => {
-        if (item.name === tempName) {
-          item.loading = true;
-        }
-        return item;
-      });
+    * updateOffical({ payload: { name, tag, type } }, { select, put }) {
+      console.log('updateOffical');
+      const { officialBoilerplates, aliBoilerplates } = yield select(state => state.boilerplate);
+      const { registry } = yield select(state => state.setting);
+      let boilerplates = [];
+
+      if (type === 'official') {
+        boilerplates = officialBoilerplates.map((item) => {
+          if (item.name === name) {
+            item.loading = true;
+          }
+          return item;
+        });
+      } else {
+        boilerplates = aliBoilerplates.map((item) => {
+          if (item.name === name) {
+            item.loading = true;
+          }
+          return item;
+        });
+      }
 
       yield put({
         type: 'changeStatus',
         payload: {
-          officialBoilerplates: [...officialBoilerplates]
+          [`${type}Boilerplates`]: boilerplates
         }
       });
 
-      const { success, data } = yield boilerplate.official.update(tempName, tag);
-
+      const { success, data } = yield boilerplate.official.update({
+        name, tag, type,
+        registry: type ==='ali' ? REGISTRY_MAP.tnpm : ''
+      });
+      
       if (success) {
         msgSuccess(i18n('msg.updateSuccess'));
         yield put({
           type: 'changeStatus',
           payload: {
-            officialBoilerplates: data
+            [`${type}Boilerplates`]: data
           }
         });
       }
