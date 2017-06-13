@@ -101,15 +101,14 @@ const update = async function ({ name, tag, type, registry = config.getItem('REG
   const manifest = getMainifest();
   console.log(`${registry}/${name}/${tag}`);
   try {
-    
     const { data: pkg, err } = await request(`${registry}/${name}/${tag}`);
-    console.log(err, pkg)
+    console.log(err, pkg);
 
     if (err) throw err;
 
     const newVersion = pkg.version;
-    const name = `${name}-${tag}`;
-    const folder = join(TEMPLATES_DIR, name);
+    const target = `${name}-${tag}`;
+    const folder = join(TEMPLATES_DIR, target);
 
     manifest[type].map((item) => {
       if (item.name === name) {
@@ -136,7 +135,6 @@ const update = async function ({ name, tag, type, registry = config.getItem('REG
       success: true,
       data: manifest[type]
     };
-    return { success: false, };
   } catch (err) {
     log.error(err);
     mainWin.send('main-err', err);

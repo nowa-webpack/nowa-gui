@@ -203,7 +203,7 @@ export default {
         if (err) {
           msgError(msg);
         } else {
-          msgSuccess('更新成功，应用将在2秒后重启');
+          msgSuccess(i18n('msg.relaunch'));
           yield delay(2000);
           remote.app.relaunch();
           remote.app.exit(0);
