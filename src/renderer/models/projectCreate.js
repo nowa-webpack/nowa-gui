@@ -174,10 +174,13 @@ export default {
         console.log('config', config);
         payload.repository = (config['remote "origin"'] || {}).url || '';
       }
+      console.log('path 1');
 
       if (selectExtendsProj.answers) {
         payload = selectExtendsProj.answers(payload, {});
       }
+
+      console.log('path 2');
 
       yield put({
         type: 'changeStatus',

@@ -102,7 +102,6 @@ const update = async function ({ name, tag, type, registry = config.getItem('REG
   console.log(`${registry}/${name}/${tag}`);
   try {
     const { data: pkg, err } = await request(`${registry}/${name}/${tag}`);
-    console.log(err, pkg);
 
     if (err) throw err;
 

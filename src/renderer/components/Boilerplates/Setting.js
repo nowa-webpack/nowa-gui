@@ -38,6 +38,7 @@ class Setting extends Component {
       repository: '',
     };
     this.hasPrompts = Object.keys(selectExtendsProj).length && selectExtendsProj.prompts;
+    this.extendsValidator = selectExtendsProj.validator || {};
 
     if (this.hasPrompts) {
       selectExtendsProj.prompts.forEach((item) => {
@@ -45,8 +46,9 @@ class Setting extends Component {
       });
     }
 
-    this.getExtendsHtml = this.getExtendsHtml.bind(this);
     this.goBack = this.goBack.bind(this);
+    this.nameValid = this.nameValid.bind(this);
+    this.getExtendsHtml = this.getExtendsHtml.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
   }
 
@@ -145,12 +147,22 @@ class Setting extends Component {
   handleNameChange(e) {
     const { form } = this.props;
     const name = e.target.value;
-    // console.log(this.baseExtraArgs);
 
     form.setFieldsValue({
       name,
       projPath: join(this.basePath, name)
     });
+  }
+
+  nameValid(rule, value, callback) {
+    if (!(NAME_MATCH.test(value))) {
+      callback(i18n('msg.invalidName'));
+    }
+    const { err, msg } = this.extendsValidator.name(value);
+    if (err) {
+      callback(msg);
+    }
+    callback();
   }
 
   handleSubmit() {
@@ -182,15 +194,21 @@ class Setting extends Component {
 
 
   render() {
-    const { registryList, defaultRegistry } = this.props;
+    const { registryList, defaultRegistry, selectExtendsProj } = this.props;
     const { getFieldDecorator } = this.props.form;
     let extendsHtml;
+    const nameRules = [
+      { message: i18n('msg.invalidName'), pattern: NAME_MATCH, required: true },
+    ];
 
     if (this.hasPrompts) {
       extendsHtml = this.getExtendsHtml();
     }
 
     const pathIcon = (<i className="iconfont icon-folder" onClick={() => this.selectPath()} />);
+    if (this.extendsValidator.name) {
+      nameRules.push({ validator: this.nameValid });
+    }
 
     return (
       <div className="boilerplate-form">
@@ -204,9 +222,7 @@ class Setting extends Component {
           >
             {getFieldDecorator('name', {
               initialValue: 'untitled',
-              rules: [
-                { message: i18n('msg.invalidName'), pattern: NAME_MATCH, required: true },
-              ],
+              rules: nameRules,
               onChange: this.handleNameChange
             })(<Input />)}
           </FormItem>
@@ -270,7 +286,7 @@ Setting.propTypes = {
 };
 
 export default Form.create()(connect(({ setting, projectCreate }) => ({
-  selectExtendsProj: projectCreate.selectExtendsProj,
+  selectExtendsProj: projectCreate.selectExtendsProj || {},
   // showModal: projectCreate.showOverwriteModal,
   defaultRegistry: setting.registry,
   registryList: setting.registryList,
