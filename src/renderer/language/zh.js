@@ -141,6 +141,8 @@ module.exports = {
   'msg.LinkInvalidation': '链接失效',
   'msg.required': '不能为空',
 
+  'msg.updateAPPSucess': '更新成功，应用将在2秒后重启。',
+
   'msg.editorPath': '请选择默认编辑器安装路径',
   'msg.editorNotExisted': '请在设置面板中配置编辑器路径',
 

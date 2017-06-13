@@ -143,6 +143,9 @@ module.exports = {
   'msg.LinkInvalidation': 'Link Invalidation',
   'msg.required': 'Required',
 
+  'msg.updateAPPSucess': 'Update Successfully and the application will restart after 2s.',
+
+
   'msg.editorPath': 'Please set installation path of default editor!',
   'msg.editorNotExisted': 'Please go to the config pane to set EDITOR path.',
 
