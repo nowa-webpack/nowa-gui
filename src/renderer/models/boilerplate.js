@@ -19,6 +19,7 @@ export default {
     localBoilerplates: preManifest.local || [],
     remoteBoilerplates: preManifest.remote || [],
     aliBoilerplates: [],
+    antBoilerplates: [],
 
     showAddBoilerplateModal: false, // 显示新建脚手架模态框
     addOrEditBoilerplateType: 'new', // new 需要新建，local 需要修改本地，remote 需要修改远程
@@ -51,6 +52,14 @@ export default {
       yield put({
         type: 'changeStatus',
         payload: { aliBoilerplates }
+      });
+    },
+    * fetchAnt(o, { put }) {
+      const antBoilerplates = yield boilerplate.ant.get();
+      console.log(antBoilerplates);
+      yield put({
+        type: 'changeStatus',
+        payload: { antBoilerplates }
       });
     },
     * updateOffical({ payload: { name, tag, type } }, { select, put }) {

@@ -89,6 +89,9 @@ export default {
             type: 'boilerplate/fetchOfficial',
           });
           yield put({
+            type: 'boilerplate/fetchAnt',
+          });
+          yield put({
             type: 'checkAli',
           });
         }

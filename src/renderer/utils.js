@@ -13,7 +13,7 @@ import { checkver } from 'shared-nowa';
 
 const { ejsRender } = remote.getGlobal('services');
 
-export const hidePathString = (filePath, num: 70) => {
+export const hidePathString = (filePath, num = 70) => {
   if (!filePath) return '';
   const base = basename(filePath);
 
@@ -26,10 +26,10 @@ export const hidePathString = (filePath, num: 70) => {
 };
 
 export const hideBoilerplateDesp = str => {
-  if (!str) return '';
+  if (!str) return 'No description.';
   const size = str.length;
-  if (size <= 45) return str;
-  return str.slice(0, 42) + '...';
+  if (size <= 40) return str;
+  return str.slice(0, 37) + '...';
 };
 
 export const upperFirstCha = word =>

@@ -6,6 +6,7 @@ import i18n from 'i18n-renderer-nowa';
 import OfficialCard from './OfficialCard';
 import LocalCard from './LocalCard';
 import RemoteCard from './RemoteCard';
+import AntCard from './AntCard';
 
 
 const Cards = ({
@@ -13,9 +14,26 @@ const Cards = ({
   localBoilerplates = [],
   remoteBoilerplates = [],
   aliBoilerplates = [],
+  antBoilerplates = [],
   dispatch
 }) => (
   <div className="boilerplate-cards">
+    { remoteBoilerplates.length > 0
+      && remoteBoilerplates.map(item =>
+        <RemoteCard
+          key={item.id}
+          data={item}
+          dispatch={dispatch}
+        />)
+    }
+    { localBoilerplates.length > 0
+      && localBoilerplates.map(item =>
+        <LocalCard
+          key={item.id}
+          data={item}
+          dispatch={dispatch}
+        />)
+    }
     { officialBoilerplates.length > 0
       && officialBoilerplates.map(item =>
         <OfficialCard
@@ -34,18 +52,10 @@ const Cards = ({
           type="ali"
         />)
     }
-    { remoteBoilerplates.length > 0
-      && remoteBoilerplates.map(item =>
-        <RemoteCard
-          key={item.id}
-          data={item}
-          dispatch={dispatch}
-        />)
-    }
-    { localBoilerplates.length > 0
-      && localBoilerplates.map(item =>
-        <LocalCard
-          key={item.id}
+    { antBoilerplates.length > 0
+      && antBoilerplates.map(item =>
+        <AntCard
+          key={item.name}
           data={item}
           dispatch={dispatch}
         />)
@@ -69,6 +79,7 @@ Cards.propTypes = {
   aliBoilerplates: PropTypes.array.isRequired,
   localBoilerplates: PropTypes.array.isRequired,
   remoteBoilerplates: PropTypes.array.isRequired,
+  antBoilerplates: PropTypes.array.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 

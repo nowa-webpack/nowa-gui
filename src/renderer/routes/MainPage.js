@@ -57,54 +57,6 @@ const MainPage = ({
   );
 };
 
-/*class MainPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      siderWidth: 175,
-    };
-
-    this.onWindowResize = this.onWindowResize.bind(this);
-  }
-  componentDidMount() {
-    window.addEventListener('resize', this.onWindowResize);
-  }
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.onWindowResize);
-  }
-  onWindowResize() {
-    const size = mainWin.getSize();
-    const middle = size[0] * 0.194;
-    let siderWidth = 175;
-    if (middle > 175) {
-      siderWidth = middle > 250 ? 250 : middle;
-    }
-    this.setState({ siderWidth });
-  }
-
-  render() {
-    const { dispatch } = this.props;
-    const { siderWidth } = this.state;
-    return (
-      <Layout className="main">
-        <Sider className="main-sider" width={175}>
-          <ProjectList />
-          <SiderFoot dispatch={dispatch} />
-        </Sider>
-        <BoilerplatePage />
-      </Layout>
-    );
-  }
-};*/
-
-/*<Sider>dd</Sider>
-<Sider className="main-sider" style={{
-        flex: '0 0 auto',
-        width: '18%',
-        'max-width': 250,
-        'min-width': 176,
-      }}>dd</Sider>*/
-
 
 MainPage.propTypes = {
   showPage: PropTypes.string.isRequired,

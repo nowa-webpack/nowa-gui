@@ -1,12 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { shell } from 'electron';
 import Button from 'antd/lib/button';
 import Select from 'antd/lib/select';
 import Input from 'antd/lib/input';
 import Spin from 'antd/lib/spin';
 
 import i18n from 'i18n-renderer-nowa';
-import { hideBoilerplateDesp } from 'util-renderer-nowa';
+import { hideBoilerplateDesp, openUrl } from 'util-renderer-nowa';
 
 const InputGroup = Input.Group;
 
@@ -76,7 +75,7 @@ class Item extends Component {
           <div className="boilerplate-card-foot">
             <InputGroup compact>
               <Button icon="link" className="boilerplate-card-official-opt more"
-                onClick={() => shell.openExternal(data.homepage)}
+                onClick={() => openUrl(data.homepage)}
               >{i18n('project.new.more')}</Button>
               <Select
                 className="boilerplate-card-official-opt"

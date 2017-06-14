@@ -70,7 +70,7 @@ const get = async function ({
     } catch (e) {
       log.error(e);
       mainWin.send('main-err', e);
-      if (manifest[type].length > 0) {
+      if (manifest[type] && manifest[type].length > 0) {
         return manifest[type].filter(n => n.name === tempName)[0];
       }
       return null;
