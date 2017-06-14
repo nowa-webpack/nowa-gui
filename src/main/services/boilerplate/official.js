@@ -46,22 +46,25 @@ const get = async function ({
           // version,
           path: tempPath,
           update: false,
+          downloaded: false
         };
         // 这个模板未被下载
         if (!existsSync(tempPath)) {
           o.version = version;
-          download(pkg.versions[version].dist.tarball, tempPath)
-            .then((files) => {
-              const dir = dirname(files[1].path);
-              copySync(join(tempPath, dir), tempPath);
-              removeSync(join(tempPath, dir));
-            });
+          // download(pkg.versions[version].dist.tarball, tempPath)
+          //   .then((files) => {
+          //     const dir = dirname(files[1].path);
+          //     copySync(join(tempPath, dir), tempPath);
+          //     removeSync(join(tempPath, dir));
+          //   });
         } else {
+          o.downloaded = true;
           const manifestItem = manifest[type].filter(n => n.name === tempName)[0];
           const oldVersion = manifestItem.tags.filter(n => n.name === tag)[0].version;
           o.version = oldVersion;
           o.update = lt(oldVersion, version);
         }
+        console.log(o);
 
         return o;
       });

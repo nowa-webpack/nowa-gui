@@ -31,7 +31,38 @@ const downloadRemoteTemplate = async function (item, dirpath) {
   }
 };
 
-const newRemote = async function (raw) {
+const newRemote = async function (item) {
+  console.log('newRemote');
+  const manifest = getMainifest();
+
+  try {
+    const tempPath = join(TEMPLATES_DIR, `@remote/${item.name}`);
+
+    // if (!item.disable) {
+    
+    // }
+    item.path = tempPath;
+    item.loading = false;
+    item.downloaded = false;
+
+    const remote = manifest.remote || [];
+    remote.push(item);
+    manifest.remote = remote;
+    setMainifest(manifest);
+    return {
+      success: true,
+      data: manifest.remote
+    };
+  } catch (err) {
+    log.error('newRemote', err);
+    mainWin.send('main-err', err);
+    return {
+      success: false,
+    };
+  }
+};
+
+/*const newRemote = async function (raw) {
   console.log('newRemote');
   const manifest = getMainifest();
 
@@ -60,7 +91,7 @@ const newRemote = async function (raw) {
       success: false,
     };
   }
-};
+};*/
 
 const editRemote = async function (raw) {
   console.log('editRemote');

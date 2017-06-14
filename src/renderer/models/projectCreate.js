@@ -12,7 +12,7 @@ import {
   msgError, writeToFile, getMergedDependencies, readPkgJson
 } from 'util-renderer-nowa';
 
-const { commands } = remote.getGlobal('services');
+const { commands, boilerplate } = remote.getGlobal('services');
 
 export default {
 
@@ -118,22 +118,64 @@ export default {
       });
       return true;
     },
-    * selectBoilerplate({ payload: { item, type } }, { put }) {
-      const projPath = join(item.path, 'proj.js');
+    * selectBoilerplate({ payload: { item, type } }, { put, select }) {
+      console.log('selectBoilerplate', type, item);
       let proj = {};
 
-      if (existsSync(projPath)) {
-        proj = remote.require(projPath);
-      }
-      console.log('select', type, item, proj);
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          selectBoilerplate: item,
-          selectExtendsProj: proj,
-          processStep: 1,
+      if (type !== 'ant') {
+        const projPath = join(item.path, 'proj.js');
+
+        if (existsSync(projPath)) {
+          proj = remote.require(projPath);
         }
-      });
+
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            selectBoilerplate: item,
+            selectExtendsProj: proj,
+            processStep: 1,
+          }
+        });
+      } else {
+        if (!item.downloaded) {
+          const { antBoilerplates } = yield select(state => state.boilerplate);
+          let boilerplates = antBoilerplates.map(n => {
+            if (n.name === item.name) {
+              n.loading = true;
+            }
+            return n;
+          });
+
+          yield put({
+            type: 'boilerplate/changeStatus',
+            payload: { antBoilerplates: [...boilerplates] }
+          });
+
+          yield boilerplate.ant.load(item);
+
+          boilerplates = antBoilerplates.map(n => {
+            if (n.name === item.name) {
+              n.loading = false;
+            }
+            return n;
+          });
+
+          yield put({
+            type: 'boilerplate/changeStatus',
+            payload: { antBoilerplates: [...boilerplates] }
+          });
+
+        } 
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            selectBoilerplate: item,
+            selectExtendsProj: proj,
+            processStep: 1,
+          }
+        });
+      }
     },
     * checkSetting({ payload }, { put, select }) {
       const { online } = yield select(state => state.layout);

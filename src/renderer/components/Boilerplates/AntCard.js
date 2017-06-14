@@ -19,7 +19,7 @@ const Item = ({
   });
 
   const handleCreate = () => dispatch({
-    type: 'boilerplate/selectBoilerplate',
+    type: 'projectCreate/selectBoilerplate',
     payload: {
       type: 'ant',
       item: data,

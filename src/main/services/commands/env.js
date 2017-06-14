@@ -31,14 +31,29 @@ try {
     term.stdout.on('data', (data) => {
       const prestr = data.toString();
       const bat = join(APP_PATH, 'task', 'env.bat');
-
-      if (prestr.indexOf(BIN_PATH) === -1) {
-        exec(`${bat} ${BIN_PATH}`);
+      // const existsBin = ~prestr.indexOf(BIN_PATH);
+      // const existsNODE = ~prestr.indexOf(NODE_PATH);
+      const existsNOWA = ~prestr.indexOf('NOWA_PATH');
+      if (!existsNOWA) {
+        const path = `${BIN_PATH};${NODE_PATH}`;
+        exec(`${bat} ${path}`);
       }
+      // if (!existsBin && !existsNODE) {
+      //   const p = `${BIN_PATH};${NODE_PATH}`;
+      //   exec(`${bat} ${p}`);
+      // }
 
-      if (prestr.indexOf(NODE_PATH) === -1) {
-        exec(`${bat} ${NODE_PATH}`);
-      }
+      // if (!existsBin && existsNODE) {
+      //   exec(`${bat} ${BIN_PATH}`);
+      // }
+
+      // if (existsBin &&!existsNODE) {
+      //   exec(`${bat} ${NODE_PATH}`);
+      // }
+      // const set = [...new Set(prestr.split(';'))];
+      // const purePath = set.filter(n => n !== BIN_PATH || n !== NODE_PATH); 
+      // const str = purePath.join(';');
+      // const nowaPath = `${BIN_PATH};${NODE_PATH}`;
     });
   } else {
     const bashPath = join(homedir(), '.bash_profile');
@@ -48,7 +63,7 @@ try {
       let prestr = readFileSync(bashPath);
 
       // 文件里不含有 PATH 文本
-      if (prestr.indexOf('export PATH=') === -1) {
+      if (!~prestr.indexOf('export PATH=')) {
         prestr += `\n${str}`;
         writeFileSync(bashPath, prestr, { flag: 'a' });
       } else {
@@ -57,12 +72,13 @@ try {
           .split('\n')
           .map((item) => {
             // 找到有 PATH 的那一行
-            if (item.indexOf('export PATH=') !== -1) {
-              if (item.indexOf(BIN_PATH) === -1) {
+            if (~item.indexOf('export PATH=')) {
+              
+              if (!~item.indexOf(BIN_PATH)) {
                 item += `:${BIN_PATH}`;
               }
 
-              if (item.indexOf(NODE_PATH) === -1) {
+              if (!~item.indexOf(NODE_PATH)) {
                 item += `:${NODE_PATH}`;
               }
             }
@@ -83,6 +99,5 @@ try {
   console.log(e);
 }
 
-// writeFileSync(join(APP_PATH, 'env.json'), process.execPath);
 
 export default env;

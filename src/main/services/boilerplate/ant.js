@@ -19,8 +19,8 @@ const get = async function () {
     const homepage = git_url.replace('git:', 'https:').slice(0, -4);
     const remote = homepage.concat('/archive/master.zip');
     const tempName = `@ant/${name}`;
-    console.log(remote);
     try {
+      const target = join(TEMPLATES_DIR, tempName)
       const obj = {
         name: tempName,
         description,
@@ -28,17 +28,16 @@ const get = async function () {
         remote,
         type: 'ANT',
         loading: false,
-        path: join(TEMPLATES_DIR, tempName),
+        downloaded: existsSync(target),
+        path: target,
       };
 
-      if (!existsSync(obj.path)) {
-        download(remote, obj.path)
-          .then((files) => {
-            const dir = dirname(files[1].path);
-            copySync(join(obj.path, dir), join(obj.path, 'proj'));
-            removeSync(join(obj.path, dir));
-          });
-      }
+      //   download(remote, obj.path)
+      //     .then((files) => {
+      //       const dir = dirname(files[1].path);
+      //       copySync(join(obj.path, dir), join(obj.path, 'proj'));
+      //       removeSync(join(obj.path, dir));
+      //     });
 
       // downloadRemoteTemplate(remote, obj.path);
 
@@ -69,6 +68,20 @@ const get = async function () {
   log.error(err);
   mainWin.send('main-err', err);
   return manifest.ant || [];
+};
+   
+const load = async function (item) {
+  const { path, remote } = item;
+  // download(remote, path)
+  //   .then((files) => {
+  //     const dir = dirname(files[1].path);
+  //     copySync(join(path, dir), join(path, 'proj'));
+  //     removeSync(join(path, dir));
+  //   });
+  const files = await download(remote, path);
+  const dir = dirname(files[1].path);
+  copySync(join(path, dir), join(path, 'proj'));
+  removeSync(join(path, dir));
 };
 
 const update = async function ({ name, tag, type, registry = config.getItem('REGISTRY') }) {
@@ -116,4 +129,4 @@ const update = async function ({ name, tag, type, registry = config.getItem('REG
   // }
 };
 
-export default { get, update };
+export default { get, update, load };

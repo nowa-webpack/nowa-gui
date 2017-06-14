@@ -2,6 +2,15 @@
 
 https://nowa-webpack.github.io/
 
+## articles
+
+https://segmentfault.com/blog/uxcore
+
+## usage
+
+https://nowa-webpack.github.io/nowa/
+https://nowa-webpack.github.io/docs/
+
 ## images
 
 <img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/master/doc/detailp.png" width="600" />
