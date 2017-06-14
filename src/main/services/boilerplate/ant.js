@@ -59,11 +59,12 @@ const get = async function () {
 
   if (!err) {
     const boilerplate = await Promise.all(data.list.map(getTemplate));
-    manifest.ant = boilerplate.filter(n => !!n);
+    // manifest.ant = boilerplate.filter(n => !!n);
+    const antData = boilerplate.filter(n => !!n);
 
-    setMainifest(manifest);
+    setMainifest('ant', antData);
 
-    return boilerplate;
+    return antData;
   }
   log.error(err);
   mainWin.send('main-err', err);
