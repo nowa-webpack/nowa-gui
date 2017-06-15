@@ -28,6 +28,7 @@
     "comma-dangle": "off",
     "no-global-assign": "off",
     "no-unsafe-negation": "off",
+    "no-bitwise": "off",
     "label-has-for": "off"
   }
 }

@@ -1,12 +1,13 @@
 import fixPath from 'fix-path';
-import { homedir } from 'os';
-import { exec } from 'child_process';
+// import { homedir } from 'os';
+// import { exec } from 'child_process';
 import npmRunPath from 'npm-run-path';
-import { delimiter, join } from 'path';
+import { delimiter } from 'path';
 
 import { isWin } from 'shared-nowa';
-import { BIN_PATH, NODE_PATH, APP_PATH, NOWA_INSTALL_DIR } from '../paths';
-import { writeFileSync, existsSync, readFileSync } from 'fs';
+// import { BIN_PATH, NODE_PATH, APP_PATH, NOWA_INSTALL_DIR } from '../paths';
+import { BIN_PATH, NODE_PATH } from '../paths';
+// import { writeFileSync, existsSync, readFileSync } from 'fs';
 
 fixPath();
 
@@ -25,6 +26,7 @@ if (isWin) {
   env.PATH = `${pathEnv}:/usr/local/bin`;
 }
 
+/*
 try {
   if (isWin) {
     const term = exec('echo %Path%');
@@ -92,7 +94,7 @@ try {
   }
 } catch (e) {
   console.log(e);
-}
+}*/
 
 // writeFileSync(join(APP_PATH, 'env.json'), process.execPath);
 

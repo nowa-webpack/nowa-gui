@@ -64,6 +64,7 @@ app
     menu.init();
     tray.init();
     commands.encode();
+    commands.setPath();
     log.error('app ready');
   })
   .on('activate', () => {
