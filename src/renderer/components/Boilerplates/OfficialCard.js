@@ -28,11 +28,13 @@ class Item extends Component {
 
   updateBoilerplate() {
     const { dispatch, data, type } = this.props;
+    const { tag } = this.state;
     dispatch({
       type: 'boilerplate/updateOffical',
       payload: {
         name: data.name,
-        tag: this.state.tag,
+        item: data.tags.filter(item => item.name === tag)[0],
+        // tag: this.state.tag,
         type
       }
     });

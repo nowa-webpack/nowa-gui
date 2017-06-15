@@ -124,26 +124,26 @@ import { getMainifest, setMainifest } from './manifest';
   }
 };*/
 
-const updateRemote = async function (raw) {
+/*const updateRemote = async function (raw) {
   console.log('updateRemote');
-  // try {
-  //   const manifest = getMainifest();
-  //   const item = await downloadRemoteTemplate(raw, raw.path);
+  try {
+    const manifest = getMainifest();
+    const item = await downloadRemoteTemplate(raw, raw.path);
 
-  //   item.loading = false;
-  //   manifest.remote.map(n => n.id === item.id ? item : n);
+    item.loading = false;
+    manifest.remote.map(n => n.id === item.id ? item : n);
 
-  //   setMainifest(manifest);
-  //   return {
-  //     success: true,
-  //     data: manifest.remote
-  //   };
-  // } catch (err) {
-  //   log.error('updateRemote', err);
-  //   mainWin.send('main-err', err.message);
-  //   return { success: false, };
+    setMainifest(manifest);
+    return {
+      success: true,
+      data: manifest.remote
+    };
+  } catch (err) {
+    log.error('updateRemote', err);
+    mainWin.send('main-err', err.message);
+    return { success: false, };
   // }
-};
+};*/
 
 const removeRemote = (item) => {
   console.log('removeRemote');
@@ -159,9 +159,9 @@ const removeRemote = (item) => {
   setMainifest('remote', filter);
 };
 
-// const load = async function (raw) {
 const load = async function ({ ...item }) {
-  const { remote, path } = item;
+  const { remote, path, id } = item;
+  const manifest = getMainifest();
   try {
     console.log(`load remote boilerplate`);
     const files = await download(remote, path);
@@ -171,13 +171,18 @@ const load = async function ({ ...item }) {
     item.disable = false;
     item.loading = false;
     item.downloaded = true;
-    return { err: false, item };
+    manifest.remote = manifest.remote.map(n => n.id === id ? item : n);
+    setMainifest('remote', manifest.remote);
+    return { err: false, data: manifest.remote };
   } catch (err) {
     log.error(err);
     mainWin.send('main-err', err);
     item.disable = true;
     item.loading = false;
-    return { err: true, item };
+    manifest.remote = manifest.remote.map(n => n.id === id ? item : n);
+    // console.log(manifest.remote);
+    setMainifest('remote', manifest.remote);
+    return { err: true, data: manifest.remote };
   }
 };
 
@@ -216,7 +221,7 @@ export default {
   // newRemote,
   // editRemote,
   load,
-  updateRemote,
+  // updateRemote,
   removeRemote,
   get,
   changeLocal,

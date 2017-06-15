@@ -47,65 +47,79 @@ const get = async function ({
 const load = async function({
   type,
   registry = config.getItem('REGISTRY'),
-  item: { remote, path },
+  item,
   name
 }) {
+  const { remote, path } = item;
+  const manifest = getMainifest();
   try {
     console.log(`load ${type} boilerplate`);
     const files = await download(remote, path);
     const dir = dirname(files[1].path);
     copySync(join(path, dir), path);
     removeSync(join(path, dir));
-    return { err: false };
+    item.downloaded = true;
+    item.loading = false;
+    manifest[type].map(n => n.name === name ? item : n);
+    setMainifest(type, manifest[type]);
+    return { err: false, data: manifest[type] };
   } catch (err) {
     log.error(err);
     mainWin.send('main-err', err);
-    return { err: true };
+    return { err: true, data: manifest[type] };
   }
 };
 
-const update = async function ({ name, tag, type, registry = config.getItem('REGISTRY') }) {
+const update = async function ({
+  name,
+  item,
+  type,
+  registry = config.getItem('REGISTRY')
+}) {
   console.log(`update ${type} boilerplate`);
   const manifest = getMainifest();
-  console.log(`${registry}/${name}/${tag}`);
+  const url = `${registry}/${name}/${item.name}`;
+  console.log(url);
+
   try {
-    const { data: pkg, err } = await request(`${registry}/${name}/${tag}`);
+    const { data: pkg, err } = await request(url);
 
     if (err) throw err;
 
     const newVersion = pkg.version;
-    const target = `${name}-${tag}`;
-    const folder = join(TEMPLATES_DIR, target);
+    // const target = `${name}-${item.name}`;
+    // const folder = join(TEMPLATES_DIR, target);
 
-    manifest[type].map((item) => {
-      if (item.name === name) {
-        item.tags = item.tags.map((_t) => {
-          if (_t.name === tag) {
+    manifest[type].map((n) => {
+      if (n.name === name) {
+        n.tags = n.tags.map((_t) => {
+          if (_t.name === item.name) {
             _t.update = false;
             _t.version = newVersion;
           }
           return _t;
         });
-        item.loading = false;
+        n.loading = false;
       }
-      return item;
+      return n;
     });
 
-    setMainifest('official', manifest[type]);
+    setMainifest(type, manifest[type]);
 
-    const files = await download(pkg.dist.tarball, folder);
+    const files = await download(item.remote, item.path);
     const dir = dirname(files[1].path);
 
-    copySync(join(folder, dir), folder);
-    removeSync(join(folder, dir));
+    copySync(join(item.path, dir), item.path);
+    removeSync(join(item.path, dir));
+    
     return {
-      success: true,
+      err: false,
       data: manifest[type]
     };
   } catch (err) {
     log.error(err);
     mainWin.send('main-err', err);
-    return { success: false, };
+    return { err: true, };
   }
 };
 

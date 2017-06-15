@@ -1,6 +1,6 @@
 import { lt } from 'semver';
 import { join, dirname } from 'path';
-import { existsSync, removeSync, copySync } from 'fs-extra';
+import { existsSync, removeSync, copySync, renameSync } from 'fs-extra';
 
 import config from 'config-main-nowa';
 import { request } from 'shared-nowa';
@@ -70,26 +70,27 @@ const get = async function () {
   mainWin.send('main-err', err);
   return manifest.ant || [];
 };
-   
 
 const load = async function ({ ...item }) {
-  const { remote, path } = item;
-  // item.loading = false;
+  const { remote, path, name } = item;
   try {
     console.log(`load ant boilerplate`);
     const files = await download(remote, path);
     const dir = dirname(files[1].path);
-    copySync(join(path, dir), path);
-    removeSync(join(path, dir));
+    // copySync(join(path, dir), join(path, 'proj'));
+    // removeSync(join(path, dir));
+    renameSync(join(path, dir), join(path, 'proj'));
+    const manifest = getMainifest();
     item.downloaded = true;
     item.loading = false;
-    return { err: false, item };
-    // return 
+    manifest.ant = manifest.ant.map(n => n.name === name ? item : n);
+    setMainifest('remote', manifest.ant);
+    return { err: false, data: manifest.ant };
   } catch (err) {
+    const manifest = getMainifest();
     log.error(err);
     mainWin.send('main-err', err);
-    item.loading = false;
-    return { err: true, item };
+    return { err: true, data: manifest.ant };
   }
 };
 

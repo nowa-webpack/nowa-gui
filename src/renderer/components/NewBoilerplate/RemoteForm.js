@@ -63,6 +63,7 @@ class RemoteForm extends Component {
     const { form, onChangeData } = this.props;
     form.validateFields((err, data) => {
       if (!err) {
+        console.log(data);
         onChangeData(data);
       }
     });
@@ -109,6 +110,7 @@ class RemoteForm extends Component {
             rules: [
               { required: true, message: i18n('msg.required'), type: 'url' },
             ],
+            onChange: this.changeUrl
           })(<Input />)}
         </FormItem>
       </Form>
