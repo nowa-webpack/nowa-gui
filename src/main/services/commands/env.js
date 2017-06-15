@@ -31,20 +31,25 @@ try {
     term.stdout.on('data', (data) => {
       const prestr = data.toString();
       const bat = join(APP_PATH, 'task', 'env.bat');
-      const notExistsBin = prestr.indexOf(BIN_PATH) === -1;
-      const notExistsNODE = prestr.indexOf(NODE_PATH) === -1;
-      if (notExistsBin && notExistsNODE) {
-        const p = `${BIN_PATH};${NODE_PATH}`;
-        exec(`${bat} ${p}`);
+      const existsNOWA = ~prestr.indexOf('NOWA_PATH');
+      if (!existsNOWA) {
+        const path = `${BIN_PATH};${NODE_PATH}`;
+        exec(`${bat} ${path}`);
       }
+      // const notExistsBin = prestr.indexOf(BIN_PATH) === -1;
+      // const notExistsNODE = prestr.indexOf(NODE_PATH) === -1;
+      // if (notExistsBin && notExistsNODE) {
+      //   const p = `${BIN_PATH};${NODE_PATH}`;
+      //   exec(`${bat} ${p}`);
+      // }
 
-      if (notExistsBin && !notExistsNODE) {
-        exec(`${bat} ${BIN_PATH}`);
-      }
+      // if (notExistsBin && !notExistsNODE) {
+      //   exec(`${bat} ${BIN_PATH}`);
+      // }
 
-      if (!notExistsBin && notExistsNODE) {
-        exec(`${bat} ${NODE_PATH}`);
-      }
+      // if (!notExistsBin && notExistsNODE) {
+      //   exec(`${bat} ${NODE_PATH}`);
+      // }
     });
   } else {
     const bashPath = join(homedir(), '.bash_profile');

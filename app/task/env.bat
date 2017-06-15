@@ -1,2 +1,3 @@
 echo %*
-setx Path "%Path%;%*"
+@setx NOWA_PATH "%*"
+@setx PATH "%PATH%%%NOWA_PATH%%"
