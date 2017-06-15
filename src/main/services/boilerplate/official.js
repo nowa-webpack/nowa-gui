@@ -64,11 +64,11 @@ const get = async function ({
           o.version = oldVersion;
           o.update = lt(oldVersion, version);
         }
-        console.log(o);
 
         return o;
       });
-
+      
+      console.log(obj);
       return obj;
     } catch (e) {
       log.error(e);
