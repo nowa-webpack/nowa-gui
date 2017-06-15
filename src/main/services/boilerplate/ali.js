@@ -2,7 +2,7 @@ import { lt } from 'semver';
 import { join, dirname } from 'path';
 import { existsSync, removeSync, copySync } from 'fs-extra';
 
-import config from 'config-main-nowa';
+// import config from 'config-main-nowa';
 import { request } from 'shared-nowa';
 
 import log from '../applog';
@@ -12,46 +12,16 @@ import { TEMPLATES_DIR } from '../paths';
 import { getMainifest, setMainifest } from './manifest';
 import { getTemplate } from './util'
 
+const registry = 'http://registry.npm.alibaba-inc.com';
+
 const get = async function () {
-  console.log(`get official boilerplate`);
+  console.log(`get ali boilerplate`);
   const manifest = getMainifest();
-  const registry = config.getItem('REGISTRY');
-
-  const url = `${registry}/nowa-gui-templates/latest`;
-
-  const { data: repo, err } = await request(url);
-
-  if (!err) {
-    const boilerplate = await Promise.all(
-      repo.templates.map(tempName => getTemplate({
-        registry,
-        tempName,
-        type: 'official', 
-        typeData: manifest.official || []
-      }))
-    );
-    // console.log(boilerplate[0].tags);
-    const officialData = boilerplate.filter(n => !!n);
-    
-    setMainifest('official', officialData);
-
-    return officialData;
-  }
-  log.error(err);
-  mainWin.send('main-err', err);
-  return manifest.official || [];
-};
-
-/*const get = async function ({
-  type = 'official',
-  registry = config.getItem('REGISTRY'),
-}) {
-  console.log(`get ${type} boilerplate`);
-  const manifest = getMainifest();
-  const getTemplate = async function (tempName) {
+  /*const getTemplate = async function (tempName) {
     const { data: pkg, err } = await request(`${registry}/${tempName}`);
     try {
       if (err) throw err;
+
       const distTags = pkg['dist-tags'];
       const tags = Object.keys(distTags).filter(tag => tag !== 'latest');
       const defaultTag = tags[tags.length - 1];
@@ -62,9 +32,10 @@ const get = async function () {
         defaultTag,
         description,
         homepage: homepage.slice(4, homepage.length - 4),
-        type: type === 'official' ? 'OFFICIAL' : 'ALI',
+        type: 'ALI',
         loading: false,
       };
+
       obj.tags = tags.map((tag) => {
         const name = `${tempName}-${tag}`;
         const tempPath = join(TEMPLATES_DIR, name);
@@ -91,7 +62,9 @@ const get = async function () {
           o.version = oldVersion;
           o.update = lt(oldVersion, version);
         }
+
         // console.log(o);
+
         return o;
       });
       return obj;
@@ -103,25 +76,34 @@ const get = async function () {
       }
       return null;
     }
-  };
-  const url = `${registry}/${type === 'ali' ? '@ali/' : ''}nowa-gui-templates/latest`;
+  };*/
+
+  const url = `${registry}/@ali/nowa-gui-templates/latest`;
+
   const { data: repo, err } = await request(url);
+
   if (!err) {
-    const boilerplate = await Promise.all(repo.templates.map(getTemplate));
-    console.log(boilerplate);
-    manifest[type] = boilerplate.filter(n => !!n);
-    if (type === 'official') console.log(type, manifest);
+    const boilerplate = await Promise.all(
+      repo.templates.map(tempName => getTemplate({
+        registry,
+        tempName,
+        type: 'ali', 
+        typeData: manifest.ali || []
+      }))
+    );
+    const aliData = boilerplate.filter(n => !!n)
+    // manifest.ali = boilerplate.filter(n => !!n);
     
-    setMainifest(manifest);
-    return boilerplate;
-    // mainWin.send('load-official-templates', manifest);
+    setMainifest('ali', aliData);
+
+    return aliData;
   }
   log.error(err);
   mainWin.send('main-err', err);
-  return manifest[type] || [];
-};*/
+  return manifest.ali || [];
+};
 
-const update = async function ({ name, tag, type, registry = config.getItem('REGISTRY') }) {
+const update = async function ({ name, tag, type }) {
   console.log(`update ${type} boilerplate`);
   const manifest = getMainifest();
   console.log(`${registry}/${name}/${tag}`);
@@ -148,7 +130,7 @@ const update = async function ({ name, tag, type, registry = config.getItem('REG
       return item;
     });
 
-    setMainifest('official', manifest[type]);
+    setMainifest(manifest);
 
     const files = await download(pkg.dist.tarball, folder);
     const dir = dirname(files[1].path);

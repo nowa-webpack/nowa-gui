@@ -29,7 +29,8 @@ export default {
 
   effects: {
     * fetchOfficial(o, { put }) {
-      const officialBoilerplates = yield boilerplate.official.get({ type: 'official' });
+      // const officialBoilerplates = yield boilerplate.official.get({ type: 'official' });
+      const officialBoilerplates = yield boilerplate.official.get();
       yield put({
         type: 'changeStatus',
         payload: { officialBoilerplates }
@@ -45,10 +46,11 @@ export default {
       });
     },
     * fetchAli(o, { put }) {
-      const aliBoilerplates = yield boilerplate.official.get({
-        type: 'ali',
-        registry: REGISTRY_MAP.tnpm
-      });
+      // const aliBoilerplates = yield boilerplate.ali.get({
+      //   type: 'ali',
+      //   registry: REGISTRY_MAP.tnpm
+      // });
+      const aliBoilerplates = yield boilerplate.ali.get();
       yield put({
         type: 'changeStatus',
         payload: { aliBoilerplates }

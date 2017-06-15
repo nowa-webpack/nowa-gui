@@ -20,9 +20,12 @@ const getMainifest = () => {
   return manifest;
 };
 
-const setMainifest = (newManifest) => {
+const setMainifest = (type, data) => {
+  // console.log(newManifest)
+  const manifest = getMainifest();
+  manifest[type] = data;
   try {
-    writeJsonSync(manifestPath, newManifest, { spaces: 2 });
+    writeJsonSync(manifestPath, manifest, { spaces: 2 });
   } catch (e) {
     console.log(e);
     log.error(e);
@@ -32,14 +35,20 @@ const setMainifest = (newManifest) => {
 const createManifest = () => {
   try {
     mkdirp.sync(TEMPLATES_DIR);
-    writeJsonSync(manifestPath, {});
+    writeJsonSync(manifestPath, {
+      official: [],
+      ali: [],
+      remote: [],
+      local: [],
+      ant: []
+    });
   } catch (e) {
     console.log(e);
     log.error(e);
   }
 };
 
-if (!existsSync(TEMPLATES_DIR)) {
+if (!existsSync(TEMPLATES_DIR) || !existsSync(manifestPath)) {
   createManifest();
 } else {
   const manifest = getMainifest();
