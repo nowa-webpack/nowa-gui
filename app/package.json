@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
-  "name": "NowaGUI",
-  "version": "1.7.4",
-=======
   "name": "nowa-gui-version",
   "version": "1.8.0",
->>>>>>> v6
   "description": "A tool for nowa developement.",
   "productName": "ElectronWebpack",
   "main": "./main.js",
