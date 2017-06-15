@@ -6,7 +6,7 @@ import { join, dirname, basename } from 'path';
 import { existsSync } from 'fs-extra';
 
 import i18n from 'i18n-renderer-nowa';
-import { request } from 'shared-nowa';
+import { request, delay } from 'shared-nowa';
 import { IMPORT_STEP1_PAGE, IMPORT_STEP2_PAGE } from 'const-renderer-nowa';
 import {
   msgError, writeToFile, getMergedDependencies, readPkgJson
@@ -118,11 +118,43 @@ export default {
       });
       return true;
     },
-    * selectBoilerplate({ payload: { item, type } }, { put, select }) {
+    * selectBoilerplate({ payload: { item, type, name } }, { put, select }) {
       console.log('selectBoilerplate', type, item);
       let proj = {};
 
+      // if (type !== 'local') {
+      //   yield put({
+      //     type: 'boilerplate/download',
+      //     payload: { type, item, name }
+      //   });
+
+        // console.log('downloaded', downloaded);
+
+        // if (!downloaded) {
+        //   return false;
+        // }
+      // }
+
       if (type !== 'ant') {
+        const projPath = join(item.path, 'proj.js');
+
+        if (existsSync(projPath)) {
+          proj = remote.require(projPath);
+        }
+      }
+      // console.log('delay');
+      // yield delay(1000);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          selectBoilerplate: item,
+          selectExtendsProj: proj,
+          processStep: 1,
+        }
+      });
+
+      /*if (type !== 'ant') {
         const projPath = join(item.path, 'proj.js');
 
         if (existsSync(projPath)) {
@@ -175,7 +207,7 @@ export default {
             processStep: 1,
           }
         });
-      }
+      }*/
     },
     * checkSetting({ payload }, { put, select }) {
       const { online } = yield select(state => state.layout);

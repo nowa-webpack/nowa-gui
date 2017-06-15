@@ -44,7 +44,8 @@ export const getTemplate = async function ({ registry, tempName, type, typeData 
         name: tag,
         path: tempPath,
         update: false,
-        downloaded: false
+        downloaded: false,
+        remote: pkg.versions[version].dist.tarball
       };
       // 这个模板未被下载
       if (!existsSync(tempPath)) {
@@ -52,9 +53,13 @@ export const getTemplate = async function ({ registry, tempName, type, typeData 
       } else {
         o.downloaded = true;
         const manifestItem = typeData.filter(n => n.name === tempName)[0];
-        const oldVersion = manifestItem.tags.filter(n => n.name === tag)[0].version;
-        o.version = oldVersion;
-        o.update = lt(oldVersion, version);
+        o.version = version;
+
+        if (manifestItem) {
+          const oldVersion = manifestItem.tags.filter(n => n.name === tag)[0].version;
+          o.version = oldVersion;
+          o.update = lt(oldVersion, version);
+        }
       }
 
       return o;

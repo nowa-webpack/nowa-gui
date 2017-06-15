@@ -6,7 +6,7 @@ import config from 'config-main-nowa';
 import { request } from 'shared-nowa';
 
 import log from '../applog';
-import download from './download';
+import { download } from './util';
 import mainWin from '../windowManager';
 import { TEMPLATES_DIR } from '../paths';
 import { getMainifest, setMainifest } from './manifest';
@@ -71,18 +71,26 @@ const get = async function () {
   return manifest.ant || [];
 };
    
-const load = async function (item) {
-  const { path, remote } = item;
-  // download(remote, path)
-  //   .then((files) => {
-  //     const dir = dirname(files[1].path);
-  //     copySync(join(path, dir), join(path, 'proj'));
-  //     removeSync(join(path, dir));
-  //   });
-  const files = await download(remote, path);
-  const dir = dirname(files[1].path);
-  copySync(join(path, dir), join(path, 'proj'));
-  removeSync(join(path, dir));
+
+const load = async function ({ ...item }) {
+  const { remote, path } = item;
+  // item.loading = false;
+  try {
+    console.log(`load ant boilerplate`);
+    const files = await download(remote, path);
+    const dir = dirname(files[1].path);
+    copySync(join(path, dir), path);
+    removeSync(join(path, dir));
+    item.downloaded = true;
+    item.loading = false;
+    return { err: false, item };
+    // return 
+  } catch (err) {
+    log.error(err);
+    mainWin.send('main-err', err);
+    item.loading = false;
+    return { err: true, item };
+  }
 };
 
 const update = async function ({ name, tag, type, registry = config.getItem('REGISTRY') }) {

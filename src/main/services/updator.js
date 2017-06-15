@@ -7,7 +7,7 @@ import { request } from 'shared-nowa';
 
 import log from './applog';
 import mainWin from './windowManager';
-import download from './boilerplate/download';
+import { download } from './boilerplate/util';
 import { APP_PATH, APP_VERSION } from './paths';
 
 

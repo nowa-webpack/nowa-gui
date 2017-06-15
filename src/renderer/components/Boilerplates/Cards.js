@@ -37,7 +37,7 @@ const Cards = ({
     { officialBoilerplates.length > 0
       && officialBoilerplates.map(item =>
         <OfficialCard
-          key={item.name}
+          key={`officical-${item.name}`}
           data={item}
           dispatch={dispatch}
           type="official"
@@ -46,7 +46,7 @@ const Cards = ({
     { aliBoilerplates.length > 0
       && aliBoilerplates.map(item =>
         <OfficialCard
-          key={item.name}
+          key={`ali-${item.name}`}
           data={item}
           dispatch={dispatch}
           type="ali"
@@ -55,7 +55,7 @@ const Cards = ({
     { antBoilerplates.length > 0
       && antBoilerplates.map(item =>
         <AntCard
-          key={item.name}
+          key={`ant-${item.name}`}
           data={item}
           dispatch={dispatch}
         />)

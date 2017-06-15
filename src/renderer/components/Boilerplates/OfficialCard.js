@@ -40,13 +40,14 @@ class Item extends Component {
   }
 
   handleCreate() {
-    const { dispatch, data } = this.props;
+    const { dispatch, data, type } = this.props;
     const { tag } = this.state;
     dispatch({
-      type: 'projectCreate/selectBoilerplate',
+      type: 'boilerplate/download',
       payload: {
-        type: 'offical',
+        type,
         item: data.tags.filter(item => item.name === tag)[0],
+        name: data.name,
       }
     });
   }

@@ -6,18 +6,21 @@ import config from 'config-main-nowa';
 import { request } from 'shared-nowa';
 
 import log from '../applog';
-import download from './download';
 import mainWin from '../windowManager';
 import { TEMPLATES_DIR } from '../paths';
 import { getMainifest, setMainifest } from './manifest';
-import { getTemplate } from './util'
+import { getTemplate, download } from './util'
 
-const get = async function () {
-  console.log(`get official boilerplate`);
+const get = async function ({
+  type = 'official',
+  registry = config.getItem('REGISTRY'),
+}) {
+  console.log(`get ${type} boilerplate`);
   const manifest = getMainifest();
-  const registry = config.getItem('REGISTRY');
+  // const registry = config.getItem('REGISTRY');
 
-  const url = `${registry}/nowa-gui-templates/latest`;
+  // const url = `${registry}/nowa-gui-templates/latest`;
+  const url = `${registry}/${type === 'ali' ? '@ali/' : ''}nowa-gui-templates/latest`;
 
   const { data: repo, err } = await request(url);
 
@@ -26,21 +29,86 @@ const get = async function () {
       repo.templates.map(tempName => getTemplate({
         registry,
         tempName,
-        type: 'official', 
-        typeData: manifest.official || []
+        type, 
+        typeData: manifest[type] || []
       }))
     );
-    // console.log(boilerplate[0].tags);
-    const officialData = boilerplate.filter(n => !!n);
+    const typeData = boilerplate.filter(n => !!n);
     
-    setMainifest('official', officialData);
+    setMainifest(type, typeData);
 
-    return officialData;
+    return typeData;
   }
   log.error(err);
   mainWin.send('main-err', err);
-  return manifest.official || [];
+  return manifest[type] || [];
 };
+
+const load = async function({
+  type,
+  registry = config.getItem('REGISTRY'),
+  item: { remote, path },
+  name
+}) {
+  try {
+    console.log(`load ${type} boilerplate`);
+    const files = await download(remote, path);
+    const dir = dirname(files[1].path);
+    copySync(join(path, dir), path);
+    removeSync(join(path, dir));
+    return { err: false };
+  } catch (err) {
+    log.error(err);
+    mainWin.send('main-err', err);
+    return { err: true };
+  }
+};
+
+const update = async function ({ name, tag, type, registry = config.getItem('REGISTRY') }) {
+  console.log(`update ${type} boilerplate`);
+  const manifest = getMainifest();
+  console.log(`${registry}/${name}/${tag}`);
+  try {
+    const { data: pkg, err } = await request(`${registry}/${name}/${tag}`);
+
+    if (err) throw err;
+
+    const newVersion = pkg.version;
+    const target = `${name}-${tag}`;
+    const folder = join(TEMPLATES_DIR, target);
+
+    manifest[type].map((item) => {
+      if (item.name === name) {
+        item.tags = item.tags.map((_t) => {
+          if (_t.name === tag) {
+            _t.update = false;
+            _t.version = newVersion;
+          }
+          return _t;
+        });
+        item.loading = false;
+      }
+      return item;
+    });
+
+    setMainifest('official', manifest[type]);
+
+    const files = await download(pkg.dist.tarball, folder);
+    const dir = dirname(files[1].path);
+
+    copySync(join(folder, dir), folder);
+    removeSync(join(folder, dir));
+    return {
+      success: true,
+      data: manifest[type]
+    };
+  } catch (err) {
+    log.error(err);
+    mainWin.send('main-err', err);
+    return { success: false, };
+  }
+};
+
 
 /*const get = async function ({
   type = 'official',
@@ -121,49 +189,4 @@ const get = async function () {
   return manifest[type] || [];
 };*/
 
-const update = async function ({ name, tag, type, registry = config.getItem('REGISTRY') }) {
-  console.log(`update ${type} boilerplate`);
-  const manifest = getMainifest();
-  console.log(`${registry}/${name}/${tag}`);
-  try {
-    const { data: pkg, err } = await request(`${registry}/${name}/${tag}`);
-
-    if (err) throw err;
-
-    const newVersion = pkg.version;
-    const target = `${name}-${tag}`;
-    const folder = join(TEMPLATES_DIR, target);
-
-    manifest[type].map((item) => {
-      if (item.name === name) {
-        item.tags = item.tags.map((_t) => {
-          if (_t.name === tag) {
-            _t.update = false;
-            _t.version = newVersion;
-          }
-          return _t;
-        });
-        item.loading = false;
-      }
-      return item;
-    });
-
-    setMainifest('official', manifest[type]);
-
-    const files = await download(pkg.dist.tarball, folder);
-    const dir = dirname(files[1].path);
-
-    copySync(join(folder, dir), folder);
-    removeSync(join(folder, dir));
-    return {
-      success: true,
-      data: manifest[type]
-    };
-  } catch (err) {
-    log.error(err);
-    mainWin.send('main-err', err);
-    return { success: false, };
-  }
-};
-
-export default { get, update };
+export default { get, update, load };

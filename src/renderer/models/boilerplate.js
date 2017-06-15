@@ -1,12 +1,14 @@
 import { remote } from 'electron';
+import { join } from 'path';
 // import Message from 'antd/lib/message';
 import uuidV4 from 'uuid/v4';
 
 import i18n from 'i18n-renderer-nowa';
 import { msgError, msgSuccess } from 'util-renderer-nowa';
 import { REGISTRY_MAP } from 'const-renderer-nowa';
+import { delay } from 'shared-nowa';
 
-const { boilerplate } = remote.getGlobal('services');
+const { boilerplate, paths } = remote.getGlobal('services');
 const preManifest = boilerplate.getMainifest();
 
 
@@ -29,8 +31,8 @@ export default {
 
   effects: {
     * fetchOfficial(o, { put }) {
-      // const officialBoilerplates = yield boilerplate.official.get({ type: 'official' });
-      const officialBoilerplates = yield boilerplate.official.get();
+      const officialBoilerplates = yield boilerplate.official.get({ type: 'official' });
+      // const officialBoilerplates = yield boilerplate.official.get();
       yield put({
         type: 'changeStatus',
         payload: { officialBoilerplates }
@@ -46,11 +48,10 @@ export default {
       });
     },
     * fetchAli(o, { put }) {
-      // const aliBoilerplates = yield boilerplate.ali.get({
-      //   type: 'ali',
-      //   registry: REGISTRY_MAP.tnpm
-      // });
-      const aliBoilerplates = yield boilerplate.ali.get();
+      const aliBoilerplates = yield boilerplate.official.get({
+        type: 'ali',
+        registry: REGISTRY_MAP.tnpm
+      });
       yield put({
         type: 'changeStatus',
         payload: { aliBoilerplates }
@@ -58,7 +59,6 @@ export default {
     },
     * fetchAnt(o, { put }) {
       const antBoilerplates = yield boilerplate.ant.get();
-      console.log(antBoilerplates);
       yield put({
         type: 'changeStatus',
         payload: { antBoilerplates }
@@ -146,9 +146,14 @@ export default {
       }
 
       payload.id = uuidV4();
-      payload.loading = true;
+      payload.disable = false;
+      payload.loading = false;
+      payload.downloaded = false;
+      payload.path = join(paths.TEMPLATES_DIR, `@remote/${payload.name}`);
 
       remoteBoilerplates.push(payload);
+
+      yield boilerplate.custom.changeRemote(remoteBoilerplates);
 
       yield put({
         type: 'changeStatus',
@@ -157,16 +162,28 @@ export default {
         }
       });
 
-      const { success, data } = yield boilerplate.custom.newRemote(payload);
+      // payload.id = uuidV4();
+      // payload.loading = true;
 
-      if (success) {
-        yield put({
-          type: 'changeStatus',
-          payload: {
-            remoteBoilerplates: data
-          }
-        });
-      }
+      // remoteBoilerplates.push(payload);
+
+      // yield put({
+      //   type: 'changeStatus',
+      //   payload: {
+      //     remoteBoilerplates: [...remoteBoilerplates]
+      //   }
+      // });
+
+      // const { success, data } = yield boilerplate.custom.newRemote(payload);
+
+      // if (success) {
+      //   yield put({
+      //     type: 'changeStatus',
+      //     payload: {
+      //       remoteBoilerplates: data
+      //     }
+      //   });
+      // }
     },
     * newLocal({ payload }, { select, put }) {
       const { localBoilerplates } = yield select(state => state.boilerplate);
@@ -194,16 +211,19 @@ export default {
     },
     * editRemote({ payload }, { select, put }) {
       const { remoteBoilerplates } = yield select(state => state.boilerplate);
-      const old = remoteBoilerplates.filter(item => item.id === payload.id)[0];
+      // const old = remoteBoilerplates.filter(item => item.id === payload.id)[0];
 
-      if (payload.remote !== old.remote) {
-        payload.loading = true;
-      }
+      // if (payload.remote !== old.remote) {
+      //   payload.loading = true;
+      // }
 
       const newBoilerplates = remoteBoilerplates.map((item) => {
         if (item.id === payload.id) return payload;
         return item;
       });
+
+      yield boilerplate.custom.changeRemote(newBoilerplates);
+
 
       yield put({
         type: 'changeStatus',
@@ -212,17 +232,17 @@ export default {
         }
       });
 
-      const { success, data } = yield boilerplate.custom.editRemote(payload);
+      // const { success, data } = yield boilerplate.custom.editRemote(payload);
 
-      if (success) {
-        msgSuccess(i18n('msg.updateSuccess'));
-        yield put({
-          type: 'changeStatus',
-          payload: {
-            remoteBoilerplates: data
-          }
-        });
-      }
+      // if (success) {
+      //   msgSuccess(i18n('msg.updateSuccess'));
+      //   yield put({
+      //     type: 'changeStatus',
+      //     payload: {
+      //       remoteBoilerplates: data
+      //     }
+      //   });
+      // }
     },
     * editLocal({ payload }, { select, put }) {
       const { localBoilerplates } = yield select(state => state.boilerplate);
@@ -267,6 +287,97 @@ export default {
         });
       }
     },
+    * download({ payload: { type, item, name }}, { select, put }) {
+      console.log('download', type, item, name);
+      const templates = yield select(state => state.boilerplate);
+      
+      if (!item.downloaded) {
+        if (type !== 'official' && type !== 'ali') {
+          // item.loading = true;
+          let data;
+
+          let newItems = templates[`${type}Boilerplates`].map(n => {
+            if (n.name === item.name) {
+              n.loading = true;
+            }
+            return n;
+          });
+
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              [`${type}Boilerplates`]: newItems
+            }
+          });
+
+          if (type === 'ant') {
+            data = yield boilerplate.ant.load(item);
+          } else {
+            data = yield boilerplate.custom.load(item);
+          }
+
+
+          newItems = templates[`${type}Boilerplates`].map(n => {
+            if (n.name === item.name) return data.item;
+            return n;
+          });
+
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              [`${type}Boilerplates`]: newItems
+            }
+          });
+
+          if (data.err) {
+            return false;
+          }
+
+        } else {
+          let newItems = templates[`${type}Boilerplates`].map(n => {
+            if (n.name === name) {
+              n.loading = true;
+            }
+            return n;
+          });
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              [`${type}Boilerplates`]: newItems
+            }
+          });
+
+          const { registry } = yield select(state => state.setting);
+
+          const { err } = yield boilerplate.official.load({
+            type,
+            item,
+            name,
+            registry: type === 'ali' ? REGISTRY_MAP.tnpm : registry
+          });
+
+          newItems = templates[`${type}Boilerplates`].map(n => {
+            if (n.name === name) {
+              n.loading = false;
+            }
+            return n;
+          });
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              [`${type}Boilerplates`]: newItems
+            }
+          });
+
+          if (err) return false;
+        }
+      }
+
+      yield put({
+        type: 'projectCreate/selectBoilerplate',
+        payload: { item, type }
+      });
+    }
   },
 
   reducers: {
