@@ -1,12 +1,14 @@
 import { remote } from 'electron';
+import { join } from 'path';
 // import Message from 'antd/lib/message';
 import uuidV4 from 'uuid/v4';
 
 import i18n from 'i18n-renderer-nowa';
 import { msgError, msgSuccess } from 'util-renderer-nowa';
 import { REGISTRY_MAP } from 'const-renderer-nowa';
+import { delay } from 'shared-nowa';
 
-const { boilerplate } = remote.getGlobal('services');
+const { boilerplate, paths } = remote.getGlobal('services');
 const preManifest = boilerplate.getMainifest();
 
 
@@ -19,6 +21,7 @@ export default {
     localBoilerplates: preManifest.local || [],
     remoteBoilerplates: preManifest.remote || [],
     aliBoilerplates: [],
+    antBoilerplates: [],
 
     showAddBoilerplateModal: false, // 显示新建脚手架模态框
     addOrEditBoilerplateType: 'new', // new 需要新建，local 需要修改本地，remote 需要修改远程
@@ -53,10 +56,101 @@ export default {
         payload: { aliBoilerplates }
       });
     },
-    * updateOffical({ payload: { tempName, tag } }, { select, put }) {
-      const { officialBoilerplates } = yield select(state => state.boilerplate);
-      officialBoilerplates.map((item) => {
-        if (item.name === tempName) {
+    * fetchAnt(o, { put }) {
+      const antBoilerplates = yield boilerplate.ant.get();
+      yield put({
+        type: 'changeStatus',
+        payload: { antBoilerplates }
+      });
+    },
+    * updateOffical({ payload: { name, item, type } }, { select, put }) {
+      console.log('updateOffical');
+      const { officialBoilerplates, aliBoilerplates } = yield select(state => state.boilerplate);
+      const { registry } = yield select(state => state.setting);
+      let newItems = [];
+
+      if (type === 'official') {
+        newItems = officialBoilerplates.map((n) => {
+          if (n.name === name) {
+            n.loading = true;
+          }
+          return n;
+        });
+      } else {
+        newItems = aliBoilerplates.map((n) => {
+          if (n.name === name) {
+            n.loading = true;
+          }
+          return n;
+        });
+      }
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          [`${type}Boilerplates`]: newItems
+        }
+      });
+
+      const { err, data } = yield boilerplate.official.update({
+        name,
+        item,
+        type,
+        registry: type === 'ali' ? REGISTRY_MAP.tnpm : registry
+      });
+      if (!err) {
+        msgSuccess(i18n('msg.updateSuccess'));
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            [`${type}Boilerplates`]: data
+          }
+        });
+      }
+    },
+    * updateRemote({ payload }, { select, put }) {
+      const { remoteBoilerplates } = yield select(state => state.boilerplate);
+      let newItems = remoteBoilerplates.map((item) => {
+        if (item.id === payload.id) {
+          item.loading = true;
+        }
+        return item;
+      });
+
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          remoteBoilerplates: [...newItems],
+        }
+      });
+
+      const { err, data } = yield boilerplate.custom.load(payload);
+
+      if (!err) {
+        msgSuccess(i18n('msg.updateSuccess'));
+      }
+
+      console.log(data);
+
+      // newItems = remoteBoilerplates.map((item) => {
+      //   if (item.id === payload.id) {
+      //     return res.item;
+      //   }
+      //   return item;
+      // });
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          remoteBoilerplates: data
+        }
+      });
+    },
+    * updateAnt({ payload }, { select, put }) {
+      const { antBoilerplates } = yield select(state => state.boilerplate);
+      // payload.loading = true;
+      let newItems = antBoilerplates.map((item) => {
+        if (item.name === payload.name) {
           item.loading = true;
         }
         return item;
@@ -65,45 +159,24 @@ export default {
       yield put({
         type: 'changeStatus',
         payload: {
-          officialBoilerplates: [...officialBoilerplates]
+          antBoilerplates: [...newItems],
         }
       });
 
-      const { success, data } = yield boilerplate.official.update(tempName, tag);
+      const { err, data } = yield boilerplate.ant.load(payload);
 
-      if (success) {
+      if (!err) {
         msgSuccess(i18n('msg.updateSuccess'));
+        // newItems = antBoilerplates.map((item) => {
+        //   if (item.name === payload.name) {
+        //     item.loading = false;
+        //   }
+        //   return item;
+        // });
         yield put({
           type: 'changeStatus',
           payload: {
-            officialBoilerplates: data
-          }
-        });
-      }
-    },
-    * updateRemote({ payload }, { select, put }) {
-      const { remoteBoilerplates } = yield select(state => state.boilerplate);
-      payload.loading = true;
-      remoteBoilerplates.map((item) => {
-        if (item.id === payload.id) return payload;
-        return item;
-      });
-
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          remoteBoilerplates: [...remoteBoilerplates]
-        }
-      });
-
-      const { success, data } = yield boilerplate.custom.updateRemote(payload);
-
-      if (success) {
-        msgSuccess(i18n('msg.updateSuccess'));
-        yield put({
-          type: 'changeStatus',
-          payload: {
-            remoteBoilerplates: data
+            antBoilerplates: data
           }
         });
       }
@@ -118,9 +191,14 @@ export default {
       }
 
       payload.id = uuidV4();
-      payload.loading = true;
+      payload.disable = false;
+      payload.loading = false;
+      payload.downloaded = false;
+      payload.path = join(paths.TEMPLATES_DIR, `@remote/${payload.name}`);
 
       remoteBoilerplates.push(payload);
+
+      yield boilerplate.custom.changeRemote(remoteBoilerplates);
 
       yield put({
         type: 'changeStatus',
@@ -129,16 +207,28 @@ export default {
         }
       });
 
-      const { success, data } = yield boilerplate.custom.newRemote(payload);
+      // payload.id = uuidV4();
+      // payload.loading = true;
 
-      if (success) {
-        yield put({
-          type: 'changeStatus',
-          payload: {
-            remoteBoilerplates: data
-          }
-        });
-      }
+      // remoteBoilerplates.push(payload);
+
+      // yield put({
+      //   type: 'changeStatus',
+      //   payload: {
+      //     remoteBoilerplates: [...remoteBoilerplates]
+      //   }
+      // });
+
+      // const { success, data } = yield boilerplate.custom.newRemote(payload);
+
+      // if (success) {
+      //   yield put({
+      //     type: 'changeStatus',
+      //     payload: {
+      //       remoteBoilerplates: data
+      //     }
+      //   });
+      // }
     },
     * newLocal({ payload }, { select, put }) {
       const { localBoilerplates } = yield select(state => state.boilerplate);
@@ -166,32 +256,30 @@ export default {
     },
     * editRemote({ payload }, { select, put }) {
       const { remoteBoilerplates } = yield select(state => state.boilerplate);
-      const old = remoteBoilerplates.filter(item => item.id === payload.id)[0];
+      
+      let changedRemote = false;
 
-      if (payload.remote !== old.remote) {
-        payload.loading = true;
-      }
-
-      const newBoilerplates = remoteBoilerplates.map((item) => {
-        if (item.id === payload.id) return payload;
+      let newItems = remoteBoilerplates.map((item) => {
+        if (item.id === payload.id) {
+          changedRemote = item.remote !== payload.remote;
+          return payload;
+        }
         return item;
       });
 
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          remoteBoilerplates: [...newBoilerplates]
-        }
-      });
+      yield boilerplate.custom.changeRemote(newItems);
 
-      const { success, data } = yield boilerplate.custom.editRemote(payload);
-
-      if (success) {
+      if (changedRemote) {
+        yield put({
+          type: 'updateRemote',
+          payload
+        });
+      } else {
         msgSuccess(i18n('msg.updateSuccess'));
         yield put({
           type: 'changeStatus',
           payload: {
-            remoteBoilerplates: data
+            remoteBoilerplates: newItems
           }
         });
       }
@@ -239,6 +327,85 @@ export default {
         });
       }
     },
+    * download({ payload: { type, item, name }}, { select, put }) {
+      console.log('download', type, item, name);
+      const templates = yield select(state => state.boilerplate);
+      
+      if (!item.downloaded) {
+        if (type !== 'official' && type !== 'ali') {
+          // item.loading = true;
+          let res;
+
+          let newItems = templates[`${type}Boilerplates`].map(n => {
+            if (n.name === item.name) {
+              n.loading = true;
+            }
+            return n;
+          });
+
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              [`${type}Boilerplates`]: newItems
+            }
+          });
+
+          if (type === 'ant') {
+            res = yield boilerplate.ant.load(item);
+          } else {
+            res = yield boilerplate.custom.load(item);
+          }
+
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              [`${type}Boilerplates`]: res.data
+            }
+          });
+
+          if (res.err) {
+            return false;
+          }
+
+        } else {
+          let newItems = templates[`${type}Boilerplates`].map(n => {
+            if (n.name === name) {
+              n.loading = true;
+            }
+            return n;
+          });
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              [`${type}Boilerplates`]: newItems
+            }
+          });
+
+          const { registry } = yield select(state => state.setting);
+
+          const { err, data } = yield boilerplate.official.load({
+            type,
+            item,
+            name,
+            registry: type === 'ali' ? REGISTRY_MAP.tnpm : registry
+          });
+          
+          yield put({
+            type: 'changeStatus',
+            payload: {
+              [`${type}Boilerplates`]: data
+            }
+          });
+
+          if (err) return false;
+        }
+      }
+
+      yield put({
+        type: 'projectCreate/selectBoilerplate',
+        payload: { item, type }
+      });
+    }
   },
 
   reducers: {

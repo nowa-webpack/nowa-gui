@@ -37,7 +37,7 @@ const Item = ({
   });
 
   const handleCreate = () => dispatch({
-    type: 'projectCreate/selectBoilerplate',
+    type: 'boilerplate/download',
     payload: {
       type: 'remote',
       item: data,

@@ -2,6 +2,15 @@
 
 https://nowa-webpack.github.io/
 
+## articles
+
+https://segmentfault.com/blog/uxcore
+
+## usage
+
+https://nowa-webpack.github.io/nowa/
+https://nowa-webpack.github.io/docs/
+
 ## images
 
 <img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/master/doc/detailp.png" width="600" />
@@ -18,6 +27,10 @@ https://nowa-webpack.github.io/
 
 ```bash
 npm install -r http://registry.npm.taobao.org
+<<<<<<< HEAD
+=======
+
+>>>>>>> v6
 ```
 
 in another terminal
@@ -26,6 +39,19 @@ if you firstly run this project, please run it at first.
 
 ```bash
 npm run dev:dll
+<<<<<<< HEAD
+=======
+```
+
+don't forget to modify the file `node_modules/rc/index.js`:
+
+```
+// if(!module.parent) {
+//   console.log(
+//     JSON.stringify(module.exports(process.argv[2]), false, 2)
+//   )
+// }
+>>>>>>> v6
 ```
 
 then run
@@ -58,13 +84,16 @@ npm run packer:win
 ```
 
 * in linux
+<<<<<<< HEAD
 
 ```bash
 npm run packer:linux
 ```
 
+=======
+>>>>>>> v6
 
+```bash
+npm run packer:linux
 
-
-
-
+```

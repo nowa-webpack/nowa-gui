@@ -48,7 +48,7 @@ class ServerForm extends Component {
     const state = {
       entry: typeof abc.entry === 'undefined' ? 'app/app.js' : abc.entry,
       port: typeof abc.port === 'undefined' ? '3000' : abc.port,
-      proxy: typeof abc.proxy === 'undefined' ? '' : abc.proxy,
+      // proxy: typeof abc.proxy === 'undefined' ? '' : abc.proxy,
       lazyload: typeof abc.lazyload === 'undefined' ? true : abc.lazyload,
       https: typeof abc.https === 'undefined' ? false : abc.https,
       open: typeof abc.open === 'undefined' ? false : abc.open,
@@ -67,15 +67,16 @@ class ServerForm extends Component {
     form.validateFields((err, values) => {
       if (!err) {
         console.log(values);
-        const { localeList, defaultLocale, proxy, ...others } = values;
+        // const { localeList, defaultLocale, proxy, ...others } = values;
+        const { localeList, defaultLocale, ...others } = values;
         const abc = { ...current.abc, ...others };
         if (defaultLocale) {
           abc.vars.locale = defaultLocale;
         }
 
-        if (proxy) {
-          abc.proxy = proxy;
-        }
+        // if (proxy) {
+        //   abc.proxy = proxy;
+        // }
         
         dispatch({
           type: 'project/updateABCJson',
@@ -87,7 +88,7 @@ class ServerForm extends Component {
 
   render () {
     const { getFieldDecorator } = this.props.form;
-    const { entry, port, proxy, lazyload, https, open, localeList = [], defaultLocale, src } = this.init;
+    const { entry, port, lazyload, https, open, localeList = [], defaultLocale, src } = this.init;
     let localeDiv;
 
     if (defaultLocale) {
@@ -164,15 +165,7 @@ class ServerForm extends Component {
           </Col>
         </Row>
         { localeDiv }
-        <FormItem
-          label="Proxy"
-          {...formItemLayout}
-        >
-          {getFieldDecorator('proxy', {
-            initialValue: proxy,
-            rules: [{ type: 'url' }],
-          })(<Input />)}
-        </FormItem>
+       
         <Tooltip placement="top" title={i18n('foot.help')} >
           <Button type="primary" icon="question" shape="circle" size="small" ghost
             className="project-setting-help"
@@ -190,6 +183,16 @@ class ServerForm extends Component {
     );
   }
 }
+
+// <FormItem
+//   label="Proxy"
+//   {...formItemLayout}
+// >
+//   {getFieldDecorator('proxy', {
+//     initialValue: proxy,
+//     rules: [{ type: 'url' }],
+//   })(<Input />)}
+// </FormItem>
 
 
 ServerForm.propTypes = {

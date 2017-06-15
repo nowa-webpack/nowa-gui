@@ -1,39 +1,49 @@
 {
-  "extends": "airbnb",
-  "parser": "babel-eslint",
-  "env": {
-    "browser": true,
-    "node": true
-  },
-  "plugins": [
-    "react"
-  ],
-  "rules": {
-    "global-require": "off",
-    "import/no-unresolved": "off",
-    "import/no-extraneous-dependencies": "off",
-    "import/extensions": "off",
-    "no-console": "off",
-    "no-underscore-dangle": "off",
-    "no-new-func": "off",
-    "no-param-reassign": "off",
-    "no-plusplus": "off",
-    "react/prefer-stateless-function": "off",
-    "react/no-multi-comp": "off",
-    "react/jsx-no-bind": "off",
-    "react/jsx-indent": "off",
-    "react/jsx-first-prop-new-line": "off",
-    "react/jsx-filename-extension": "off",
-    "react/forbid-prop-types": "off",
-    "react/no-string-refs": "off",
-    "jsx-a11y/no-static-element-interactions": "off",
-    "no-restricted-syntax": "off",
-    "comma-dangle": "off",
-    "no-global-assign": "off",
-    "no-unsafe-negation": "off",
-    "label-has-for": "off",
-    "eqeqeq": "off",
-    "class-methods-use-this": "off",
-    "no-bitwise": "off"
-  }
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "parser": "babel-eslint",
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "global-require": "off",
+        "import/no-unresolved": "off",
+        "import/no-extraneous-dependencies": "off",
+        "import/extensions": "off",
+        "no-console": "off",
+        "no-underscore-dangle": "off",
+        "no-new-func": "off",
+        "no-param-reassign": "off",
+        "no-plusplus": "off",
+        "react/prefer-stateless-function": "off",
+        "react/no-multi-comp": "off",
+        "react/jsx-no-bind": "off",
+        "react/jsx-indent": "off",
+        "react/jsx-first-prop-new-line": "off",
+        "react/jsx-filename-extension": "off",
+        "react/forbid-prop-types": "off",
+        "react/no-string-refs": "off",
+        "jsx-a11y/no-static-element-interactions": "off",
+        "no-restricted-syntax": "off",
+        "comma-dangle": "off",
+        "no-global-assign": "off",
+        "no-unsafe-negation": "off",
+        "label-has-for": "off",
+        "eqeqeq": "off",
+        "class-methods-use-this": "off",
+        "no-bitwise": "off",
+        "no-unused-vars": "off"
+    }
 }

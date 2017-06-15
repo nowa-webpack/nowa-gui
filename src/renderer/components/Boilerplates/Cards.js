@@ -6,6 +6,7 @@ import i18n from 'i18n-renderer-nowa';
 import OfficialCard from './OfficialCard';
 import LocalCard from './LocalCard';
 import RemoteCard from './RemoteCard';
+import AntCard from './AntCard';
 
 
 const Cards = ({
@@ -13,25 +14,10 @@ const Cards = ({
   localBoilerplates = [],
   remoteBoilerplates = [],
   aliBoilerplates = [],
+  antBoilerplates = [],
   dispatch
 }) => (
   <div className="boilerplate-cards">
-    { officialBoilerplates.length > 0
-      && officialBoilerplates.map(item =>
-        <OfficialCard
-          key={item.name}
-          data={item}
-          dispatch={dispatch}
-        />)
-    }
-    { aliBoilerplates.length > 0
-      && aliBoilerplates.map(item =>
-        <OfficialCard
-          key={item.name}
-          data={item}
-          dispatch={dispatch}
-        />)
-    }
     { remoteBoilerplates.length > 0
       && remoteBoilerplates.map(item =>
         <RemoteCard
@@ -44,6 +30,32 @@ const Cards = ({
       && localBoilerplates.map(item =>
         <LocalCard
           key={item.id}
+          data={item}
+          dispatch={dispatch}
+        />)
+    }
+    { officialBoilerplates.length > 0
+      && officialBoilerplates.map(item =>
+        <OfficialCard
+          key={`officical-${item.name}`}
+          data={item}
+          dispatch={dispatch}
+          type="official"
+        />)
+    }
+    { aliBoilerplates.length > 0
+      && aliBoilerplates.map(item =>
+        <OfficialCard
+          key={`ali-${item.name}`}
+          data={item}
+          dispatch={dispatch}
+          type="ali"
+        />)
+    }
+    { antBoilerplates.length > 0
+      && antBoilerplates.map(item =>
+        <AntCard
+          key={`ant-${item.name}`}
           data={item}
           dispatch={dispatch}
         />)
@@ -67,6 +79,7 @@ Cards.propTypes = {
   aliBoilerplates: PropTypes.array.isRequired,
   localBoilerplates: PropTypes.array.isRequired,
   remoteBoilerplates: PropTypes.array.isRequired,
+  antBoilerplates: PropTypes.array.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 

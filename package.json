@@ -1,10 +1,6 @@
 {
   "name": "NowaGUI",
-<<<<<<< HEAD
-  "version": "1.7.4",
-=======
   "version": "1.8.0",
->>>>>>> v6
   "description": "A tool for nowa developement.",
   "scripts": {
     "postinstall": "install-app-deps",
@@ -25,6 +21,7 @@
     "pack:win": "npm run prepack && build -w",
     "pack:linux": "npm run prepack && npm run build && build -l",
     "lint": "eslint --ext .js src",
+    "precommit": "lint-staged",
     "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "log": "git log --color --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s   %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit"
   },
@@ -34,15 +31,6 @@
     "appId": "com.alibaba-inc.nowa-gui",
     "asar": false,
     "rebuild": true,
-    "files": [
-      "assets/",
-      "node_modules/",
-      "nodes/",
-      "renderer/",
-      "task/",
-      "main.js",
-      "package.json"
-    ],
     "win": {
       "target": [
         "nsis"
@@ -65,9 +53,6 @@
       "output": "release"
     }
   },
-<<<<<<< HEAD
-  "homepage": "https://github.com/nowa-webpack/nowa-gui",
-=======
   "lint-staged22": {
     "src/**/*.{js,jsx}": [
       "prettier --trailing-comma es5 --single-quote --write",
@@ -80,12 +65,11 @@
       "git add"
     ]
   },
->>>>>>> v6
   "author": {
     "name": "Poling",
     "email": "466681097@qq.com"
   },
-
+  "homepage": "https://github.com/nowa-webpack/nowa-gui",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -109,7 +93,10 @@
     "electron-is": "^2.4.0",
     "electron-log": "^2.2.4",
     "electron-rebuild": "^1.5.10",
-    "eslint": "^3.19.0",
+    "eslint": "^4.0.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",

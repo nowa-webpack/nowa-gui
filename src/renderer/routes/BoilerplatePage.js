@@ -23,6 +23,7 @@ const BoilerplatePage = ({
   localBoilerplates,
   remoteBoilerplates,
   aliBoilerplates,
+  antBoilerplates,
   dispatch,
   processStep,
 }) => {
@@ -35,6 +36,7 @@ const BoilerplatePage = ({
         localBoilerplates,
         remoteBoilerplates,
         aliBoilerplates,
+        antBoilerplates,
         dispatch,
       };
       component = <BoilerplateCards {...compProps} />;
@@ -67,6 +69,7 @@ BoilerplatePage.propTypes = {
   localBoilerplates: PropTypes.array.isRequired,
   remoteBoilerplates: PropTypes.array.isRequired,
   aliBoilerplates: PropTypes.array.isRequired,
+  antBoilerplates: PropTypes.array.isRequired,
   processStep: PropTypes.number.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
@@ -76,5 +79,6 @@ export default connect(({ boilerplate, projectCreate }) => ({
   localBoilerplates: boilerplate.localBoilerplates,
   remoteBoilerplates: boilerplate.remoteBoilerplates,
   aliBoilerplates: boilerplate.aliBoilerplates,
+  antBoilerplates: boilerplate.antBoilerplates,
   processStep: projectCreate.processStep,
 }))(BoilerplatePage);
