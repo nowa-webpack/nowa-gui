@@ -27,10 +27,6 @@ https://nowa-webpack.github.io/docs/
 
 ```bash
 npm install -r http://registry.npm.taobao.org
-<<<<<<< HEAD
-=======
-
->>>>>>> v6
 ```
 
 in another terminal
@@ -39,8 +35,6 @@ if you firstly run this project, please run it at first.
 
 ```bash
 npm run dev:dll
-<<<<<<< HEAD
-=======
 ```
 
 don't forget to modify the file `node_modules/rc/index.js`:
@@ -51,7 +45,6 @@ don't forget to modify the file `node_modules/rc/index.js`:
 //     JSON.stringify(module.exports(process.argv[2]), false, 2)
 //   )
 // }
->>>>>>> v6
 ```
 
 then run
@@ -60,15 +53,12 @@ then run
 npm run dev:renderer
 npm run dev:main
 npm start
-
-
 ```
 
 ## pack app
 
 ```bash
 npm run build
-
 ```
 
 * in mac 
@@ -84,16 +74,7 @@ npm run packer:win
 ```
 
 * in linux
-<<<<<<< HEAD
 
 ```bash
 npm run packer:linux
-```
-
-=======
->>>>>>> v6
-
-```bash
-npm run packer:linux
-
 ```
