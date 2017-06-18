@@ -5,6 +5,7 @@ import Select from 'antd/lib/select';
 import Radio from 'antd/lib/radio';
 import Input from 'antd/lib/input';
 import Form from 'antd/lib/form';
+import Popconfirm from 'antd/lib/popconfirm';
 import { connect } from 'dva';
 
 import i18n from 'i18n-renderer-nowa';
@@ -72,6 +73,10 @@ class BasicSetting extends Component {
     this.props.dispatch({ type: 'layout/goBack' });
   }
 
+  reset() {
+    this.props.dispatch({ type: 'layout/resetAPP' });
+  }
+
   handleEditorChange = (e) => {
     const { form, editor } = this.props;
     const defaultEditor = e.target.value;
@@ -92,7 +97,6 @@ class BasicSetting extends Component {
     const {
       version,
       newVersion,
-      // upgradeUrl,
       registryList,
       registry,
       editor,
@@ -187,7 +191,7 @@ class BasicSetting extends Component {
           </FormItem>
         </FormItem>
         <br /><br />
-        <FormItem wrapperCol={{ offset: 6 }} className="ui-form-btns">
+        <FormItem wrapperCol={{ offset: 6, span: 16 }} className="ui-form-btns">
           <Button
             type="primary"
             size="default"
@@ -198,6 +202,20 @@ class BasicSetting extends Component {
           <Button type="default" size="default" onClick={() => this.goBack()}>
             {i18n('form.back')}
           </Button>
+          <Popconfirm
+              placement="top"
+              title={i18n('重置工具将会用户数据，自定义模板...')}
+              onConfirm={() => this.reset()}
+              okText={i18n('form.ok')}
+              cancelText={i18n('form.cancel')}
+            >
+          <Button
+            type="danger" size="default"
+            style={{ float: 'right' }}
+          >
+            {i18n('form.reset')}
+          </Button>
+          </Popconfirm>
         </FormItem>
       </Form>
     );
@@ -211,7 +229,6 @@ BasicSetting.propTypes = {
   defaultEditor: PropTypes.string.isRequired,
   registry: PropTypes.string.isRequired,
   registryList: PropTypes.array.isRequired,
-  // upgradeUrl: PropTypes.string.isRequired,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
     setFieldsValue: PropTypes.func,
@@ -227,7 +244,6 @@ export default Form.create()(
   connect(({ layout, setting }) => ({
     version: layout.version,
     newVersion: layout.newVersion,
-    // upgradeUrl: layout.upgradeUrl,
     defaultEditor: setting.defaultEditor,
     editor: setting.editor,
     registry: setting.registry,

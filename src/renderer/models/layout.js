@@ -1,6 +1,6 @@
 import React from 'react';
 import { join } from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, removeSync } from 'fs-extra';
 import { info } from 'antd/lib/modal';
 import { remote, ipcRenderer } from 'electron';
 
@@ -214,6 +214,20 @@ export default {
       } else {
         openUrl(upgradeUrl);
       }
+    },
+    * resetAPP(o, { put }) {
+      yield put({
+        type: 'changeStatus',
+        payload: { loading: true }
+      });
+      yield delay(500);
+      removeSync(paths.DOT_NOWA_PATH);
+      yield put({
+        type: 'changeStatus',
+        payload: { loading: false }
+      });
+      remote.app.relaunch();
+      remote.app.exit(0);
     },
     // 发送反馈
     * sendFeedback({ payload }, { put }) {
