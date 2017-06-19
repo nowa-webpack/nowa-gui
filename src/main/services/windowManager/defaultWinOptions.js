@@ -2,12 +2,17 @@ import { join } from 'path';
 import { APP_PATH } from '../paths';
 
 export const browserOptions = {
-  width: 902,
-  height: 552,
+  width: 922,
+  height: 562,
+  minWidth: 922,
+  minHeight: 562,
+ 
   // maxWidth: 1190,
   // maxHeight: 727,
-  minWidth: 902,
-  minHeight: 552,
+  // width: 990,
+  // height: 600,
+  // minWidth: 990,
+  // minHeight: 600,
   show: false,
   frame: false,
   resizable: true,

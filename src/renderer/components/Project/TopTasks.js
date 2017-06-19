@@ -20,14 +20,13 @@ const TopTasks = ({
   const compassProj = () => {
     if (isNowa && start) {
       dispatch({ type: 'task/compass', payload: { projPath: path } });
-      // const task = remote.require('./services/task');
-      // const { uid } = task.getTask('start', path);
-      // delay(1000).then(shell.openExternal(getAddressByUID(uid)));
     }
   };
 
   const openTerminal = () => dispatch({ type: 'task/terminal', payload: { project: current } });
- 
+  
+  
+
   return (
     <div className="project-top">
       {

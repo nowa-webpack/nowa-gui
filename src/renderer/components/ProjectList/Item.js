@@ -10,7 +10,7 @@ import { join } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
 import { PROJECT_PAGE } from 'const-renderer-nowa';
-import { hidePathString } from 'util-renderer-nowa';
+import { hideBoilerplateDesp } from 'util-renderer-nowa';
 
 
 const Item = ({
@@ -98,7 +98,7 @@ const Item = ({
         </Dropdown>
       }
       { status }
-      <div className="project-list-item-name">{ hidePathString(name, 23) }</div>
+      <div className="project-list-item-name">{ hideBoilerplateDesp(name, 22) }</div>
     </div>
   );
 };

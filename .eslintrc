@@ -43,6 +43,7 @@
         "label-has-for": "off",
         "eqeqeq": "off",
         "class-methods-use-this": "off",
-        "no-bitwise": "off"
+        "no-bitwise": "off",
+        "no-unused-vars": "off"
     }
 }

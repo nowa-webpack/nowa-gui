@@ -25,11 +25,11 @@ export const hidePathString = (filePath, num = 70) => {
   return filePath;
 };
 
-export const hideBoilerplateDesp = str => {
+export const hideBoilerplateDesp = (str, length = 40) => {
   if (!str) return 'No description.';
   const size = str.length;
-  if (size <= 40) return str;
-  return str.slice(0, 37) + '...';
+  if (size <= length) return str;
+  return str.slice(0, length - 3) + '...';
 };
 
 export const upperFirstCha = word =>
