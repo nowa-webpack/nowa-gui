@@ -61,7 +61,7 @@ module.exports = {
   'project.new.networkTip': '创建项目需要网络，请联网后继续',
 
   'project.import.title': '项目导入初始化',
-  'project.import.info': '检测到改项目有未安装的依赖，请选择合适的Npm安装源',
+  'project.import.info': '检测到该项目有未安装的依赖，请选择合适的Npm安装源',
   'project.import.install': '依赖安装',
 
   'template.modal.title': '自定义模版设置',
@@ -108,7 +108,7 @@ module.exports = {
   'setting.plugin.download': '下载',
   'setting.plugin.reinstall': '重装',
   'setting.plugin.update': '更新',
-  'setting.plugin.update.tip': '确认更新到改版本吗？',
+  'setting.plugin.update.tip': '确认更新到该版本吗？',
 
   'foot.set': '工具设置',
   // 'foot.import': '导入项目',
@@ -179,7 +179,7 @@ module.exports = {
   'package.action': '操作',
   'package.btn.updateAll': '批量更新',
   'package.btn.install': '安装新依赖',
-  'package.update.tip': '确认更新到改版本吗？',
+  'package.update.tip': '确认更新到该版本吗？',
 
   'table.empty': '暂无数据',
   'table.action.del': '移除',

@@ -32,7 +32,7 @@ class PluginOpt extends Component {
   }
 
   render() {
-    const { plugins, lang } = this.props;
+    const { plugins, lang, current } = this.props;
     const { showModal, selectPlugin } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick}>
@@ -69,6 +69,7 @@ class PluginOpt extends Component {
             onHideModal={this.onHideModal}
             showModal={showModal}
             lang={lang}
+            projPath={current.path}
           />
         }
       </div>
@@ -116,10 +117,15 @@ class PluginOpt extends Component {
 PluginOpt.propTypes = {
   plugins: PropTypes.arrayOf(PropTypes.object).isRequired,
   lang: PropTypes.string.isRequired,
+  current: PropTypes.shape({
+    name: PropTypes.string,
+    path: PropTypes.string,
+  }).isRequired,
   // dispatch: PropTypes.func.isRequired,
 };
 
-export default connect(({ setting, plugin }) => ({
+export default connect(({ setting, plugin, project }) => ({
   lang: setting.lang,
-  plugins: plugin.UIPluginList
+  plugins: plugin.UIPluginList,
+  current: project.current,
 }))(PluginOpt);

@@ -31,16 +31,22 @@ const PluginPromtsModal = ({
   },
   data: { name, file = {} },
   lang,
-  dispatch
+  dispatch,
+  projPath
 }) => {
   const handleOk = () => {
-    validateFields((err, data) => {
+    validateFields((err, answers) => {
       if (!err) {
-        console.log(data);
-        // dispatch({
-        //   type: 'task/addCommand',
-        //   payload: data
-        // });
+        console.log(answers);
+        dispatch({
+          type: 'task/changeStatus',
+          payload: { taskType: file.name.en }
+        });
+        dispatch({
+          type: 'plugin/exec',
+          payload: { answers, file, }
+        });
+        // file.tasks[0].do({ projPath, answers: data });
         onHideModal();
         // setFieldsValue({ name: '', value: '' });
       }
@@ -200,6 +206,7 @@ PluginPromtsModal.propTypes = {
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
+  projPath: PropTypes.string.isRequired,
 };
 
 export default Form.create()(connect()(PluginPromtsModal));

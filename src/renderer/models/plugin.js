@@ -99,8 +99,8 @@ export default {
         payload: { pluginList: res, loading: false },
       });
     },
-    * install({ payload }, { put, select }) {
-      console.log('installPlugin', payload);
+    * install({ payload: { reinstall, ...others } }, { put, select }) {
+      console.log('installPlugin', others);
       const { atAli } = yield select(state => state.layout);
       const { registry } = yield select(state => state.setting);
 
@@ -112,8 +112,8 @@ export default {
       const opt = {
         root: paths.NOWA_INSTALL_DIR,
         pkgs: [{
-          name: payload.name,
-          version: payload.newest === 'null' ? 'latest' : payload.newest
+          name: others.name,
+          version: others.newest === 'null' ? 'latest' : others.newest
         }],
         registry: atAli ? REGISTRY_MAP.tnpm : registry,
       };
@@ -127,32 +127,34 @@ export default {
           payload: { loading: false },
         });
       } else {
-        payload.version = payload.newest;
-        payload.installed = true;
+        others.version = others.newest;
+        others.installed = true;
 
-        const storePlugin = getLocalPlugins();
+        if (!reinstall) {
 
-        storePlugin.push(payload);
-        setLocalPlugins(storePlugin);
+          const storePlugin = getLocalPlugins();
 
+          storePlugin.push(others);
+          setLocalPlugins(storePlugin);
+
+          if (others.type === 'ui') {
+            const newItem = {
+              name: others.name,
+              file: remote.require(target(others.name))
+            };
+            const { UIPluginList } = yield select(state => state.plugin);
+            UIPluginList.push(newItem);
+            yield put({
+              type: 'changeStatus',
+              payload: { UIPluginList: [...UIPluginList] }
+            });
+          }
+        }
 
         yield put({
           type: 'changePluginList',
-          payload,
+          payload: others,
         });
-
-        if (payload.type === 'ui') {
-          const newItem = {
-            name: payload.name,
-            file: remote.require(target(payload.name))
-          };
-          const { UIPluginList } = yield select(state => state.plugin);
-          UIPluginList.push(newItem);
-          yield put({
-            type: 'changeStatus',
-            payload: { UIPluginList: [...UIPluginList] }
-          });
-        }
       }
     },
     * reinstall({ payload }, { put }) {
@@ -166,7 +168,7 @@ export default {
       yield delay(1000);
       yield put({
         type: 'install',
-        payload
+        payload: {...payload, reinstall: true }
       });
     },
     * update({ payload }, { put }) {
@@ -225,6 +227,14 @@ export default {
       yield put({
         type: 'changeStatus',
         payload: { UIPluginList }
+      });
+    },
+    * exec({ payload: { answers, file }}, { put, select }) {
+      const { current } = yield select(state => state.project);
+      yield commands.execPlugin({
+        projPath: current.path,
+        answers,
+        tasks: file.tasks,
       });
     }
   },

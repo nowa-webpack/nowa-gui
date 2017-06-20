@@ -150,6 +150,18 @@ export const stopCmd = ({ command, projPath = '' }) => {
   }
 };
 
+export async function execPlugin({ projPath, answers, tasks }) {
+  // const cns = new Logger('plugin');
+  const cns = (text) => console.log(text);
+
+  for (let i = 0; i < tasks.length; i++) {
+    const { err } = await new Promise(function(resolve){
+       tasks[i].do({ projPath, answers, cns, next: resolve })
+    });
+    if (err) break;
+  }
+}
+
 export const clearNotMacTask = (cb) => {
   console.log('clear clearNotMacTask');
   const taskStart = tasklog.getCmd('start');
