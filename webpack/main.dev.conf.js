@@ -81,7 +81,7 @@ module.exports = webpackMerge(webpackCommon,
       new DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('development')
       }),
-      new webpack.optimize.ModuleConcatenationPlugin(),
+      // new webpack.optimize.ModuleConcatenationPlugin(),
      /* new BundleAnalyzerPlugin({
         analyzerMode: 'server',
         analyzerHost: '127.0.0.1',

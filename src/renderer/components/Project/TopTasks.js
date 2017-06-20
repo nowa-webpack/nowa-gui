@@ -74,7 +74,7 @@ const TopTasks = ({
         icon="terminal"
       />
       {
-        plugins.length && <PluginOpt />
+        plugins.length > 0 && <PluginOpt />
       }
     </div>
   );

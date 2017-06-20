@@ -11,6 +11,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-more:before { content: "\e677"; }
+
 .icon-add:before { content: "\e62b"; }
 
 .icon-folder:before { content: "\e6a1"; }

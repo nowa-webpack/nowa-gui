@@ -100,7 +100,7 @@ module.exports = webpackMerge(webpackCommon,
       //   reportFilename: resolve(__dirname, 'analyzer-report.html'),
       // }),
       // new AnalyzerPlugin('./reports/plain-report.txt')
-      new webpack.optimize.ModuleConcatenationPlugin(),
+      // new webpack.optimize.ModuleConcatenationPlugin(),
       new AnalyzerPlugin(resolve(__dirname, 'plain-report.txt'))
     ],
 });

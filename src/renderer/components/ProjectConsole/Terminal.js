@@ -116,6 +116,17 @@ class Terminal extends Component {
     const { showClear, cmdNames, selectCmd, log } = this.state;
     const iconType = expanded ? 'shrink' : 'arrows-alt';
 
+    let opts = [];
+
+    if (plugins.length) {
+      opts.push(
+        plugins.map(({ file }) =>
+          <Select.Option value={file.name.en} key={file.name.en}>{file.name.en}</Select.Option>)
+      );
+    }
+
+    opts.push(cmdNames.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>));
+
     return (
       <div className="project-terminal">
         <div className="project-terminal-btn expand"
@@ -142,19 +153,12 @@ class Terminal extends Component {
             })}
             onClick={() => this.changeTerminalTab('build')}
           >{i18n('project.tab.compile_log')}</div>
+
           <Select placeholder={i18n('cmd.select.opt')}
             style={{ width: 120 }}
             onChange={this.changeTerminalTab}
             value={selectCmd}
-          >
-            {
-              plugins.length &&
-              plugins.map(({ file }) =>
-                <Select.Option value={file.name.en} key={file.name.en}>{file.name.en}</Select.Option>)
-            }
-            {
-              cmdNames.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>)
-            }
+          >{opts}
           </Select>
         </div>
 
