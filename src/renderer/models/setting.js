@@ -36,9 +36,7 @@ export default {
     },
     registry: 'https://registry.npm.taobao.org',
     registryList: [],
-    // pluginList: [],
-    // fetchPluginLoading: false,
-    // atAli: false,
+    lang: getLocalLanguage(),
   },
 
   subscriptions: {

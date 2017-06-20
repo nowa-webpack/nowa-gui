@@ -25,7 +25,7 @@ module.exports = {
   'task.compass': 'Explore',
   'task.editor': 'Editor',
   'task.terminal': 'Terminal',
-  // 'task.clear': 'Clear',
+  'task.more': 'More',
   'task.remove': 'Remove Project',
   'task.folder': process.platform === 'darwin'
     ? 'Reveal in Finder'
@@ -157,7 +157,9 @@ module.exports = {
 
   'cmd.sider.title': 'Command List',
   'cmd.modal.title': 'Add a command',
-  'cmd.select.opt': 'Command List',
+  // 'cmd.select.opt': 'Command List',
+  'cmd.select.opt': 'More Logs',
+  // 'cmd.plugin.select.opt': 'Plugin List',
   'cmd.meta.name': 'Command Name',
   'cmd.meta.value': 'Command Content',
   'cmd.meta.apply': 'Enabled',

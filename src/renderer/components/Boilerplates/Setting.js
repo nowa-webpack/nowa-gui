@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'dva';
-import { join } from 'path';
 import { remote } from 'electron';
+import { connect } from 'dva';
 import { homedir } from 'os';
-import Button from 'antd/lib/button';
+import { join } from 'path';
 import Form from 'antd/lib/form';
-import Select from 'antd/lib/select';
 import Input from 'antd/lib/input';
+import Button from 'antd/lib/button';
+import Select from 'antd/lib/select';
 import Checkbox from 'antd/lib/checkbox';
 
 import i18n from 'i18n-renderer-nowa';

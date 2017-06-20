@@ -1,15 +1,16 @@
-import { remote } from 'electron';
-// import { existsSync } from 'fs-extra';
 import { lt } from 'semver';
-// import { join } from 'path';
+import { join } from 'path';
+import { remote } from 'electron';
 
-import { REGISTRY_MAP } from 'const-renderer-nowa';
-import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
-import { msgError } from 'util-renderer-nowa';
 import i18n from 'i18n-renderer-nowa';
 import { request, delay } from 'shared-nowa';
+import { msgError } from 'util-renderer-nowa';
+import { REGISTRY_MAP } from 'const-renderer-nowa';
+import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
 
 const { commands, paths } = remote.getGlobal('services');
+const target = name => join(paths.NODE_MODULES_PATH, name, 'plugin.js');
+
 
 async function checkPluginLatest(item, registry) {
   const { err, data } = await request(`${registry}/${item.name}/latest`);
@@ -34,8 +35,8 @@ export default {
 
   state: {
     pluginList: [],
+    UIPluginList: [],
     loading: false,
-    // atAli: false,
   },
 
   subscriptions: {
@@ -46,7 +47,11 @@ export default {
         type: 'changeStatus',
         payload: {
           pluginList,
+          // uiPluginList: pluginList.filter(item => item.type === 'ui')
         },
+      });
+      dispatch({
+        type: 'initUIPluginList'
       });
     },
   },
@@ -58,7 +63,7 @@ export default {
       const { registry } = yield select(state => state.setting);
       const { pluginList } = yield select(state => state.plugin);
 
-      const { data } = yield request(`${registry}/nowa-gui-plugins/latest`);
+      const { data } = yield request(`${registry}/nowa-gui-plugins-test/latest`);
       let npmPluginList = data.plugins;
 
       if (!atAli) {
@@ -104,8 +109,6 @@ export default {
         payload: { loading: true },
       });
 
-      // if (payload.type === 'cli') {
-
       const opt = {
         root: paths.NOWA_INSTALL_DIR,
         pkgs: [{
@@ -132,12 +135,25 @@ export default {
         storePlugin.push(payload);
         setLocalPlugins(storePlugin);
 
+
         yield put({
           type: 'changePluginList',
           payload,
         });
+
+        if (payload.type === 'ui') {
+          const newItem = {
+            name: payload.name,
+            file: remote.require(target(payload.name))
+          };
+          const { UIPluginList } = yield select(state => state.plugin);
+          UIPluginList.push(newItem);
+          yield put({
+            type: 'changeStatus',
+            payload: { UIPluginList: [...UIPluginList] }
+          });
+        }
       }
-      // }
     },
     * reinstall({ payload }, { put }) {
       console.log('reinstallPlugin', payload);
@@ -198,6 +214,19 @@ export default {
         payload: { pluginList: [...newList], loading: false },
       });
     },
+    * initUIPluginList(o, { put, select }) {
+      const pluginList = getLocalPlugins().filter(item => item.type === 'ui');
+
+      const UIPluginList = pluginList.map(({ name }) => ({
+          name,
+          file: remote.require(target(name))
+        })
+      );
+      yield put({
+        type: 'changeStatus',
+        payload: { UIPluginList }
+      });
+    }
   },
   reducers: {
     changeStatus(state, action) {

@@ -39,8 +39,6 @@ class Terminal extends Component {
   }
 
   componentWillReceiveProps({ taskType, current, commands }) {
-    // const curCmdNames = Object.keys(commands[current.path]);
-    // const oldCmdName = Object.keys(this.props.commands[current.path]);
     if (taskType !== this.props.taskType && current.path === this.props.current.path) {
       const { log } = tasklog.getTask(taskType, current.path);
 
@@ -82,7 +80,6 @@ class Terminal extends Component {
   }
 
   onReceiveLog(event, { command, projPath, text }) {
-    // console.log(this);
     const { current, taskType } = this.props;
     if (current.path === projPath && taskType === command) {
       this.setState({ log: ansiHTML(text.replace(/\n/g, '<br>')), showClear: true }, () => this.scrollToBottom());
@@ -115,7 +112,7 @@ class Terminal extends Component {
   }
 
   render() {
-    const { expanded, onToggle, taskType } = this.props;
+    const { expanded, onToggle, taskType, plugins } = this.props;
     const { showClear, cmdNames, selectCmd, log } = this.state;
     const iconType = expanded ? 'shrink' : 'arrows-alt';
 
@@ -149,9 +146,15 @@ class Terminal extends Component {
             style={{ width: 120 }}
             onChange={this.changeTerminalTab}
             value={selectCmd}
-          >{
-            cmdNames.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>)
-          }
+          >
+            {
+              plugins.length &&
+              plugins.map(({ file }) =>
+                <Select.Option value={file.name.en} key={file.name.en}>{file.name.en}</Select.Option>)
+            }
+            {
+              cmdNames.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>)
+            }
           </Select>
         </div>
 
@@ -174,10 +177,12 @@ Terminal.propTypes = {
   commands: PropTypes.object.isRequired,
   taskType: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
+  plugins: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default connect(({ project, task }) => ({
+export default connect(({ project, task, plugin }) => ({
   current: project.current,
   commands: task.commandSet || {},
   taskType: task.taskType,
+  plugins: plugin.UIPluginList
 }))(Terminal);

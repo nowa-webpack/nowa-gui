@@ -51,25 +51,6 @@ export default {
             type: 'onTaskEnd',
             payload
           });
-          /*if (existsSync(projPath)) {
-            msgInfo(`Exec ${command} command ${finished ? 'finished' : 'stopped'}.`);
-
-            if (command === 'start') {
-              dispatch({
-                type: 'project/stoppedProject',
-                payload: { projPath }
-              });
-            }
-
-            dispatch({
-              type: 'changeCommandStatus',
-              payload: {
-                taskType: command,
-                projPath,
-                running: false
-              }
-            });
-          }*/
         });
     },
   },
@@ -426,7 +407,6 @@ export default {
         }
       });
     },
-
   },
 
   reducers: {

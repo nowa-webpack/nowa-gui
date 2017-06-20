@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BabiliPlugin = require('babili-webpack-plugin');
@@ -99,6 +100,7 @@ module.exports = webpackMerge(webpackCommon,
       //   analyzerMode: 'static',
       //   reportFilename: resolve(__dirname, 'analyzer-report.html'),
       // }),
+      new webpack.optimize.ModuleConcatenationPlugin(),
       new AnalyzerPlugin(resolve(__dirname, 'plain-report.txt'))
     ],
 });

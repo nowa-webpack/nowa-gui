@@ -9,13 +9,13 @@ import Popconfirm from 'antd/lib/popconfirm';
 import { connect } from 'dva';
 
 import i18n from 'i18n-renderer-nowa';
-import { getLocalLanguage } from 'store-renderer-nowa';
+// import { getLocalLanguage } from 'store-renderer-nowa';
 import { VSCODE, SUBLIME, WEBSTORM } from 'const-renderer-nowa';
 import { hidePathString } from 'util-renderer-nowa';
 
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-const DEFAULT_LANGUAGE = getLocalLanguage();
+// const DEFAULT_LANGUAGE = getLocalLanguage();
 
 class BasicSetting extends Component {
   constructor(props) {
@@ -101,6 +101,7 @@ class BasicSetting extends Component {
       registry,
       editor,
       defaultEditor,
+      lang,
     } = this.props;
     const { getFieldDecorator } = this.props.form;
     const pathAddon = (
@@ -135,7 +136,7 @@ class BasicSetting extends Component {
           wrapperCol={{ span: 8 }}
         >
           {getFieldDecorator('language', {
-            initialValue: DEFAULT_LANGUAGE,
+            initialValue: lang,
           })(
             <Select>
               <Select.Option value={'en'}>
@@ -229,6 +230,7 @@ BasicSetting.propTypes = {
   defaultEditor: PropTypes.string.isRequired,
   registry: PropTypes.string.isRequired,
   registryList: PropTypes.array.isRequired,
+  lang: PropTypes.string.isRequired,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
     setFieldsValue: PropTypes.func,
@@ -248,5 +250,6 @@ export default Form.create()(
     editor: setting.editor,
     registry: setting.registry,
     registryList: setting.registryList,
+    lang: setting.lang,
   }))(BasicSetting)
 );
