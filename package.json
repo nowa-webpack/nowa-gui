@@ -118,6 +118,7 @@
   "dependencies": {
     "antd": "^2.10.0",
     "check-npm-registry": "^1.0.4",
+    "chokidar": "^1.7.0",
     "date-diff": "^0.1.3",
     "date-formatter": "^0.1.1",
     "download": "^6.0.0",

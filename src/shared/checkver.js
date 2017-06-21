@@ -19,8 +19,13 @@ const checkNpmLatest = async function (item, registry) {
 
   if (!err) {
     item.latestVersion = data.version;
-    item.updateType = semverDiff(item.installedVersion, data.version);
-    item.needUpdate = lt(item.installedVersion, data.version);
+    if (item.installedVersion !== 'null') {
+      item.updateType = semverDiff(item.installedVersion, data.version);
+      item.needUpdate = lt(item.installedVersion, data.version);
+    } else {
+      item.updateType = 'patch';
+      item.needUpdate = true;
+    }
   } else {
     item.needUpdate = false;
     item.latestVersion = item.installedVersion;
@@ -51,7 +56,7 @@ const checkLocalVerison = (item, folder) => {
 
     console.log(e.message);
 
-    return item;
+    return {...item, installedVersion: 'null'};
   }
 };
 

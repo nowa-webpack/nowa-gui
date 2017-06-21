@@ -1,6 +1,7 @@
 import { remote, ipcRenderer } from 'electron';
 import { join, basename } from 'path';
 import { existsSync } from 'fs-extra';
+// import chokidar from 'chokidar';
 
 import i18n from 'i18n-renderer-nowa';
 import { request } from 'shared-nowa';
@@ -18,6 +19,7 @@ import {
 } from 'const-renderer-nowa';
 
 const { commands, tray, tasklog } = remote.getGlobal('services');
+// let pkgWatcher;
 
 
 const getProjectInfoByPath = (filePath) => {
@@ -116,6 +118,8 @@ export default {
       dispatch({
         type: 'task/initCommands',
       });
+
+      // pkgWatcher = chokidar.watch(projects.map())
     },
   },
 
@@ -166,9 +170,6 @@ export default {
 
       yield put({
         type: 'task/initAddCommands',
-        // payload: {
-        //   project: current,
-        // }
       });
 
       yield put({
