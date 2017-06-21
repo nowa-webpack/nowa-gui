@@ -150,16 +150,28 @@ export const stopCmd = ({ command, projPath = '' }) => {
   }
 };
 
-export async function execPlugin({ projPath, answers, tasks }) {
-  // const cns = new Logger('plugin');
-  const cns = (text) => console.log(text);
+export async function execPlugin({ projPath, answers, tasks, command }) {
+  tasklog.setTask(command, projPath, {
+    term: {},
+  });
+  const logger = (data) => {
+    const text = tasklog.writeLog(command, projPath, data);
+    console.log(text);
+    mainWin.send('task-output', {
+      command,
+      text,
+      projPath,
+    });
+  };
 
   for (let i = 0; i < tasks.length; i++) {
     const { err } = await new Promise(function(resolve){
-       tasks[i].do({ projPath, answers, cns, next: resolve })
+      tasks[i].run({ projPath, answers, logger, next: resolve });
     });
     if (err) break;
   }
+
+  console.log('done plugin tasks');
 }
 
 export const clearNotMacTask = (cb) => {

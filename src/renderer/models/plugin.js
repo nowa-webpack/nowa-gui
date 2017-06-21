@@ -235,6 +235,7 @@ export default {
         projPath: current.path,
         answers,
         tasks: file.tasks,
+        command: file.name.en,
       });
     }
   },
