@@ -170,6 +170,7 @@ export default {
 
       yield put({
         type: 'task/initAddCommands',
+        payload: current
       });
 
       yield put({
@@ -449,6 +450,21 @@ export default {
           }
         });
       }
+    },
+    * reload({ payload }, { put, select }) {
+      const { projects } = yield select(state => state.project);
+      const info = getProjectInfoByPath(payload.path);
+      const project = { ...payload, ...info };
+
+      yield put({
+        type: 'changeProjects',
+        payload: project
+      });
+
+      yield put({
+        type: 'task/initAddCommands',
+        payload: project
+      });
     },
   },
 

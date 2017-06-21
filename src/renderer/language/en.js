@@ -27,6 +27,7 @@ module.exports = {
   'task.terminal': 'Terminal',
   'task.more': 'More',
   'task.remove': 'Remove Project',
+  'task.reload': 'Reload Project',
   'task.folder': process.platform === 'darwin'
     ? 'Reveal in Finder'
     : 'Reveal in Folder',

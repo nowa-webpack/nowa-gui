@@ -28,6 +28,7 @@ module.exports = {
   'task.terminal': '终端',
   'task.more': '更多',
   'task.remove': '删除项目',
+  'task.reload': '重载项目',
   'task.status.start': '运行中',
   'task.status.stop': '停止',
 

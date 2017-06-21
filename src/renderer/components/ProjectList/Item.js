@@ -61,12 +61,19 @@ const Item = ({
     if (key === '2') {
       shell.showItemInFolder(join(project.path, 'package.json'));
     }
+    if (key === '3') {
+      dispatch({
+        type: 'project/reload',
+        payload: project
+      });
+    }
   };
 
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1">{i18n('task.remove')}</Menu.Item>
       <Menu.Item key="2">{i18n('task.folder')}</Menu.Item>
+      <Menu.Item key="3">{i18n('task.reload')}</Menu.Item>
     </Menu>
   );
 

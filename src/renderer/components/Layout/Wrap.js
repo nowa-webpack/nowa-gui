@@ -37,11 +37,11 @@ class LayoutWrap extends Component {
 
   componentDidMount() {
     const { startWacthProject, dispatch } = this.props;
-    // if (startWacthProject) {
-    //   this.taskTimer = setInterval(() => {
-    //     dispatch({ type: 'project/refresh' });
-    //   }, 10000);
-    // }
+    if (startWacthProject) {
+      this.taskTimer = setInterval(() => {
+        dispatch({ type: 'project/refresh' });
+      }, 10000);
+    }
 
     window.addEventListener('resize', throttle(this.onWindowResize, 500));
   }
