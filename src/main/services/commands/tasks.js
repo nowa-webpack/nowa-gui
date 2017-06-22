@@ -15,7 +15,6 @@ import Logger from './logger';
 import kill from './kill';
 import env from './env';
 
-
 export const install = ({
   opt,
   fake = false,
@@ -105,14 +104,7 @@ export const execCmd = ({ command, projPath }) => {
     uid
   });
 
-  const senderData = (data) => {
-    const text = tasklog.writeLog(command, projPath, data);
-    mainWin.send('task-output', {
-      command,
-      text,
-      projPath,
-    });
-  };
+  const senderData = (data) => tasklog.writeLog(command, projPath, data);
 
   term.stdout.on('data', senderData);
   term.stderr.on('data', senderData);
@@ -150,29 +142,6 @@ export const stopCmd = ({ command, projPath = '' }) => {
   }
 };
 
-export async function execPlugin({ projPath, answers, tasks, command }) {
-  tasklog.setTask(command, projPath, {
-    term: {},
-  });
-  const logger = (data) => {
-    const text = tasklog.writeLog(command, projPath, data);
-    console.log(text);
-    mainWin.send('task-output', {
-      command,
-      text,
-      projPath,
-    });
-  };
-
-  for (let i = 0; i < tasks.length; i++) {
-    const { err } = await new Promise(function(resolve){
-      tasks[i].run({ projPath, answers, logger, next: resolve });
-    });
-    if (err) break;
-  }
-
-  console.log('done plugin tasks');
-}
 
 export const clearNotMacTask = (cb) => {
   console.log('clear clearNotMacTask');

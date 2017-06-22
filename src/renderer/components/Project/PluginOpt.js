@@ -9,31 +9,28 @@ import { LANGUAGE } from 'const-renderer-nowa';
 
 import PluginPromtsModal from './PluginPromtsModal';
 
-
+/*
 class PluginOpt extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false,
       selectPlugin: '',
     };
 
     this.handleMenuClick = this.handleMenuClick.bind(this);
-    this.onHideModal = this.onHideModal.bind(this);
   }
 
   handleMenuClick({ key }) {
     console.log(key);
-    this.setState({ showModal: true, selectPlugin: key });
+    this.props.dispatch({
+      type: 'plugin/execPretask',
+      payload: key
+    });
+    this.setState({ selectPlugin: key });
   }
-
-  onHideModal() {
-    this.setState({ showModal: false });
-  }
-
   render() {
-    const { plugins, lang, current } = this.props;
-    const { showModal, selectPlugin } = this.state;
+    const { plugins, lang, showModal } = this.props;
+    const { selectPlugin } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         {
@@ -69,29 +66,32 @@ class PluginOpt extends Component {
             onHideModal={this.onHideModal}
             showModal={showModal}
             lang={lang}
-            projPath={current.path}
           />
         }
       </div>
     );
   }
-}
+}*/
 
-/*const MoreOpt = ({
-  pluginList
+const PluginOpt = ({
+  plugins,
+  lang,
+  showModal,
+  dispatch,
 }) => {
-  const files = pluginList.map(name => remote.require(target(name)));
-  const lang = config.getItem(LANGUAGE);
-  // console.log(files);
   const handleMenuClick = ({ key }) => {
     console.log(key);
+    dispatch({
+      type: 'plugin/execPretask',
+      payload: key 
+    });
   };
 
   const menu = (
     <Menu onClick={handleMenuClick}>
       {
-        pluginList.map((name, n) => (
-          <Menu.Item key={n}>{files[n].lang[lang]}</Menu.Item>)
+        plugins.map(({ name, file }) => (
+          <Menu.Item key={name}>{file.name[lang]}</Menu.Item>)
         )
       }
     </Menu>
@@ -110,22 +110,25 @@ class PluginOpt extends Component {
           {i18n('task.more')}
         </span>
       </Dropdown>
+      { showModal && <PluginPromtsModal/> }
     </div>
   );
-};*/
+};
 
 PluginOpt.propTypes = {
   plugins: PropTypes.arrayOf(PropTypes.object).isRequired,
   lang: PropTypes.string.isRequired,
-  current: PropTypes.shape({
-    name: PropTypes.string,
-    path: PropTypes.string,
-  }).isRequired,
+  showModal: PropTypes.bool.isRequired,
+  // current: PropTypes.shape({
+  //   name: PropTypes.string,
+  //   path: PropTypes.string,
+  // }).isRequired,
   // dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(({ setting, plugin, project }) => ({
   lang: setting.lang,
   plugins: plugin.UIPluginList,
-  current: project.current,
+  showModal: plugin.showPromtsModal,
+  // current: project.current,
 }))(PluginOpt);

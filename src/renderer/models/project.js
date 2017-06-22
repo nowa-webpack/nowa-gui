@@ -452,9 +452,11 @@ export default {
       }
     },
     * reload({ payload }, { put, select }) {
+      Object.keys(payload.pkg.scripts || {})
+        .forEach(command => commands.stopCmd({ projPath: payload.path, command }));
       const { projects } = yield select(state => state.project);
       const info = getProjectInfoByPath(payload.path);
-      const project = { ...payload, ...info };
+      const project = { ...payload, ...info, start: false };
 
       yield put({
         type: 'changeProjects',

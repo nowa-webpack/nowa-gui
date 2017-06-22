@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
@@ -21,37 +21,53 @@ const formItemLayout = {
   wrapperCol: { span: 15 }
 };
 
+/*class PluginPromtsModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+
+  }
+
+  render() {
+    
+  }
+}*/
+
+
+
+
 const PluginPromtsModal = ({
-  showModal,
-  onHideModal,
   form: {
     getFieldDecorator,
     validateFields,
     setFieldsValue,
   },
-  data: { name, file = {} },
   lang,
   dispatch,
-  projPath
+  promts,
 }) => {
+  const handleCancle = () => {
+    dispatch({
+      type: 'plugin/changeStatus',
+      payload: { showPromtsModal: false }
+    });
+  };
+
   const handleOk = () => {
     validateFields((err, answers) => {
       if (!err) {
         console.log(answers);
+        
         dispatch({
-          type: 'task/changeStatus',
-          payload: { taskType: file.name.en }
+          type: 'plugin/execPluginTask',
+          payload: { answers }
         });
-        dispatch({
-          type: 'plugin/exec',
-          payload: { answers, file, }
-        });
-        // file.tasks[0].do({ projPath, answers: data });
-        onHideModal();
-        // setFieldsValue({ name: '', value: '' });
+        handleCancle();
       }
     });
   };
+
 
   const inputTemp = (obj) =>  {
     const rules = [{ required: true, message: i18n('msg.required') }];
@@ -154,17 +170,17 @@ const PluginPromtsModal = ({
 
   return (
     <Modal
-      title={`${file.name[lang]} Promts`}
-      visible={showModal}
+      title={i18n('plugin.promts.title')}
+      visible={true}
       onOk={handleOk}
-      onCancel={onHideModal}
+      onCancel={handleCancle}
       okText={i18n('form.ok')}
       cancelText={i18n('form.cancel')}
     >
       <Form style={{ marginTop: 20 }}>
         {
-          file.promts.length && 
-          file.promts.map(item => {
+          promts.length && 
+          promts.map(item => {
             let html;
             switch (item.type) {
               case 'input':
@@ -192,21 +208,27 @@ const PluginPromtsModal = ({
 };
 
 
+
 PluginPromtsModal.propTypes = {
-  showModal: PropTypes.bool.isRequired,
-  onHideModal: PropTypes.func.isRequired,
+  // showModal: PropTypes.bool.isRequired,
+  // onHideModal: PropTypes.func.isRequired,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
     setFieldsValue: PropTypes.func,
     validateFields: PropTypes.func,
   }).isRequired,
-  data: PropTypes.shape({
-    file: PropTypes.object,
-    name: PropTypes.string,
-  }).isRequired,
+  // data: PropTypes.shape({
+  //   file: PropTypes.object,
+  //   name: PropTypes.string,
+  // }).isRequired,
   dispatch: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
-  projPath: PropTypes.string.isRequired,
+  promts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // projPath: PropTypes.string.isRequired,
 };
 
-export default Form.create()(connect()(PluginPromtsModal));
+export default Form.create()(connect(({ plugin, setting }) => ({
+  lang: setting.lang,
+  plugins: plugin.UIPluginList,
+  promts: plugin.pluginPromts,
+}))(PluginPromtsModal));

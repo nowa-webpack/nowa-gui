@@ -2,6 +2,8 @@
 import iconv from 'iconv-lite';
 
 import config from 'config-main-nowa';
+import mainWin from './windowManager';
+
 
 class TaskLog {
   constructor() {
@@ -36,11 +38,19 @@ class TaskLog {
   }
 
   writeLog(cmd, projPath, buf) {
-    const str = iconv.decode(new Buffer(buf), config.getItem('ENCODE'));
+    let str = buf;
+    if (Buffer.isBuffer(str)) {
+      str = iconv.decode(new Buffer(str), config.getItem('ENCODE'));
+    }
     const task = this.getTask(cmd, projPath);
     // task.log += ansiHTML(str.replace(/\n/g, '<br>'));
     task.log += str;
     this.log[cmd][projPath] = task;
+    mainWin.send('task-output', {
+      command: cmd,
+      text: task.log,
+      projPath,
+    });
     return task.log;
   }
 

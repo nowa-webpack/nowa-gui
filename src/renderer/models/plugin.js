@@ -8,8 +8,8 @@ import { msgError } from 'util-renderer-nowa';
 import { REGISTRY_MAP } from 'const-renderer-nowa';
 import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
 
-const { commands, paths } = remote.getGlobal('services');
-const target = name => join(paths.NODE_MODULES_PATH, name, 'plugin.js');
+const { commands, paths, tasklog } = remote.getGlobal('services');
+const target = name => join(paths.NODE_MODULES_PATH, name, 'index.js');
 
 
 async function checkPluginLatest(item, registry) {
@@ -37,6 +37,9 @@ export default {
     pluginList: [],
     UIPluginList: [],
     loading: false,
+    showPromtsModal: false,
+    pluginPromts: [],
+    selectPlugin: '',
   },
 
   subscriptions: {
@@ -140,7 +143,7 @@ export default {
           if (others.type === 'ui') {
             const newItem = {
               name: others.name,
-              file: remote.require(target(others.name))
+              file: remote.require(target(others.name)),
             };
             const { UIPluginList } = yield select(state => state.plugin);
             UIPluginList.push(newItem);
@@ -221,7 +224,7 @@ export default {
 
       const UIPluginList = pluginList.map(({ name }) => ({
           name,
-          file: remote.require(target(name))
+          file: remote.require(target(name)),
         })
       );
       yield put({
@@ -229,7 +232,7 @@ export default {
         payload: { UIPluginList }
       });
     },
-    * exec({ payload: { answers, file }}, { put, select }) {
+    /** exec({ payload: { answers, file }}, { put, select }) {
       const { current } = yield select(state => state.project);
       yield commands.execPlugin({
         projPath: current.path,
@@ -237,6 +240,100 @@ export default {
         tasks: file.tasks,
         command: file.name.en,
       });
+    },*/
+    * execPretask({ payload }, { put, select }) {
+      const { UIPluginList } = yield select(state => state.plugin);
+      const { current } = yield select(state => state.project);
+      const file = UIPluginList.filter(item => item.name === payload)[0].file;
+      const command = file.name.en;
+      const cwd = current.path;
+      let preData;
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          selectPlugin: payload
+        }
+      });
+
+      yield put({
+        type: 'task/changeStatus',
+        payload: { taskType: file.name.en }
+      });
+
+      if (!tasklog.getTask(command, cwd)) {
+        tasklog.setTask(command, cwd, { term: {} });
+      }
+      
+      try {
+        if (file.pretask) {
+          console.log('do pretask');
+          
+          const logger = (data) => {
+            console.log(data);
+            tasklog.writeLog(command, cwd, data);
+          };
+          const { err, data } = yield new Promise(function(resolve){
+            file.pretask({ cwd, logger, next: resolve });
+          });
+
+          if (err) return;
+
+          preData = data;
+        }
+
+        if (file.promts) {
+          yield put({
+            type: 'showPromts',
+            payload: {
+              file,
+              preData
+            }
+          });
+        } else if (file.tasks) {
+          yield put({
+            type: 'execPluginTask',
+            payload: {
+              answers: null
+            }
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    * showPromts({ payload: { file, cwd, preData} }, { put, select }) {
+      console.log('do showPromts', file.name.en);
+
+      // const pluginPromts = file.promts(preData);
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          showPromtsModal: true,
+          pluginPromts: file.promts instanceof Array ? file.promts : file.promts(preData)
+        }
+      });
+    },
+    * execPluginTask({ payload: { answers } }, { put, select }) {
+      const { UIPluginList, selectPlugin } = yield select(state => state.plugin);
+      const { current } = yield select(state => state.project);
+      const file = UIPluginList.filter(item => item.name === selectPlugin)[0].file;
+      const command = file.name.en;
+      const cwd = current.path;
+      console.log('do execPluginTask', file.name.en);
+
+      const logger = (data) => {
+        console.log(data);
+        tasklog.writeLog(command, cwd, data);
+      };
+
+      for (let i = 0; i < file.tasks.length; i++) {
+        const { err } = yield new Promise(function(resolve){
+          file.tasks[i].run({ cwd, answers, logger, next: resolve });
+        });
+        if (err) break;
+      }
+      console.log('done plugin tasks');
     }
   },
   reducers: {
