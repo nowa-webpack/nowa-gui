@@ -4,12 +4,13 @@ import { remote } from 'electron';
 
 import i18n from 'i18n-renderer-nowa';
 import { request, delay } from 'shared-nowa';
-import { msgError } from 'util-renderer-nowa';
+import { msgError, readPluginConfig, writePluginConfig } from 'util-renderer-nowa';
 import { REGISTRY_MAP } from 'const-renderer-nowa';
 import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
 
 const { commands, paths, tasklog } = remote.getGlobal('services');
-const target = name => join(paths.NODE_MODULES_PATH, name, 'index.js');
+// const target = name => join(paths.NODE_MODULES_PATH, name, 'index.js');
+const target = name => join(paths.NODE_MODULES_PATH, name);
 
 
 async function checkPluginLatest(item, registry) {
@@ -249,15 +250,6 @@ export default {
         payload: { UIPluginList }
       });
     },
-    /** exec({ payload: { answers, file }}, { put, select }) {
-      const { current } = yield select(state => state.project);
-      yield commands.execPlugin({
-        projPath: current.path,
-        answers,
-        tasks: file.tasks,
-        command: file.name.en,
-      });
-    },*/
     * execPretask({ payload }, { put, select }) {
       const { UIPluginList } = yield select(state => state.plugin);
       const { current } = yield select(state => state.project);
@@ -265,6 +257,17 @@ export default {
       const command = file.name.en;
       const cwd = current.path;
       let preData;
+
+      const defaultPluginConfig = readPluginConfig(join(target(payload), '.nowa'));
+
+      const config = { ...defaultPluginConfig, ...current.config };
+
+      writePluginConfig(cwd, config);
+
+      yield put({
+        type: 'project/changeProjects',
+        payload: current
+      });
 
       yield put({
         type: 'changeStatus',
@@ -291,7 +294,12 @@ export default {
             tasklog.writeLog(command, cwd, data);
           };
           const { err, data } = yield new Promise(function(resolve){
-            file.pretask({ cwd, logger, next: resolve });
+            file.pretask({
+              cwd,
+              logger,
+              next: resolve,
+              config: config.pluginConfig
+            });
           });
 
           if (err) return;
@@ -346,7 +354,13 @@ export default {
 
       for (let i = 0; i < file.tasks.length; i++) {
         const { err } = yield new Promise(function(resolve){
-          file.tasks[i].run({ cwd, answers, logger, next: resolve });
+          file.tasks[i].run({
+            cwd,
+            answers,
+            logger,
+            next: resolve,
+            config: { ...current.config.pluginConfig }
+          });
         });
         if (err) break;
       }

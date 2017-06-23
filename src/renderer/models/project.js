@@ -9,6 +9,7 @@ import { getLocalProjects, setLocalProjects } from 'store-renderer-nowa';
 import {
   readABCJson, writeABCJson,
   readPkgJson, writePkgJson,
+  readPluginConfig, writePluginConfig,
   isNowaProject, isAliProject,
   msgError, msgSuccess,
 } from 'util-renderer-nowa';
@@ -25,6 +26,7 @@ const { commands, tray, tasklog } = remote.getGlobal('services');
 const getProjectInfoByPath = (filePath) => {
   let abc = {};
   const pkg = readPkgJson(filePath);
+  const config = readPluginConfig(filePath);
   const isNowa = isNowaProject(filePath);
   if (isNowa) {
     abc = readABCJson(filePath);
@@ -35,6 +37,7 @@ const getProjectInfoByPath = (filePath) => {
     isNowa,
     abc,
     pkg,
+    config,
     path: filePath
   };
 
@@ -51,6 +54,8 @@ const getProjectInfoByPath = (filePath) => {
     }
   } else if (isAliProject(pkg)) {
     obj.registry = REGISTRY_MAP.tnpm;
+  } else if (config.registry) {
+    obj.registry = config.registry;
   }
   return obj;
 };

@@ -174,3 +174,20 @@ export const msgSuccess = (message, duration = 3) => {
     duration,
   });
 };
+
+export const readPluginConfig = (projPath) => {
+  const target = join(projPath, '.nowa');
+  try {
+    const configFile = readJsonSync(target);
+    return configFile || {};
+  } catch (e) {
+    return {};
+  }
+};
+
+export const writePluginConfig = (projPath, conf) => {
+  const target = join(projPath, '.nowa');
+  writeJsonSync(target, conf, { spaces: 2 });
+};
+
+
