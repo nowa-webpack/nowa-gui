@@ -21,21 +21,6 @@ const formItemLayout = {
   wrapperCol: { span: 15 }
 };
 
-/*class PluginPromtsModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-
-  }
-
-  render() {
-    
-  }
-}*/
-
-
-
 
 const PluginPromtsModal = ({
   form: {
@@ -98,6 +83,19 @@ const PluginPromtsModal = ({
         required
       >
         {getFieldDecorator(obj.key, options)(<Input />)}
+      </FormItem>
+    );
+  };
+
+  const textTemp = (obj) =>  {
+    return (
+      <FormItem
+        key={obj.key}
+        {...formItemLayout}
+        label={obj.label[lang]}
+        required
+      >
+        <div>{obj.value}</div>
       </FormItem>
     );
   };
@@ -183,6 +181,9 @@ const PluginPromtsModal = ({
           promts.map(item => {
             let html;
             switch (item.type) {
+              case 'text':
+                html = textTemp(item);
+                break;
               case 'input':
                 html = inputTemp(item);
                 break;
@@ -210,21 +211,14 @@ const PluginPromtsModal = ({
 
 
 PluginPromtsModal.propTypes = {
-  // showModal: PropTypes.bool.isRequired,
-  // onHideModal: PropTypes.func.isRequired,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
     setFieldsValue: PropTypes.func,
     validateFields: PropTypes.func,
   }).isRequired,
-  // data: PropTypes.shape({
-  //   file: PropTypes.object,
-  //   name: PropTypes.string,
-  // }).isRequired,
   dispatch: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
   promts: PropTypes.arrayOf(PropTypes.object).isRequired,
-  // projPath: PropTypes.string.isRequired,
 };
 
 export default Form.create()(connect(({ plugin, setting }) => ({
