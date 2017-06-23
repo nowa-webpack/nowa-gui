@@ -4,12 +4,13 @@ https://nowa-webpack.github.io/
 
 ## articles
 
-https://segmentfault.com/blog/uxcore
+* https://segmentfault.com/blog/uxcore
+* https://segmentfault.com/a/1190000009088343
 
 ## usage
 
-https://nowa-webpack.github.io/nowa/
-https://nowa-webpack.github.io/docs/
+* https://nowa-webpack.github.io/nowa/
+* https://nowa-webpack.github.io/docs/
 
 ## images
 

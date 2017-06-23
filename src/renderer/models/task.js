@@ -53,25 +53,6 @@ export default {
             type: 'onTaskEnd',
             payload
           });
-          /*if (existsSync(projPath)) {
-            msgInfo(`Exec ${command} command ${finished ? 'finished' : 'stopped'}.`);
-
-            if (command === 'start') {
-              dispatch({
-                type: 'project/stoppedProject',
-                payload: { projPath }
-              });
-            }
-
-            dispatch({
-              type: 'changeCommandStatus',
-              payload: {
-                taskType: command,
-                projPath,
-                running: false
-              }
-            });
-          }*/
         });
     },
   },
@@ -218,11 +199,11 @@ export default {
         payload: { commandSet }
       });
     },
-    * initAddCommands(o, { put, select }) {
-      const { current } = yield select(state => state.project);
+    * initAddCommands({ payload }, { put, select }) {
+      // const { current } = yield select(state => state.project);
       const { globalCommandSet, commandSet } = yield select(state => state.task);
       const otherCmdKey = globalCommandSet.filter(item => item.apply);
-      const { pkg, path } = current;
+      const { pkg, path } = payload;
 
       commandSet[path] = mapCmd(pkg.scripts || {});
 
@@ -239,11 +220,11 @@ export default {
 
         writePkgJson(path, pkg);
 
-        current.pkg = pkg;
+        payload.pkg = pkg;
 
         yield put({
           type: 'project/changeProjects',
-          payload: current
+          payload
         });
       }
 
@@ -430,7 +411,6 @@ export default {
         }
       });
     },
-
   },
 
   reducers: {

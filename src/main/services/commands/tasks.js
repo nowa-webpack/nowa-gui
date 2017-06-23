@@ -15,7 +15,6 @@ import Logger from './logger';
 import kill from './kill';
 import env from './env';
 
-
 export const install = ({
   opt,
   fake = false,
@@ -105,14 +104,7 @@ export const execCmd = ({ command, projPath }) => {
     uid
   });
 
-  const senderData = (data) => {
-    const text = tasklog.writeLog(command, projPath, data);
-    mainWin.send('task-output', {
-      command,
-      text,
-      projPath,
-    });
-  };
+  const senderData = (data) => tasklog.writeLog(command, projPath, data);
 
   term.stdout.on('data', senderData);
   term.stderr.on('data', senderData);
@@ -149,6 +141,7 @@ export const stopCmd = ({ command, projPath = '' }) => {
     }
   }
 };
+
 
 export const clearNotMacTask = (cb) => {
   console.log('clear clearNotMacTask');

@@ -65,8 +65,8 @@ export const URL_MATCH = /^((ht|f)tps?):\/\/([\w-]+(\.[\w-]+)*\/)*[\w-]+(\.[\w-]
 
 export const VERSION_MATCH = /^\d+.\d+.\d+([.-\w])*$/;
 
-// export const NAME_MATCH = /^([A-Za-z0-9]|[._@\/\-])+$/;
+export const NAME_MATCH = /^([A-Za-z0-9]|[._@\/-])+$/;
 // export const NAME_MATCH = /^(@\w+\/)?[\w-]+$/;
-export const NAME_MATCH = /^[a-z][a-z0-9-]*$/;
+// export const NAME_MATCH = /^[a-z][a-z0-9-]*$/;
 
 export const PORT_MATCH = /^([1-9]|[1-9]\d{1,3}|[1-6][0-5][0-5][0-3][0-5])$/;

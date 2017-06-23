@@ -1,15 +1,17 @@
-import { remote } from 'electron';
-// import { existsSync } from 'fs-extra';
 import { lt } from 'semver';
-// import { join } from 'path';
+import { join } from 'path';
+import { remote } from 'electron';
 
-import { REGISTRY_MAP } from 'const-renderer-nowa';
-import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
-import { msgError } from 'util-renderer-nowa';
 import i18n from 'i18n-renderer-nowa';
 import { request, delay } from 'shared-nowa';
+import { msgError, readPluginConfig, writePluginConfig } from 'util-renderer-nowa';
+import { REGISTRY_MAP } from 'const-renderer-nowa';
+import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
 
-const { commands, paths } = remote.getGlobal('services');
+const { commands, paths, tasklog } = remote.getGlobal('services');
+// const target = name => join(paths.NODE_MODULES_PATH, name, 'index.js');
+const target = name => join(paths.NODE_MODULES_PATH, name);
+
 
 async function checkPluginLatest(item, registry) {
   const { err, data } = await request(`${registry}/${item.name}/latest`);
@@ -34,8 +36,11 @@ export default {
 
   state: {
     pluginList: [],
+    UIPluginList: [],
     loading: false,
-    // atAli: false,
+    showPromtsModal: false,
+    pluginPromts: [],
+    selectPlugin: '',
   },
 
   subscriptions: {
@@ -46,7 +51,11 @@ export default {
         type: 'changeStatus',
         payload: {
           pluginList,
+          // uiPluginList: pluginList.filter(item => item.type === 'ui')
         },
+      });
+      dispatch({
+        type: 'initUIPluginList'
       });
     },
   },
@@ -58,7 +67,7 @@ export default {
       const { registry } = yield select(state => state.setting);
       const { pluginList } = yield select(state => state.plugin);
 
-      const { data } = yield request(`${registry}/nowa-gui-plugins/latest`);
+      const { data } = yield request(`${registry}/nowa-gui-plugins-test/latest`);
       let npmPluginList = data.plugins;
 
       if (!atAli) {
@@ -94,8 +103,8 @@ export default {
         payload: { pluginList: res, loading: false },
       });
     },
-    * install({ payload }, { put, select }) {
-      console.log('installPlugin', payload);
+    * install({ payload: { reinstall, ...others } }, { put, select }) {
+      console.log('installPlugin', others);
       const { atAli } = yield select(state => state.layout);
       const { registry } = yield select(state => state.setting);
 
@@ -104,13 +113,11 @@ export default {
         payload: { loading: true },
       });
 
-      // if (payload.type === 'cli') {
-
       const opt = {
         root: paths.NOWA_INSTALL_DIR,
         pkgs: [{
-          name: payload.name,
-          version: payload.newest === 'null' ? 'latest' : payload.newest
+          name: others.name,
+          version: others.newest === 'null' ? 'latest' : others.newest
         }],
         registry: atAli ? REGISTRY_MAP.tnpm : registry,
       };
@@ -124,20 +131,35 @@ export default {
           payload: { loading: false },
         });
       } else {
-        payload.version = payload.newest;
-        payload.installed = true;
+        others.version = others.newest;
+        others.installed = true;
 
-        const storePlugin = getLocalPlugins();
+        if (!reinstall) {
 
-        storePlugin.push(payload);
-        setLocalPlugins(storePlugin);
+          const storePlugin = getLocalPlugins();
+
+          storePlugin.push(others);
+          setLocalPlugins(storePlugin);
+
+          if (others.type === 'ui') {
+            const newItem = {
+              name: others.name,
+              file: remote.require(target(others.name)),
+            };
+            const { UIPluginList } = yield select(state => state.plugin);
+            UIPluginList.push(newItem);
+            yield put({
+              type: 'changeStatus',
+              payload: { UIPluginList: [...UIPluginList] }
+            });
+          }
+        }
 
         yield put({
           type: 'changePluginList',
-          payload,
+          payload: others,
         });
       }
-      // }
     },
     * reinstall({ payload }, { put }) {
       console.log('reinstallPlugin', payload);
@@ -150,7 +172,7 @@ export default {
       yield delay(1000);
       yield put({
         type: 'install',
-        payload
+        payload: {...payload, reinstall: true }
       });
     },
     * update({ payload }, { put }) {
@@ -160,9 +182,14 @@ export default {
       payload.needUpdate = false;
 
       yield put({
-        type: 'changePluginList',
-        payload,
+        type: 'install',
+        payload: { reinstall: true, ...payload }
       });
+
+      // yield put({
+      //   type: 'changePluginList',
+      //   payload,
+      // });
 
       const storePlugin = getLocalPlugins();
       setLocalPlugins(
@@ -186,7 +213,7 @@ export default {
       );
     },
     * changePluginList({ payload }, { put, select }) {
-      const { pluginList } = yield select(state => state.plugin);
+      const { pluginList, UIPluginList } = yield select(state => state.plugin);
       const newList = pluginList.map((item) => {
         if (item.name === payload.name) {
           return payload;
@@ -197,7 +224,148 @@ export default {
         type: 'changeStatus',
         payload: { pluginList: [...newList], loading: false },
       });
+
+      if (payload.type === 'ui') {
+        const newUIList = UIPluginList.map(({ name }) => ({
+            name,
+            file: remote.require(target(name)),
+          })
+        );
+        yield put({
+          type: 'changeStatus',
+          payload: { UIPluginList: [...newUIList] }
+        });
+      }
     },
+    * initUIPluginList(o, { put, select }) {
+      const pluginList = getLocalPlugins().filter(item => item.type === 'ui');
+
+      const UIPluginList = pluginList.map(({ name }) => ({
+          name,
+          file: remote.require(target(name)),
+        })
+      );
+      yield put({
+        type: 'changeStatus',
+        payload: { UIPluginList }
+      });
+    },
+    * execPretask({ payload }, { put, select }) {
+      const { UIPluginList } = yield select(state => state.plugin);
+      const { current } = yield select(state => state.project);
+      const file = UIPluginList.filter(item => item.name === payload)[0].file;
+      const command = file.name.en;
+      const cwd = current.path;
+      let preData;
+
+      const defaultPluginConfig = readPluginConfig(join(target(payload), '.nowa'));
+
+      const config = { ...defaultPluginConfig, ...current.config };
+
+      writePluginConfig(cwd, config);
+
+      yield put({
+        type: 'project/changeProjects',
+        payload: current
+      });
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          selectPlugin: payload
+        }
+      });
+
+      yield put({
+        type: 'task/changeStatus',
+        payload: { taskType: file.name.en }
+      });
+
+      if (!tasklog.getTask(command, cwd)) {
+        tasklog.setTask(command, cwd, { term: {} });
+      }
+      
+      try {
+        if (file.pretask) {
+          console.log('do pretask');
+          
+          const logger = (data) => {
+            console.log(data);
+            tasklog.writeLog(command, cwd, data);
+          };
+          const { err, data } = yield new Promise(function(resolve){
+            file.pretask({
+              cwd,
+              logger,
+              next: resolve,
+              config: config.pluginConfig
+            });
+          });
+
+          if (err) return;
+
+          preData = data;
+        }
+
+        if (file.promts) {
+          yield put({
+            type: 'showPromts',
+            payload: {
+              file,
+              preData
+            }
+          });
+        } else if (file.tasks) {
+          yield put({
+            type: 'execPluginTask',
+            payload: {
+              answers: null
+            }
+          });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    * showPromts({ payload: { file, cwd, preData} }, { put, select }) {
+      console.log('do showPromts', file.name.en);
+
+      // const pluginPromts = file.promts(preData);
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          showPromtsModal: true,
+          pluginPromts: file.promts instanceof Array ? file.promts : file.promts(preData)
+        }
+      });
+    },
+    * execPluginTask({ payload: { answers } }, { put, select }) {
+      const { UIPluginList, selectPlugin } = yield select(state => state.plugin);
+      const { current } = yield select(state => state.project);
+      const file = UIPluginList.filter(item => item.name === selectPlugin)[0].file;
+      const command = file.name.en;
+      const cwd = current.path;
+      console.log('do execPluginTask', file.name.en);
+
+      const logger = (data) => {
+        console.log(data);
+        tasklog.writeLog(command, cwd, data);
+      };
+
+      for (let i = 0; i < file.tasks.length; i++) {
+        const { err } = yield new Promise(function(resolve){
+          file.tasks[i].run({
+            cwd,
+            answers,
+            logger,
+            next: resolve,
+            config: { ...current.config.pluginConfig }
+          });
+        });
+        if (err) break;
+      }
+      console.log('done plugin tasks');
+    }
   },
   reducers: {
     changeStatus(state, action) {

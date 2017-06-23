@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
-import Button from 'antd/lib/button';
-import Input from 'antd/lib/input';
-import Tooltip from 'antd/lib/tooltip';
 import Col from 'antd/lib/col';
 import Row from 'antd/lib/row';
-import Switch from 'antd/lib/switch';
 import Form from 'antd/lib/form';
+import Input from 'antd/lib/input';
+import Switch from 'antd/lib/switch';
+import Button from 'antd/lib/button';
+import Tooltip from 'antd/lib/tooltip';
 
 import i18n from 'i18n-renderer-nowa';
 import { openUrl } from 'util-renderer-nowa';
@@ -149,7 +149,7 @@ class BuildForm extends Component {
         <Tooltip placement="top" title={i18n('foot.help')} >
           <Button type="primary" icon="question" shape="circle" size="small" ghost
             className="project-setting-help"
-            onClick={() => openUrl('http://groups.alidemo.cn/alinw-tools/nowa/ben_di_kai_fa.html')}
+            onClick={() => openUrl('https://nowa-webpack.github.io/docs/ben_di_kai_fa.html')}
           />
         </Tooltip>
         <FormItem wrapperCol={{ offset: 4 }} className="setting-form-btns">

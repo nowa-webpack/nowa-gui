@@ -1,5 +1,3 @@
-// import { DOT_NOWA_PATH } from '../paths';
-// import fs from 'fs';
 import mainWin from '../windowManager';
 
 // class Logger extends console.Console {

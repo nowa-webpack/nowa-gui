@@ -25,11 +25,11 @@ export const hidePathString = (filePath, num = 70) => {
   return filePath;
 };
 
-export const hideBoilerplateDesp = str => {
+export const hideBoilerplateDesp = (str, length = 40) => {
   if (!str) return 'No description.';
   const size = str.length;
-  if (size <= 40) return str;
-  return str.slice(0, 37) + '...';
+  if (size <= length) return str;
+  return str.slice(0, length - 3) + '...';
 };
 
 export const upperFirstCha = word =>
@@ -174,3 +174,20 @@ export const msgSuccess = (message, duration = 3) => {
     duration,
   });
 };
+
+export const readPluginConfig = (projPath) => {
+  const target = join(projPath, '.nowa');
+  try {
+    const configFile = readJsonSync(target);
+    return configFile || {};
+  } catch (e) {
+    return {};
+  }
+};
+
+export const writePluginConfig = (projPath, conf) => {
+  const target = join(projPath, '.nowa');
+  writeJsonSync(target, conf, { spaces: 2 });
+};
+
+

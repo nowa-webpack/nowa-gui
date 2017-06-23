@@ -10,7 +10,7 @@ import { join } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
 import { PROJECT_PAGE } from 'const-renderer-nowa';
-import { hidePathString } from 'util-renderer-nowa';
+import { hideBoilerplateDesp } from 'util-renderer-nowa';
 
 
 const Item = ({
@@ -61,12 +61,19 @@ const Item = ({
     if (key === '2') {
       shell.showItemInFolder(join(project.path, 'package.json'));
     }
+    if (key === '3') {
+      dispatch({
+        type: 'project/reload',
+        payload: project
+      });
+    }
   };
 
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1">{i18n('task.remove')}</Menu.Item>
       <Menu.Item key="2">{i18n('task.folder')}</Menu.Item>
+      <Menu.Item key="3">{i18n('task.reload')}</Menu.Item>
     </Menu>
   );
 
@@ -98,7 +105,7 @@ const Item = ({
         </Dropdown>
       }
       { status }
-      <div className="project-list-item-name">{ hidePathString(name, 23) }</div>
+      <div className="project-list-item-name">{ hideBoilerplateDesp(name, 22) }</div>
     </div>
   );
 };

@@ -217,7 +217,7 @@ class DependencyTable extends Component {
   }
 
   async updatePackage() {
-    const { type, dispatch, projPath } = this.props;
+    const { type, dispatch, projPath, registry } = this.props;
     const { selectedRowKeys, dataSource } = this.state;
     const args = [...arguments];
     let pkgs = [];
@@ -228,7 +228,7 @@ class DependencyTable extends Component {
       pkgs = selectedRowKeys.map(name => ({ name, version: 'latest' }));
     }
     console.log(pkgs);
-    const opt = { root: projPath, pkgs };
+    const opt = { root: projPath, pkgs, registry };
     this.setState({ loading: true });
     const { err } = await commands.install({ opt });
     if (!err) {
@@ -251,6 +251,7 @@ class DependencyTable extends Component {
       this.setState({ loading: false, dataSource: data, selectedRowKeys: [] });
     } else {
       msgError(err);
+      this.setState({ loading: false });
     }
   }
 

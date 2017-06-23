@@ -25,8 +25,9 @@ module.exports = {
   'task.compass': 'Explore',
   'task.editor': 'Editor',
   'task.terminal': 'Terminal',
-  // 'task.clear': 'Clear',
+  'task.more': 'More',
   'task.remove': 'Remove Project',
+  'task.reload': 'Reload Project',
   'task.folder': process.platform === 'darwin'
     ? 'Reveal in Finder'
     : 'Reveal in Folder',
@@ -157,7 +158,9 @@ module.exports = {
 
   'cmd.sider.title': 'Command List',
   'cmd.modal.title': 'Add a command',
-  'cmd.select.opt': 'Command List',
+  // 'cmd.select.opt': 'Command List',
+  'cmd.select.opt': 'More Logs',
+  // 'cmd.plugin.select.opt': 'Plugin List',
   'cmd.meta.name': 'Command Name',
   'cmd.meta.value': 'Command Content',
   'cmd.meta.apply': 'Enabled',
@@ -191,4 +194,6 @@ module.exports = {
   'feedback.contact': 'How to contact with you?',
   'feedback.content': "What's your problem?",
   'feedback.success': ' Send succeed!',
+
+  'plugin.promts.title': 'Plugin Promts',
 };

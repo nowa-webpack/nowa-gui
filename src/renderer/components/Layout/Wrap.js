@@ -1,12 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'dva';
 import { remote } from 'electron';
+import { connect } from 'dva';
+import Spin from 'antd/lib/spin';
 import Icon from 'antd/lib/icon';
 import Layout from 'antd/lib/layout';
 import Dropzone from 'react-dropzone';
 import notification from 'antd/lib/notification';
-import Spin from 'antd/lib/spin';
-
 
 import i18n from 'i18n-renderer-nowa';
 import { isWin, throttle } from 'shared-nowa';
@@ -16,6 +15,7 @@ import DragPage from './DragPage';
 
 const { Header } = Layout;
 const { mainWin } = remote.getGlobal('services');
+
 
 class LayoutWrap extends Component {
   constructor(props) {

@@ -26,8 +26,9 @@ module.exports = {
   'task.compass': '访问',
   'task.folder': '打开文件夹',
   'task.terminal': '终端',
-  // 'task.clear': '清理',
+  'task.more': '更多',
   'task.remove': '删除项目',
+  'task.reload': '重载项目',
   'task.status.start': '运行中',
   'task.status.stop': '停止',
 
@@ -61,7 +62,7 @@ module.exports = {
   'project.new.networkTip': '创建项目需要网络，请联网后继续',
 
   'project.import.title': '项目导入初始化',
-  'project.import.info': '检测到改项目有未安装的依赖，请选择合适的Npm安装源',
+  'project.import.info': '检测到该项目有未安装的依赖，请选择合适的Npm安装源',
   'project.import.install': '依赖安装',
 
   'template.modal.title': '自定义模版设置',
@@ -108,7 +109,7 @@ module.exports = {
   'setting.plugin.download': '下载',
   'setting.plugin.reinstall': '重装',
   'setting.plugin.update': '更新',
-  'setting.plugin.update.tip': '确认更新到改版本吗？',
+  'setting.plugin.update.tip': '确认更新到该版本吗？',
 
   'foot.set': '工具设置',
   // 'foot.import': '导入项目',
@@ -157,7 +158,9 @@ module.exports = {
 
   'cmd.sider.title': '命令集',
   'cmd.modal.title': '添加命令',
-  'cmd.select.opt': '选择命令窗口',
+  // 'cmd.select.opt': '选择命令窗口',
+  'cmd.select.opt': '更多日志',
+  // 'cmd.plugin.select.opt': '选择组件窗口',
   'cmd.meta.name': '名称',
   'cmd.meta.value': '命令',
   'cmd.meta.apply': '启用',
@@ -177,7 +180,7 @@ module.exports = {
   'package.action': '操作',
   'package.btn.updateAll': '批量更新',
   'package.btn.install': '安装新依赖',
-  'package.update.tip': '确认更新到改版本吗？',
+  'package.update.tip': '确认更新到该版本吗？',
 
   'table.empty': '暂无数据',
   'table.action.del': '移除',
@@ -188,4 +191,7 @@ module.exports = {
   'feedback.contact': '怎么联系您？',
   'feedback.content': '您遇到了什么问题？',
   'feedback.success': '反馈发送成功',
+
+  'plugin.promts.title': '插件提问',
+
 };

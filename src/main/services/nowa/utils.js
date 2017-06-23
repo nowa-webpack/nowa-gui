@@ -50,21 +50,16 @@ export const saveNewPkg = (pkgs) => {
 
 export const nowaDiff = () => {
   const curNowa = readNowaVer().nowa;
-  // const oldNowaPath = join(homedir(), '.nowa', 'install', 'node_modules');
   const oldNowaPath = join(homedir(), '.nowa', 'latest-versions.json');
-  // let isOld = false;
+  const nowaCliPath = join(homedir(), '.nowa', 'install');
   try {
-    if (!existsSync(oldNowaPath)) {
+    if (!existsSync(nowaCliPath)) {
       return false;
     }
     const oldNowa = readJsonSync(oldNowaPath).versions.nowa;
 
     return lt(oldNowa, curNowa);
 
-    // Object.keys(oldNowa).forEach((pkg) => {
-    //   if (lt(oldNowa[pkg], curNowa[pkg])) isOld = true;
-    // });
-    // return isOld;
   } catch (e) {
     log.error(e);
     return false;

@@ -5,7 +5,7 @@ import { isDev, isMac } from 'shared-nowa';
 import services from './services';
 import config from './userConfig';
 
-const { menu, mainWin, log, tray, commands, nowa, requests } = services;
+const { menu, mainWin, log, tray, commands, nowa, requests, tasklog } = services;
 
 // 初始化任务， 必须在有网的判断下进行
 const initialTasks = async function (event, online) {

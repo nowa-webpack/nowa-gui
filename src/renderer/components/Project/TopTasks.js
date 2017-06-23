@@ -3,10 +3,12 @@ import { connect } from 'dva';
 import i18n from 'i18n-renderer-nowa';
 
 import Opt from './TopTaskOpt';
+import PluginOpt from './PluginOpt';
 
 
 const TopTasks = ({
   current,
+  plugins,
   dispatch,
 }) => {
   const { start, path, pkg, isNowa } = current;
@@ -20,14 +22,11 @@ const TopTasks = ({
   const compassProj = () => {
     if (isNowa && start) {
       dispatch({ type: 'task/compass', payload: { projPath: path } });
-      // const task = remote.require('./services/task');
-      // const { uid } = task.getTask('start', path);
-      // delay(1000).then(shell.openExternal(getAddressByUID(uid)));
     }
   };
 
   const openTerminal = () => dispatch({ type: 'task/terminal', payload: { project: current } });
- 
+  
   return (
     <div className="project-top">
       {
@@ -74,6 +73,9 @@ const TopTasks = ({
         tip=""
         icon="terminal"
       />
+      {
+        plugins.length > 0 && <PluginOpt />
+      }
     </div>
   );
 };
@@ -85,9 +87,11 @@ TopTasks.propTypes = {
     isNowa: PropTypes.bool,
     pkg: PropTypes.object,
   }).isRequired,
+  plugins: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
-export default connect(({ project }) => ({
+export default connect(({ project, plugin }) => ({
   current: project.current,
+  plugins: plugin.UIPluginList
 }))(TopTasks);

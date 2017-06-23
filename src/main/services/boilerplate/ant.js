@@ -84,7 +84,7 @@ const load = async function ({ ...item }) {
     item.downloaded = true;
     item.loading = false;
     manifest.ant = manifest.ant.map(n => n.name === name ? item : n);
-    setMainifest('remote', manifest.ant);
+    setMainifest('ant', manifest.ant);
     return { err: false, data: manifest.ant };
   } catch (err) {
     const manifest = getMainifest();

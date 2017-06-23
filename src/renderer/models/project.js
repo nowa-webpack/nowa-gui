@@ -1,6 +1,7 @@
 import { remote, ipcRenderer } from 'electron';
 import { join, basename } from 'path';
 import { existsSync } from 'fs-extra';
+// import chokidar from 'chokidar';
 
 import i18n from 'i18n-renderer-nowa';
 import { request } from 'shared-nowa';
@@ -8,6 +9,7 @@ import { getLocalProjects, setLocalProjects } from 'store-renderer-nowa';
 import {
   readABCJson, writeABCJson,
   readPkgJson, writePkgJson,
+  readPluginConfig, writePluginConfig,
   isNowaProject, isAliProject,
   msgError, msgSuccess,
 } from 'util-renderer-nowa';
@@ -18,11 +20,13 @@ import {
 } from 'const-renderer-nowa';
 
 const { commands, tray, tasklog } = remote.getGlobal('services');
+// let pkgWatcher;
 
 
 const getProjectInfoByPath = (filePath) => {
   let abc = {};
   const pkg = readPkgJson(filePath);
+  const config = readPluginConfig(filePath);
   const isNowa = isNowaProject(filePath);
   if (isNowa) {
     abc = readABCJson(filePath);
@@ -33,6 +37,7 @@ const getProjectInfoByPath = (filePath) => {
     isNowa,
     abc,
     pkg,
+    config,
     path: filePath
   };
 
@@ -49,6 +54,8 @@ const getProjectInfoByPath = (filePath) => {
     }
   } else if (isAliProject(pkg)) {
     obj.registry = REGISTRY_MAP.tnpm;
+  } else if (config.registry) {
+    obj.registry = config.registry;
   }
   return obj;
 };
@@ -116,6 +123,8 @@ export default {
       dispatch({
         type: 'task/initCommands',
       });
+
+      // pkgWatcher = chokidar.watch(projects.map())
     },
   },
 
@@ -166,9 +175,7 @@ export default {
 
       yield put({
         type: 'task/initAddCommands',
-        // payload: {
-        //   project: current,
-        // }
+        payload: current
       });
 
       yield put({
@@ -448,6 +455,23 @@ export default {
           }
         });
       }
+    },
+    * reload({ payload }, { put, select }) {
+      Object.keys(payload.pkg.scripts || {})
+        .forEach(command => commands.stopCmd({ projPath: payload.path, command }));
+      const { projects } = yield select(state => state.project);
+      const info = getProjectInfoByPath(payload.path);
+      const project = { ...payload, ...info, start: false };
+
+      yield put({
+        type: 'changeProjects',
+        payload: project
+      });
+
+      yield put({
+        type: 'task/initAddCommands',
+        payload: project
+      });
     },
   },
 
