@@ -191,4 +191,7 @@ module.exports = {
   'feedback.contact': '怎么联系您？',
   'feedback.content': '您遇到了什么问题？',
   'feedback.success': '反馈发送成功',
+
+  'plugin.promts.title': '插件提问',
+
 };

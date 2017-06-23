@@ -194,4 +194,6 @@ module.exports = {
   'feedback.contact': 'How to contact with you?',
   'feedback.content': "What's your problem?",
   'feedback.success': ' Send succeed!',
+
+  'plugin.promts.title': 'Plugin Promts',
 };

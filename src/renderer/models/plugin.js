@@ -181,9 +181,14 @@ export default {
       payload.needUpdate = false;
 
       yield put({
-        type: 'changePluginList',
-        payload,
+        type: 'install',
+        payload: { reinstall: true, ...payload }
       });
+
+      // yield put({
+      //   type: 'changePluginList',
+      //   payload,
+      // });
 
       const storePlugin = getLocalPlugins();
       setLocalPlugins(
@@ -207,7 +212,7 @@ export default {
       );
     },
     * changePluginList({ payload }, { put, select }) {
-      const { pluginList } = yield select(state => state.plugin);
+      const { pluginList, UIPluginList } = yield select(state => state.plugin);
       const newList = pluginList.map((item) => {
         if (item.name === payload.name) {
           return payload;
@@ -218,6 +223,18 @@ export default {
         type: 'changeStatus',
         payload: { pluginList: [...newList], loading: false },
       });
+
+      if (payload.type === 'ui') {
+        const newUIList = UIPluginList.map(({ name }) => ({
+            name,
+            file: remote.require(target(name)),
+          })
+        );
+        yield put({
+          type: 'changeStatus',
+          payload: { UIPluginList: [...newUIList] }
+        });
+      }
     },
     * initUIPluginList(o, { put, select }) {
       const pluginList = getLocalPlugins().filter(item => item.type === 'ui');
