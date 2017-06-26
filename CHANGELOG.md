@@ -1,3 +1,14 @@
+1.8.1 / 2017-06-26
+
+* 支持工具内自更新
+* 项目支持重载
+* 开放可视化插件接口
+* 增加 nowa 插件管理功能
+* 接入蚂蚁模板 [http://scaffold.ant.design/list.json]
+
+1.7.4 / 2017-06-15
+* 修复 windows 重复写入path的问题
+
 1.7.3 / 2017-06-05
 ==================
 * 修复 [#11](https://github.com/nowa-webpack/nowa-gui/issues/11)
