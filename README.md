@@ -14,13 +14,17 @@ https://nowa-webpack.github.io/
 
 ## images
 
-<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/master/doc/detailp.png" width="600" />
+<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/master/doc/detail_0.png" width="600" />
 <br/>
 <img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/master/doc/newp.png" width="600"/>
 <br/>
 <img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/master/doc/pkg.png" width="600"/>
 <br/>
 <img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/master/doc/set1.png" width="600"/>
+<br/>
+<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/master/doc/setting_0.png" width="600"/>
+<br/>
+<img src="https://raw.githubusercontent.com/nowa-webpack/nowa-gui/master/doc/setting_1.png" width="600"/>
 <br/>
 
 
