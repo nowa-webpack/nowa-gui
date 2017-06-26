@@ -67,7 +67,7 @@ export default {
       const { registry } = yield select(state => state.setting);
       const { pluginList } = yield select(state => state.plugin);
 
-      const { data } = yield request(`${registry}/nowa-gui-plugins-test/latest`);
+      const { data } = yield request(`${registry}/nowa-gui-plugins/latest`);
       let npmPluginList = data.plugins;
 
       if (!atAli) {
