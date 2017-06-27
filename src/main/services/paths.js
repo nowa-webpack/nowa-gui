@@ -9,6 +9,7 @@ export const NODE_PATH = join(APP_PATH, 'nodes');
 export const LINK_NOWA_PATH = isWin ? join(process.env.APPDATA, 'npm', 'nowa') : '/usr/local/bin/nowa';
 
 export const DOT_NOWA_PATH = join(homedir(), '.nowa-gui');
+export const DOT_NOWA_CLI_PATH = join(homedir(), '.nowa');
 export const TEMPLATES_DIR = join(DOT_NOWA_PATH, 'template');
 export const NOWA_INSTALL_DIR = join(DOT_NOWA_PATH, 'installation');
 export const USER_CONFIG_PATH = join(DOT_NOWA_PATH, 'user_config.json');

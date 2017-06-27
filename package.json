@@ -1,16 +1,16 @@
 {
   "name": "NowaGUI",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "A tool for nowa developement.",
   "scripts": {
     "postinstall": "install-app-deps",
-    "dev:renderer": "./node_modules/.bin/webpack-dev-server --config ./webpack/renderer.dev.conf.js",
-    "dev:dll": "./node_modules/.bin/webpack --config ./webpack/renderer.dll.conf.js",
-    "dev:main": "./node_modules/.bin/webpack --config ./webpack/main.dev.conf.js -w",
-    "show:main": "./node_modules/.bin/webpack --config ./webpack/main.dev.conf.js -j | webpack-bundle-size-analyzer",
-    "build:main": "./node_modules/.bin/webpack --config ./webpack/main.prod.conf.js",
-    "build:renderer": "./node_modules/.bin/webpack --config ./webpack/renderer.prod.conf2.js",
-    "show:renderer": "./node_modules/.bin/webpack --config ./webpack/renderer.prod.conf.js -j | webpack-bundle-size-analyzer",
+    "dev:renderer": "webpack-dev-server --config ./webpack/renderer.dev.conf.js",
+    "dev:dll": "webpack --config ./webpack/renderer.dll.conf.js",
+    "dev:main": "webpack --config ./webpack/main.dev.conf.js -w",
+    "show:main": "webpack --config ./webpack/main.dev.conf.js -j | webpack-bundle-size-analyzer",
+    "build:main": "webpack --config ./webpack/main.prod.conf.js",
+    "build:renderer": "webpack --config ./webpack/renderer.prod.conf2.js",
+    "show:renderer": "webpack --config ./webpack/renderer.prod.conf.js -j | webpack-bundle-size-analyzer",
     "build": "npm run build:main & npm run build:renderer",
     "dev": "npm run dev:renderer & npm run dev:main",
     "start": "electron ./app/main.js",
@@ -22,7 +22,7 @@
     "pack:linux": "npm run prepack && npm run build && build -l",
     "lint": "eslint --ext .js src",
     "precommit": "lint-staged",
-    "rebuild": "./node_modules/.bin/electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
+    "rebuild": "electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "log": "git log --color --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s   %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit"
   },
   "keywords": [],
@@ -65,10 +65,7 @@
       "git add"
     ]
   },
-  "author": {
-    "name": "Poling",
-    "email": "466681097@qq.com"
-  },
+  "author": "Poling <466681097@qq.com>",
   "homepage": "https://github.com/nowa-webpack/nowa-gui",
   "license": "ISC",
   "devDependencies": {
@@ -132,5 +129,16 @@
     "react": "^15.4.2",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.1"
+  },
+  "main": "prePacker.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nowa-webpack/nowa-gui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nowa-webpack/nowa-gui/issues"
   }
 }
