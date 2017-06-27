@@ -48,9 +48,4 @@ function normalizeExecArgs(command, options) {
 export default function () {
   const parsed = normalizeExecArgs.apply(null, arguments);
   return spawn(parsed.shell, parsed.args, parsed.options);
-};
-/*module.exports = function() {
-  const parsed = normalizeExecArgs.apply(null, arguments);
-
-  return spawn(parsed.shell, parsed.args, parsed.options);
-};*/
+}

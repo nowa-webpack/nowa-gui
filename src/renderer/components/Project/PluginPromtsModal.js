@@ -42,6 +42,10 @@ const PluginPromtsModal = ({
   const handleOk = () => {
     validateFields((err, answers) => {
       if (!err) {
+        const filter = promts.filter(item => item.type === 'text');
+        if (filter.length) {
+          answers[filter[0].key] = filter[0].value;
+        }
         console.log(answers);
         
         dispatch({
@@ -80,7 +84,6 @@ const PluginPromtsModal = ({
         key={obj.key}
         {...formItemLayout}
         label={obj.label[lang]}
-        required
       >
         {getFieldDecorator(obj.key, options)(<Input />)}
       </FormItem>
@@ -93,7 +96,6 @@ const PluginPromtsModal = ({
         key={obj.key}
         {...formItemLayout}
         label={obj.label[lang]}
-        required
       >
         <div>{obj.value}</div>
       </FormItem>
@@ -111,7 +113,6 @@ const PluginPromtsModal = ({
         key={obj.key}
         {...formItemLayout}
         label={obj.label[lang]}
-        required
       >
         {getFieldDecorator(obj.key, options)(
           <Select>
@@ -137,7 +138,6 @@ const PluginPromtsModal = ({
         key={obj.key}
         {...formItemLayout}
         label={obj.label[lang]}
-        required
       >
         {getFieldDecorator(obj.key, options)(<Switch size="small" />)}
       </FormItem>
@@ -157,7 +157,6 @@ const PluginPromtsModal = ({
         key={obj.key}
         {...formItemLayout}
         label={obj.label[lang]}
-        required
       >
         {getFieldDecorator(obj.key, options)(
           <CheckboxGroup options={opt} />
