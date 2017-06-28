@@ -1,4 +1,4 @@
-1.8.3 / 2017-06-28
+1.8.4 / 2017-06-28
 ==================
 # zh
 * 开放 Nowa GUI 插件接口 [https://github.com/Jirapo/nowa-gui-plugin-demo]

@@ -97,7 +97,7 @@ const PluginPromtsModal = ({
         {...formItemLayout}
         label={obj.label[lang]}
       >
-        <div>{obj.value}</div>
+        <div className="promts-modal-form-text">{obj.value}</div>
       </FormItem>
     );
   };
@@ -174,7 +174,7 @@ const PluginPromtsModal = ({
       okText={i18n('form.ok')}
       cancelText={i18n('form.cancel')}
     >
-      <Form style={{ marginTop: 20 }}>
+      <Form className="promts-modal-form">
         {
           promts.length && 
           promts.map(item => {
