@@ -7,9 +7,9 @@ import { request, delay } from 'shared-nowa';
 import { msgError, readPluginConfig, writePluginConfig } from 'util-renderer-nowa';
 import { REGISTRY_MAP, GUI_PLUGIN_NPM } from 'const-renderer-nowa';
 import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
+import { merge } from 'lodash-es';
 
 const { commands, paths, tasklog } = remote.getGlobal('services');
-// const target = name => join(paths.NODE_MODULES_PATH, name, 'index.js');
 const target = name => join(paths.NODE_MODULES_PATH, name);
 
 
@@ -253,11 +253,12 @@ export default {
       let preData;
       const defaultPluginConfig = readPluginConfig(target(payload));
 
-      const config = { ...defaultPluginConfig, ...current.config };
+      // const config = { ...defaultPluginConfig, ...current.config };
+      const config = merge(defaultPluginConfig, current.config);
       writePluginConfig(cwd, config);
 
       current.config = config;
-      
+
       yield put({
         type: 'project/changeProjects',
         payload: current
@@ -340,6 +341,13 @@ export default {
       const command = file.name.en;
       const cwd = current.path;
       console.log('do execPluginTask', file.name.en);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          showPromtsModal: false,
+        }
+      });
 
       const logger = (data) => {
         console.log(data);
