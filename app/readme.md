@@ -1,10 +1,4 @@
 # zh
-* 支持工具内自更新
-* 项目支持重载
-* 增加 nowa 插件管理功能
-* 接入蚂蚁模板 [http://scaffold.ant.design/list.json]
+* 开放 Nowa GUI 插件接口 [https://github.com/Jirapo/nowa-gui-plugin-demo]
 # en
-* Support application self updating
-* Support project reloading
-* Add plugin manager
-* Add Ant-Design templates [http://scaffold.ant.design/list.json]
+* Add Nowa GUI plugin API [https://github.com/Jirapo/nowa-gui-plugin-demo]

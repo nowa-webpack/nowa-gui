@@ -222,6 +222,7 @@ export default {
       });
       yield delay(500);
       removeSync(paths.DOT_NOWA_PATH);
+      removeSync(paths.DOT_NOWA_CLI_PATH);
       yield put({
         type: 'changeStatus',
         payload: { loading: false }

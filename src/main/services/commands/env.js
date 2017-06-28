@@ -10,9 +10,6 @@ import { BIN_PATH, NODE_PATH, APP_PATH, NOWA_INSTALL_DIR } from '../paths';
 fixPath();
 
 const npmEnv = npmRunPath.env();
-// const pathEnv = [process.env.Path, npmEnv.PATH, BIN_PATH, NODE_PATH]
-//   .filter(p => !!p)
-//   .join(delimiter);
 const pathEnv = [process.env.Path, npmEnv.PATH, BIN_PATH, NODE_PATH]
   .filter(p => !!p)
   .join(delimiter);

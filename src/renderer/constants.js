@@ -1,4 +1,4 @@
-import { isWin } from 'shared-nowa';
+import { isWin, isDev } from 'shared-nowa';
 
 export const SHUTDOWN_PAGE = 'SHUTDOWN_PAGE'; // 退出页面
 export const PREINIT_PAGE = 'PREINIT_PAGE'; // 工具初始化安装nowa页面
@@ -55,11 +55,6 @@ export const WEBSTORM_BASE_PATH = isWin
   ? 'C:/Program Files (x86)/JetBrains/WebStorm 2017.1/bin/webstorm.exe'
   : '/Applications/WebStorm.app';
 
-// export const UPGRADE_URL = isWin
-//   ? 'https://alixux.org/downloads/nowa-gui.exe'
-//   : isMac
-//     ? 'https://alixux.org/downloads/nowa-gui.dmg'
-//     : 'https://alixux.org/downloads/nowa-gui.deb';
 
 export const URL_MATCH = /^((ht|f)tps?):\/\/([\w-]+(\.[\w-]+)*\/)*[\w-]+(\.[\w-]+)*\/?(\?([\w-.,@?^=%&:/~+#]*)+)?/;
 
@@ -69,4 +64,8 @@ export const NAME_MATCH = /^([A-Za-z0-9]|[._@\/-])+$/;
 // export const NAME_MATCH = /^(@\w+\/)?[\w-]+$/;
 // export const NAME_MATCH = /^[a-z][a-z0-9-]*$/;
 
+
 export const PORT_MATCH = /^([1-9]|[1-9]\d{1,3}|[1-6][0-5][0-5][0-3][0-5])$/;
+
+
+export const GUI_PLUGIN_NPM = isDev ? 'nowa-gui-plugins-test' : 'nowa-gui-plugins';

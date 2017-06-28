@@ -1,6 +1,6 @@
 {
   "name": "nowa-gui-version",
-  "version": "1.8.2",
+  "version": "1.8.4",
   "description": "A tool for nowa developement.",
   "productName": "ElectronWebpack",
   "main": "./main.js",

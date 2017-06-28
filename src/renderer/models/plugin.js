@@ -5,11 +5,11 @@ import { remote } from 'electron';
 import i18n from 'i18n-renderer-nowa';
 import { request, delay } from 'shared-nowa';
 import { msgError, readPluginConfig, writePluginConfig } from 'util-renderer-nowa';
-import { REGISTRY_MAP } from 'const-renderer-nowa';
+import { REGISTRY_MAP, GUI_PLUGIN_NPM } from 'const-renderer-nowa';
 import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
+import { merge } from 'lodash-es';
 
 const { commands, paths, tasklog } = remote.getGlobal('services');
-// const target = name => join(paths.NODE_MODULES_PATH, name, 'index.js');
 const target = name => join(paths.NODE_MODULES_PATH, name);
 
 
@@ -67,7 +67,7 @@ export default {
       const { registry } = yield select(state => state.setting);
       const { pluginList } = yield select(state => state.plugin);
 
-      const { data } = yield request(`${registry}/nowa-gui-plugins/latest`);
+      const { data } = yield request(`${registry}/${GUI_PLUGIN_NPM}/latest`);
       let npmPluginList = data.plugins;
 
       if (!atAli) {
@@ -186,11 +186,6 @@ export default {
         payload: { reinstall: true, ...payload }
       });
 
-      // yield put({
-      //   type: 'changePluginList',
-      //   payload,
-      // });
-
       const storePlugin = getLocalPlugins();
       setLocalPlugins(
         storePlugin.map(item => (item.name === payload.name ? payload : item))
@@ -239,7 +234,6 @@ export default {
     },
     * initUIPluginList(o, { put, select }) {
       const pluginList = getLocalPlugins().filter(item => item.type === 'ui');
-
       const UIPluginList = pluginList.map(({ name }) => ({
           name,
           file: remote.require(target(name)),
@@ -257,12 +251,13 @@ export default {
       const command = file.name.en;
       const cwd = current.path;
       let preData;
+      const defaultPluginConfig = readPluginConfig(target(payload));
 
-      const defaultPluginConfig = readPluginConfig(join(target(payload), '.nowa'));
-
-      const config = { ...defaultPluginConfig, ...current.config };
-
+      // const config = { ...defaultPluginConfig, ...current.config };
+      const config = merge(defaultPluginConfig, current.config);
       writePluginConfig(cwd, config);
+
+      current.config = config;
 
       yield put({
         type: 'project/changeProjects',
@@ -346,6 +341,13 @@ export default {
       const command = file.name.en;
       const cwd = current.path;
       console.log('do execPluginTask', file.name.en);
+
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          showPromtsModal: false,
+        }
+      });
 
       const logger = (data) => {
         console.log(data);
