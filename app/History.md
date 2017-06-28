@@ -1,4 +1,12 @@
-1.8.1 / 2017-06-26
+1.8.3 / 2017-06-28
+==================
+# zh
+* 开放 Nowa GUI 插件接口 [https://github.com/Jirapo/nowa-gui-plugin-demo]
+
+# en
+* Add Nowa GUI plugin API
+
+1.8.2 / 2017-06-26
 ==================
 # zh
 * 支持工具内自更新
