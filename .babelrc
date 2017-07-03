@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "presets": [
     ["env", {
       "targets": {
@@ -15,26 +14,4 @@
   "plugins": [
     "transform-runtime"
   ]
-=======
-  "env": {
-    "production": {
-      "presets": ["babili", "react", "stage-2"]
-    },
-    "development":{
-      "presets": [
-
-        //["es2015", {"modules": false}],
-        "babili",
-        "stage-2",
-
-        "react"
-      ],
-      "plugins": [
-        //"react-hot-loader/babel"
-        
-        // Enables React code to work with HMR.
-      ],
-    }
-  }
->>>>>>> 2dc4f9f8980517544d60bdf919e64c1148fbf5e9
 }
