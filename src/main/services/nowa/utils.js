@@ -1,12 +1,14 @@
 import { join } from 'path';
 import { lt } from 'semver';
 import { homedir } from 'os';
+import { spawnSync } from 'child_process';
 import { readJsonSync, writeJsonSync, existsSync } from 'fs-extra';
 import { checkver } from 'shared-nowa';
 import config from 'config-main-nowa';
 
 import { NOWA_INSTALL_JSON_FILE, NOWA_INSTALL_DIR, NODE_MODULES_PATH } from '../paths';
 import log from '../applog';
+import env from '../commands/env';
 
 export const readNowaVer = () => readJsonSync(NOWA_INSTALL_JSON_FILE);
 
@@ -56,9 +58,12 @@ export const nowaDiff = () => {
     if (!existsSync(nowaCliPath)) {
       return false;
     }
-    const oldNowa = readJsonSync(oldNowaPath).versions.nowa;
 
-    return lt(oldNowa, curNowa);
+    const res = spawnSync('nowa', ['-V']);
+    return lt(`${res.stdout}`, curNowa);
+    // const oldNowa = readJsonSync(oldNowaPath).versions.nowa;
+
+    // return lt(oldNowa, curNowa);
 
   } catch (e) {
     log.error(e);

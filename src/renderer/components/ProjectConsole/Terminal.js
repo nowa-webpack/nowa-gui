@@ -120,9 +120,13 @@ class Terminal extends Component {
 
     if (plugins.length) {
       opts.push(
-        plugins.map(({ file }) =>
-          <Select.Option value={file.name.en} key={file.name.en}>{file.name.en}</Select.Option>)
+        plugins.map(({ plugin }) =>
+          <Select.Option value={plugin.name.en} key={plugin.name.en}>{plugin.name.en}</Select.Option>)
       );
+      // opts.push(
+      //   plugins.map(({ name }) =>
+      //     <Select.Option value={name} key={name}>{name}</Select.Option>)
+      // );
     }
 
     opts.push(cmdNames.map(cmd => <Select.Option value={cmd} key={cmd}>{cmd}</Select.Option>));

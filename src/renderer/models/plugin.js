@@ -1,15 +1,16 @@
+import co from 'co';
 import { lt } from 'semver';
 import { join } from 'path';
-import { remote } from 'electron';
+import { merge } from 'lodash-es';
+import { remote, ipcRenderer } from 'electron';
 
 import i18n from 'i18n-renderer-nowa';
 import { request, delay } from 'shared-nowa';
-import { msgError, readPluginConfig, writePluginConfig } from 'util-renderer-nowa';
 import { REGISTRY_MAP, GUI_PLUGIN_NPM } from 'const-renderer-nowa';
 import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
-import { merge } from 'lodash-es';
+import { msgError, readPluginConfig, writePluginConfig } from 'util-renderer-nowa';
 
-const { commands, paths, tasklog } = remote.getGlobal('services');
+const { commands, paths, tasklog, mainPlugin } = remote.getGlobal('services');
 const target = name => join(paths.NODE_MODULES_PATH, name);
 
 
@@ -56,6 +57,17 @@ export default {
       });
       dispatch({
         type: 'initUIPluginList'
+      });
+
+      ipcRenderer.on('plugin-render-promts', (event, payload) => {
+        dispatch({
+          type: 'changeStatus',
+          payload: {
+            showPromtsModal: true,
+            pluginPromts: payload
+          }
+        });
+        // mainPlugin.sendPromtsAnswer({ uuid: payload.uuid, answers: {a:1} })
       });
     },
   },
@@ -234,9 +246,10 @@ export default {
     },
     * initUIPluginList(o, { put, select }) {
       const pluginList = getLocalPlugins().filter(item => item.type === 'ui');
+
       const UIPluginList = pluginList.map(({ name }) => ({
           name,
-          file: remote.require(target(name)),
+          plugin: remote.require(target(name)),
         })
       );
       yield put({
@@ -244,16 +257,13 @@ export default {
         payload: { UIPluginList }
       });
     },
-    * execPretask({ payload }, { put, select }) {
+    * execPretask({ payload: { name } }, { put, select }) {
       const { UIPluginList } = yield select(state => state.plugin);
       const { current } = yield select(state => state.project);
-      const file = UIPluginList.filter(item => item.name === payload)[0].file;
-      const command = file.name.en;
+      const defaultPluginConfig = readPluginConfig(target(name));
       const cwd = current.path;
       let preData;
-      const defaultPluginConfig = readPluginConfig(target(payload));
 
-      // const config = { ...defaultPluginConfig, ...current.config };
       const config = merge(defaultPluginConfig, current.config);
       writePluginConfig(cwd, config);
 
@@ -267,85 +277,7 @@ export default {
       yield put({
         type: 'changeStatus',
         payload: {
-          selectPlugin: payload
-        }
-      });
-
-      yield put({
-        type: 'task/changeStatus',
-        payload: { taskType: file.name.en }
-      });
-
-      if (!tasklog.getTask(command, cwd)) {
-        tasklog.setTask(command, cwd, { term: {} });
-      }
-      
-      try {
-        if (file.pretask) {
-          console.log('do pretask');
-          
-          const logger = (data) => {
-            console.log(data);
-            tasklog.writeLog(command, cwd, data);
-          };
-          const { err, data } = yield new Promise(function(resolve){
-            file.pretask({
-              cwd,
-              logger,
-              next: resolve,
-              config: config.pluginConfig
-            });
-          });
-
-          if (err) return;
-
-          preData = data;
-        }
-
-        if (file.promts) {
-          yield put({
-            type: 'showPromts',
-            payload: {
-              file,
-              preData
-            }
-          });
-        } else if (file.tasks) {
-          yield put({
-            type: 'execPluginTask',
-            payload: {
-              answers: null
-            }
-          });
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    * showPromts({ payload: { file, cwd, preData} }, { put, select }) {
-      console.log('do showPromts', file.name.en);
-
-      // const pluginPromts = file.promts(preData);
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          showPromtsModal: true,
-          pluginPromts: file.promts instanceof Array ? file.promts : file.promts(preData)
-        }
-      });
-    },
-    * execPluginTask({ payload: { answers } }, { put, select }) {
-      const { UIPluginList, selectPlugin } = yield select(state => state.plugin);
-      const { current } = yield select(state => state.project);
-      const file = UIPluginList.filter(item => item.name === selectPlugin)[0].file;
-      const command = file.name.en;
-      const cwd = current.path;
-      console.log('do execPluginTask', file.name.en);
-
-      yield put({
-        type: 'changeStatus',
-        payload: {
-          showPromtsModal: false,
+          selectPlugin: name
         }
       });
 
@@ -353,21 +285,82 @@ export default {
         console.log(data);
         tasklog.writeLog(command, cwd, data);
       };
+      const plugin = UIPluginList.filter(item => item.name === name)[0].plugin;
+      const command = plugin.name.en;
 
-      for (let i = 0; i < file.tasks.length; i++) {
-        const { err } = yield new Promise(function(resolve){
-          file.tasks[i].run({
-            cwd,
-            answers,
-            logger,
-            next: resolve,
-            config: { ...current.config.pluginConfig }
-          });
-        });
-        if (err) break;
+      yield put({
+        type: 'task/changeStatus',
+        payload: { taskType: command }
+      });
+
+      if (!tasklog.getTask(command, cwd)) {
+        tasklog.setTask(command, cwd, { term: {} });
       }
-      console.log('done plugin tasks');
-    }
+
+      const port = mainPlugin.port;
+      
+      try {
+        yield plugin.run({ cwd, logger, config }, port);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    saveAnswers({ payload }) {
+      mainPlugin.sendPromtsAnswer(payload);
+    },
+    // * saveAnswers({ payload }, { put, select }) {
+    //   const { UIPluginList, selectPlugin } = yield select(state => state.plugin);
+    //   const plugin = UIPluginList.filter(item => item.name === selectPlugin)[0].plugin;
+
+    //   plugin.setAnswer(payload);
+
+    // },
+    // * showPromts({ payload: { file, cwd, preData} }, { put, select }) {
+    //   console.log('do showPromts', file.name.en);
+
+    //   // const pluginPromts = file.promts(preData);
+    //   yield put({
+    //     type: 'changeStatus',
+    //     payload: {
+    //       showPromtsModal: true,
+    //       pluginPromts: file.promts instanceof Array ? file.promts : file.promts(preData)
+    //     }
+    //   });
+    // },
+    // * execPluginTask({ payload: { answers } }, { put, select }) {
+    //   const { UIPluginList, selectPlugin } = yield select(state => state.plugin);
+    //   const { current } = yield select(state => state.project);
+    //   const file = UIPluginList.filter(item => item.name === selectPlugin)[0].file;
+    //   const command = file.name.en;
+    //   const cwd = current.path;
+    //   console.log('do execPluginTask', file.name.en);
+
+    //   yield put({
+    //     type: 'changeStatus',
+    //     payload: {
+    //       showPromtsModal: false,
+    //     }
+    //   });
+
+    //   const logger = (data) => {
+    //     console.log(data);
+    //     tasklog.writeLog(command, cwd, data);
+    //   };
+
+    //   for (let i = 0; i < file.tasks.length; i++) {
+    //     const { err } = yield new Promise(function(resolve){
+    //       file.tasks[i].run({
+    //         cwd,
+    //         answers,
+    //         logger,
+    //         next: resolve,
+    //         config: { ...current.config.pluginConfig }
+    //       });
+    //     });
+    //     if (err) break;
+    //   }
+    //   console.log('done plugin tasks');
+    // }
   },
   reducers: {
     changeStatus(state, action) {

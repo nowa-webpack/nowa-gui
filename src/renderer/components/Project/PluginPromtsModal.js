@@ -30,7 +30,7 @@ const PluginPromtsModal = ({
   },
   lang,
   dispatch,
-  promts,
+  pluginPromts: { promts, uuid },
 }) => {
   const handleCancle = () => {
     dispatch({
@@ -38,6 +38,7 @@ const PluginPromtsModal = ({
       payload: { showPromtsModal: false }
     });
   };
+
 
   const handleOk = () => {
     validateFields((err, answers) => {
@@ -47,11 +48,12 @@ const PluginPromtsModal = ({
           answers[filter[0].key] = filter[0].value;
         }
         console.log(answers);
-        
+
         dispatch({
-          type: 'plugin/execPluginTask',
-          payload: { answers }
+          type: 'plugin/saveAnswers',
+          payload: { answers, uuid }
         });
+        
         handleCancle();
       }
     });
@@ -164,7 +166,7 @@ const PluginPromtsModal = ({
       </FormItem>
     );
   };
-
+// console.log(promts);
   return (
     <Modal
       title={i18n('plugin.promts.title')}
@@ -176,7 +178,7 @@ const PluginPromtsModal = ({
     >
       <Form className="promts-modal-form">
         {
-          promts.length && 
+          promts.length > 0 && 
           promts.map(item => {
             let html;
             switch (item.type) {
@@ -223,5 +225,5 @@ PluginPromtsModal.propTypes = {
 export default Form.create()(connect(({ plugin, setting }) => ({
   lang: setting.lang,
   plugins: plugin.UIPluginList,
-  promts: plugin.pluginPromts,
+  pluginPromts: plugin.pluginPromts,
 }))(PluginPromtsModal));

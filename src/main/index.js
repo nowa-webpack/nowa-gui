@@ -54,7 +54,10 @@ ipcMain
   .on('network-change-status', initialTasks)
   .on('tray-change-status', (event, { project, status, fromRenderer }) => {
     tray.updateTrayMenu(project, status, fromRenderer);
-  });
+  })
+  // .on('plugin-change-status', (event, options) => {
+    
+  // });
 
 app
   .on('ready', () => {
