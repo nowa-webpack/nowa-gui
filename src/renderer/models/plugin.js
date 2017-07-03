@@ -300,7 +300,7 @@ export default {
       const port = mainPlugin.port;
       
       try {
-        yield plugin.run({ cwd, logger, config }, port);
+        yield plugin.run({ cwd, logger, config: config.pluginConfig || {} }, port);
       } catch (e) {
         console.log(e);
       }

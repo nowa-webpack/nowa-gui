@@ -6,8 +6,8 @@ import mainWin from '../windowManager';
 
 class Plugin {
   constuctor() {
-      this.port = '3000';
-      this.pool = {};
+    this.port = '3000';
+    this.pool = {};
   }
 
   async findFreePort() {
