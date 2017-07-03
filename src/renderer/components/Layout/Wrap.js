@@ -131,7 +131,7 @@ class LayoutWrap extends Component {
         onDrop={this.onDrop}
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
-        onClick={e => e.preventDefault()}
+        disableClick={true}
       >
         <Layout id="main-ctn" style={{ display: 'block' }}>
           <Spin spinning={loading} size="large" wrapperClassName="main-spin">
