@@ -21,12 +21,12 @@ async function checkPluginLatest(item, registry) {
     if (item.installed) {
       item.needUpdate = lt(item.version, data.version);
     } else {
-      item.version = 'null';
+      item.version = 'Not Installed';
     }
   } else {
     item.needUpdate = false;
-    item.newest = 'null';
-    item.version = item.version || 'null';
+    item.newest = 'Net Error';
+    item.version = item.version || 'Not Installed';
   }
 
   return item;
