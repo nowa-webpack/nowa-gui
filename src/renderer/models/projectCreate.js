@@ -22,6 +22,7 @@ export default {
     processStep: 0,  // 新建项目步骤
     selectBoilerplate: {},  // 选中的模板
     selectExtendsProj: {},  // 选中的模板中的proj.js 内容，作为提问模板,
+    selectBoilerplateType: '', // 选中的模板类型
 
     initSetting: {}, // 初始化项目的配置
 
@@ -122,19 +123,6 @@ export default {
       console.log('selectBoilerplate', type, item);
       let proj = {};
 
-      // if (type !== 'local') {
-      //   yield put({
-      //     type: 'boilerplate/download',
-      //     payload: { type, item, name }
-      //   });
-
-        // console.log('downloaded', downloaded);
-
-        // if (!downloaded) {
-        //   return false;
-        // }
-      // }
-
       if (type !== 'ant') {
         const projPath = join(item.path, 'proj.js');
 
@@ -142,8 +130,6 @@ export default {
           proj = remote.require(projPath);
         }
       }
-      // console.log('delay');
-      // yield delay(1000);
 
       yield put({
         type: 'changeStatus',
@@ -151,63 +137,9 @@ export default {
           selectBoilerplate: item,
           selectExtendsProj: proj,
           processStep: 1,
+          selectBoilerplateType: type
         }
       });
-
-      /*if (type !== 'ant') {
-        const projPath = join(item.path, 'proj.js');
-
-        if (existsSync(projPath)) {
-          proj = remote.require(projPath);
-        }
-
-        yield put({
-          type: 'changeStatus',
-          payload: {
-            selectBoilerplate: item,
-            selectExtendsProj: proj,
-            processStep: 1,
-          }
-        });
-      } else {
-        if (!item.downloaded) {
-          const { antBoilerplates } = yield select(state => state.boilerplate);
-          let boilerplates = antBoilerplates.map(n => {
-            if (n.name === item.name) {
-              n.loading = true;
-            }
-            return n;
-          });
-
-          yield put({
-            type: 'boilerplate/changeStatus',
-            payload: { antBoilerplates: [...boilerplates] }
-          });
-
-          yield boilerplate.ant.load(item);
-
-          boilerplates = antBoilerplates.map(n => {
-            if (n.name === item.name) {
-              n.loading = false;
-            }
-            return n;
-          });
-
-          yield put({
-            type: 'boilerplate/changeStatus',
-            payload: { antBoilerplates: [...boilerplates] }
-          });
-
-        } 
-        yield put({
-          type: 'changeStatus',
-          payload: {
-            selectBoilerplate: item,
-            selectExtendsProj: proj,
-            processStep: 1,
-          }
-        });
-      }*/
     },
     * checkSetting({ payload }, { put, select }) {
       const { online } = yield select(state => state.layout);

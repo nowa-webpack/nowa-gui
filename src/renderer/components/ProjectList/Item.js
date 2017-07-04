@@ -105,7 +105,7 @@ const Item = ({
         </Dropdown>
       }
       { status }
-      <div className="project-list-item-name">{ hideBoilerplateDesp(name, 22) }</div>
+      <div className="project-list-item-name">{ hideBoilerplateDesp(name, 20) }</div>
     </div>
   );
 };

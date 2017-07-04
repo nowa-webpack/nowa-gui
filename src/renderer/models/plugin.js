@@ -305,7 +305,13 @@ export default {
         console.log(e);
       }
     },
-    saveAnswers({ payload }) {
+    * saveAnswers({ payload }, { put }) {
+      yield put({
+        type: 'changeStatus',
+        payload: {
+          showPromtsModal: false
+        }
+      });
       mainPlugin.sendPromtsAnswer(payload);
     },
     // * saveAnswers({ payload }, { put, select }) {

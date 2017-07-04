@@ -10,7 +10,7 @@ import Select from 'antd/lib/select';
 import Checkbox from 'antd/lib/checkbox';
 
 import i18n from 'i18n-renderer-nowa';
-import { NAME_MATCH } from 'const-renderer-nowa';
+import { NAME_MATCH, REGISTRY_MAP } from 'const-renderer-nowa';
 import OverwriteModal from './OverwriteModal';
 
 const FormItem = Form.Item;
@@ -126,8 +126,6 @@ class Setting extends Component {
     try {
       const { form } = this.props;
       const importPath = remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
-      // const projName = basename(form.getFieldValue('projPath'));
-      // const projPath = join(importPath[0], projName);
       /*
       const input = document.getElementById('pathInput');
       input.focus();
@@ -168,7 +166,6 @@ class Setting extends Component {
   handleSubmit() {
     const that = this;
     const { dispatch, form } = that.props;
-    // form.validateFields((err, { extraArgs, name, projPath, registry }) => {
     form.validateFields((err, { extraArgs, ...others }) => {
       if (!err) {
         const obj = {};
@@ -194,7 +191,7 @@ class Setting extends Component {
 
 
   render() {
-    const { registryList, defaultRegistry, selectExtendsProj } = this.props;
+    const { registryList, defaultRegistry, selectExtendsProj, selectBoilerplateType } = this.props;
     const { getFieldDecorator } = this.props.form;
     let extendsHtml;
     const nameRules = [
@@ -209,6 +206,8 @@ class Setting extends Component {
     if (this.extendsValidator.name) {
       nameRules.push({ validator: this.nameValid });
     }
+
+    const registry = selectBoilerplateType !== 'ali' ? defaultRegistry : REGISTRY_MAP.tnpm;
 
     return (
       <div className="boilerplate-form">
@@ -248,7 +247,7 @@ class Setting extends Component {
             {...formItemLayout}
           >
             {getFieldDecorator('registry', {
-              initialValue: defaultRegistry,
+              initialValue: registry,
               rules: [{ type: 'url' }],
             })(
               <Select
@@ -275,6 +274,7 @@ class Setting extends Component {
 
 Setting.propTypes = {
   selectExtendsProj: PropTypes.object.isRequired,
+  selectBoilerplateType: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   defaultRegistry: PropTypes.string.isRequired,
   registryList: PropTypes.array.isRequired,
@@ -287,6 +287,7 @@ Setting.propTypes = {
 
 export default Form.create()(connect(({ setting, projectCreate }) => ({
   selectExtendsProj: projectCreate.selectExtendsProj || {},
+  selectBoilerplateType: projectCreate.selectBoilerplateType || 'official',
   // showModal: projectCreate.showOverwriteModal,
   defaultRegistry: setting.registry,
   registryList: setting.registryList,
