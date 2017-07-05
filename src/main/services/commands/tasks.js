@@ -91,7 +91,7 @@ export const uninstall = (opt) => {
 };
 
 export const execCmd = ({ command, projPath }) => {
-  console.log(command, projPath);
+  log.error(command, projPath);
   const uid = uuidV4();
   const term = exec(`npm run ${command} --scripts-prepend-node-path=auto`, {
     cwd: projPath,
@@ -111,7 +111,7 @@ export const execCmd = ({ command, projPath }) => {
 
   term.on('exit', (code) => {
     tasklog.clearTerm(command, projPath);
-    console.log('exit', command, code);
+    log.error('exit', command, code);
     if (mainWin.getWin()) {
       mainWin.send('task-end', {
         command,

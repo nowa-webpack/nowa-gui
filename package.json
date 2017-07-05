@@ -8,7 +8,7 @@
     "dev:dll": "webpack --config ./webpack/renderer.dll.conf.js",
     "dev:main": "webpack --config ./webpack/main.dev.conf.js -w",
     "show:main": "webpack --config ./webpack/main.dev.conf.js -j | webpack-bundle-size-analyzer",
-    "build:main": "webpack --config ./webpack/main.prod.conf.js",
+    "build:main": "webpack --config ./webpack/main.dev.conf.js",
     "build:renderer": "webpack --config ./webpack/renderer.prod.conf2.js",
     "show:renderer": "webpack --config ./webpack/renderer.prod.conf.js -j | webpack-bundle-size-analyzer",
     "build": "npm run build:main & npm run build:renderer",
@@ -113,7 +113,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "antd": "^2.10.0",
+    "antd": "2.10.0",
     "check-npm-registry": "^1.0.4",
     "download": "^6.0.0",
     "dva": "^1.2.1",

@@ -3,6 +3,7 @@ import uuidV4 from 'uuid/v4';
 import WebSocket from 'ws';
 
 import mainWin from '../windowManager';
+import log from '../applog';
 
 class Plugin {
   constuctor() {
@@ -31,6 +32,7 @@ class Plugin {
   async start() {
     const that = this;
     await that.findFreePort();
+    log.error(that.port);
     this.wss = new WebSocket.Server({ port: that.port });
 
     this.wss.on('connection', (ws) => {
