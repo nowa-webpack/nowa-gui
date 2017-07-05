@@ -5,7 +5,7 @@ import { isDev, isMac } from 'shared-nowa';
 import services from './services';
 import config from './userConfig';
 
-const { menu, mainWin, log, tray, commands, nowa, requests, tasklog } = services;
+const { menu, mainWin, log, tray, commands, nowa, requests, tasklog, mainPlugin } = services;
 
 // 初始化任务， 必须在有网的判断下进行
 const initialTasks = async function (event, online) {
@@ -66,6 +66,7 @@ app
     tray.init();
     commands.encode();
     commands.setPath();
+    mainPlugin.start();
     log.error('app ready');
     log.error('app test update');
   })
@@ -88,6 +89,7 @@ app
   })
   .on('before-quit', () => {
     console.log('before quit');
+    mainPlugin.stop();
     if (isMac) commands.clearMacTask();
     tray.destroy();
   });

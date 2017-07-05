@@ -129,10 +129,12 @@ export default {
         root: paths.NOWA_INSTALL_DIR,
         pkgs: [{
           name: others.name,
-          version: others.newest === 'null' ? 'latest' : others.newest
+          version: others.newest === 'Net Error' ? 'latest' : others.newest
         }],
         registry: atAli ? REGISTRY_MAP.tnpm : registry,
       };
+
+      console.log(others);
 
       const { err } = yield commands.install({ opt });
 
@@ -156,7 +158,7 @@ export default {
           if (others.type === 'ui') {
             const newItem = {
               name: others.name,
-              file: remote.require(target(others.name)),
+              plugin: remote.require(target(others.name)),
             };
             const { UIPluginList } = yield select(state => state.plugin);
             UIPluginList.push(newItem);
@@ -235,7 +237,7 @@ export default {
       if (payload.type === 'ui') {
         const newUIList = UIPluginList.map(({ name }) => ({
             name,
-            file: remote.require(target(name)),
+            plugin: remote.require(target(name)),
           })
         );
         yield put({
