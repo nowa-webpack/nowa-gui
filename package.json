@@ -1,6 +1,6 @@
 {
   "name": "NowaGUI",
-  "version": "1.8.5",
+  "version": "1.8.6",
   "description": "A tool for nowa developement.",
   "scripts": {
     "postinstall": "install-app-deps",
@@ -84,7 +84,7 @@
     "clean-webpack-plugin": "^0.1.16",
     "cross-env": "^4.0.0",
     "css-loader": "^0.28.1",
-    "electron": "^1.6.8",
+    "electron": "1.6.8",
     "electron-builder": "^13.11.1",
     "electron-is": "^2.4.0",
     "electron-log": "^2.2.4",
