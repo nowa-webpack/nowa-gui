@@ -19,7 +19,7 @@
     "pack": "npm run prepack && build --dir",
     "pack:mac": "npm run prepack && build -m",
     "pack:win": "npm run prepack && build -w",
-    "pack:linux": "npm run prepack && build -l",
+    "pack:linux": "npm run prepack && npm run build && build -l",
     "lint": "eslint --ext .js src",
     "precommit": "lint-staged",
     "rebuild": "electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
