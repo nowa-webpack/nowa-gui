@@ -3,6 +3,8 @@ import { lt } from 'semver';
 import { join } from 'path';
 import { merge } from 'lodash-es';
 import { remote, ipcRenderer } from 'electron';
+import React from 'react';
+import Modal from 'antd/lib/modal';
 
 import i18n from 'i18n-renderer-nowa';
 import { request, delay } from 'shared-nowa';
@@ -10,6 +12,7 @@ import { REGISTRY_MAP, GUI_PLUGIN_NPM } from 'const-renderer-nowa';
 import { getLocalPlugins, setLocalPlugins } from 'store-renderer-nowa';
 import { msgError, readPluginConfig, writePluginConfig } from 'util-renderer-nowa';
 
+const confirm = Modal.confirm;
 const { commands, paths, tasklog, mainPlugin } = remote.getGlobal('services');
 const target = name => join(paths.NODE_MODULES_PATH, name);
 
@@ -173,6 +176,22 @@ export default {
           type: 'changePluginList',
           payload: others,
         });
+
+        if (others.type === 'ui') {
+          confirm({
+            title: i18n('setting.plugin.restart.title'),
+            content: i18n('setting.plugin.restart.tip'),
+            okText: i18n('form.ok'),
+            cancelText: i18n('form.cancel'),
+            onOk() {
+              remote.app.relaunch();
+              remote.app.exit(0);
+            },
+            // onCancel() {
+            //   console.log('Cancel');
+            // },
+          });
+        }
       }
     },
     * reinstall({ payload }, { put }) {

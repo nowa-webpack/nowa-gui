@@ -47,6 +47,12 @@ const PluginTable = ({
       key: 'name',
     },
     {
+      title: i18n('setting.plugin.type'),
+      dataIndex: 'type',
+      key: 'type',
+      render: (type) => i18n(`setting.plugin.${type}`)
+    },
+    {
       title: i18n('setting.plugin.version'),
       dataIndex: 'version',
       key: 'version',
@@ -55,7 +61,8 @@ const PluginTable = ({
 
   const getOnlineColumns = () => {
     // const widths = ['10%', '30%', '20%', '20%', '10%'];
-    const widths = ['40%', '20%', '20%', '20%'];
+    // const widths = ['40%', '20%', '20%', '20%'];
+    const widths = ['30%', '15%', '20%', '20%', '15%'];
     const columns = [
       ...basicColumns,
       {
@@ -119,7 +126,8 @@ const PluginTable = ({
   };
 
   const getOfflineColumns = () => {
-    const widths = ['50%', '25%', '25%'];
+    // const widths = ['50%', '25%', '25%'];
+    const widths = ['40%', '20%', '20%', '20%'];
 
     const columns = [
       ...basicColumns,

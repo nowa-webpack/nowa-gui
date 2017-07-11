@@ -115,7 +115,7 @@
   "dependencies": {
     "antd": "2.10.0",
     "check-npm-registry": "^1.0.4",
-    "download": "^6.0.0",
+    "download": "6.0.0",
     "dva": "^1.2.1",
     "ejs": "^2.5.6",
     "fs-extra": "^3.0.1",

@@ -76,16 +76,17 @@ const load = async function ({ ...item }) {
   try {
     console.log(`load ant boilerplate`);
     const files = await download(remote, path);
-    const dir = dirname(files[1].path);
+    // const dir = dirname(files[1].path);
     // copySync(join(path, dir), join(path, 'proj'));
     // removeSync(join(path, dir));
-    renameSync(join(path, dir), join(path, 'proj'));
-    const manifest = getMainifest();
-    item.downloaded = true;
-    item.loading = false;
-    manifest.ant = manifest.ant.map(n => n.name === name ? item : n);
-    setMainifest('ant', manifest.ant);
-    return { err: false, data: manifest.ant };
+    // renameSync(join(path, dir), join(path, 'proj'));
+    // const manifest = getMainifest();
+    // item.downloaded = true;
+    // item.loading = false;
+    // manifest.ant = manifest.ant.map(n => n.name === name ? item : n);
+    // setMainifest('ant', manifest.ant);
+    // return { err: false, data: manifest.ant };
+    return { err: true, data: []};
   } catch (err) {
     const manifest = getMainifest();
     log.error(err);

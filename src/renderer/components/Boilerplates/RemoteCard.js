@@ -41,6 +41,7 @@ const Item = ({
     payload: {
       type: 'remote',
       item: data,
+      name: data.name
     }
   });
 

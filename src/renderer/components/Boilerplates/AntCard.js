@@ -23,6 +23,7 @@ const Item = ({
     payload: {
       type: 'ant',
       item: data,
+      name: data.name
     }
   });
 

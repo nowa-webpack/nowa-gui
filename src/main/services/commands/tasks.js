@@ -2,18 +2,22 @@ import co from 'co';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import uuidV4 from 'uuid/v4';
-import { exec } from 'child_process';
+import { exec, fork, spawn } from 'child_process';
 import { removeSync } from 'fs-extra';
 import npmuninstall from 'npminstall/lib/uninstall';
-import npminstall from 'npminstall/lib/local_install';
+import cnpm from 'npminstall/lib/local_install';
+// import npmin from 'npm/lib/install';
+// import npm from 'npm';
 
+import env from './env';
+import kill from './kill';
 import log from '../applog';
+import Logger from './logger';
 import tasklog from '../tasklog';
 import mainWin from '../windowManager';
+import { APP_PATH, NPM_PATH } from '../paths';
 import { getTruePercent, getFakePercent } from './utils';
-import Logger from './logger';
-import kill from './kill';
-import env from './env';
+
 
 export const install = ({
   opt,
@@ -57,7 +61,7 @@ export const install = ({
         sendProgress(percent);
       }
     }, 1000);
-    yield npminstall(options);
+    yield cnpm(options);
 
     console.log('end install');
 
@@ -91,6 +95,14 @@ export const uninstall = (opt) => {
 };
 
 export const execCmd = ({ command, projPath }) => {
+  // const uid = uuidV4();
+  // const term = fork(NPM_PATH, ['install', 'mkdirp', '-S', '--detail', '--scripts-prepend-node-path=auto'], {
+  //   silent: true,
+  //   cwd: projPath,
+  //   env: { ...env, NOWA_UID: uid },
+  //   // detached: true
+  // });
+
   log.error(command, projPath);
   const uid = uuidV4();
   const term = exec(`npm run ${command} --scripts-prepend-node-path=auto`, {
@@ -103,7 +115,6 @@ export const execCmd = ({ command, projPath }) => {
     term,
     uid
   });
-
   const senderData = (data) => tasklog.writeLog(command, projPath, data);
 
   term.stdout.on('data', senderData);
@@ -141,7 +152,6 @@ export const stopCmd = ({ command, projPath = '' }) => {
     }
   }
 };
-
 
 export const clearNotMacTask = (cb) => {
   console.log('clear clearNotMacTask');

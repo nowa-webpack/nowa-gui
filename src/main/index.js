@@ -11,12 +11,12 @@ const { menu, mainWin, log, tray, commands, nowa, requests, tasklog, mainPlugin 
 
 
 process.on('unhandledRejection', (reason, p) => {
-  log.error('Unhandled Rejection at:', p, 'reason:', reason);
+  log.error(`Unhandled Rejection at:, ${p}, 'reason:', ${reason}`);
   // application specific logging, throwing an error, or other logic here
 });
 
 process.on('uncaughtException', function(err) {
-    log.error('uncaughtException', err);
+    log.error(`uncaughtException$-${err}`);
 });
 // 初始化任务， 必须在有网的判断下进行
 const initialTasks = async function (event, online) {
