@@ -73,18 +73,18 @@ npm run build
 * in mac 
 
 ```bash
-npm run packer:mac
+npm run pack:mac
 ```
 
 * in windows
 
 ```bash
-npm run packer:win
+npm run pack:win
 ```
 
 * in linux
 
 ```bash
-npm run packer:linux
+npm run pack:linux
 
 ```
