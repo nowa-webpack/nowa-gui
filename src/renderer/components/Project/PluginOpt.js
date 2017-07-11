@@ -15,20 +15,26 @@ const PluginOpt = ({
   showModal,
   dispatch,
 }) => {
+
   const handleMenuClick = ({ key }) => {
     console.log(key);
     dispatch({
       type: 'plugin/execPretask',
-      payload: key 
+      payload: {
+        name: key,
+      }
     });
   };
 
   const menu = (
     <Menu onClick={handleMenuClick}>
       {
-        plugins.map(({ name, file }) => (
-          <Menu.Item key={name}>{file.name[lang]}</Menu.Item>)
+        plugins.map(({ name, plugin }) => (
+          <Menu.Item key={name}>{plugin.name[lang]}</Menu.Item>)
         )
+        // plugins.map(({ name }) => (
+        //   <Menu.Item key={name}>{name}</Menu.Item>)
+        // )
       }
     </Menu>
   );

@@ -1,4 +1,4 @@
 # zh
-* 开放 Nowa GUI 插件接口 [https://github.com/Jirapo/nowa-gui-plugin-demo]
+* 修复 ant 模板无法下载的 bug
 # en
-* Add Nowa GUI plugin API [https://github.com/Jirapo/nowa-gui-plugin-demo]
+* Fix download issues for ant template

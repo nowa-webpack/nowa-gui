@@ -11,6 +11,9 @@ import commands from './commands';
 import mainWin from './windowManager';
 import boilerplate from './boilerplate';
 import updator from './updator';
+import mainPlugin from './plugin';
+
+// console.log(plugin.port);
 
 
 export default {
@@ -25,6 +28,7 @@ export default {
   requests,
   tasklog,
   updator,
+  mainPlugin,
   ejsRender(tpl, data) {
     return render(tpl, data);
   },

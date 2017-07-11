@@ -1,10 +1,10 @@
 import { lt } from 'semver';
 import { join, dirname } from 'path';
+import mkdirp from 'mkdirp';
 import { existsSync, removeSync, copySync, renameSync } from 'fs-extra';
 
 import config from 'config-main-nowa';
-import { request } from 'shared-nowa';
-
+import { request, delay } from 'shared-nowa';
 import log from '../applog';
 import { download } from './util';
 import mainWin from '../windowManager';
@@ -77,8 +77,7 @@ const load = async function ({ ...item }) {
     console.log(`load ant boilerplate`);
     const files = await download(remote, path);
     const dir = dirname(files[1].path);
-    // copySync(join(path, dir), join(path, 'proj'));
-    // removeSync(join(path, dir));
+
     renameSync(join(path, dir), join(path, 'proj'));
     const manifest = getMainifest();
     item.downloaded = true;
@@ -94,49 +93,6 @@ const load = async function ({ ...item }) {
   }
 };
 
-const update = async function ({ name, tag, type, registry = config.getItem('REGISTRY') }) {
-  console.log(`update ant boilerplate`);
-  // const manifest = getMainifest();
-  // console.log(`${registry}/${name}/${tag}`);
-  // try {
-  //   const { data: pkg, err } = await request(`${registry}/${name}/${tag}`);
 
-  //   if (err) throw err;
 
-  //   const newVersion = pkg.version;
-  //   const target = `${name}-${tag}`;
-  //   const folder = join(TEMPLATES_DIR, target);
-
-  //   manifest[type].map((item) => {
-  //     if (item.name === name) {
-  //       item.tags = item.tags.map((_t) => {
-  //         if (_t.name === tag) {
-  //           _t.update = false;
-  //           _t.version = newVersion;
-  //         }
-  //         return _t;
-  //       });
-  //       item.loading = false;
-  //     }
-  //     return item;
-  //   });
-
-  //   setMainifest(manifest);
-
-  //   const files = await download(pkg.dist.tarball, folder);
-  //   const dir = dirname(files[1].path);
-
-  //   copySync(join(folder, dir), folder);
-  //   removeSync(join(folder, dir));
-  //   return {
-  //     success: true,
-  //     data: manifest[type]
-  //   };
-  // } catch (err) {
-  //   log.error(err);
-  //   mainWin.send('main-err', err);
-  //   return { success: false, };
-  // }
-};
-
-export default { get, update, load };
+export default { get, load };

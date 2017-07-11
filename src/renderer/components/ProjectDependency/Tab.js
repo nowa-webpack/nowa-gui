@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import Tabs from 'antd/lib/tabs';
+// import { merge } from 'lodash-es';
+
 
 import { getSpiltDependencies } from 'util-renderer-nowa';
 import Table from './Table';
@@ -19,11 +21,13 @@ class SettingTab extends Component {
   }
 
   componentWillReceiveProps({ current, height }) {
-    if (current.path !== this.props.current.path) {
+    if (current.path !== this.props.current.path 
+      || current.reload !== this.props.current.reload) {
+
       const dp = getSpiltDependencies(current.pkg);
       this.setState({
         activeKey: '1',
-        ...dp
+        ...dp,
       });
     }
 

@@ -30,7 +30,7 @@ const PluginPromtsModal = ({
   },
   lang,
   dispatch,
-  promts,
+  pluginPromts: { promts, uuid },
 }) => {
   const handleCancle = () => {
     dispatch({
@@ -39,19 +39,21 @@ const PluginPromtsModal = ({
     });
   };
 
+
   const handleOk = () => {
     validateFields((err, answers) => {
       if (!err) {
-        const filter = promts.filter(item => item.type === 'text');
-        if (filter.length) {
-          answers[filter[0].key] = filter[0].value;
-        }
+        // const filter = promts.filter(item => item.type === 'text');
+        // if (filter.length) {
+        //   answers[filter[0].key] = filter[0].value;
+        // }
         console.log(answers);
-        
+
         dispatch({
-          type: 'plugin/execPluginTask',
-          payload: { answers }
+          type: 'plugin/saveAnswers',
+          payload: { answers, uuid }
         });
+        
         handleCancle();
       }
     });
@@ -60,12 +62,16 @@ const PluginPromtsModal = ({
 
   const inputTemp = (obj) =>  {
     const rules = [{ required: true, message: i18n('msg.required') }];
-
+    console.log(obj);
     if (obj.validator) {
       const validator = (rule, value, callback) => {
-        if (!obj.validator.func(value)) {
+        const fn = new Function('label', `return ${obj.validator.func}`);
+        if (!fn(value)) {
           callback(obj.validator.msg);
         }
+        // if (!obj.validator.func(value)) {
+        //   callback(obj.validator.msg);
+        // }
         callback();
       };
       rules.push({ validator });
@@ -176,7 +182,7 @@ const PluginPromtsModal = ({
     >
       <Form className="promts-modal-form">
         {
-          promts.length && 
+          promts.length > 0 && 
           promts.map(item => {
             let html;
             switch (item.type) {
@@ -217,11 +223,15 @@ PluginPromtsModal.propTypes = {
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
   lang: PropTypes.string.isRequired,
-  promts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  pluginPromts: PropTypes.shape({
+    promts: PropTypes.array,
+    uuid: PropTypes.string,
+  }).isRequired,
+  // promts: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default Form.create()(connect(({ plugin, setting }) => ({
   lang: setting.lang,
   plugins: plugin.UIPluginList,
-  promts: plugin.pluginPromts,
+  pluginPromts: plugin.pluginPromts,
 }))(PluginPromtsModal));
