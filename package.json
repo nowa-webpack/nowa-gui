@@ -124,10 +124,12 @@
     "i18n-helper": "^1.2.0",
     "npm-run-path": "^2.0.2",
     "npminstall": "^3.0.1",
+    "pnpm-logger": "^0.5.0",
     "portscanner": "^2.1.1",
     "react": "^15.4.2",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.1",
+    "supi": "^0.2.0",
     "ws": "^3.0.0"
   },
   "main": "prePacker.js",
