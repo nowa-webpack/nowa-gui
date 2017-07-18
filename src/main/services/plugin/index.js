@@ -32,7 +32,7 @@ class Plugin {
   async start() {
     const that = this;
     await that.findFreePort();
-    log.error(that.port);
+    // log.error(that.port);
     this.wss = new WebSocket.Server({ port: that.port });
 
     this.wss.on('connection', (ws) => {

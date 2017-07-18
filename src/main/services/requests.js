@@ -38,7 +38,6 @@ const feedback = async function ({ nickname, contact, content }) {
 
 const macAddr = Object.values(MacAddress).filter(n => n.indexOf('00:00:00:00') === -1);
 
-log.error(macAddr[0]);
 
 const getPointArgs = () => {
   const params = {

@@ -59,6 +59,8 @@ export default {
           type: 'handleChangeNet',
           payload,
         });
+      }).on('show-restart-tip', (event, payload) => {
+        msgSuccess(i18n('msg.reg.restart'), 6);
       });
     },
   },

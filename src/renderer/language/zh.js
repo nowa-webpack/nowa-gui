@@ -199,4 +199,5 @@ module.exports = {
 
   'plugin.promts.title': '插件提问',
 
+  'msg.reg.restart': '请重启或注销系统使 nowa 命令行生效'
 };

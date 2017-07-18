@@ -1,6 +1,6 @@
 {
   "name": "NowaGUI",
-  "version": "1.8.7",
+  "version": "1.8.8",
   "description": "A tool for nowa developement.",
   "scripts": {
     "postinstall": "install-app-deps",
@@ -21,7 +21,6 @@
     "pack:win": "npm run prepack && build -w",
     "pack:linux": "npm run prepack && npm run build && build -l",
     "lint": "eslint --ext .js src",
-    "precommit": "lint-staged",
     "rebuild": "electron-rebuild -d=https://gh-contractor-zcbenz.cnpmjs.org/atom-shell/dist/ -m ./app",
     "log": "git log --color --graph --pretty=format:\"%Cred%h%Creset -%C(yellow)%d%Creset %s   %Cgreen(%cr) %C(bold blue)<%an>%Creset\" --abbrev-commit"
   },
@@ -106,7 +105,7 @@
     "style-loader": "^0.17.0",
     "uglifyjs-webpack-plugin": "^0.4.3",
     "url-loader": "^0.5.8",
-    "webpack": "^2.6.1",
+    "webpack": "^2",
     "webpack-bundle-analyzer": "^2.8.1",
     "webpack-bundle-size-analyzer": "^2.6.0",
     "webpack-dev-server": "^2.4.5",
@@ -122,6 +121,7 @@
     "get-mac-address": "^1.0.0",
     "git-config": "0.0.7",
     "i18n-helper": "^1.2.0",
+    "node-reg": "^0.2.4",
     "npm-run-path": "^2.0.2",
     "npminstall": "^3.0.1",
     "portscanner": "^2.1.1",

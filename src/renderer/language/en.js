@@ -201,4 +201,6 @@ module.exports = {
   'feedback.success': ' Send succeed!',
 
   'plugin.promts.title': 'Plugin Promts',
+
+  'msg.reg.restart': 'Please RESTART or LOG OFF system to make the nowa cli effective.'
 };
