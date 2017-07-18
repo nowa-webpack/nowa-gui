@@ -2,7 +2,6 @@ import { join } from 'path';
 import { homedir } from 'os';
 import { exec, spawn, execSync } from 'child_process';
 import { writeFileSync, existsSync, readFileSync } from 'fs';
-import regedit from 'node-reg';
 
 import { isMac, isWin } from 'shared-nowa';
 
@@ -10,6 +9,7 @@ import { APP_PATH, BIN_PATH, NODE_PATH, DOT_NOWA_PATH } from '../paths';
 import encode from './encode';
 import * as tasks from './tasks';
 import mainWin from '../windowManager';
+import { getRegKey } from './reg';
 
 
 const openTerminal = (cwd) => {
@@ -82,7 +82,7 @@ const templateStr = (buf) =>
 const setPath = () => {
   try {
     if (isWin) {
-      regedit.getKey({
+      getRegKey({
         target: 'HKEY_CURRENT_USER\\Environment',
         name: 'PATH'
       }).then(res => {
