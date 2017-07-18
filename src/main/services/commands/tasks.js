@@ -6,8 +6,8 @@ import { exec, fork, spawn } from 'child_process';
 import { removeSync } from 'fs-extra';
 import npmuninstall from 'npminstall/lib/uninstall';
 import cnpm from 'npminstall/lib/local_install';
-// import npmin from 'npm/lib/install';
 // import npm from 'npm';
+// import pnpm from 'supi';
 
 import env from './env';
 import kill from './kill';
@@ -18,6 +18,9 @@ import mainWin from '../windowManager';
 import { APP_PATH, NPM_PATH } from '../paths';
 import { getTruePercent, getFakePercent } from './utils';
 
+// const npmin = require('npm')
+// const { installPkgs } = pnpm;
+  // console.log(npmin);
 
 export const install = ({
   opt,
@@ -95,13 +98,41 @@ export const uninstall = (opt) => {
 };
 
 export const execCmd = ({ command, projPath }) => {
-  // const uid = uuidV4();
-  // const term = fork(NPM_PATH, ['install', 'mkdirp', '-S', '--detail', '--scripts-prepend-node-path=auto'], {
-  //   silent: true,
-  //   cwd: projPath,
-  //   env: { ...env, NOWA_UID: uid },
-  //   // detached: true
+  // console.log(command, projPath);
+  const p = join(APP_PATH, 'task', 'install.js');
+  
+  exec(`node ${p}`, { env }, (e, i, o) => {
+    console.log(i);
+    console.log(o);
+  });
+};
+// export const execCmd = ({ command, projPath }) => {
+  // const p = join(APP_PATH, 'task', 'install.js');
+  // console.log(command, projPath);
+  // exec(`node ${p}`, { env }, (e, i, o) => {
+  //   console.log(i);
+  //   console.log(o);
   // });
+  // npm.commands.install('moment', (err) => {
+  //   console.log(err);
+  // })
+
+  // installPkgs(['moment'], {
+  //   saveProd: true,
+  //   saveDev: false,
+  //   quiet: false,
+  //   prefix: projPath,
+  //   reporter: (a,b,c) => console.log(a,b,c)
+  // });
+
+  // pnpm.install(['moment'], {
+  //   saveProd: true,
+  //   saveDev: false,
+  //   quiet: false,
+  //   prefix: projPath,
+  //   reporter: (a,b,c) => console.log(a,b,c)
+  // });
+  /*
 
   log.error(command, projPath);
   const uid = uuidV4();
@@ -130,7 +161,7 @@ export const execCmd = ({ command, projPath }) => {
         finished: code === 0
       });
     }
-  });
+  });*/
 
 
   // const term = fork(NPM_PATH, ['run', type, '--scripts-prepend-node-path=auto'], {
@@ -139,7 +170,7 @@ export const execCmd = ({ command, projPath }) => {
     // env: Object.assign(env, { NOWA_UID: uid }),
     // detached: true
   // });
-};
+// };
 
 export const stopCmd = ({ command, projPath = '' }) => {
   console.log('stop', command, projPath);

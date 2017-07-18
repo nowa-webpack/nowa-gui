@@ -128,6 +128,7 @@
     "react": "^15.4.2",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.13.1",
+    "webpack": "^2.7.0",
     "ws": "^3.0.0"
   },
   "main": "prePacker.js",
