@@ -32,7 +32,6 @@ https://nowa-webpack.github.io/
 
 ```bash
 npm install -r http://registry.npm.taobao.org
-
 ```
 
 in another terminal
@@ -59,15 +58,12 @@ then run
 npm run dev:renderer
 npm run dev:main
 npm start
-
-
 ```
 
 ## pack app
 
 ```bash
 npm run build
-
 ```
 
 * in mac 
@@ -85,6 +81,7 @@ npm run pack:win
 * in linux
 
 ```bash
+
 npm run pack:linux
 
 ```

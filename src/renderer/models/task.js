@@ -1,5 +1,6 @@
 import { ipcRenderer, remote } from 'electron';
 import { existsSync } from 'fs-extra';
+
 import i18n from 'i18n-renderer-nowa';
 import { delay } from 'shared-nowa';
 import { SETTING_PAGE } from 'const-renderer-nowa';
@@ -7,6 +8,7 @@ import { getLocalCommands, setLocalCommands } from 'store-renderer-nowa';
 import { msgError, msgInfo, writePkgJson, openUrl, getUrlByUID } from 'util-renderer-nowa';
 
 const { commands, tasklog } = remote.getGlobal('services');
+
 
 
 const mapCmd = (scripts) => {
@@ -121,6 +123,7 @@ export default {
     },
     * editor({ payload: { project } }, { put, select }) {
       console.log('editor', project.path);
+
       const { defaultEditor, editor } = yield select(state => state.setting);
       const editorPath = editor[defaultEditor];
 
@@ -137,6 +140,7 @@ export default {
         const { success } = yield commands.openEditor(project.path, defaultEditor, editorPath);
         if (!success) {
           msgError('Open editor failed, please check the editor path.');
+
           yield delay(500);
 
           yield put({
@@ -415,3 +419,4 @@ export default {
     },
   },
 };
+

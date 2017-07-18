@@ -83,8 +83,6 @@ CommandForm.propTypes = {
   }).isRequired,
 };
 
-export default Form.create()(
-  connect(({ task }) => ({
-    globalCommandSet: task.globalCommandSet || [],
-  }))(CommandForm)
-);
+export default Form.create()(connect(({ task }) => ({
+  globalCommandSet: task.globalCommandSet || [],
+}))(CommandForm));

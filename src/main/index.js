@@ -12,11 +12,10 @@ const { menu, mainWin, log, tray, commands, nowa, requests, tasklog, mainPlugin 
 
 process.on('unhandledRejection', (reason, p) => {
   log.error(`Unhandled Rejection at:, ${p}, 'reason:', ${reason}`);
-  // application specific logging, throwing an error, or other logic here
 });
 
 process.on('uncaughtException', function(err) {
-    log.error(`uncaughtException$-${err}`);
+  log.error(`uncaughtException$-${err}`);
 });
 // 初始化任务， 必须在有网的判断下进行
 const initialTasks = async function (event, online) {
@@ -39,7 +38,6 @@ const initialTasks = async function (event, online) {
     }
   }
   mainWin.send('check-registry', registry);
-  console.log('continue');
 
   if (online) {
     mainWin.send('is-ready', { ready: true });
@@ -65,10 +63,7 @@ ipcMain
   .on('network-change-status', initialTasks)
   .on('tray-change-status', (event, { project, status, fromRenderer }) => {
     tray.updateTrayMenu(project, status, fromRenderer);
-  })
-  // .on('plugin-change-status', (event, options) => {
-    
-  // });
+  });
 
 app
   .on('ready', () => {
@@ -79,7 +74,6 @@ app
     commands.setPath();
     mainPlugin.start();
     log.error('app ready');
-    log.error('app test update');
   })
   .on('activate', () => {
     if (mainWin.getWin() === null) {
