@@ -103,7 +103,7 @@ export const execCmd = ({ command, projPath }) => {
   //   // detached: true
   // });
 
-  log.error(command, projPath);
+  console.log(command, projPath);
   const uid = uuidV4();
   const term = exec(`npm run ${command} --scripts-prepend-node-path=auto`, {
     cwd: projPath,
@@ -122,7 +122,7 @@ export const execCmd = ({ command, projPath }) => {
 
   term.on('exit', (code) => {
     tasklog.clearTerm(command, projPath);
-    log.error('exit', command, code);
+    console.log('exit', command, code);
     if (mainWin.getWin()) {
       mainWin.send('task-end', {
         command,
