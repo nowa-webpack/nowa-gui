@@ -318,8 +318,8 @@ export default {
         tasklog.setTask(command, cwd, { term: {} });
       }
 
-      const port = mainPlugin.port;
-      
+      const port = mainPlugin.getPort();
+      console.log('port', port);
       try {
         yield plugin.run({ cwd, logger, config: config.pluginConfig || {} }, port);
       } catch (e) {
