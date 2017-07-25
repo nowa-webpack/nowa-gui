@@ -22,7 +22,8 @@ class Nowa {
       });
       this.needInstallPkgs = [...set, ...localNeedUpdatePkgs];
     } else {
-      this.needInstallPkgs = [...this.iwant, 'npm'];
+      // this.needInstallPkgs = [...this.iwant, 'npm'];
+      this.needInstallPkgs = this.iwant;
     }
     this.pkgSize = this.needInstallPkgs.length;
     console.log('needInstallPkgs', this.needInstallPkgs, this.pkgSize);
@@ -38,19 +39,22 @@ class Nowa {
   // 安装组件
   async installNowaPkgs() {
     if (this.pkgSize > 0) {
-      const pkgs = this.needInstallPkgs.map(name => ({ name, version: 'latest' }));
-      const opt = getInstallOpt(pkgs);
+      // const pkgs = this.needInstallPkgs.map(name => ({ name, version: 'latest' }));
+      const pkgs = this.needInstallPkgs.map(name => ({ name, version: '^1' }));
+      // const opt = getInstallOpt(pkgs);
 
-      const { err } = await commands.install({
-        opt,
-        fake: true,
-        sendProgress: (percent = 0) => mainWin.send('nowa-install-progress', percent),
-      });
+      const { err } = await commands.noLoggingInstall(getInstallOpt(pkgs));
+      // const { err } = await commands.install({
+      //   opt,
+      //   // fake: true,
+      //   // sendProgress:  (percent = 0) => mainWin.send('nowa-install-progress', percent),
+      // });
 
       if (!err) {
         // 安装结束后保存新版本
-        saveNewPkg(this.needInstallPkgs.filter(name => name !== 'npm'));
-        console.log('saveNewPkg');
+        // saveNewPkg(this.needInstallPkgs.filter(name => name !== 'npm'));
+        saveNewPkg(this.needInstallPkgs);
+        console.log('saveNewNowaJSON');
         mainWin.send('nowa-install-finished');
       } else {
         mainWin.send('nowa-install-failed', err);

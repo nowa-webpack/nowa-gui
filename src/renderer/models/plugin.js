@@ -139,7 +139,8 @@ export default {
 
       console.log(others);
 
-      const { err } = yield commands.install({ opt });
+      const { err } = yield commands.noLoggingInstall(opt);
+      // const { err } = yield commands.install({ opt });
 
       if (err) {
         msgError(i18n('msg.installFail'));
@@ -187,26 +188,66 @@ export default {
               remote.app.relaunch();
               remote.app.exit(0);
             },
-            // onCancel() {
-            //   console.log('Cancel');
-            // },
           });
         }
       }
     },
-    * reinstall({ payload }, { put }) {
+   /* * reinstall({ payload }, { put }) {
       console.log('reinstallPlugin', payload);
       const opt = {
         root: paths.NOWA_INSTALL_DIR,
         pkgs: [{ name: payload.name, version: payload.version }]
       };
 
-      yield commands.uninstall(opt);
-      yield delay(1000);
+      // yield commands.uninstall(opt);
+      // yield delay(1000);
       yield put({
         type: 'install',
         payload: {...payload, reinstall: true }
       });
+    },*/
+    * uninstall({ payload }, { put, select }) {
+      console.log('uninstall plugin', payload);
+      yield put({
+        type: 'changeStatus',
+        payload: { loading: true },
+      });
+
+      const opt = {
+        root: paths.NOWA_INSTALL_DIR,
+        pkg: payload.name,
+        // type
+        // pkgs: [data]
+      };
+
+      const { err } = yield commands.uninstall(opt);
+      console.log('after uninstall plugin', err);
+
+      if (!err) {
+        const storePlugin = getLocalPlugins();
+
+        const filter = storePlugin.filter(item => item.name !== payload.name)
+
+        setLocalPlugins(filter);
+
+        payload.installed = false;
+
+        const { pluginList, UIPluginList } = yield select(state => state.plugin);
+        const newList = pluginList.map((item) => {
+          if (item.name === payload.name) {
+            return payload;
+          }
+          return item;
+        });
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            pluginList: newList,
+            payload: UIPluginList.filter(item => item.name !== payload.name),
+            loading: false
+          }
+        });
+      }
     },
     * update({ payload }, { put }) {
       console.log('updateplugin', payload);

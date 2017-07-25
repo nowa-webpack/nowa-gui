@@ -378,16 +378,18 @@ export default {
       delete pkg[type][data.name];
       current.pkg = pkg;
 
-      yield put({
-        type: 'changeProjects',
-        payload: current
-      });
+      // yield put({
+      //   type: 'changeProjects',
+      //   payload: current
+      // });
 
-      writePkgJson(current.path, pkg);
+      // writePkgJson(current.path, pkg);
 
       const opt = {
         root: current.path,
-        pkgs: [data]
+        pkg: data.name,
+        type
+        // pkgs: [data]
       };
 
       yield commands.uninstall(opt);
@@ -395,19 +397,23 @@ export default {
     * updateDepencies({ payload: { data, type } }, { put, select }) {
       const { current } = yield select(state => state.project);
 
+      // yield put({
+      //   type: 'reload',
+      //   payload: current
+      // })
       data.forEach(({ name, version }) => {
-        if (!current.pkg[type]) {
+        if (!current.pkg[type]) {  
           current.pkg[type] = {};
         }
         current.pkg[type][name] = version;
       });
 
-      yield put({
-        type: 'changeProjects',
-        payload: current
-      });
+      // yield put({
+      //   type: 'changeProjects',
+      //   payload: current
+      // });
 
-      writePkgJson(current.path, current.pkg);
+      // writePkgJson(current.path, current.pkg);
     },
     * refresh(o, { put, select }) {
       console.log('refresh project');

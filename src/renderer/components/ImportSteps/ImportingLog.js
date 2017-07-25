@@ -19,35 +19,47 @@ class Log extends Component {
       percent: 0,
       expanded: false,
     };
+    this.timer = null;
     this.onReceiveLog = this.onReceiveLog.bind(this);
-    this.onReceiveProgress = this.onReceiveProgress.bind(this);
+    // this.onReceiveProgress = this.onReceiveProgress.bind(this);
     this.onReceiveFailed = this.onReceiveFailed.bind(this);
   }
 
   componentDidMount() {
     ipcRenderer.on('import-logging', this.onReceiveLog);
-    ipcRenderer.on('import-progress', this.onReceiveProgress);
+    // ipcRenderer.on('import-progress', this.onReceiveProgress);
     ipcRenderer.on('import-failed', this.onReceiveFailed);
+    this.timer = setInterval(() => {
+      const { percent } = this.state;
+      if (percent < 100) {
+        this.setState({ percent: percent + 1 });
+      } else {
+        clearInterval(this.timer);
+      }
+    }, 1000);
   }
 
   componentWillUnmount() {
     ipcRenderer.removeAllListeners('import-logging');
-    ipcRenderer.removeAllListeners('import-progress');
+    // ipcRenderer.removeAllListeners('import-progress');
     ipcRenderer.removeAllListeners('import-failed');
+    clearInterval(this.timer);
   }
 
   onReceiveLog(event, log) {
     this.setState({
-      log: ansiHTML(log.join('<br>'))
+      // log: ansiHTML(log.join('<br>'))
+      log: ansiHTML(log)
     }, () => this.scrollToBottom());
   }
 
-  onReceiveProgress(event, percent) {
-    console.log(percent);
-    this.setState({ percent });
-  }
+  // onReceiveProgress(event, percent) {
+  //   console.log(percent);
+  //   this.setState({ percent });
+  // }
 
   onReceiveFailed(event, errmsg) {
+    clearInterval(this.timer);
     this.setState({ errmsg });
   }
 
@@ -61,6 +73,7 @@ class Log extends Component {
 
   retryInstall() {
     this.clearTerm();
+
     this.props.dispatch({
       type: 'projectCreate/startInstallModules',
       payload: { isRetry: true }

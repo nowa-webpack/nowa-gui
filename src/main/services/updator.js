@@ -41,7 +41,8 @@ class Updator {
         innerUpdate,
         newVersion: version,
         upgradeUrl: innerUpdate ? ''
-          : `${data.downloadDomain}/${version}/NowaGUI.${extension[process.platform]}`
+          // : `${data.downloadDomain}/${version}/NowaGUI.${extension[process.platform]}`
+          : `${data.downloadDomain}/nowa-gui.${extension[process.platform]}`
       };
     }
     return { update: false };

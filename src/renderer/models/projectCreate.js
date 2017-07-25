@@ -180,13 +180,11 @@ export default {
         console.log('config', config);
         payload.repository = (config['remote "origin"'] || {}).url || '';
       }
-      console.log('path 1');
 
       if (selectExtendsProj.answers) {
         payload = selectExtendsProj.answers(payload, {});
       }
 
-      console.log('path 2');
 
       yield put({
         type: 'changeStatus',
@@ -289,6 +287,7 @@ export default {
         root: initSetting.projPath,
         registry: initSetting.registry,
         pkgs,
+        sender: 'import',
       };
 
       // 防止修改backpage
@@ -298,11 +297,12 @@ export default {
           payload: { toPage: IMPORT_STEP2_PAGE }
         });
       }
-      const { err } = yield commands.install({
-        opt,
-        fake: false,
-        sender: 'import',
-      });
+      const { err } = yield commands.loggingInstall(opt);
+      // const { err } = yield commands.install({
+      //   opt,
+      //   fake: false,
+      //   sender: 'import',
+      // });
 
       if (!err) {
         yield put({

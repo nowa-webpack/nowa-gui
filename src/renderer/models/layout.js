@@ -83,6 +83,7 @@ export default {
           payload: { online: navigator.onLine },
         });
 
+        // 联网的时候请求模板
         if (online && navigator.onLine) {
           yield put({
             type: 'boilerplate/fetchCustom',

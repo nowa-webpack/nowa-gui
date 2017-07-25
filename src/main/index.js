@@ -7,17 +7,22 @@ import config from './userConfig';
 
 
 
-const { menu, mainWin, log, tray, commands, nowa, requests, tasklog, mainPlugin } = services;
+const {
+  menu, mainWin, log, tray, commands, nowa, requests, tasklog, mainPlugin,
+  initialize
+} = services;
 
 
 process.on('unhandledRejection', (reason, p) => {
-  log.error(`Unhandled Rejection at:, ${p}, 'reason:', ${reason}`);
-});
+    log.error(`Unhandled Rejection at:, ${p}, 'reason:', ${reason}`);
+  })
+  .on('uncaughtException', function(err) {
+    log.error(`uncaughtException$-${err}`);
+  });
 
-process.on('uncaughtException', function(err) {
-  log.error(`uncaughtException$-${err}`);
-});
-// 初始化任务， 必须在有网的判断下进行
+/* 初始化任务：判断源，发送打点日志 
+  必须在有网的判断下进行
+*/
 const initialTasks = async function (event, online) {
   console.log('network', online);
   config.setItem('ONLINE', online);
@@ -70,8 +75,8 @@ app
     mainWin.create();
     menu.init();
     tray.init();
-    commands.encode();
-    commands.setPath();
+    initialize.setEncode();
+    initialize.setGlobalPath();
     mainPlugin.start();
     log.error('app ready');
   })

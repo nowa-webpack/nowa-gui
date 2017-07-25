@@ -11,7 +11,7 @@ module.exports = {
     modules: [
       // 'node_modules',
       resolve(__dirname, '..', 'node_modules'),
-      // resolve(__dirname, '..', 'node_modules', 'npm', 'node_modules'),
+      resolve(__dirname, '..', 'app', 'node_modules'),
       resolve(__dirname, '..', 'src'),
     ],
     alias: {
@@ -22,6 +22,9 @@ module.exports = {
       'util-renderer-nowa': resolve(__dirname, '..', 'src', 'renderer', 'utils'),
       'const-renderer-nowa': resolve(__dirname, '..', 'src', 'renderer', 'constants'),
     }
+  },
+  externals: {
+    npm: 'commonjs npm'
   },
   module: {
     rules: [

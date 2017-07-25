@@ -1,9 +1,7 @@
 import mkdirp from 'mkdirp';
-// import { join } from 'path';
 
 import Nowa from './nowa';
 import { existsNowa, writeNowaVer } from './utils';
-// import { writeFileSync } from 'fs';
 import { NOWA_INSTALL_DIR } from '../paths';
 
 try {
@@ -16,6 +14,7 @@ try {
 }
 
 const iwant = ['nowa', 'nowa-init', 'nowa-server', 'nowa-build', 'nowa-lib', 'nowa-dep'];
+// const iwant = ['nowasssss', 'nowa-init'];
 
 const nowa = new Nowa(iwant);
 
