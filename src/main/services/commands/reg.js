@@ -1,5 +1,5 @@
 /*
-reference node-reg
+ reference node-reg
 
 */
 import { join } from 'path';

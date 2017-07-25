@@ -69,17 +69,6 @@ class DependencyTable extends Component {
     this.initStatus(next);
   }
 
-  /*componentWillReceiveProps(next) {
-    console.log(next.source);
-    if (
-      next.online !== this.props.online ||
-      next.projPath !== this.props.projPath ||
-      next.registry !== this.props.registry
-    ) {
-      this.initStatus(next);
-    }
-  }*/
-
   onHideModal() {
     this.setState({ showModal: false });
   }
@@ -233,16 +222,17 @@ class DependencyTable extends Component {
       pkgs = selectedRowKeys.map(name => ({ name, version: 'latest' }));
     }
     console.log(pkgs);
-    const opt = { root: projPath, pkgs, registry };
+    const opt = { root: projPath, pkgs, registry, type };
     this.setState({ loading: true });
-    const { err } = await commands.install({ opt });
+    // const { err } = await commands.install({ opt });
+    const { err } = await commands.noLoggingInstall(opt);
     if (!err) {
       const data = dataSource.map(item => {
         const filter = pkgs.filter(p => p.name === item.name);
         if (filter.length > 0) {
-          if (item.updateType === 'major') {
+          // if (item.updateType === 'major') {
             item.version = `^${item.latestVersion}`;
-          }
+          // }
           item.installedVersion = item.latestVersion;
           item.needUpdate = false;
         }
@@ -287,10 +277,12 @@ class DependencyTable extends Component {
       root: projPath,
       pkgs,
       registry,
+      type
     };
 
     console.log(opt);
-    const { err } = await commands.install({ opt });
+    // const { err } = await commands.install({ opt });
+    const { err } = await commands.noLoggingInstall(opt);
 
     if (err) {
       msgError(i18n('msg.installFail'));

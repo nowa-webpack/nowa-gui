@@ -21,7 +21,8 @@ const PluginTable = ({
   const installPlugin = payload =>
     dispatch({ type: 'plugin/install', payload });
   const updatePlugin = payload => dispatch({ type: 'plugin/update', payload });
-  const reinstallPlugin = payload => dispatch({ type: 'plugin/reinstall', payload });
+  // const reinstallPlugin = payload => dispatch({ type: 'plugin/reinstall', payload });
+  const uninstallPlugin = payload => dispatch({ type: 'plugin/uninstall', payload });
   // const applyPlugin = (checked, record) =>
   //   dispatch({
   //     type: 'plugin/apply',
@@ -107,13 +108,21 @@ const PluginTable = ({
             );
           }
           return (
-            <Button
-              onClick={() => reinstallPlugin(record)}
-              className="setting-plugin-action"
-              size="small"
+            <Popconfirm
+              placement="bottomRight"
+              title={i18n('setting.plugin.uninstall.tip')}
+              onConfirm={() => uninstallPlugin(record)}
+              okText={i18n('form.ok')}
+              cancelText={i18n('form.cancel')}
             >
-              {i18n('setting.plugin.reinstall')}
-            </Button>
+              <Button
+                className="setting-plugin-action"
+                size="small"
+                type="danger"
+                ghost
+              >{i18n('setting.plugin.uninstall')}
+              </Button>
+            </Popconfirm>
           );
         }
       },

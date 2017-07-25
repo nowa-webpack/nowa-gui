@@ -8,7 +8,6 @@ import config from 'config-main-nowa';
 
 import { NOWA_INSTALL_JSON_FILE, NOWA_INSTALL_DIR, NODE_MODULES_PATH } from '../paths';
 import log from '../applog';
-import env from '../commands/env';
 
 export const readNowaVer = () => readJsonSync(NOWA_INSTALL_JSON_FILE);
 
@@ -35,7 +34,8 @@ export const getInstallOpt = pkgs =>
   ({
     root: NOWA_INSTALL_DIR,
     registry: config.getItem('REGISTRY'),
-    trace: false,
+    // trace: false,
+    sender: 'nowa-install',
     pkgs,
   });
 

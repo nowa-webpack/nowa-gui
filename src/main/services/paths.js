@@ -17,7 +17,9 @@ export const NOWA_INSTALL_JSON_FILE = join(NOWA_INSTALL_DIR, 'nowa-version.json'
 
 export const BIN_PATH = join(NOWA_INSTALL_DIR, 'node_modules', '.bin');
 export const NODE_MODULES_PATH = join(NOWA_INSTALL_DIR, 'node_modules');
-export const NPM_PATH = join(NODE_MODULES_PATH, 'npm', 'bin', 'npm-cli.js');
+// export const NPM_PATH = join(NODE_MODULES_PATH, 'npm', 'bin', 'npm-cli.js');
+export const NPM_BIN_PATH = join(APP_PATH, 'node_modules', '.bin');
+export const NPM_PATH = join(APP_PATH, 'node_modules', 'npm', 'bin', 'npm-cli.js');
 
 const appJson = readJsonSync(join(APP_PATH, 'package.json'));
 export const APP_VERSION = appJson.version;

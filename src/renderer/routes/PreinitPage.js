@@ -18,7 +18,10 @@ class PreinitPage extends Component {
       errmsg: '',
       visibility: 'hidden',
     };
+    this.timer = null;
     this.installFinished = this.installFinished.bind(this);
+    this.installFailed = this.installFailed.bind(this);
+    // this.getNewPercent = this.getNewPercent.bind(this);
   }
 
   async componentDidMount() {
@@ -31,38 +34,58 @@ class PreinitPage extends Component {
     if (!needInstall) {
       this.installFinished();
     } else {
-      ipcRenderer.on('nowa-install-progress', this.getNewPercent.bind(this));
-      ipcRenderer.on('nowa-install-failed', this.installFailed.bind(this));
+      // ipcRenderer.on('nowa-install-progress', this.getNewPercent);
+      ipcRenderer.on('nowa-install-failed', this.installFailed);
       ipcRenderer.on('nowa-install-finished', this.installFinished);
       nowa.installNowaPkgs();
       this.setState({ visibility: 'visible', percent: 1 });
     }
+
+    this.timer = setInterval(() => {
+      const { percent } = this.state;
+      if (percent < 100) {
+        this.setState({ percent: percent + 1 });
+      } else {
+        clearInterval(this.timer);
+      }
+    }, 1000);
   }
 
   componentWillUnmount() {
     ipcRenderer.removeAllListeners('nowa-install-progress');
     ipcRenderer.removeAllListeners('nowa-install-failed');
     ipcRenderer.removeAllListeners('nowa-install-finished');
+
+    clearInterval(this.timer);
   }
 
-  getNewPercent(event, percent) {
-    if (percent) {
-      // if (percent === 100) {
-      //   const { dispatch } = this.props;
-      //   setTimeout(() => dispatch({ type: 'layout/afterInit', }), 1000);
-      //   ;
-      // }
-      this.setState({ percent: +percent });
-    }
-  }
+  // getNewPercent(event, percent) {
+  //   if (percent) {
+  //     // if (percent === 100) {
+  //     //   const { dispatch } = this.props;
+  //     //   setTimeout(() => dispatch({ type: 'layout/afterInit', }), 1000);
+  //     //   ;
+  //     // }
+  //     this.setState({ percent: +percent });
+  //   }
+  // }
 
   installFailed(event, errmsg) {
-    this.setState({ success: false, errmsg });
+    if (errmsg) {
+      clearInterval(this.timer);
+      // this.setState({ success: false, errmsg: errmsg.replace(/(\r\n|\n)/g, ' ') });
+      this.setState({
+        success: false, errmsg: errmsg.replace(/(\r\n|\n)/g, ' ')
+      });
+    }
   }
 
   installFinished() {
     const { dispatch } = this.props;
-    dispatch({ type: 'layout/afterInit' });
+    clearInterval(this.timer);
+    this.setState({
+      percent: 100
+    }, () => dispatch({ type: 'layout/afterInit' }));
   }
 
   render() {

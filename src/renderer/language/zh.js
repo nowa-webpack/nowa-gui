@@ -108,6 +108,7 @@ module.exports = {
   'setting.plugin.action': '操作',
   'setting.plugin.download': '下载',
   'setting.plugin.reinstall': '重装',
+  'setting.plugin.uninstall': '移除',
   'setting.plugin.update': '更新',
   'setting.plugin.type': '插件类型',
   'setting.plugin.cli': '命令行式',
@@ -115,6 +116,7 @@ module.exports = {
   'setting.plugin.restart.title': '是否重启工具？',
   'setting.plugin.restart.tip': '重启工具可以使插件生效。',
   'setting.plugin.update.tip': '确认更新到该版本吗？',
+  'setting.plugin.uninstall.tip': '确认移除到该插件吗？',
 
   'foot.set': '工具设置',
   // 'foot.import': '导入项目',

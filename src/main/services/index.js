@@ -12,6 +12,7 @@ import mainWin from './windowManager';
 import boilerplate from './boilerplate';
 import updator from './updator';
 import mainPlugin from './plugin';
+import initialize from './initialize';
 
 // console.log(plugin.port);
 
@@ -29,6 +30,7 @@ export default {
   tasklog,
   updator,
   mainPlugin,
+  initialize,
   ejsRender(tpl, data) {
     return render(tpl, data);
   },
