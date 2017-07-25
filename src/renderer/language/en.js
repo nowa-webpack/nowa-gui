@@ -111,6 +111,11 @@ module.exports = {
   'setting.plugin.download': 'Download',
   'setting.plugin.update': 'Update',
   'setting.plugin.reinstall': 'Reinstall',
+  'setting.plugin.type': 'Plugin Type',
+  'setting.plugin.cli': 'CLI',
+  'setting.plugin.ui': 'UI',
+  'setting.plugin.restart.title': 'Do you Want to restart NowaGUI?',
+  'setting.plugin.restart.tip': 'Restart application to make the plugin effective.',
   'setting.plugin.update.tip': 'Are you sure to update this plugin?',
 
   'foot.set': 'Setting',
@@ -196,4 +201,6 @@ module.exports = {
   'feedback.success': ' Send succeed!',
 
   'plugin.promts.title': 'Plugin Promts',
+
+  'msg.reg.restart': 'Please RESTART or LOG OFF system to make the nowa cli effective.'
 };

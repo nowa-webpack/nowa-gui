@@ -5,8 +5,18 @@ import { isDev, isMac } from 'shared-nowa';
 import services from './services';
 import config from './userConfig';
 
-const { menu, mainWin, log, tray, commands, nowa, requests, tasklog } = services;
 
+
+const { menu, mainWin, log, tray, commands, nowa, requests, tasklog, mainPlugin } = services;
+
+
+process.on('unhandledRejection', (reason, p) => {
+  log.error(`Unhandled Rejection at:, ${p}, 'reason:', ${reason}`);
+});
+
+process.on('uncaughtException', function(err) {
+  log.error(`uncaughtException$-${err}`);
+});
 // 初始化任务， 必须在有网的判断下进行
 const initialTasks = async function (event, online) {
   console.log('network', online);
@@ -28,7 +38,6 @@ const initialTasks = async function (event, online) {
     }
   }
   mainWin.send('check-registry', registry);
-  console.log('continue');
 
   if (online) {
     mainWin.send('is-ready', { ready: true });
@@ -63,8 +72,8 @@ app
     tray.init();
     commands.encode();
     commands.setPath();
+    mainPlugin.start();
     log.error('app ready');
-    log.error('app test update');
   })
   .on('activate', () => {
     if (mainWin.getWin() === null) {
@@ -85,6 +94,7 @@ app
   })
   .on('before-quit', () => {
     console.log('before quit');
+    mainPlugin.stop();
     if (isMac) commands.clearMacTask();
     tray.destroy();
   });

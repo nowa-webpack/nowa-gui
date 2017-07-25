@@ -13,7 +13,7 @@ export const download = (url, folder) => load(url, folder,
   {
     extract: true,
     retries: 0,
-    timeout: 10000
+    timeout: 15000
   });
 
 

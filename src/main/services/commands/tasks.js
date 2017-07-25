@@ -2,18 +2,25 @@ import co from 'co';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import uuidV4 from 'uuid/v4';
-import { exec } from 'child_process';
+import { exec, fork, spawn } from 'child_process';
 import { removeSync } from 'fs-extra';
 import npmuninstall from 'npminstall/lib/uninstall';
-import npminstall from 'npminstall/lib/local_install';
+import cnpm from 'npminstall/lib/local_install';
+// import npm from 'npm';
+// import pnpm from 'supi';
 
+import env from './env';
+import kill from './kill';
 import log from '../applog';
+import Logger from './logger';
 import tasklog from '../tasklog';
 import mainWin from '../windowManager';
+import { APP_PATH, NPM_PATH } from '../paths';
 import { getTruePercent, getFakePercent } from './utils';
-import Logger from './logger';
-import kill from './kill';
-import env from './env';
+
+// const npmin = require('npm')
+// const { installPkgs } = pnpm;
+  // console.log(npmin);
 
 export const install = ({
   opt,
@@ -57,7 +64,7 @@ export const install = ({
         sendProgress(percent);
       }
     }, 1000);
-    yield npminstall(options);
+    yield cnpm(options);
 
     console.log('end install');
 
@@ -90,7 +97,17 @@ export const uninstall = (opt) => {
   });
 };
 
+// export const execCmd = ({ command, projPath }) => {
+//   // console.log(command, projPath);
+//   const p = join(APP_PATH, 'task', 'install.js');
+  
+//   exec(`node ${p}`, { env }, (e, i, o) => {
+//     console.log(i);
+//     console.log(o);
+//   });
+// };
 export const execCmd = ({ command, projPath }) => {
+
   console.log(command, projPath);
   const uid = uuidV4();
   const term = exec(`npm run ${command} --scripts-prepend-node-path=auto`, {
@@ -103,7 +120,6 @@ export const execCmd = ({ command, projPath }) => {
     term,
     uid
   });
-
   const senderData = (data) => tasklog.writeLog(command, projPath, data);
 
   term.stdout.on('data', senderData);
@@ -111,7 +127,7 @@ export const execCmd = ({ command, projPath }) => {
 
   term.on('exit', (code) => {
     tasklog.clearTerm(command, projPath);
-    console.log('exit', command, code);
+    log.error('exit', command, code);
     if (mainWin.getWin()) {
       mainWin.send('task-end', {
         command,
@@ -141,7 +157,6 @@ export const stopCmd = ({ command, projPath = '' }) => {
     }
   }
 };
-
 
 export const clearNotMacTask = (cb) => {
   console.log('clear clearNotMacTask');

@@ -149,7 +149,7 @@ class BuildForm extends Component {
         <Tooltip placement="top" title={i18n('foot.help')} >
           <Button type="primary" icon="question" shape="circle" size="small" ghost
             className="project-setting-help"
-            onClick={() => openUrl('https://nowa-webpack.github.io/docs/ben_di_kai_fa.html')}
+            onClick={() => openUrl('https://nowa-webpack.github.io/docs/xiang_mu_gou_jian.html')}
           />
         </Tooltip>
         <FormItem wrapperCol={{ offset: 4 }} className="setting-form-btns">

@@ -17,4 +17,3 @@ export default function({ history }) {
 
   return <Router history={history} routes={routes} />;
 }
-

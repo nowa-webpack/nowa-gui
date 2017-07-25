@@ -206,29 +206,6 @@ export default {
           remoteBoilerplates: [...remoteBoilerplates]
         }
       });
-
-      // payload.id = uuidV4();
-      // payload.loading = true;
-
-      // remoteBoilerplates.push(payload);
-
-      // yield put({
-      //   type: 'changeStatus',
-      //   payload: {
-      //     remoteBoilerplates: [...remoteBoilerplates]
-      //   }
-      // });
-
-      // const { success, data } = yield boilerplate.custom.newRemote(payload);
-
-      // if (success) {
-      //   yield put({
-      //     type: 'changeStatus',
-      //     payload: {
-      //       remoteBoilerplates: data
-      //     }
-      //   });
-      // }
     },
     * newLocal({ payload }, { select, put }) {
       const { localBoilerplates } = yield select(state => state.boilerplate);

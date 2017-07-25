@@ -1,4 +1,4 @@
 # zh
-* 开放 Nowa GUI 插件接口 [https://github.com/Jirapo/nowa-gui-plugin-demo]
+* 修复 windows 下无法使用 nowa 命令的 bug
 # en
-* Add Nowa GUI plugin API [https://github.com/Jirapo/nowa-gui-plugin-demo]
+* Fix a bug that causes nowa command unavailable on windows

@@ -16,7 +16,6 @@ try {
 }
 
 const iwant = ['nowa', 'nowa-init', 'nowa-server', 'nowa-build', 'nowa-lib', 'nowa-dep'];
-// const iwant = ['nowa', 'nowa-server', 'nowa-lib', 'nowa-dep'];
 
 const nowa = new Nowa(iwant);
 

@@ -38,7 +38,8 @@ const getProjectInfoByPath = (filePath) => {
     abc,
     pkg,
     config,
-    path: filePath
+    path: filePath,
+    reload: 0,
   };
 
   if (isNowa) {
@@ -459,9 +460,10 @@ export default {
     * reload({ payload }, { put, select }) {
       Object.keys(payload.pkg.scripts || {})
         .forEach(command => commands.stopCmd({ projPath: payload.path, command }));
-      const { projects } = yield select(state => state.project);
+      // const { projects } = yield select(state => state.project);
+      const reload = payload.reload + 1;
       const info = getProjectInfoByPath(payload.path);
-      const project = { ...payload, ...info, start: false };
+      const project = { ...payload, ...info, start: false, reload };
 
       yield put({
         type: 'changeProjects',

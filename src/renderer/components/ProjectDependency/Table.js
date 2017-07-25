@@ -66,6 +66,11 @@ class DependencyTable extends Component {
   }
 
   componentWillReceiveProps(next) {
+    this.initStatus(next);
+  }
+
+  /*componentWillReceiveProps(next) {
+    console.log(next.source);
     if (
       next.online !== this.props.online ||
       next.projPath !== this.props.projPath ||
@@ -73,7 +78,7 @@ class DependencyTable extends Component {
     ) {
       this.initStatus(next);
     }
-  }
+  }*/
 
   onHideModal() {
     this.setState({ showModal: false });
