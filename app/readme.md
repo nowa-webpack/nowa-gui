@@ -1,4 +1,4 @@
 # zh
-* 修复 windows 下无法使用 nowa 命令的 bug
+* 修复安装依赖时丢包的问题
 # en
-* Fix a bug that causes nowa command unavailable on windows
+* Fix the problem of packages loss during installation of dependecies

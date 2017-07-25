@@ -12,11 +12,14 @@ import { getRegKey } from './commands/reg';
 import { APP_PATH, BIN_PATH, NODE_PATH, DOT_NOWA_PATH, NPM_BIN_PATH } from './paths';
 
 
+// 复制 npm 的 .bin 目录到 app 的 node_modules下并赋权
 try {
   if (!existsSync(NPM_BIN_PATH)) {
     console.log('copy npm .bin folder');
     copySync(join(APP_PATH, 'task', '.bin'), NPM_BIN_PATH);
-    execSync(`chmod 755 *`, { cwd: NPM_BIN_PATH });
+    if (!isWin) {
+      execSync(`chmod 755 *`, { cwd: NPM_BIN_PATH });
+    }
   }
 } catch (e) {
   console.log(e);

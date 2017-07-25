@@ -27,6 +27,7 @@ export const noLoggingInstall = ({
       const term = fork(NPM_PATH, [
         'install', ...name,
         `${type === 'dependencies' ? '-S' : '-D'}`,
+        '--no-optional',
         `-registry=${registry}`,
         '-loglevel=warn',
         '--scripts-prepend-node-path=auto'
@@ -67,6 +68,7 @@ export const loggingInstall = ({ root, registry, pkgs, sender }) => {
       const term = fork(NPM_PATH, [
         'install', ...name,
         `-registry=${registry}`,
+        '--no-optional',
         '-loglevel=info',
         '--scripts-prepend-node-path=auto'
         ], {

@@ -1,5 +1,6 @@
 import mkdirp from 'mkdirp';
-
+// import join()
+import { isWin } from 'shared-nowa';
 import Nowa from './nowa';
 import { existsNowa, writeNowaVer } from './utils';
 import { NOWA_INSTALL_DIR } from '../paths';
@@ -7,6 +8,7 @@ import { NOWA_INSTALL_DIR } from '../paths';
 try {
   if (!existsNowa()) {
     mkdirp.sync(NOWA_INSTALL_DIR);
+
     writeNowaVer({});
   }
 } catch (e) {

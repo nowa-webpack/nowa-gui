@@ -13,7 +13,7 @@ class Plugin {
   }
 
   async findFreePort() {
-    const port = await portscanner.findAPortNotInUse(3000, 3500);
+    const port = await portscanner.findAPortNotInUse(30000, 35000);
     log.error('port:' + port);
     this.port = port;
     return this;
