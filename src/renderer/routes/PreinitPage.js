@@ -25,6 +25,7 @@ class PreinitPage extends Component {
   }
 
   async componentDidMount() {
+    // 判断有无更新的nowa组件
     await nowa.checkNeedInstallPkgs();
     const needInstall = nowa.needInstall();
 

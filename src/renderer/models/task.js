@@ -1,3 +1,6 @@
+/*
+  命令集任务 model
+*/
 import { ipcRenderer, remote } from 'electron';
 import { existsSync } from 'fs-extra';
 
@@ -8,7 +11,6 @@ import { getLocalCommands, setLocalCommands } from 'store-renderer-nowa';
 import { msgError, msgInfo, writePkgJson, openUrl, getUrlByUID } from 'util-renderer-nowa';
 
 const { commands, tasklog } = remote.getGlobal('services');
-
 
 
 const mapCmd = (scripts) => {
@@ -27,27 +29,30 @@ export default {
   namespace: 'task',
 
   state: {
-    commandSet: {},
-    globalCommandSet: getLocalCommands(),
-    taskType: 'start',
+    commandSet: {},   // 所有项目的scripts字段的命令，命令集集合
+    globalCommandSet: getLocalCommands(), // 全局命令
+    taskType: 'start',  // 当前显示的命令
   },
 
   subscriptions: {
     setup({ dispatch }) {
 
       ipcRenderer
+        // 监听任务启动
         .on('task-start', (event, { project }) => {
           dispatch({
             type: 'start',
             payload: { project }
           });
         })
+        // 监听任务停止
         .on('task-stop', (event, { project }) => {
           dispatch({
             type: 'stop',
             payload: { project }
           });
         })
+        // 监听任务退出
         .on('task-end', (event, payload) => {
           dispatch({
             type: 'onTaskEnd',
@@ -58,9 +63,10 @@ export default {
   },
 
   effects: {
+    // 执行命令
     * execCommand({ payload: { projPath, command } }, { put }) {
       console.log('execCommand', command, projPath);
-
+      // 调用main端的 npm run xxx
       yield commands.execCmd({
         projPath,
         command,
@@ -75,27 +81,31 @@ export default {
         }
       });
     },
+    // 停止命令
     * stopExecCommand({ payload }) {
       console.log('stopExecCommand', payload.command);
       yield commands.stopCmd(payload);
     },
+    // 点击停止按钮
     * stop({ payload: { project } }, { put }) {
       console.log('stop', project.path);
-
+      // 项目处于停止态
       yield put({
         type: 'project/stoppedProject',
         payload: { projPath: project.path }
       });
-
+      // 停止命令
       yield put({
         type: 'stopExecCommand',
         payload: { projPath: project.path, command: 'start' }
       });
     },
+    // 点击启动按钮
     * start({ payload: { project } }, { put, select }) {
       console.log('start', project.path);
       const { commandSet } = yield select(state => state.task);
       if (!project.start && commandSet[project.path].start) {
+        // 项目处于启动态
         yield put({
           type: 'project/startedProject',
           payload: { projPath: project.path }
@@ -107,6 +117,7 @@ export default {
         });
       }
     },
+    // 更改命令状态
     * changeCommandStatus({ payload: { taskType, projPath, running } }, { put, select }) {
       const { commandSet } = yield select(state => state.task);
 
@@ -121,6 +132,7 @@ export default {
         });
       }
     },
+    // 打开编辑器
     * editor({ payload: { project } }, { put, select }) {
       console.log('editor', project.path);
 
@@ -150,12 +162,14 @@ export default {
         }
       }
     },
+    // 打开浏览器
     * compass({ payload: { projPath } }) {
       console.log('compass', projPath);
       const { uid } = tasklog.getTask('start', projPath);
       yield delay(1000);
       openUrl(getUrlByUID(uid));
     },
+    // 命令终止后，弹出提示窗
     * onTaskEnd({ payload: { command, projPath, finished } }, { put, select }) {
       if (existsSync(projPath)) {
         msgInfo(`Exec ${command} command ${finished ? 'finished' : 'stopped'}.`);
@@ -181,10 +195,12 @@ export default {
         }
       }
     },
+    // 唤起终端
     terminal({ payload: { project } }) {
       console.log('terminal', project.path);
       commands.openTerminal(project.path);
     },
+    // 对项目列表中的所有项目初始化命令集集合
     * initCommands(o, { put, select }) {
       const { projects } = yield select(state => state.project);
       const commandSet = {};
@@ -199,6 +215,7 @@ export default {
         payload: { commandSet }
       });
     },
+    // 新增项目后，更新命令集集合
     * initAddCommands({ payload }, { put, select }) {
       // const { current } = yield select(state => state.project);
       const { globalCommandSet, commandSet } = yield select(state => state.task);
@@ -233,6 +250,7 @@ export default {
         payload: { commandSet }
       });
     },
+    // 移除项目后，更新命令集集合
     * initRemoveCommands({ payload }, { put, select }) {
       const { commandSet } = yield select(state => state.task);
 
@@ -250,6 +268,7 @@ export default {
         }
       });
     },
+    // 添加单个项目的单个命令
     * addCommand({ payload: { name, value } }, { put, select }) {
       const { current } = yield select(state => state.project);
       const { commandSet } = yield select(state => state.task);
@@ -276,6 +295,7 @@ export default {
         payload: current
       });
     },
+    // 删除单个项目的单个命令
     * deleteCommand({ payload: { cmd } }, { put, select }) {
       const { current } = yield select(state => state.project);
       const { commandSet, taskType } = yield select(state => state.task);
@@ -301,6 +321,7 @@ export default {
         payload: current
       });
     },
+    // 添加全局命令
     * addGlobalCommand({ payload }, { put, select }) {
       const { globalCommandSet } = yield select(state => state.task);
       globalCommandSet.push({ ...payload, apply: false });
@@ -312,6 +333,7 @@ export default {
         payload: { globalCommandSet: [...globalCommandSet] }
       });
     },
+    // 删除全局命令
     * deleteGlobalCommand({ payload: { cmd } }, { put, select }) {
       yield put({
         type: 'changePackageJsonCommand',
@@ -328,6 +350,7 @@ export default {
 
       setLocalCommands(filter);
     },
+    // 应用全局命令到全部的项目
     * applyGlobalCommand({ payload: { cmd } }, { put, select }) {
       const { globalCommandSet } = yield select(state => state.task);
 
@@ -349,6 +372,7 @@ export default {
         payload: { cmd, type: 'new' }
       });
     },
+    // 取消应用全局命令
     * unapplyGlobalCommand({ payload: { cmd } }, { put, select }) {
       const { globalCommandSet } = yield select(state => state.task);
       const newSet = globalCommandSet.map((item) => {
@@ -370,6 +394,7 @@ export default {
         payload: { cmd, type: 'delete' }
       });
     },
+    // 更改项目的package.json 的 scripts 字段
     * changePackageJsonCommand({ payload: { cmd, type } }, { put, select }) {
       console.log('changePackageJsonCommand', cmd, type);
       const { projects, current } = yield select(state => state.project);

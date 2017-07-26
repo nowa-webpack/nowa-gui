@@ -1,6 +1,8 @@
+/*
+  模板信息 model
+*/
 import { remote } from 'electron';
 import { join } from 'path';
-// import Message from 'antd/lib/message';
 import uuidV4 from 'uuid/v4';
 
 import i18n from 'i18n-renderer-nowa';
@@ -17,11 +19,11 @@ export default {
   namespace: 'boilerplate',
 
   state: {
-    officialBoilerplates: preManifest.official || [],
-    localBoilerplates: preManifest.local || [],
-    remoteBoilerplates: preManifest.remote || [],
-    aliBoilerplates: [],
-    antBoilerplates: [],
+    officialBoilerplates: preManifest.official || [], //官方模板
+    localBoilerplates: preManifest.local || [], //本地模板
+    remoteBoilerplates: preManifest.remote || [],   //远程模板
+    aliBoilerplates: [],  //ali模板
+    antBoilerplates: [],  //蚂蚁模板
 
     showAddBoilerplateModal: false, // 显示新建脚手架模态框
     addOrEditBoilerplateType: 'new', // new 需要新建，local 需要修改本地，remote 需要修改远程
@@ -30,6 +32,7 @@ export default {
   },
 
   effects: {
+    // 获取官方模板
     * fetchOfficial(o, { put }) {
       const officialBoilerplates = yield boilerplate.official.get({ type: 'official' });
       yield put({
@@ -37,6 +40,7 @@ export default {
         payload: { officialBoilerplates }
       });
     },
+    // 获取本地模板
     * fetchCustom(o, { put }) {
       const custom = yield boilerplate.custom.get();
       const localBoilerplates = custom.local || [];
@@ -46,6 +50,7 @@ export default {
         payload: { localBoilerplates, remoteBoilerplates }
       });
     },
+    // 获取ali模板
     * fetchAli(o, { put }) {
       const aliBoilerplates = yield boilerplate.official.get({
         type: 'ali',
@@ -56,6 +61,7 @@ export default {
         payload: { aliBoilerplates }
       });
     },
+    // 获取ant模板
     * fetchAnt(o, { put }) {
       const antBoilerplates = yield boilerplate.ant.get();
       yield put({
@@ -63,6 +69,7 @@ export default {
         payload: { antBoilerplates }
       });
     },
+    // 更新官方模板
     * updateOffical({ payload: { name, item, type } }, { select, put }) {
       console.log('updateOffical');
       const { officialBoilerplates, aliBoilerplates } = yield select(state => state.boilerplate);
@@ -108,6 +115,7 @@ export default {
         });
       }
     },
+    // 更新远程模板
     * updateRemote({ payload }, { select, put }) {
       const { remoteBoilerplates } = yield select(state => state.boilerplate);
       let newItems = remoteBoilerplates.map((item) => {
@@ -146,6 +154,7 @@ export default {
         }
       });
     },
+    // 更新ant模板
     * updateAnt({ payload }, { select, put }) {
       const { antBoilerplates } = yield select(state => state.boilerplate);
       // payload.loading = true;
@@ -181,6 +190,7 @@ export default {
         });
       }
     },
+    // 新建远程模板
     * newRemote({ payload }, { select, put }) {
       const { remoteBoilerplates } = yield select(state => state.boilerplate);
       const filter = remoteBoilerplates
@@ -207,6 +217,7 @@ export default {
         }
       });
     },
+    // 新建本地模板
     * newLocal({ payload }, { select, put }) {
       const { localBoilerplates } = yield select(state => state.boilerplate);
       const filter = localBoilerplates
@@ -231,6 +242,7 @@ export default {
         }
       });
     },
+    // 修改远程模板
     * editRemote({ payload }, { select, put }) {
       const { remoteBoilerplates } = yield select(state => state.boilerplate);
       
@@ -261,6 +273,7 @@ export default {
         });
       }
     },
+    // 修改本地模板
     * editLocal({ payload }, { select, put }) {
       const { localBoilerplates } = yield select(state => state.boilerplate);
       const newBoilerplates = localBoilerplates.map((item) => {
@@ -277,6 +290,7 @@ export default {
         }
       });
     },
+    // 移除模板
     * remove({ payload: { item, type } }, { select, put }) {
       const { localBoilerplates, remoteBoilerplates } = yield select(state => state.boilerplate);
 
@@ -304,6 +318,7 @@ export default {
         });
       }
     },
+    // 下载模板
     * download({ payload: { type, item, name }}, { select, put }) {
       console.log('download', type, item, name);
       const templates = yield select(state => state.boilerplate);

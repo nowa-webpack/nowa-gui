@@ -1,3 +1,6 @@
+/*
+  工具设置 model
+*/
 import { remote, ipcRenderer } from 'electron';
 import { existsSync } from 'fs-extra';
 // import { lt } from 'semver';
@@ -28,19 +31,20 @@ export default {
   namespace: 'setting',
 
   state: {
-    defaultEditor: getLocalEditor() || SUBLIME,
-    editor: {
+    defaultEditor: getLocalEditor() || SUBLIME,   // 默认编辑器
+    editor: {       // 编辑器列表
       [SUBLIME]: getLocalEditorPath(SUBLIME),
       [VSCODE]: getLocalEditorPath(VSCODE),
       [WEBSTORM]: getLocalEditor(WEBSTORM),
     },
-    registry: 'https://registry.npm.taobao.org',
-    registryList: [],
-    lang: getLocalLanguage(),
+    registry: 'https://registry.npm.taobao.org',  //全局源地址
+    registryList: [],     //所有源地址列表
+    lang: getLocalLanguage(), //当前语言
   },
 
   subscriptions: {
     setup({ dispatch }) {
+      // 初始化编辑器路径
       if (!getLocalEditorPath(SUBLIME)) {
         setLocalEditorPath(
           SUBLIME,
@@ -83,6 +87,7 @@ export default {
   },
 
   effects: {
+    // 保存设置表单页
     * setValues({ payload }, { put, select }) {
       const setting = yield select(state => state.setting);
 
@@ -95,7 +100,7 @@ export default {
           editor,
         },
       });
-
+      
       setLocalEditorPath(defaultEditor, editor[defaultEditor]);
 
       if (defaultEditor !== setting.defaultEditor) {
@@ -123,6 +128,7 @@ export default {
         });
       }
 
+      // 语言要放在最后判断，当前需要刷新页面才能切换语言
       if (language !== getLocalLanguage()) {
         setLocalLanguage(language);
         window.location.reload();
