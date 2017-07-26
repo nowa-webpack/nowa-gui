@@ -1,3 +1,6 @@
+/*
+  renderer 入口文件
+*/
 import dva from 'dva';
 import ansiHTML from 'ansi-html';
 import { ipcRenderer } from 'electron';

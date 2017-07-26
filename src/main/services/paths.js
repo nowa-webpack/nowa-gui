@@ -1,3 +1,7 @@
+/*
+	工具所用到的路径
+	可以与webpack的 definePlugin 结合
+*/
 import { join } from 'path';
 import { homedir } from 'os';
 import { isDev, isWin } from 'shared-nowa';

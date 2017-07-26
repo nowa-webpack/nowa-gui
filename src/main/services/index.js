@@ -34,5 +34,4 @@ export default {
   ejsRender(tpl, data) {
     return render(tpl, data);
   },
-  // loadModules,
 };

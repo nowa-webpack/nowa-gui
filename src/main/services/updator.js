@@ -1,3 +1,6 @@
+/*
+  软件更新
+*/
 import { lt } from 'semver';
 import { join, dirname } from 'path';
 import { copySync, removeSync } from 'fs-extra';

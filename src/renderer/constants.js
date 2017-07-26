@@ -1,3 +1,6 @@
+/*
+  常量
+*/
 import { isWin, isDev } from 'shared-nowa';
 
 export const SHUTDOWN_PAGE = 'SHUTDOWN_PAGE'; // 退出页面

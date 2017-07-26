@@ -1,3 +1,6 @@
+/*
+  蚂蚁模板
+*/
 import { lt } from 'semver';
 import { join, dirname } from 'path';
 import mkdirp from 'mkdirp';
@@ -11,7 +14,21 @@ import mainWin from '../windowManager';
 import { TEMPLATES_DIR } from '../paths';
 import { getMainifest, setMainifest } from './manifest';
 
+/*
+  ant 模板形式
+  {
+    "name": "@ant/Da",
+    "description": "这原本是我的毕业设计，做一个后台管理系统，一定程度上解决了某些问题，所以把他拿出来分享给大家。本系统使用基于Dva脚手架和antd框架，我只做了一些优化，大家可以参考下我的文件结构和开发方法。",
+    "homepage": "https://github.com/liumin1128/CourseManagementSystem",
+    "remote": "https://github.com/liumin1128/CourseManagementSystem/archive/master.zip",
+    "type": "ANT",
+    "loading": false,
+    "downloaded": false,
+    "path": "C:\\Users\\wb-xyl259837\\.nowa-gui\\template\\@ant\\Da"
+  }
+*/
 
+// 获取模板列表，不下载
 const get = async function () {
   console.log(`get ant boilerplate`);
   const manifest = getMainifest();
@@ -62,6 +79,7 @@ const get = async function () {
     // manifest.ant = boilerplate.filter(n => !!n);
     const antData = boilerplate.filter(n => !!n);
 
+    // 把模板列表信息写入到模板文件
     setMainifest('ant', antData);
 
     return antData;
@@ -71,6 +89,7 @@ const get = async function () {
   return manifest.ant || [];
 };
 
+// 加载模板
 const load = async function ({ ...item }) {
   const { remote, path, name } = item;
   try {
@@ -80,6 +99,7 @@ const load = async function ({ ...item }) {
 
     renameSync(join(path, dir), join(path, 'proj'));
     const manifest = getMainifest();
+    // 标记该模板已经被下载
     item.downloaded = true;
     item.loading = false;
     manifest.ant = manifest.ant.map(n => n.name === name ? item : n);

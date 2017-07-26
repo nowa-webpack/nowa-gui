@@ -61,10 +61,6 @@ export const nowaDiff = () => {
 
     const res = spawnSync('nowa', ['-V']);
     return lt(`${res.stdout}`, curNowa);
-    // const oldNowa = readJsonSync(oldNowaPath).versions.nowa;
-
-    // return lt(oldNowa, curNowa);
-
   } catch (e) {
     log.error(e);
     return false;

@@ -1,6 +1,7 @@
 import { join } from 'path';
 import { APP_PATH } from '../paths';
 
+// 默认窗口参数
 export const browserOptions = {
   width: 922,
   height: 562,

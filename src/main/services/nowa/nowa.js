@@ -39,16 +39,9 @@ class Nowa {
   // 安装组件
   async installNowaPkgs() {
     if (this.pkgSize > 0) {
-      // const pkgs = this.needInstallPkgs.map(name => ({ name, version: 'latest' }));
       const pkgs = this.needInstallPkgs.map(name => ({ name, version: '^1' }));
-      // const opt = getInstallOpt(pkgs);
 
       const { err } = await commands.noLoggingInstall(getInstallOpt(pkgs));
-      // const { err } = await commands.install({
-      //   opt,
-      //   // fake: true,
-      //   // sendProgress:  (percent = 0) => mainWin.send('nowa-install-progress', percent),
-      // });
 
       if (!err) {
         // 安装结束后保存新版本

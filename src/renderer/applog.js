@@ -1,3 +1,6 @@
+/*
+	无用，本打算把renderer日志一起保存到mainlogs
+*/
 import mkdirp from 'mkdirp';
 import moment from 'moment';
 import { join } from 'path';
