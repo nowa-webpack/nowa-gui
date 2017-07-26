@@ -1,3 +1,6 @@
+/*
+  主窗口服务
+*/
 import { format } from 'url';
 import { BrowserWindow, globalShortcut } from 'electron';
 import { isDev, isMac } from 'shared-nowa';
@@ -8,6 +11,7 @@ class WinManager {
     this.win = null;
   }
 
+  // 创建窗口
   create (opt) {
     console.log('create window');
     this.options = Object.assign(browserOptions, opt);
@@ -24,6 +28,7 @@ class WinManager {
       }));
     }
 
+    // 启动调试工具
     globalShortcut.register('CmdOrCtrl+Shift+8', () => {
       this.win.webContents.toggleDevTools();
     });

@@ -1,6 +1,6 @@
 /*
- reference node-reg
-
+ 	reference node-reg
+	注册表服务
 */
 import { join } from 'path';
 import { exec } from 'child_process';

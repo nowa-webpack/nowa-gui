@@ -1,3 +1,7 @@
+/*
+  打包前预执行任务
+  复制node的二进制文件
+*/
 const fs = require('fs-extra');
 const { join } = require('path');
 const target = join(__dirname, 'app', 'nodes');

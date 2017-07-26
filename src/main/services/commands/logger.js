@@ -1,3 +1,7 @@
+/*
+  调用命令集中捕获每个命令的日志
+  1.9.0版本后无用
+*/
 import mainWin from '../windowManager';
 
 // class Logger extends console.Console {

@@ -1,3 +1,6 @@
+/*
+  命令服务
+*/
 import { join } from 'path';
 import { homedir } from 'os';
 import { exec, spawn, execSync } from 'child_process';
@@ -6,12 +9,10 @@ import { writeFileSync, existsSync, readFileSync } from 'fs';
 import { isMac, isWin } from 'shared-nowa';
 
 import { APP_PATH, BIN_PATH, NODE_PATH, DOT_NOWA_PATH } from '../paths';
-// import encode from './encode';
 import * as tasks from './tasks';
 import mainWin from '../windowManager';
-// import { getRegKey } from './reg';
 
-
+// 唤起终端
 const openTerminal = (cwd) => {
   if (isWin) {
     const shell = process.env.comspec || 'cmd.exe';
@@ -23,6 +24,7 @@ const openTerminal = (cwd) => {
   }
 };
 
+// 打开默认编辑器
 const openEditor = (cwd, editor, basePath) => {
   let editorPath = basePath;
 

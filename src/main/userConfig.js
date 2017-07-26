@@ -1,3 +1,6 @@
+/*
+  nowa-gui 用户配置
+*/
 import mkdirp from 'mkdirp';
 import { existsSync, writeJsonSync, readJsonSync } from 'fs-extra';
 import { USER_CONFIG_PATH, DOT_NOWA_PATH } from './services/paths';
@@ -13,6 +16,7 @@ class UserConfig {
     this.config = {};
   }
 
+  // 初始化配置文件
   init () {
     if (existsSync(USER_CONFIG_PATH)) {
       this.config = this.getConfig();

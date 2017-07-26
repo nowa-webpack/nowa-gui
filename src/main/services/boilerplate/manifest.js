@@ -1,3 +1,6 @@
+/*
+  模板配置服务
+*/
 import mkdirp from 'mkdirp';
 import { join } from 'path';
 import { existsSync, readJsonSync, writeJsonSync, removeSync } from 'fs-extra';
