@@ -1,3 +1,6 @@
+/*
+  任务日志输出区
+*/
 import React, { Component, PropTypes } from 'react';
 import { ipcRenderer, remote } from 'electron';
 import { connect } from 'dva';

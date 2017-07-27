@@ -1,3 +1,6 @@
+/*
+  基本操作区中 “更多” 按钮块
+*/
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import Menu from 'antd/lib/menu';
@@ -32,9 +35,6 @@ const PluginOpt = ({
         plugins.map(({ name, plugin }) => (
           <Menu.Item key={name}>{plugin.name[lang]}</Menu.Item>)
         )
-        // plugins.map(({ name }) => (
-        //   <Menu.Item key={name}>{name}</Menu.Item>)
-        // )
       }
     </Menu>
   );

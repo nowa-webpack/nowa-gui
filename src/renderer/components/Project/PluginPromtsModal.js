@@ -1,3 +1,7 @@
+/*
+  插件提问模态框
+  根据插件的提问内容渲染表单
+*/
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'dva';
 import Row from 'antd/lib/row';
@@ -39,7 +43,6 @@ const PluginPromtsModal = ({
     });
   };
 
-
   const handleOk = () => {
     validateFields((err, answers) => {
       if (!err) {
@@ -59,7 +62,7 @@ const PluginPromtsModal = ({
     });
   };
 
-
+  // 根据不同问题的type形式渲染不同表单，一共支持5种， 不支持联动表单
   const inputTemp = (obj) =>  {
     const rules = [{ required: true, message: i18n('msg.required') }];
     console.log(obj);

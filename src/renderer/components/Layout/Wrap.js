@@ -1,3 +1,6 @@
+/*
+  公共包装组件
+*/
 import React, { Component, PropTypes } from 'react';
 import { remote } from 'electron';
 import { connect } from 'dva';
@@ -35,6 +38,7 @@ class LayoutWrap extends Component {
     this.onWindowResize = this.onWindowResize.bind(this);
   }
 
+  // 启动监听项目列表
   componentDidMount() {
     const { startWacthProject, dispatch } = this.props;
     if (startWacthProject) {
@@ -72,6 +76,7 @@ class LayoutWrap extends Component {
     }
   }
 
+  // 监听工具窗口大小
   onWindowResize() {
     const windowHeight = document.body.clientHeight;
     this.props.dispatch({
@@ -80,6 +85,7 @@ class LayoutWrap extends Component {
     });
   }
 
+  // 鼠标拖拽事件
   onDrop(acceptedFiles) {
     const { dispatch } = this.props;
     const projPath = acceptedFiles[0].path;
@@ -93,11 +99,13 @@ class LayoutWrap extends Component {
     this.onDragLeave();
   }
 
+  // 鼠标拖拽事件
   onDragOver() {
     document.getElementById('main-ctn').style.display = 'none';
     document.getElementById('drag-ctn').style.display = '';
   }
 
+  // 鼠标拖拽事件
   onDragLeave() {
     document.getElementById('main-ctn').style.display = '';
     document.getElementById('drag-ctn').style.display = 'none';

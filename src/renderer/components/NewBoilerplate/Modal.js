@@ -1,3 +1,7 @@
+/*
+  新建自定义模板模态框
+  点击模板页面 + 号弹出此组件
+*/
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import Modal from 'antd/lib/modal';

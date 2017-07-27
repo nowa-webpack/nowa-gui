@@ -1,3 +1,7 @@
+/*
+  项目依赖安装日志页面
+  导入项目第二步，确认源后开始安装依赖
+*/
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import ansiHTML from 'ansi-html';
@@ -39,6 +43,8 @@ class Log extends Component {
     }, 1000);
   }
 
+  // 这里有个bug
+  // 组件不存在之后，import-logging 的监听没有停止
   componentWillUnmount() {
     ipcRenderer.removeAllListeners('import-logging');
     // ipcRenderer.removeAllListeners('import-progress');
@@ -63,6 +69,8 @@ class Log extends Component {
     this.setState({ errmsg });
   }
 
+  // 自动滚动到屏幕最底部
+  // 每当新️日志来的时候，新的内容需要显示出来，div位于最底部
   scrollToBottom() {
     const prt = this.refs.wrap;
     const ele = this.refs.terminal;
@@ -71,6 +79,7 @@ class Log extends Component {
     }
   }
 
+  // 重新安装依赖功能
   retryInstall() {
     this.clearTerm();
 

@@ -1,3 +1,6 @@
+/*
+  工具设置－全局命令设置
+*/
 import React, { PropTypes } from 'react';
 import Button from 'antd/lib/button';
 import Row from 'antd/lib/row';

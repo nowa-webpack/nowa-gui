@@ -1,12 +1,11 @@
+/*
+  工具设置－插件列表
+*/
 import React, { PropTypes } from 'react';
-// import { remote } from 'electron';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';
 import Table from 'antd/lib/table';
 import Popconfirm from 'antd/lib/popconfirm';
-// import Input from 'antd/lib/input';
-// import Switch from 'antd/lib/switch';
-// import { join } from 'path';
 
 import i18n from 'i18n-renderer-nowa';
 
@@ -21,7 +20,6 @@ const PluginTable = ({
   const installPlugin = payload =>
     dispatch({ type: 'plugin/install', payload });
   const updatePlugin = payload => dispatch({ type: 'plugin/update', payload });
-  // const reinstallPlugin = payload => dispatch({ type: 'plugin/reinstall', payload });
   const uninstallPlugin = payload => dispatch({ type: 'plugin/uninstall', payload });
   // const applyPlugin = (checked, record) =>
   //   dispatch({
@@ -31,18 +29,6 @@ const PluginTable = ({
   const goBack = () => dispatch({ type: 'layout/goBack' });
 
   const basicColumns = [
-    {
-      //   title: i18n('setting.plugin.apply'),
-      //   dataIndex: 'apply',
-      //   key: 'apply',
-      //   render: (apply, record) =>
-      //     (<Switch
-      //       checked={apply}
-      //       size="small"
-      //       disabled={!record.installed && record.type === 'cli'}
-      //       onChange={checked => applyPlugin(checked, record)}
-      //     />)
-      // }, {
       title: i18n('setting.plugin.name'),
       dataIndex: 'name',
       key: 'name',
@@ -60,9 +46,8 @@ const PluginTable = ({
     },
   ];
 
+  // 联网时插件表格项
   const getOnlineColumns = () => {
-    // const widths = ['10%', '30%', '20%', '20%', '10%'];
-    // const widths = ['40%', '20%', '20%', '20%'];
     const widths = ['30%', '15%', '20%', '20%', '15%'];
     const columns = [
       ...basicColumns,
@@ -134,6 +119,7 @@ const PluginTable = ({
     });
   };
 
+  // 断网时插件表格项
   const getOfflineColumns = () => {
     // const widths = ['50%', '25%', '25%'];
     const widths = ['40%', '20%', '20%', '20%'];

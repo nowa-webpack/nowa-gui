@@ -1,3 +1,6 @@
+/*
+  项目页面框架，包含基本操作区和中间的功能tab
+*/
 import React, { PropTypes } from 'react';
 import { Content } from 'antd/lib/layout';
 
@@ -11,9 +14,5 @@ const ProjectPage = () => (
   </Content>
 );
 
-
-// ProjectPage.propTypes = {
-//   dispatch: PropTypes.func.isRequired,
-// };
 
 export default ProjectPage;

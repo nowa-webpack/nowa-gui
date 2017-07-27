@@ -1,3 +1,6 @@
+/*
+  新建模板页
+*/
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import { Content } from 'antd/lib/layout';

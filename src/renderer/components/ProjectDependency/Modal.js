@@ -1,3 +1,6 @@
+/* 
+  新增依赖模态框
+*/
 import React, { PropTypes } from 'react';
 import Modal from 'antd/lib/modal';
 import Input from 'antd/lib/input';

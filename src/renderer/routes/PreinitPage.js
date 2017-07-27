@@ -1,3 +1,6 @@
+/*
+  初始化页面
+*/
 import React, { Component, PropTypes } from 'react';
 import { remote, ipcRenderer } from 'electron';
 import Progress from 'antd/lib/progress';
@@ -81,6 +84,7 @@ class PreinitPage extends Component {
     }
   }
 
+  // 安装结束后通知 layout 走下面的流程，比如请求模板
   installFinished() {
     const { dispatch } = this.props;
     clearInterval(this.timer);

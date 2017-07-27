@@ -1,3 +1,6 @@
+/*
+  控制台页面
+*/
 import React, { Component } from 'react';
 
 import Terminal from './Terminal';

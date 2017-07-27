@@ -1,3 +1,6 @@
+/*
+  鼠标拖拽上去显示的页面
+*/
 import React from 'react';
 import i18n from 'i18n-renderer-nowa';
 

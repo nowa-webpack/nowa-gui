@@ -1,3 +1,6 @@
+/*
+  包管理页面
+*/
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import Tabs from 'antd/lib/tabs';

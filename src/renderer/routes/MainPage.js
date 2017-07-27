@@ -1,3 +1,6 @@
+/*
+  主页面，主要是包含左侧列表的页面
+*/
 import React, { PropTypes } from 'react';
 import Layout from 'antd/lib/layout';
 import { connect } from 'dva';

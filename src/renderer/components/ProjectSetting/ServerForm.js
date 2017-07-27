@@ -1,3 +1,6 @@
+/*
+  nowa 项目的 server 设置
+*/
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';

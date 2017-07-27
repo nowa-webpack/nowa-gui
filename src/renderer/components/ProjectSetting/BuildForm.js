@@ -1,3 +1,6 @@
+/*
+  nowa 项目的 build 设置
+*/
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import Col from 'antd/lib/col';
@@ -68,6 +71,7 @@ class BuildForm extends Component {
     });
   }
 
+  // Skipminify 是一个需要联动的表单
   changeSkipminify = (skipminify) => {
     this.props.form.setFieldsValue({
       skipminify

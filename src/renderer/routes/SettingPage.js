@@ -1,3 +1,6 @@
+/*
+  工具设置页面
+*/
 import React, { PropTypes, Component } from 'react';
 
 import Tabs from 'antd/lib/tabs';

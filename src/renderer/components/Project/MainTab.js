@@ -1,3 +1,6 @@
+/*
+  项目详情页的主功能区
+*/
 import React from 'react';
 import Tabs from 'antd/lib/tabs';
 import i18n from 'i18n-renderer-nowa';

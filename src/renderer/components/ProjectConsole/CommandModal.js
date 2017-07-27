@@ -1,3 +1,7 @@
+/*
+  新增命令模态框
+  新增的命令会同时写入到 packege.json 中
+*/
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import Modal from 'antd/lib/modal';

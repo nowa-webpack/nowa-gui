@@ -1,3 +1,6 @@
+/*
+  项目详情页面头部基本操作去
+*/
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import i18n from 'i18n-renderer-nowa';

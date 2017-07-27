@@ -1,3 +1,7 @@
+/*
+  模板表单页面
+  选择模板后进入此表单页
+*/
 import React, { Component, PropTypes } from 'react';
 import { remote } from 'electron';
 import { connect } from 'dva';
@@ -30,6 +34,7 @@ class Setting extends Component {
 
     this.baseExtraArgs = {};
 
+    // 默认回答
     this.state = {
       description: 'An awesome project',
       author: process.env.USER || process.env.USERNAME || '',
@@ -37,7 +42,9 @@ class Setting extends Component {
       homepage: '',
       repository: '',
     };
+    // 模板的额外提问
     this.hasPrompts = Object.keys(selectExtendsProj).length && selectExtendsProj.prompts;
+    // 模板的额外提问的验证器
     this.extendsValidator = selectExtendsProj.validator || {};
 
     if (this.hasPrompts) {
@@ -52,6 +59,8 @@ class Setting extends Component {
     this.handleNameChange = this.handleNameChange.bind(this);
   }
 
+  // 通过额外提问格式渲染出表单域
+  // 表单格式主要为 input 和 confirm 两种，分别渲染为 checkbox 和 input
   getExtendsHtml() {
     const { selectExtendsProj, form } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
@@ -82,6 +91,7 @@ class Setting extends Component {
 
     if (filterInput.length) {
       filterInput.forEach((item) => {
+        // typeLink 代表这个表单需要与其他表单项联动，联动表单域名
         if (item.typeLink) {
           const linkValue = getFieldValue(item.typeLink.key);
           const initialValue = item.typeLink.onChange(linkValue || 'untitled');
@@ -288,7 +298,6 @@ Setting.propTypes = {
 export default Form.create()(connect(({ setting, projectCreate }) => ({
   selectExtendsProj: projectCreate.selectExtendsProj || {},
   selectBoilerplateType: projectCreate.selectBoilerplateType || 'official',
-  // showModal: projectCreate.showOverwriteModal,
   defaultRegistry: setting.registry,
   registryList: setting.registryList,
 }))(Setting));

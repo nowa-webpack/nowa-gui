@@ -1,3 +1,6 @@
+/*
+  项目基本设置
+*/
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import Button from 'antd/lib/button';

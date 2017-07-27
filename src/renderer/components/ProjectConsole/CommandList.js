@@ -1,3 +1,6 @@
+/*
+  命令集
+*/
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import classNames from 'classnames';

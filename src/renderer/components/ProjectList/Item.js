@@ -1,3 +1,6 @@
+/*
+  项目列表子项
+*/
 import React, { PropTypes } from 'react';
 import { shell } from 'electron';
 import Icon from 'antd/lib/icon';
@@ -21,6 +24,7 @@ const Item = ({
   const { name, path, start, taskErr } = project;
   const isActive = projPath === path;
 
+  // 点击项目的时候，切换控制台的输出type为start，切换页面到项目详情页
   const handleClick = () => {
     dispatch({
       type: 'project/changeStatus',

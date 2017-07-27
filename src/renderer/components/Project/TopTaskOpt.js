@@ -1,3 +1,6 @@
+/*
+  基本操作块子组件
+*/
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import Tooltip from 'antd/lib/tooltip';

@@ -1,3 +1,6 @@
+/*
+  目前无用，之前打算用来做nowa init page 的功能
+*/
 import React, { Component, PropTypes } from 'react';
 import Modal from 'antd/lib/modal';
 import { remote } from 'electron';

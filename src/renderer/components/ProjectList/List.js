@@ -1,3 +1,6 @@
+/*
+  左侧项目列表
+*/
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import Tooltip from 'antd/lib/tooltip';

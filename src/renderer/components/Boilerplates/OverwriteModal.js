@@ -1,3 +1,7 @@
+/*
+  覆盖文件模态框
+  如果新增的项目的地址已经存在且包含文件，那么这个组件将会显示
+*/
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import Modal from 'antd/lib/modal';

@@ -1,3 +1,6 @@
+/*
+  工具基本设置
+*/
 import React, { PropTypes, Component } from 'react';
 import { remote } from 'electron';
 import Button from 'antd/lib/button';
@@ -9,13 +12,11 @@ import Popconfirm from 'antd/lib/popconfirm';
 import { connect } from 'dva';
 
 import i18n from 'i18n-renderer-nowa';
-// import { getLocalLanguage } from 'store-renderer-nowa';
 import { VSCODE, SUBLIME, WEBSTORM } from 'const-renderer-nowa';
 import { hidePathString } from 'util-renderer-nowa';
 
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-// const DEFAULT_LANGUAGE = getLocalLanguage();
 
 class BasicSetting extends Component {
   constructor(props) {

@@ -1,3 +1,6 @@
+/*
+  依赖表格
+*/
 import React, { Component, PropTypes } from 'react';
 import { remote } from 'electron';
 import Button from 'antd/lib/button';
@@ -73,6 +76,7 @@ class DependencyTable extends Component {
     this.setState({ showModal: false });
   }
 
+  // 联网时显示的表格字段
   getOnlineColumns() {
     const widths = ['34%', '15%', '15%', '15%', '21%'];
     const columns = [
@@ -163,6 +167,7 @@ class DependencyTable extends Component {
     });
   }
 
+  // 断网时显示的表格字段
   getOfflineColumns() {
     const widths = ['40%', '20%', '20%', '20%'];
 
@@ -198,6 +203,7 @@ class DependencyTable extends Component {
     });
   }
 
+  // 卸载依赖
   uninstallPackage({ name, installedVersion }) {
     const { type, dispatch } = this.props;
     const { dataSource } = this.state;
@@ -210,6 +216,7 @@ class DependencyTable extends Component {
     this.setState({ dataSource: filter });
   }
 
+  // 更新依赖
   async updatePackage() {
     const { type, dispatch, projPath, registry } = this.props;
     const { selectedRowKeys, dataSource } = this.state;
@@ -250,6 +257,7 @@ class DependencyTable extends Component {
     }
   }
 
+  // 初始化状态
   async initStatus({ online, source, projPath, registry }) {
     if (online) {
       this.setState({ loading: true });
@@ -263,6 +271,7 @@ class DependencyTable extends Component {
     }
   }
 
+  // 安装依赖
   async installPackage({ name }) {
     const { projPath, type, dispatch, registry } = this.props;
     const set = new Set(name.split(',').filter(n => n.trim()));

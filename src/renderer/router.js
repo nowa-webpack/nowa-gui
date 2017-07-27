@@ -1,3 +1,6 @@
+/*
+  废弃
+*/
 import React from 'react';
 import { Router } from 'dva/router';
 

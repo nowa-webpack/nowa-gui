@@ -1,3 +1,6 @@
+/*
+  自定义本地模板表单
+*/
 import React, { Component, PropTypes } from 'react';
 import { remote } from 'electron';
 import { basename } from 'path';

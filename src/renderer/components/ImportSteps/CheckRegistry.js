@@ -1,3 +1,7 @@
+/*
+  确认registry页面
+  导入项目第一步，如果项目没有node_modules 会进入这个页面
+*/
 import React, { PropTypes } from 'react';
 import { Content } from 'antd/lib/layout';
 import Button from 'antd/lib/button';

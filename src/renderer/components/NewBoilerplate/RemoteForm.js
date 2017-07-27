@@ -1,3 +1,6 @@
+/*
+  自定义远程模板表单
+*/
 import React, { Component, PropTypes } from 'react';
 import Input from 'antd/lib/input';
 import Form from 'antd/lib/form';

@@ -1,3 +1,6 @@
+/*
+  项目设置
+*/
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'dva';
 import Tabs from 'antd/lib/tabs';
@@ -31,6 +34,7 @@ class SettingTab extends Component {
 
     const BasicFormGen = () => <BasicForm />;
 
+    // 非nowa 项目忽视server和build配置
     return (
       <div className="project-sub">
         <Tabs type="card" className="project-sub-tabs"

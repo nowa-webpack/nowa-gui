@@ -1,3 +1,6 @@
+/*
+  左侧导航底部信息
+*/
 import React, { PropTypes } from 'react';
 import Tooltip from 'antd/lib/tooltip';
 import Button from 'antd/lib/button';
