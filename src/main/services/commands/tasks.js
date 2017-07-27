@@ -272,7 +272,7 @@ export const execCmd = ({ command, projPath }) => {
   term.on('exit', (code) => {
     // 清理命令
     tasklog.clearTerm(command, projPath);
-    log.error('exit', command, code);
+    console.log('exit', command, code);
     if (mainWin.getWin()) {
       // 通知 renderer 命令停止
       mainWin.send('task-end', {
