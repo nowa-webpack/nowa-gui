@@ -1,3 +1,6 @@
+/*
+	模板服务
+*/
 import { getMainifest, setMainifest } from './manifest';
 import official from './official';
 import custom from './custom';

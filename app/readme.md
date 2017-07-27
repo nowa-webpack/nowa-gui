@@ -1,4 +1,4 @@
 # zh
-* 修复 ant 模板无法下载的 bug
+* 修复安装依赖时丢包的问题
 # en
-* Fix download issues for ant template
+* Fix the problem of packages loss during installation of dependecies

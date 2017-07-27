@@ -111,12 +111,14 @@ module.exports = {
   'setting.plugin.download': 'Download',
   'setting.plugin.update': 'Update',
   'setting.plugin.reinstall': 'Reinstall',
+  'setting.plugin.uninstall': 'Remove',
   'setting.plugin.type': 'Plugin Type',
   'setting.plugin.cli': 'CLI',
   'setting.plugin.ui': 'UI',
   'setting.plugin.restart.title': 'Do you Want to restart NowaGUI?',
   'setting.plugin.restart.tip': 'Restart application to make the plugin effective.',
   'setting.plugin.update.tip': 'Are you sure to update this plugin?',
+  'setting.plugin.uninstall.tip': 'Are you sure to remove this plugin?',
 
   'foot.set': 'Setting',
   // 'foot.import': 'Import Project',
@@ -179,7 +181,7 @@ module.exports = {
     'Internet connection is required during initialization, check your network & reopen APP.',
   'preinit.msg2': 'Shutdown in {1} seconds',
   'preinit.waitInstall':
-    'Installing NOWA dependencies, please wait for about half a minute.',
+    'Installing NOWA dependencies, please wait for about 2 minutes.',
 
   'package.name': 'Name',
   'package.current': 'Current',
@@ -201,4 +203,6 @@ module.exports = {
   'feedback.success': ' Send succeed!',
 
   'plugin.promts.title': 'Plugin Promts',
+
+  'msg.reg.restart': 'Please RESTART or LOG OFF system to make the nowa cli effective.'
 };

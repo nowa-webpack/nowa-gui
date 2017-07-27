@@ -1,3 +1,6 @@
+/*
+  用户配置
+*/
 import { join } from 'path';
 import { remote } from 'electron';
 import { existsSync } from 'fs-extra';

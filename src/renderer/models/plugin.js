@@ -1,3 +1,6 @@
+/*
+  插件 model
+*/
 import co from 'co';
 import { lt } from 'semver';
 import { join } from 'path';
@@ -16,6 +19,25 @@ const confirm = Modal.confirm;
 const { commands, paths, tasklog, mainPlugin } = remote.getGlobal('services');
 const target = name => join(paths.NODE_MODULES_PATH, name);
 
+/*
+
+  插件在用户配置中保存格式
+
+
+
+  "APPLYED_PLUGINS": [
+    {
+      "name": "@ali/nw-checkout",
+      "type": "ui" || "cli", // ui 代表 nowa-gui 插件，cli代表命令行插件
+      "origin": "ali" || "common",  //ali仅内网可见，common都可见
+      "installed": true,
+      "apply": false,
+      "needUpdate": false,
+      "newest": "2.0.1-beta.0",
+      "version": "2.0.1-beta.0"
+    }, {...}
+  ],
+*/
 
 async function checkPluginLatest(item, registry) {
   const { err, data } = await request(`${registry}/${item.name}/latest`);
@@ -39,12 +61,12 @@ export default {
   namespace: 'plugin',
 
   state: {
-    pluginList: [],
-    UIPluginList: [],
-    loading: false,
-    showPromtsModal: false,
-    pluginPromts: [],
-    selectPlugin: '',
+    pluginList: [], // 插件列表
+    UIPluginList: [], // nowa-gui 插件列表
+    loading: false, // 插件加载状态
+    showPromtsModal: false, // 显示提问框
+    pluginPromts: [],   // nowa-gui插件提问模板
+    selectPlugin: '', // 当前选择的插件
   },
 
   subscriptions: {
@@ -76,15 +98,18 @@ export default {
   },
 
   effects: {
+    // 加载插件列表
     * fetch(o, { put, select }) {
       console.log('fetch plugins');
       const { atAli } = yield select(state => state.layout);
       const { registry } = yield select(state => state.setting);
       const { pluginList } = yield select(state => state.plugin);
 
+      // 根据不同环境加载不同的插件列表，内网外网区别对待
       const { data } = yield request(`${registry}/${GUI_PLUGIN_NPM}/latest`);
       let npmPluginList = data.plugins;
 
+      // 不在内网就筛选common组件
       if (!atAli) {
         npmPluginList = npmPluginList.filter(item => item.origin === 'common');
       }
@@ -118,6 +143,7 @@ export default {
         payload: { pluginList: res, loading: false },
       });
     },
+    // 插件安装， reinstall 代表是否是更新插件
     * install({ payload: { reinstall, ...others } }, { put, select }) {
       console.log('installPlugin', others);
       const { atAli } = yield select(state => state.layout);
@@ -137,9 +163,9 @@ export default {
         registry: atAli ? REGISTRY_MAP.tnpm : registry,
       };
 
-      console.log(others);
-
-      const { err } = yield commands.install({ opt });
+      
+      // 安装插件不需要安装日志
+      const { err } = yield commands.noLoggingInstall(opt);
 
       if (err) {
         msgError(i18n('msg.installFail'));
@@ -177,6 +203,7 @@ export default {
           payload: others,
         });
 
+        // 如果是ui插件，需要重启才能生效
         if (others.type === 'ui') {
           confirm({
             title: i18n('setting.plugin.restart.title'),
@@ -187,27 +214,67 @@ export default {
               remote.app.relaunch();
               remote.app.exit(0);
             },
-            // onCancel() {
-            //   console.log('Cancel');
-            // },
           });
         }
       }
     },
-    * reinstall({ payload }, { put }) {
+   /* * reinstall({ payload }, { put }) {
       console.log('reinstallPlugin', payload);
       const opt = {
         root: paths.NOWA_INSTALL_DIR,
         pkgs: [{ name: payload.name, version: payload.version }]
       };
 
-      yield commands.uninstall(opt);
-      yield delay(1000);
+      // yield commands.uninstall(opt);
+      // yield delay(1000);
       yield put({
         type: 'install',
         payload: {...payload, reinstall: true }
       });
+    },*/
+    // 卸载插件
+    * uninstall({ payload }, { put, select }) {
+      console.log('uninstall plugin', payload);
+      yield put({
+        type: 'changeStatus',
+        payload: { loading: true },
+      });
+
+      const opt = {
+        root: paths.NOWA_INSTALL_DIR,
+        pkg: payload.name,
+      };
+
+      const { err } = yield commands.uninstall(opt);
+      console.log('after uninstall plugin', err);
+
+      if (!err) {
+        const storePlugin = getLocalPlugins();
+
+        const filter = storePlugin.filter(item => item.name !== payload.name)
+
+        setLocalPlugins(filter);
+
+        payload.installed = false;
+
+        const { pluginList, UIPluginList } = yield select(state => state.plugin);
+        const newList = pluginList.map((item) => {
+          if (item.name === payload.name) {
+            return payload;
+          }
+          return item;
+        });
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            pluginList: newList,
+            payload: UIPluginList.filter(item => item.name !== payload.name),
+            loading: false
+          }
+        });
+      }
     },
+    // 更新插件
     * update({ payload }, { put }) {
       console.log('updateplugin', payload);
 
@@ -224,6 +291,7 @@ export default {
         storePlugin.map(item => (item.name === payload.name ? payload : item))
       );
     },
+    // 功能无用
     * apply({ payload: { record, checked } }, { put }) {
       console.log('applyPlugin', record);
 
@@ -240,6 +308,7 @@ export default {
         storePlugin.map(item => (item.name === record.name ? record : item))
       );
     },
+    // 修改插件列表
     * changePluginList({ payload }, { put, select }) {
       const { pluginList, UIPluginList } = yield select(state => state.plugin);
       const newList = pluginList.map((item) => {
@@ -265,6 +334,7 @@ export default {
         });
       }
     },
+    // 加载ui插件内容
     * initUIPluginList(o, { put, select }) {
       const pluginList = getLocalPlugins().filter(item => item.type === 'ui');
 
@@ -278,6 +348,7 @@ export default {
         payload: { UIPluginList }
       });
     },
+    // 执行ui插件任务
     * execPretask({ payload: { name } }, { put, select }) {
       const { UIPluginList } = yield select(state => state.plugin);
       const { current } = yield select(state => state.project);
@@ -285,6 +356,8 @@ export default {
       const cwd = current.path;
       let preData;
 
+      // 插件会在项目目录下生成.nowa 文件，这个是插件的配置文件
+      // 合并配置文件
       const config = merge(defaultPluginConfig, current.config);
       writePluginConfig(cwd, config);
 
@@ -302,30 +375,34 @@ export default {
         }
       });
 
+      // 捕获插件内部输出内容
       const logger = (data) => {
         console.log(data);
         tasklog.writeLog(command, cwd, data);
       };
       const plugin = UIPluginList.filter(item => item.name === name)[0].plugin;
+      // 选取插件名字作为命令名字
       const command = plugin.name.en;
 
       yield put({
         type: 'task/changeStatus',
         payload: { taskType: command }
       });
-
+      // 初始化插件到tasklog
       if (!tasklog.getTask(command, cwd)) {
         tasklog.setTask(command, cwd, { term: {} });
       }
-
-      const port = mainPlugin.port;
-      
+      // 获取main端为插件分配的端口号
+      const port = mainPlugin.getPort();
+      console.log('port', port);
       try {
+        // 执行插件
         yield plugin.run({ cwd, logger, config: config.pluginConfig || {} }, port);
       } catch (e) {
         console.log(e);
       }
     },
+    // 获取用户输入的答案传递给插件
     * saveAnswers({ payload }, { put }) {
       yield put({
         type: 'changeStatus',
@@ -335,59 +412,6 @@ export default {
       });
       mainPlugin.sendPromtsAnswer(payload);
     },
-    // * saveAnswers({ payload }, { put, select }) {
-    //   const { UIPluginList, selectPlugin } = yield select(state => state.plugin);
-    //   const plugin = UIPluginList.filter(item => item.name === selectPlugin)[0].plugin;
-
-    //   plugin.setAnswer(payload);
-
-    // },
-    // * showPromts({ payload: { file, cwd, preData} }, { put, select }) {
-    //   console.log('do showPromts', file.name.en);
-
-    //   // const pluginPromts = file.promts(preData);
-    //   yield put({
-    //     type: 'changeStatus',
-    //     payload: {
-    //       showPromtsModal: true,
-    //       pluginPromts: file.promts instanceof Array ? file.promts : file.promts(preData)
-    //     }
-    //   });
-    // },
-    // * execPluginTask({ payload: { answers } }, { put, select }) {
-    //   const { UIPluginList, selectPlugin } = yield select(state => state.plugin);
-    //   const { current } = yield select(state => state.project);
-    //   const file = UIPluginList.filter(item => item.name === selectPlugin)[0].file;
-    //   const command = file.name.en;
-    //   const cwd = current.path;
-    //   console.log('do execPluginTask', file.name.en);
-
-    //   yield put({
-    //     type: 'changeStatus',
-    //     payload: {
-    //       showPromtsModal: false,
-    //     }
-    //   });
-
-    //   const logger = (data) => {
-    //     console.log(data);
-    //     tasklog.writeLog(command, cwd, data);
-    //   };
-
-    //   for (let i = 0; i < file.tasks.length; i++) {
-    //     const { err } = yield new Promise(function(resolve){
-    //       file.tasks[i].run({
-    //         cwd,
-    //         answers,
-    //         logger,
-    //         next: resolve,
-    //         config: { ...current.config.pluginConfig }
-    //       });
-    //     });
-    //     if (err) break;
-    //   }
-    //   console.log('done plugin tasks');
-    // }
   },
   reducers: {
     changeStatus(state, action) {

@@ -1,7 +1,9 @@
+/*
+  用户项目 model
+*/
 import { remote, ipcRenderer } from 'electron';
 import { join, basename } from 'path';
 import { existsSync } from 'fs-extra';
-// import chokidar from 'chokidar';
 
 import i18n from 'i18n-renderer-nowa';
 import { request } from 'shared-nowa';
@@ -20,9 +22,18 @@ import {
 } from 'const-renderer-nowa';
 
 const { commands, tray, tasklog } = remote.getGlobal('services');
-// let pkgWatcher;
 
+/*
+  用户配置文件中的项目列表
+  "LOCAL_PROJECTS": [
+    {
+      "name": "dd1",
+      "path": "C:\\Users\\wb-xyl259837\\NowaProject\\dd1",
+      "registry": "http://registry.npm.taobao.org"
+    },{。。。}]
+*/
 
+// 加载项目的基本信息
 const getProjectInfoByPath = (filePath) => {
   let abc = {};
   const pkg = readPkgJson(filePath);
@@ -61,6 +72,7 @@ const getProjectInfoByPath = (filePath) => {
   return obj;
 };
 
+// 获取项目列表
 const getProjects = () => {
   const projects = getLocalProjects();
 
@@ -81,9 +93,9 @@ export default {
   namespace: 'project',
 
   state: {
-    projects: [],
-    current: {},
-    startWacthProject: false,
+    projects: [], // 项目列表
+    current: {},  //当前项目
+    startWacthProject: false, // 监控刷新项目标记
   },
 
   subscriptions: {
@@ -91,6 +103,8 @@ export default {
       const projects = getProjects();
       const taskStart = tasklog.getCmd('start');
 
+      // 如果一开始有任务是启动的，那么要在初始化的时候同样启动任务
+      // 常见场景：start项目后，设置页面更换语言，刷新renderer端
       if (taskStart) {
         const keys = Object.keys(taskStart);
         if (keys.length > 0) {
@@ -103,6 +117,7 @@ export default {
         }
       }
 
+      // 设置任务托盘列表
       tray.setInitTrayMenu(projects);
 
       window.onbeforeunload = () => {
@@ -121,15 +136,15 @@ export default {
         }
       });
 
+      // 初始化命令集任务
       dispatch({
         type: 'task/initCommands',
       });
-
-      // pkgWatcher = chokidar.watch(projects.map())
     },
   },
 
   effects: {
+    // 增加项目
     * add({ payload }, { select, put }) {
       console.log('add project');
       const projectInfo = getProjectInfoByPath(payload.projPath);
@@ -184,6 +199,7 @@ export default {
         payload: { toPage: PROJECT_PAGE }
       });
     },
+    // 移除项目
     * remove({ payload }, { select, put }) {
       console.log('remove project', payload.name);
       const { projects, current } = yield select(state => state.project);
@@ -232,6 +248,7 @@ export default {
         });
       }
     },
+    // 启动项目后
     * startedProject({ payload: { projPath } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
       let project;
@@ -264,6 +281,7 @@ export default {
         }
       });
     },
+    // 停止项目后
     * stoppedProject({ payload: { projPath } }, { put, select }) {
       const { projects, current } = yield select(state => state.project);
 
@@ -296,12 +314,14 @@ export default {
         }
       });
     },
+    // 更新项目的 package.json 文件
     * updatePackageJson({ payload: { project, data } }, { put, select }) {
       const { registry, repo, ...others } = data;
       const nameDiff = project.name !== data.name;
       const registryDiff = project.registry !== registry;
 
       if (nameDiff || registryDiff) {
+        // 如果用户修改了项目的源地址，需要判断源是否可访问
         const { registryList } = yield select(state => state.setting);
         if (!registryList.includes(registry)) {
           const { err } = yield request(registry, { timeout: 10000 });
@@ -314,7 +334,7 @@ export default {
           project.abc.npm = registry;
           writeABCJson(project.path, project.abc);
         }
-
+        // name 和 regsitry 是需要保存到用户配置文件里面的，所以要更新该文件信息
         project.name = data.name;
         project.registry = registry;
 
@@ -345,6 +365,7 @@ export default {
       });
       return true;
     },
+    // 更新abc.json
     * updateABCJson({ payload: { project, abc } }, { put }) {
       project.abc = abc;
       writeABCJson(project.path, abc);
@@ -354,6 +375,7 @@ export default {
         payload: project
       });
     },
+    // 修改项目列表
     * changeProjects({ payload }, { put, select }) {
       const { projects } = yield select(state => state.project);
       const newProjects = projects.map((item) => {
@@ -362,6 +384,7 @@ export default {
         }
         return item;
       });
+      // 更新任务托盘
       tray.setInitTrayMenu(newProjects);
       yield put({
         type: 'changeStatus',
@@ -371,6 +394,7 @@ export default {
         }
       });
     },
+    // 卸载依赖
     * uninstallPackage({ payload: { data, type } }, { put, select }) {
       console.log('uninstallPackage', data.name);
       const { current } = yield select(state => state.project);
@@ -378,37 +402,46 @@ export default {
       delete pkg[type][data.name];
       current.pkg = pkg;
 
-      yield put({
-        type: 'changeProjects',
-        payload: current
-      });
+      // yield put({
+      //   type: 'changeProjects',
+      //   payload: current
+      // });
 
-      writePkgJson(current.path, pkg);
+      // writePkgJson(current.path, pkg);
 
       const opt = {
         root: current.path,
-        pkgs: [data]
+        pkg: data.name,
+        type
+        // pkgs: [data]
       };
 
       yield commands.uninstall(opt);
     },
+    // 更新依赖，单纯更新依赖引用
     * updateDepencies({ payload: { data, type } }, { put, select }) {
       const { current } = yield select(state => state.project);
 
+      // yield put({
+      //   type: 'reload',
+      //   payload: current
+      // })
+      // npm会去修改package.json文件， 所以这里不需要重复写
       data.forEach(({ name, version }) => {
-        if (!current.pkg[type]) {
+        if (!current.pkg[type]) {  
           current.pkg[type] = {};
         }
         current.pkg[type][name] = version;
       });
 
-      yield put({
-        type: 'changeProjects',
-        payload: current
-      });
+      // yield put({
+      //   type: 'changeProjects',
+      //   payload: current
+      // });
 
-      writePkgJson(current.path, current.pkg);
+      // writePkgJson(current.path, current.pkg);
     },
+    // 刷新项目列表，如果中间用户删除了项目，会自动移出项目列表
     * refresh(o, { put, select }) {
       console.log('refresh project');
       const storeProjects = getLocalProjects();
@@ -457,6 +490,7 @@ export default {
         });
       }
     },
+    // 重载项目
     * reload({ payload }, { put, select }) {
       Object.keys(payload.pkg.scripts || {})
         .forEach(command => commands.stopCmd({ projPath: payload.path, command }));

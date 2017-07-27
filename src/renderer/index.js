@@ -1,9 +1,14 @@
+/*
+  renderer 入口文件
+*/
 import dva from 'dva';
+import React from 'react';
+import log from 'electron-log';
 import ansiHTML from 'ansi-html';
 import { ipcRenderer } from 'electron';
 
 import { isWin } from 'shared-nowa';
-import RouterConfig from './router';
+// import RouterConfig from './router';
 import layout from './models/layout';
 import setting from './models/setting';
 import project from './models/project';
@@ -11,7 +16,8 @@ import plugin from './models/plugin';
 import projectCreate from './models/projectCreate';
 import task from './models/task';
 import boilerplate from './models/boilerplate';
-import log from 'electron-log';
+
+import IndexPage from './routes/IndexPage';
 
 import 'antd/dist/antd.min.css';
 import './assets/styles/base.css';
@@ -50,7 +56,8 @@ const app = dva({
   },
 });
 
-app.router(RouterConfig);
+// app.router(RouterConfig);
+app.router(() => <IndexPage />);
 
 app.model(layout);
 app.model(setting);

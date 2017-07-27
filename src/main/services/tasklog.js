@@ -1,4 +1,6 @@
-// import ansiHTML from 'ansi-html';
+/*
+  renderer任务日志收集
+*/
 import iconv from 'iconv-lite';
 
 import config from 'config-main-nowa';

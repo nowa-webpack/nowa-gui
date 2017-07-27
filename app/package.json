@@ -1,6 +1,6 @@
 {
   "name": "nowa-gui-version",
-  "version": "1.8.7",
+  "version": "1.9.0",
   "description": "A tool for nowa developement.",
   "productName": "ElectronWebpack",
   "main": "./main.js",
@@ -19,5 +19,8 @@
     "linux": "https://alixux.org/downloads/nowa-gui.deb"
   },
   "innerUpdate": false,
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "npm": "^5.3.0"
+  }
 }

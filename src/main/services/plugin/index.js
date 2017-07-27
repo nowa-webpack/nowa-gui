@@ -1,3 +1,6 @@
+/*
+  nowa-gui插件服务
+*/
 import portscanner from 'portscanner';
 import uuidV4 from 'uuid/v4';
 import WebSocket from 'ws';
@@ -7,13 +10,15 @@ import log from '../applog';
 
 class Plugin {
   constuctor() {
-    this.port = '3000';
+    this.port = '30000';
     this.pool = {};
     this.wss;
   }
 
+  // 寻找空闲端口号用于插件的websocket
   async findFreePort() {
-    const port = await portscanner.findAPortNotInUse(50000, 55000);
+    const port = await portscanner.findAPortNotInUse(30000, 35000);
+    log.error('port:' + port);
     this.port = port;
     return this;
   }
@@ -32,9 +37,9 @@ class Plugin {
   async start() {
     const that = this;
     await that.findFreePort();
-    log.error(that.port);
     this.wss = new WebSocket.Server({ port: that.port });
 
+    // 监听来自插件的调用提问模板的请求
     this.wss.on('connection', (ws) => {
       const uuid = uuidV4();
       if (!that.pool) {
@@ -43,9 +48,7 @@ class Plugin {
       that.pool[uuid] = ws;
       ws.on('message', (promts) => {
         console.log('received: %s', JSON.parse(promts));
-        // console.log('received: %s', promts);
         mainWin.send('plugin-render-promts', { promts: JSON.parse(promts), uuid });
-        // mainWin.send('plugin-render-promts', { promts, uuid });
       });
       ws.on('close', () => {
         delete that.pool[uuid];
@@ -53,11 +56,11 @@ class Plugin {
     });
   }
 
-
+  getPort() {
+    return this.port;
+  }
 }
 
 const plugin = new Plugin();
-
-// plugin.start();
 
 export default plugin;

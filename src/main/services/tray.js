@@ -1,3 +1,6 @@
+/*
+  任务托盘
+*/
 import { join } from 'path';
 import { Tray, Menu, shell } from 'electron';
 

@@ -1,3 +1,7 @@
+/*
+  基础任务-包含打点和反馈请求
+  可以合并到initialize去
+*/
 import { hostname } from 'os';
 import MacAddress from 'get-mac-address';
 import { FEEDBACK_URL, request } from 'shared-nowa';
@@ -36,9 +40,9 @@ const feedback = async function ({ nickname, contact, content }) {
   return res;
 };
 
+// 获取本机mac地址
 const macAddr = Object.values(MacAddress).filter(n => n.indexOf('00:00:00:00') === -1);
 
-log.error(macAddr[0]);
 
 const getPointArgs = () => {
   const params = {

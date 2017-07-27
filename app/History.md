@@ -1,3 +1,24 @@
+1.9.0 / 2017-07-27
+==================
+# zh
+* 修复安装依赖时丢包的问题
+# en
+* Fix the problem of packages loss during installation of dependecies
+
+1.8.8 / 2017-07-18
+==================
+# zh 
+* 修复 windows 下无法使用 nowa 命令的 bug 
+# en 
+* Fix a bug that causes nowa command unavailable on windows
+
+1.8.7 / 2017-07-14
+==================
+# zh
+* 修复 ant 模板无法下载的 bug
+# en
+* Fix download issues for ant template
+
 1.8.6 / 2017-07-08
 ==================
 # zh

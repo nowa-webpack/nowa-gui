@@ -1,3 +1,6 @@
+/*
+  官网模板，包含nowa模板和ali模板
+*/
 import { lt } from 'semver';
 import { join, dirname } from 'path';
 import { existsSync, removeSync, copySync } from 'fs-extra';
@@ -11,6 +14,33 @@ import { TEMPLATES_DIR } from '../paths';
 import { getMainifest, setMainifest } from './manifest';
 import { getTemplate, download } from './util'
 
+/*
+  模板形式
+  {
+    "name": "nowa-template-salt",
+    "defaultTag": "v_2",
+    "description": "h5 project template using saltui",
+    "homepage": "https://github.com/nowa-webpack/template-salt",
+    "type": "OFFICIAL" || "ALI",
+    "loading": false,
+    "tags": [
+      {
+        "name": "v_1",
+        "path": "C:\\Users\\wb-xyl259837\\.nowa-gui\\template\\nowa-template-salt-v_1",
+        "update": false,
+        "downloaded": false,
+        "remote": "http://registry.npm.taobao.org/nowa-template-salt/download/nowa-template-salt-1.0.2.tgz",
+        "version": "1.0.2"
+      },
+      {
+        "name": "v_2",
+        ...
+      }
+    ]
+  },
+*/
+
+// 通过 nowa-gui-templates 这个 npm 组件获取模板列表，不下载
 const get = async function ({
   type = 'official',
   registry = config.getItem('REGISTRY'),
@@ -19,14 +49,16 @@ const get = async function ({
   const manifest = getMainifest();
   // const registry = config.getItem('REGISTRY');
 
-  // const url = `${registry}/nowa-gui-templates/latest`;
-  const url = `${registry}/${type === 'ali' ? '@ali/' : ''}nowa-gui-templates/latest`;
+  const url = `${registry}/nowa-gui-templates/latest`;
+  // const url = `${registry}/${type === 'ali' ? '@ali/' : ''}nowa-gui-templates/latest`;
 
   const { data: repo, err } = await request(url);
 
+  const templates = type === 'ali' ? repo.aliTemplates : repo.templates;
+
   if (!err) {
     const boilerplate = await Promise.all(
-      repo.templates.map(tempName => getTemplate({
+      templates.map(tempName => getTemplate({
         registry,
         tempName,
         type, 
@@ -44,6 +76,7 @@ const get = async function ({
   return manifest[type] || [];
 };
 
+// 下载模板
 const load = async function({
   type,
   registry = config.getItem('REGISTRY'),
@@ -70,6 +103,7 @@ const load = async function({
   }
 };
 
+// 更新模板
 const update = async function ({
   name,
   item,
@@ -123,84 +157,5 @@ const update = async function ({
   }
 };
 
-
-/*const get = async function ({
-  type = 'official',
-  registry = config.getItem('REGISTRY'),
-}) {
-  console.log(`get ${type} boilerplate`);
-  const manifest = getMainifest();
-  const getTemplate = async function (tempName) {
-    const { data: pkg, err } = await request(`${registry}/${tempName}`);
-    try {
-      if (err) throw err;
-      const distTags = pkg['dist-tags'];
-      const tags = Object.keys(distTags).filter(tag => tag !== 'latest');
-      const defaultTag = tags[tags.length - 1];
-      const { description } = pkg.versions[distTags[defaultTag]];
-      const homepage = pkg.repository.url || '';
-      const obj = {
-        name: tempName,
-        defaultTag,
-        description,
-        homepage: homepage.slice(4, homepage.length - 4),
-        type: type === 'official' ? 'OFFICIAL' : 'ALI',
-        loading: false,
-      };
-      obj.tags = tags.map((tag) => {
-        const name = `${tempName}-${tag}`;
-        const tempPath = join(TEMPLATES_DIR, name);
-        const version = distTags[tag];
-        const o = {
-          name: tag,
-          path: tempPath,
-          update: false,
-          downloaded: false
-        };
-        // 这个模板未被下载
-        if (!existsSync(tempPath)) {
-          o.version = version;
-          // download(pkg.versions[version].dist.tarball, tempPath)
-          //   .then((files) => {
-          //     const dir = dirname(files[1].path);
-          //     copySync(join(tempPath, dir), tempPath);
-          //     removeSync(join(tempPath, dir));
-          //   });
-        } else {
-          o.downloaded = true;
-          const manifestItem = manifest[type].filter(n => n.name === tempName)[0];
-          const oldVersion = manifestItem.tags.filter(n => n.name === tag)[0].version;
-          o.version = oldVersion;
-          o.update = lt(oldVersion, version);
-        }
-        // console.log(o);
-        return o;
-      });
-      return obj;
-    } catch (e) {
-      log.error(e);
-      mainWin.send('main-err', e);
-      if (manifest[type] && manifest[type].length > 0) {
-        return manifest[type].filter(n => n.name === tempName)[0];
-      }
-      return null;
-    }
-  };
-  const url = `${registry}/${type === 'ali' ? '@ali/' : ''}nowa-gui-templates/latest`;
-  const { data: repo, err } = await request(url);
-  if (!err) {
-    const boilerplate = await Promise.all(repo.templates.map(getTemplate));
-    console.log(boilerplate);
-    manifest[type] = boilerplate.filter(n => !!n);
-    if (type === 'official') console.log(type, manifest);
-    
-    setMainifest(manifest);
-    return boilerplate;
-    // mainWin.send('load-official-templates', manifest);
-  }
-  log.error(err);
-  mainWin.send('main-err', err);
-  return manifest[type] || [];
-};*/
 
 export default { get, update, load };

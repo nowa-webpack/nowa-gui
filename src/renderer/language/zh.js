@@ -108,6 +108,7 @@ module.exports = {
   'setting.plugin.action': '操作',
   'setting.plugin.download': '下载',
   'setting.plugin.reinstall': '重装',
+  'setting.plugin.uninstall': '移除',
   'setting.plugin.update': '更新',
   'setting.plugin.type': '插件类型',
   'setting.plugin.cli': '命令行式',
@@ -115,6 +116,7 @@ module.exports = {
   'setting.plugin.restart.title': '是否重启工具？',
   'setting.plugin.restart.tip': '重启工具可以使插件生效。',
   'setting.plugin.update.tip': '确认更新到该版本吗？',
+  'setting.plugin.uninstall.tip': '确认移除到该插件吗？',
 
   'foot.set': '工具设置',
   // 'foot.import': '导入项目',
@@ -176,7 +178,7 @@ module.exports = {
 
   'preinit.msg1': '初始化的时候必须要连接网络，请联网后重新打开应用。',
   'preinit.msg2': '{1} 后自动关闭应用',
-  'preinit.waitInstall': '正在安装需要的依赖更新，大约需要半分钟时间，请耐心等待。',
+  'preinit.waitInstall': '正在安装需要的依赖更新，大约需要两分钟时间，请耐心等待。',
 
   'package.name': '依赖名',
   'package.current': '定义版本',
@@ -199,4 +201,5 @@ module.exports = {
 
   'plugin.promts.title': '插件提问',
 
+  'msg.reg.restart': '请重启或注销系统使 nowa 命令行生效'
 };

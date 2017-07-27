@@ -14,33 +14,17 @@ module.exports = webpackMerge(webpackCommon,
   {
     target: 'electron-main',
     entry: ['babel-polyfill', './src/main/index.js'],
-    // entry: {
-    //   polyfill: 
-    //   main: './src/main/index.js',
-    // },
     output: {
       path: outputDir,
       filename: 'main.js',
     },
+    externals: {
+      // npm: 'commonjs npm'
+      // pnpm: 'commonjs pnpm'
+    },
     module: {
       rules: [
-        /*{
-          test: /\.js$/,
-          include: srcDir,
-          use: [{
-            loader: 'babel-loader',
-            options: {
-              babelrc: false, // Tells webpack not to use the .babelrc file.
-              presets: [
-                'babili',
-                'stage-2',
-              ],
-              plugins: [
-                'transform-runtime'
-              ]
-            },
-          }]
-        },*/
+        
         {
           test: /\.js$/,
           include: srcDir,

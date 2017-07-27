@@ -1,3 +1,6 @@
+/*
+  软件更新
+*/
 import { lt } from 'semver';
 import { join, dirname } from 'path';
 import { copySync, removeSync } from 'fs-extra';
@@ -41,7 +44,8 @@ class Updator {
         innerUpdate,
         newVersion: version,
         upgradeUrl: innerUpdate ? ''
-          : `${data.downloadDomain}/${version}/NowaGUI.${extension[process.platform]}`
+          // : `${data.downloadDomain}/${version}/NowaGUI.${extension[process.platform]}`
+          : `${data.downloadDomain}/nowa-gui.${extension[process.platform]}`
       };
     }
     return { update: false };

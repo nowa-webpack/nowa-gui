@@ -1,3 +1,7 @@
+/*
+  主控 model
+  里面存放一些全局配置
+*/
 import React from 'react';
 import { join } from 'path';
 import { readFileSync, removeSync } from 'fs-extra';
@@ -43,6 +47,7 @@ export default {
 
   subscriptions: {
     setup({ dispatch }) {
+      // 监听网络变化
       const onNetworkChange = () => {
         const online = navigator.onLine;
         console.log(online ? 'online' : 'offline');
@@ -59,11 +64,14 @@ export default {
           type: 'handleChangeNet',
           payload,
         });
+      }).on('show-restart-tip', (event, payload) => {
+        msgSuccess(i18n('msg.reg.restart'), 6);
       });
     },
   },
 
   effects: {
+    // 网络变化后
     * handleChangeNet({ payload: { ready, msg } }, { put, select }) {
       if (!ready) {
         yield put({
@@ -81,6 +89,7 @@ export default {
           payload: { online: navigator.onLine },
         });
 
+        // 联网的时候请求模板
         if (online && navigator.onLine) {
           yield put({
             type: 'boilerplate/fetchCustom',
@@ -118,6 +127,7 @@ export default {
         type: 'checkAppUpdate',
       });
     },
+    // 跳转页面
     * showPage({ payload: { toPage } }, { put, select }) {
       const { showPage } = yield select(state => state.layout);
 
@@ -136,6 +146,7 @@ export default {
         },
       });
     },
+    // 回退页面
     * goBack(o, { put, select }) {
       const { backPage, showPage } = yield select(state => state.layout);
 
@@ -189,6 +200,7 @@ export default {
         });
       }
     },
+    // 更新工具
     * updateAPP(o, { select, put }) {
       const { innerUpdate, upgradeUrl } = yield select(state => state.layout);
       // 应用内自更新
@@ -215,6 +227,7 @@ export default {
         openUrl(upgradeUrl);
       }
     },
+    // 重置工具
     * resetAPP(o, { put }) {
       yield put({
         type: 'changeStatus',
@@ -244,6 +257,7 @@ export default {
         msgError(data.errmsg);
       }
     },
+    // 确认内网环境
     * checkAli(o, { put }) {
       console.log('checkAli');
       yield put({

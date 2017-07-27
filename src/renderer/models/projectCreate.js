@@ -1,3 +1,6 @@
+/*
+  通过模板新建项目 model
+*/
 import glob from 'glob';
 import mkdirp from 'mkdirp';
 import { remote } from 'electron';
@@ -32,6 +35,7 @@ export default {
   },
 
   effects: {
+    // 从文件夹导入项目
     * folderImport({ payload }, { put, select }) {
       try {
         let projPath = payload.projPath;
@@ -90,6 +94,7 @@ export default {
       }
       return true;
     },
+    // 判断源地址
     * checkRegistry({ payload: { registry } }, { put, select }) {
       const { initSetting } = yield select(state => state.projectCreate);
       const { registryList } = yield select(state => state.setting);
@@ -103,7 +108,7 @@ export default {
       }
 
       initSetting.registry = registry;
-
+      // 如果源地址正确且可访问，那么继续安装依赖
       yield put({
         type: 'changeStatus',
         payload: {
@@ -119,6 +124,7 @@ export default {
       });
       return true;
     },
+    // 当前用户选择的模板
     * selectBoilerplate({ payload: { item, type, name } }, { put, select }) {
       console.log('selectBoilerplate', type, item);
       let proj = {};
@@ -141,6 +147,7 @@ export default {
         }
       });
     },
+    // 获取模板表单的用户输入
     * checkSetting({ payload }, { put, select }) {
       const { online } = yield select(state => state.layout);
 
@@ -152,7 +159,7 @@ export default {
 
       const { projects } = yield select(state => state.project);
       const filter = projects.some(n => n.path === payload.projPath || n.name === payload.name);
-
+      // 如果输入名字已经存在于项目列表，认为失败
       if (filter) {
         msgError(i18n('msg.existed'));
         return false;
@@ -170,6 +177,7 @@ export default {
 
       const { selectExtendsProj, selectBoilerplate } = yield select(state => state.projectCreate);
 
+      // 合成完整的新建模板需要的信息
       payload.npm = payload.registry;
       payload.template = selectBoilerplate.path.replace(/\\/g, '\\\\');
 
@@ -180,13 +188,11 @@ export default {
         console.log('config', config);
         payload.repository = (config['remote "origin"'] || {}).url || '';
       }
-      console.log('path 1');
 
       if (selectExtendsProj.answers) {
         payload = selectExtendsProj.answers(payload, {});
       }
 
-      console.log('path 2');
 
       yield put({
         type: 'changeStatus',
@@ -197,6 +203,7 @@ export default {
 
       console.log('initSetting', payload);
 
+      // 如果用户输入的项目地址已经存在，进入覆盖逻辑，否则进入下一步
       if (existsSync(payload.projPath)) {
         yield put({
           type: 'checkOverwiteFiles',
@@ -208,11 +215,13 @@ export default {
       }
       return true;
     },
+    // 罗列需要覆盖已经存在的项目地址的文件列表
     * checkOverwiteFiles(o, { put, select }) {
       console.log('checkOverwiteFiles');
       const { selectBoilerplate, initSetting } = yield select(state => state.projectCreate);
       const sourceDir = join(selectBoilerplate.path, 'proj');
 
+      // 重名的文件列表
       const overwriteFiles = [];
 
       yield glob.sync('**', {
@@ -227,6 +236,7 @@ export default {
         }
       });
 
+      // 如果有重名的文件，就弹出提示框给用户确认是否覆盖，没有就进入下一步
       if (overwriteFiles.length > 0) {
         yield put({
           type: 'changeStatus',
@@ -241,6 +251,7 @@ export default {
         });
       }
     },
+    // 把模板文件复制到用户所填的项目路径下
     * copyFilesToTarget(o, { put, select }) {
       console.log('copyFilesToTarget');
 
@@ -253,6 +264,7 @@ export default {
         selectBoilerplate, initSetting, selectExtendsProj
       } = yield select(state => state.projectCreate);
       const sourceDir = join(selectBoilerplate.path, 'proj');
+
 
       glob.sync('**', {
         cwd: sourceDir,
@@ -274,21 +286,24 @@ export default {
         return true;
       });
 
+      // 文件复制成功后，开始安装依赖
       yield put({
         type: 'startInstallModules',
         payload: { isRetry: false },
       });
     },
+    // 安装新项目的依赖
     * startInstallModules({ payload: { isRetry } }, { put, select }) {
       console.log('startInstallModules');
       const { initSetting } = yield select(state => state.projectCreate);
-
+      // 合并dev和dependenceis的依赖
       const pkgs = getMergedDependencies(readPkgJson(initSetting.projPath));
 
       const opt = {
         root: initSetting.projPath,
         registry: initSetting.registry,
         pkgs,
+        sender: 'import',
       };
 
       // 防止修改backpage
@@ -298,12 +313,14 @@ export default {
           payload: { toPage: IMPORT_STEP2_PAGE }
         });
       }
-      const { err } = yield commands.install({
-        opt,
-        fake: false,
-        sender: 'import',
-      });
+      const { err } = yield commands.loggingInstall(opt);
+      // const { err } = yield commands.install({
+      //   opt,
+      //   fake: false,
+      //   sender: 'import',
+      // });
 
+      // 安装成功后添加项目到列表
       if (!err) {
         yield put({
           type: 'project/add',
