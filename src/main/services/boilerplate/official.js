@@ -49,14 +49,16 @@ const get = async function ({
   const manifest = getMainifest();
   // const registry = config.getItem('REGISTRY');
 
-  // const url = `${registry}/nowa-gui-templates/latest`;
-  const url = `${registry}/${type === 'ali' ? '@ali/' : ''}nowa-gui-templates/latest`;
+  const url = `${registry}/nowa-gui-templates/latest`;
+  // const url = `${registry}/${type === 'ali' ? '@ali/' : ''}nowa-gui-templates/latest`;
 
   const { data: repo, err } = await request(url);
 
+  const templates = type === 'ali' ? repo.aliTemplates : repo.templates;
+
   if (!err) {
     const boilerplate = await Promise.all(
-      repo.templates.map(tempName => getTemplate({
+      templates.map(tempName => getTemplate({
         registry,
         tempName,
         type, 
