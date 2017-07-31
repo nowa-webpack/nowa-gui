@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { lt } from 'semver';
 import { homedir } from 'os';
-import { spawnSync } from 'child_process';
+import { execSync } from 'child_process';
 import { readJsonSync, writeJsonSync, existsSync } from 'fs-extra';
 import { checkver } from 'shared-nowa';
 import config from 'config-main-nowa';
@@ -59,8 +59,8 @@ export const nowaDiff = () => {
       return false;
     }
 
-    const res = spawnSync('nowa', ['-V']);
-    return lt(`${res.stdout}`, curNowa);
+    const res = execSync('nowa -V');
+    return lt(`${res}`, curNowa);
   } catch (e) {
     log.error(e);
     return false;
