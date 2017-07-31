@@ -28,7 +28,7 @@ const PluginTable = ({
   //   });
   const goBack = () => dispatch({ type: 'layout/goBack' });
 
-  const basicColumns = [
+  const basicColumns = [{
       title: i18n('setting.plugin.name'),
       dataIndex: 'name',
       key: 'name',
