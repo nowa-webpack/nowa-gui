@@ -2,16 +2,17 @@
   基础任务-包含编码和全局路径
 */
 import { execSync, exec } from 'child_process';
-import { copySync, existsSync, readFileSync } from 'fs-extra';
+import { copySync, existsSync, readFileSync, removeSync, writeFileSync, createReadStream } from 'fs-extra';
 import { join } from 'path';
-import { writeFileSync, createReadStream } from 'fs';
+// import { writeFileSync, createReadStream } from 'fs';
 import { homedir } from 'os';
 import { download } from './boilerplate/util';
 
 import { isWin, isMac, isLinux } from 'shared-nowa';
-import config from 'config-main-nowa';
-import log from './applog';
 import env from './env';
+import log from './applog';
+import config from 'config-main-nowa';
+import mainWin from './windowManager';
 import { getRegKey } from './commands/reg';
 import { APP_PATH, BIN_PATH, NODE_PATH, DOT_NOWA_PATH, NPM_BIN_PATH, APP_NODE_VERSION } from './paths';
 
@@ -160,37 +161,40 @@ const setGlobalPath = () => {
 const downloadNode = async(registry) => {
   try {
    
-    // const extention = isWin ? '.exe' : '';
-    let prefix = registry === 'http://registry.npmjs.org' 
-      ? `https://nodejs.org/dist/${APP_NODE_VERSION}` 
-      : `https://npm.taobao.org/mirrors/node/${APP_NODE_VERSION}`;
-    let url;
+    const ext = isWin ? '.exe' : '';
 
-    // if (isWin) {
-    //   url = `${prefix}/win-x64/node.exe`;
-    // }
+    if (!execSync(join(NODE_PATH, `node${ext}`))) {
 
-    // if (isMac) {
-      url = `${prefix}/node-${APP_NODE_VERSION}-darwin-x64.tar.gz`;
-    // }
+      let prefix = registry === 'http://registry.npmjs.org' 
+        ? `https://nodejs.org/dist/${APP_NODE_VERSION}` 
+        : `https://npm.taobao.org/mirrors/node/${APP_NODE_VERSION}`;
+      let url;
 
-    // if (isLinux) {
-    //   url = `${prefix}/node-${APP_NODE_VERSION}-linux-x64.tar.gz`;
-    // }
-    // const files = await download(url, NODE_PATH, !isWin);
-    await download(url, NODE_PATH, true);
-    
-  } catch (e) {
-    console.log(e);
-  } finally {
-    const fileName = isMac ? `node-${APP_NODE_VERSION}-darwin-x64` : `node-${APP_NODE_VERSION}-linux-x64.tar.gz`;
-    const target = join(NODE_PATH, fileName);
-    console.log(target);
-    if (!isWin && existsSync(target)) {
-      const src = join(target, 'bin', 'node');
-      copySync(src, NODE_PATH);
-      removeSync(target);
+      if (isWin) {
+        url = `${prefix}/win-x64/node.exe`;
+      }
+
+      if (isMac) {
+        url = `${prefix}/node-${APP_NODE_VERSION}-darwin-x64.tar.gz`;
+      }
+
+      if (isLinux) {
+        url = `${prefix}/node-${APP_NODE_VERSION}-linux-x64.tar.gz`;
+      }
+      await download(url, NODE_PATH, !isWin);
+
+      if (!isWin) {
+        const fileName = isMac ? `node-${APP_NODE_VERSION}-darwin-x64` : `node-${APP_NODE_VERSION}-linux-x64`;
+        const target = join(NODE_PATH, fileName);
+        if (existsSync(target)) {
+          const src = join(target, 'bin', 'node');
+          copySync(src, join(NODE_PATH, 'node'));
+          removeSync(target);
+        }
+      }
     }
+  } catch (e) {
+    log.error(e);
   }
 };
 
