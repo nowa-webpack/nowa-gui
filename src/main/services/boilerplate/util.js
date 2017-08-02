@@ -9,9 +9,9 @@ import { TEMPLATES_DIR } from '../paths';
 import mainWin from '../windowManager';
 import log from '../applog';
 
-export const download = (url, folder) => load(url, folder,
+export const download = (url, folder, extract = true) => load(url, folder,
   {
-    extract: true,
+    extract,
     retries: 0,
     timeout: 15000
   });

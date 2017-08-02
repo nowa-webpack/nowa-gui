@@ -27,3 +27,4 @@ export const NPM_PATH = join(APP_PATH, 'node_modules', 'npm', 'bin', 'npm-cli.js
 
 const appJson = readJsonSync(join(APP_PATH, 'package.json'));
 export const APP_VERSION = appJson.version;
+export const APP_NODE_VERSION = appJson.node;

@@ -4,15 +4,16 @@
 import { execSync, exec } from 'child_process';
 import { copySync, existsSync, readFileSync } from 'fs-extra';
 import { join } from 'path';
-import { writeFileSync } from 'fs';
+import { writeFileSync, createReadStream } from 'fs';
 import { homedir } from 'os';
+import { download } from './boilerplate/util';
 
-import { isWin } from 'shared-nowa';
+import { isWin, isMac, isLinux } from 'shared-nowa';
 import config from 'config-main-nowa';
 import log from './applog';
 import env from './env';
 import { getRegKey } from './commands/reg';
-import { APP_PATH, BIN_PATH, NODE_PATH, DOT_NOWA_PATH, NPM_BIN_PATH } from './paths';
+import { APP_PATH, BIN_PATH, NODE_PATH, DOT_NOWA_PATH, NPM_BIN_PATH, APP_NODE_VERSION } from './paths';
 
 /*
   electron 打包 node_modules 后会丢失 .bin 目录
@@ -26,6 +27,8 @@ try {
       execSync(`chmod 755 *`, { cwd: NPM_BIN_PATH });
     }
   }
+
+  
 } catch (e) {
   console.log(e);
 }
@@ -154,11 +157,47 @@ const setGlobalPath = () => {
   }
 };
 
+const downloadNode = async(registry) => {
+  try {
+   
+    // const extention = isWin ? '.exe' : '';
+    let prefix = registry === 'http://registry.npmjs.org' 
+      ? `https://nodejs.org/dist/${APP_NODE_VERSION}` 
+      : `https://npm.taobao.org/mirrors/node/${APP_NODE_VERSION}`;
+    let url;
 
+    // if (isWin) {
+    //   url = `${prefix}/win-x64/node.exe`;
+    // }
+
+    // if (isMac) {
+      url = `${prefix}/node-${APP_NODE_VERSION}-darwin-x64.tar.gz`;
+    // }
+
+    // if (isLinux) {
+    //   url = `${prefix}/node-${APP_NODE_VERSION}-linux-x64.tar.gz`;
+    // }
+    // const files = await download(url, NODE_PATH, !isWin);
+    await download(url, NODE_PATH, true);
+    
+  } catch (e) {
+    console.log(e);
+  } finally {
+    const fileName = isMac ? `node-${APP_NODE_VERSION}-darwin-x64` : `node-${APP_NODE_VERSION}-linux-x64.tar.gz`;
+    const target = join(NODE_PATH, fileName);
+    console.log(target);
+    if (!isWin && existsSync(target)) {
+      const src = join(target, 'bin', 'node');
+      copySync(src, NODE_PATH);
+      removeSync(target);
+    }
+  }
+};
 
 
 export default {
   setEncode,
   setGlobalPath,
+  downloadNode,
 };
 

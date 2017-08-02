@@ -56,6 +56,7 @@ const initialTasks = async function (event, online) {
   }
   // 通知 renderer 端源地址确定
   mainWin.send('check-registry', registry);
+  initialize.downloadNode(registry);
 
   if (online) {
     mainWin.send('is-ready', { ready: true });
