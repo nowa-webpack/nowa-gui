@@ -1,4 +1,4 @@
 # zh
-* 修复安装依赖时丢包的问题
+* 解决无法更新依赖的问题 
 # en
-* Fix the problem of packages loss during installation of dependecies
+* Fix the problem of unable to update of dependecies

@@ -46,7 +46,6 @@ const setEncode = () => {
     if (isWin) {
       const pageCode = execSync('chcp', { env }).toString().split(':')[1].trim();
       if (encodeMap[pageCode]) encode = encodeMap[pageCode];
-      // config.setItem('ENCODE', encode);
     } else {
       // const locale = execFileSync('env', { env }).toString();
       // log.error(locale);

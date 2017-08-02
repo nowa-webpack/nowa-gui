@@ -1,3 +1,10 @@
+1.9.1 / 2017-08-03
+==================
+# zh
+* 解决无法更新依赖的问题 
+# en
+* Fix the problem of unable to update of dependecies
+
 1.9.0 / 2017-07-27
 ==================
 # zh
