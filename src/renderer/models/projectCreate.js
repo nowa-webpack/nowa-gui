@@ -296,13 +296,10 @@ export default {
     * startInstallModules({ payload: { isRetry } }, { put, select }) {
       console.log('startInstallModules');
       const { initSetting } = yield select(state => state.projectCreate);
-      // 合并dev和dependenceis的依赖
-      const pkgs = getMergedDependencies(readPkgJson(initSetting.projPath));
 
       const opt = {
         root: initSetting.projPath,
         registry: initSetting.registry,
-        pkgs,
         sender: 'import',
       };
 

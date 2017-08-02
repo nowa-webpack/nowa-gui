@@ -19,7 +19,6 @@ class Log extends Component {
     super(props);
     this.state = {
       log: '',
-      errmsg: '',
       percent: 0,
       expanded: false,
     };
@@ -54,8 +53,7 @@ class Log extends Component {
 
   onReceiveLog(event, log) {
     this.setState({
-      // log: ansiHTML(log.join('<br>'))
-      log: ansiHTML(log)
+      log: ansiHTML(log.replace(/\n/g, '<br />'))
     }, () => this.scrollToBottom());
   }
 
@@ -64,13 +62,15 @@ class Log extends Component {
   //   this.setState({ percent });
   // }
 
-  onReceiveFailed(event, errmsg) {
+  onReceiveFailed(event, log) {
     clearInterval(this.timer);
-    this.setState({ errmsg });
+    this.setState({
+      log: ansiHTML(log.replace(/\n/g, '<br />'))
+    }, () => this.scrollToBottom());
   }
 
   // 自动滚动到屏幕最底部
-  // 每当新️日志来的时候，新的内容需要显示出来，div位于最底部
+  // 每当新日志来的时候，新的内容需要显示出来，div位于最底部
   scrollToBottom() {
     const prt = this.refs.wrap;
     const ele = this.refs.terminal;
@@ -104,17 +104,15 @@ class Log extends Component {
   }
 
   render() {
-    const { errmsg, percent, expanded, log } = this.state;
+    const {  percent, expanded, log } = this.state;
 
     let status = 'active';
 
-    if (errmsg) {
-      status = 'exception';
-    } else if (percent === 100) {
+    if (percent === 100) {
       status = 'success';
     }
 
-    const detailHtml = errmsg
+    /*const detailHtml = err
       ? (<div className="importing-detail">
           <span className="importing-detail-err">{i18n('project.new.log.error')}</span>
           <div className="importing-detail-btns">
@@ -128,7 +126,7 @@ class Log extends Component {
             <Button type="default" onClick={() => this.goBack()}>{i18n('form.back')}</Button>
           </div>
         </div>)
-      : (<div className="importing-detail">{i18n('project.new.log.wait')}</div>);
+      : (<div className="importing-detail">{i18n('project.new.log.wait')}</div>);*/
 
     return (
       <Content className="importing" >
@@ -137,7 +135,19 @@ class Log extends Component {
           width={100}
           status={status}
         />
-        { detailHtml }
+        <div className="importing-detail">
+          <span className="importing-detail">{i18n('project.new.log.wait')}</span>
+          <div className="importing-detail-btns">
+            <Button
+              ghost
+              type="danger"
+              onClick={() => this.retryInstall()}
+            >
+              {i18n('project.new.log.retry')}
+            </Button>
+            <Button type="default" onClick={() => this.goBack()}>{i18n('form.back')}</Button>
+          </div>
+        </div>
         <div className="importing-content" >
           <div
             className="importing-content-term"

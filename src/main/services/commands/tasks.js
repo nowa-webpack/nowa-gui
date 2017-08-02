@@ -6,7 +6,7 @@ import { join } from 'path';
 import { tmpdir } from 'os';
 import uuidV4 from 'uuid/v4';
 import { exec, fork, spawn } from 'child_process';
-import { removeSync } from 'fs-extra';
+import { removeSync, existsSync } from 'fs-extra';
 
 import env from '../env';
 import kill from './kill';
@@ -16,7 +16,7 @@ import tasklog from '../tasklog';
 import mainWin from '../windowManager';
 import { APP_PATH, NPM_PATH } from '../paths';
 
-// 安装依赖，不提供日志
+// 安装依赖，不提供日志, 只安装具体的依赖
 export const noLoggingInstall = ({
   root, // 安装的路径
   registry, //源地址
@@ -24,6 +24,20 @@ export const noLoggingInstall = ({
   sender = '', // renderer端监听的安装的名字
   type = 'dependencies' // 安装类型
 }) => {
+
+  // 兼容旧版本，删除npminstall 遗留物
+  if (existsSync(join(root, 'node_modules', '.npminstall')) && sender !== 'nowa-install') {
+    removeSync(join(root, 'node_modules'));
+    const filePath = join(root, 'package-lock.json');
+    if (existsSync(filePath)) {
+      removeSync(filePath);
+    }
+    const res = loggingInstall({ root, registry, sender });
+    if (res.err) {
+      return res;
+    }
+  }
+
   const name = pkgs.map(({ name, version }) => `${name}@${version}`);
 
   return new Promise((resolve) => {
@@ -41,15 +55,9 @@ export const noLoggingInstall = ({
           env: env,
           detached: true
         });
-
-      // term.stdout.on('data', data => {
-      //   // console.log(`${data}`)
-      //   mainWin.send(`${sender}-failed`, data.toString())
-      // });
-      // term.stderr.on('data', data => mainWin.send(`${sender}-failed`, data.toString()));
+      
       term.stderr.on('data', data => {
         console.log(data.toString());
-        // mainWin.send(`${sender}-failed`, data.toString().replace(/(\r\n|\n)/g, ' '))
         mainWin.send(`${sender}-failed`, data.toString());
       });
 
@@ -63,15 +71,19 @@ export const noLoggingInstall = ({
   });
 };
 
-// 安装依赖，提供日志
-export const loggingInstall = ({ root, registry, pkgs, sender }) => {
-  const name = pkgs.map(({ name, version }) => `${name}@${version}`);
+// 安装依赖，提供日志， 安装所有依赖
+export const loggingInstall = ({ root, registry, sender }) => {
+  const filePath = join(root, 'package-lock.json');
+  if (existsSync(filePath)) {
+    removeSync(filePath);
+  }
 
   return new Promise((resolve) => {
     try {
       let log = '';
       const term = fork(NPM_PATH, [
-        'install', ...name,
+        'install', 
+        // ...name,
         `-registry=${registry}`,
         '--no-optional',
         '-loglevel=info',
@@ -84,14 +96,13 @@ export const loggingInstall = ({ root, registry, pkgs, sender }) => {
         });
 
       term.stdout.on('data', data => {
-        // console.log(data.toString());
         log += data.toString();
         mainWin.send(`${sender}-logging`, log);
       });
       term.stderr.on('data', data => {
-         console.log(data.toString());
+        console.log(data.toString());
         log += data.toString();
-        mainWin.send(`${sender}-logging`, log);
+        mainWin.send(`${sender}-failed`, log);
       });
 
       term.on('exit', (code) => {
