@@ -19,7 +19,7 @@
     "linux": "https://alixux.org/downloads/nowa-gui.deb"
   },
   "node": "v8.2.1",
-  "innerUpdate": true,
+  "innerUpdate": false,
   "license": "ISC",
   "dependencies": {
     "npm": "^5.3.0"
