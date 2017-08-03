@@ -1,6 +1,6 @@
 {
   "name": "NowaGUI",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "A tool for nowa developement.",
   "scripts": {
     "postinstall": "install-app-deps",
