@@ -9,8 +9,8 @@ import { FEEDBACK_URL, request } from 'shared-nowa';
 import { APP_VERSION } from './paths';
 import log from './applog';
 
-const logServer = 'http://gm.mmstat.com/jstracker.3';
-const nick = hostname();
+const logServer = 'https://retcode.taobao.com/r.png';
+const host = hostname();
 
 const feedback = async function ({ nickname, contact, content }) {
   const res = await request(FEEDBACK_URL, {
@@ -46,14 +46,11 @@ const macAddr = Object.values(MacAddress).filter(n => n.indexOf('00:00:00:00') =
 
 const getPointArgs = () => {
   const params = {
-    nick,
-    url: 'log://uxdata/nowa/',
-    msg: JSON.stringify({
-      MAC: macAddr[0],
-      version: APP_VERSION,
-      os: process.platform,
-    }),
-    sampling: 1,
+    host,
+    spm: 'nowa-gui',
+    mac: macAddr[0],
+    version: APP_VERSION,
+    os: process.platform,
   };
   return Object
     .keys(params)
