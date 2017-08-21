@@ -1,6 +1,6 @@
 {
   "name": "nowa-gui-version",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "description": "A tool for nowa developement.",
   "productName": "NowaGUI",
   "main": "./main.js",

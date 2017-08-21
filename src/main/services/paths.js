@@ -18,6 +18,7 @@ export const TEMPLATES_DIR = join(DOT_NOWA_PATH, 'template');
 export const NOWA_INSTALL_DIR = join(DOT_NOWA_PATH, 'installation');
 export const USER_CONFIG_PATH = join(DOT_NOWA_PATH, 'user_config.json');
 export const NOWA_INSTALL_JSON_FILE = join(NOWA_INSTALL_DIR, 'nowa-version.json');
+export const NOWA_INSTALL_PACKAGE_JSON_FILE = join(NOWA_INSTALL_DIR, 'package.json');
 
 export const BIN_PATH = join(NOWA_INSTALL_DIR, 'node_modules', '.bin');
 export const NODE_MODULES_PATH = join(NOWA_INSTALL_DIR, 'node_modules');
