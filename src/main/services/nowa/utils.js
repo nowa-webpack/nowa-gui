@@ -13,6 +13,7 @@ export const readNowaVer = () => readJsonSync(NOWA_INSTALL_JSON_FILE);
 
 export const writeNowaVer = json => writeJsonSync(NOWA_INSTALL_JSON_FILE, json, { spaces: 2 });
 
+export const existsNowaPackageJSON = () => existsSync(NOWA_INSTALL_PACKAGE_JSON_FILE);
 export const writeNowaPackageJSON = json => writeJsonSync(NOWA_INSTALL_PACKAGE_JSON_FILE, json, { spaces: 2 });
 
 export const existsNowa = () => existsSync(NOWA_INSTALL_JSON_FILE);
