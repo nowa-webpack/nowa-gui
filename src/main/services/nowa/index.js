@@ -4,14 +4,19 @@
 import mkdirp from 'mkdirp';
 import { isWin } from 'shared-nowa';
 import Nowa from './nowa';
-import { existsNowa, writeNowaVer } from './utils';
+import { existsNowa, writeNowaVer, writeNowaPackageJSON } from './utils';
 import { NOWA_INSTALL_DIR } from '../paths';
 
 // 全局安装目录下不存在nowa配置文件，则生成
 try {
   if (!existsNowa()) {
     mkdirp.sync(NOWA_INSTALL_DIR);
-
+    writeNowaPackageJSON({
+      name: "nowa-install-path",
+      description: "where nowa-gui place nowa-cli files",
+      repository: {},
+      license: "MIT"
+    });
     writeNowaVer({});
   }
 } catch (e) {

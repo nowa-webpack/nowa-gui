@@ -40,8 +40,9 @@ class Nowa {
   async installNowaPkgs() {
     if (this.pkgSize > 0) {
       const pkgs = this.needInstallPkgs.map(name => ({ name, version: '^1' }));
-
-      const { err } = await commands.noLoggingInstall(getInstallOpt(pkgs));
+      const installOpt = getInstallOpt(pkgs);
+      installOpt.noSave = true;
+      const { err } = await commands.noLoggingInstall(installOpt);
 
       if (!err) {
         // 安装结束后保存新版本

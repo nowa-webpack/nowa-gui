@@ -22,7 +22,8 @@ export const noLoggingInstall = ({
   registry, //源地址
   pkgs, // 依赖数组
   sender = '', // renderer端监听的安装的名字
-  type = 'dependencies' // 安装类型
+  type = 'dependencies', // 安装类型
+  noSave = false,
 }) => {
 
   // 兼容旧版本，删除npminstall 遗留物
@@ -44,10 +45,10 @@ export const noLoggingInstall = ({
     try {
       const term = fork(NPM_PATH, [
         'install', ...name,
-        `${type === 'dependencies' ? '-S' : '-D'}`,
+        `${noSave ? '--no-save' : (type === 'dependencies' ? '-S' : '-D')}`,
         '--no-optional',
-        `-registry=${registry}`,
-        '-loglevel=warn',
+        `--registry=${registry}`,
+        '--loglevel=warn',
         '--scripts-prepend-node-path=auto'
         ], {
           silent: true,
