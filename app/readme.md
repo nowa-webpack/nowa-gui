@@ -1,4 +1,4 @@
 # zh
-* 更换打点服务
+* 添加模板搜索条
 # en
-* Change pointlog service
+* Add templates search bar
