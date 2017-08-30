@@ -397,7 +397,37 @@ export default {
         type: 'projectCreate/selectBoilerplate',
         payload: { item, type }
       });
-    }
+    },
+    /*// 搜索模板
+    * search({ payload }, { select, put }) {
+      console.log(payload);
+      if (payload) {
+        const {
+          officialBoilerplates,
+          aliBoilerplates,
+          localBoilerplates,
+          remoteBoilerplates,
+          antBoilerplates
+        } = yield select(state => state.boilerplate);
+
+        const newOfficial = officialBoilerplates.filter(item => item.name.indexOf(payload) > -1);
+        const newAli = aliBoilerplates.filter(item => item.name.indexOf(payload) > -1);
+        const newLocal = localBoilerplates.filter(item => item.name.indexOf(payload) > -1);
+        const newRemote = remoteBoilerplates.filter(item => item.name.indexOf(payload) > -1);
+        const newAnt = antBoilerplates.filter(item => item.name.indexOf(payload) > -1);
+
+        yield put({
+          type: 'changeStatus',
+          payload: {
+            officialBoilerplates: newOfficial,
+            aliBoilerplates: newAli,
+            localBoilerplates: newLocal,
+            remoteBoilerplates: newRemote,
+            antBoilerplates: newAnt,
+          }
+        });
+      }
+    }*/
   },
 
   reducers: {

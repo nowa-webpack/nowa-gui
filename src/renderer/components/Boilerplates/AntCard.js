@@ -31,7 +31,7 @@ const Item = ({
     <div className="boilerplate-card boilerplate-card-official" >
       <Spin spinning={data.loading}>
         <div className="boilerplate-card-body">
-          <h4 className="boilerplate-card-title">{data.name}</h4>
+          <h4 className="boilerplate-card-title">{data.name.length > 30 ? data.name.slice(0, 27) + '...' : data.name}</h4>
           <p className="boilerplate-card-description">{hideBoilerplateDesp(data.description)}</p>
         </div>
         <div className="boilerplate-card-foot">
