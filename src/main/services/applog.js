@@ -14,7 +14,6 @@ const current = moment().format('YYYY-MM-DD');
 
 if (!existsSync(logFolder)) {
   mkdirp(logFolder);
-  writeFileSync(`${logFolder}/log-${current}.txt`, '');
 }
 
 log.transports.file.file = `${logFolder}/log-${current}.txt`;
