@@ -38,7 +38,7 @@ export const getInstallOpt = pkgs =>
     root: NOWA_INSTALL_DIR,
     registry: config.getItem('REGISTRY'),
     // trace: false,
-    sender: 'nowa-install',
+    // sender: 'nowa-install',
     pkgs,
   });
 

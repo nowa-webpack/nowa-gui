@@ -41,8 +41,12 @@ class Nowa {
     if (this.pkgSize > 0) {
       const pkgs = this.needInstallPkgs.map(name => ({ name, version: 'latest' }));
       const installOpt = getInstallOpt(pkgs);
-      installOpt.noSave = true;
-      const { err } = await commands.installPkgsWithLog(installOpt);
+      // installOpt.noSave = true;
+
+      const { err } = await commands.installPkgsWithLog({
+        opt: installOpt,
+        sender: 'nowa-install'
+      });
       // const { err } = await commands.noLoggingInstall(installOpt);
 
       if (!err) {

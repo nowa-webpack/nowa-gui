@@ -303,6 +303,14 @@ export default {
         sender: 'import',
       };
 
+      // const opt = {
+      //   opt: {
+      //     root: initSetting.projPath,
+      //     registry: initSetting.registry,
+      //   },
+      //   sender: 'import',
+      // };
+
       // 防止修改backpage
       if (!isRetry) {
         yield put({
@@ -311,6 +319,7 @@ export default {
         });
       }
       const { err } = yield commands.loggingInstall(opt);
+      // const { err } = yield commands.installPkgsWithLog(opt);
       // const { err } = yield commands.install({
       //   opt,
       //   fake: false,

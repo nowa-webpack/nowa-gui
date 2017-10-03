@@ -7,8 +7,9 @@ import { tmpdir } from 'os';
 import uuidV4 from 'uuid/v4';
 import { exec, fork, spawn } from 'child_process';
 import { removeSync, existsSync } from 'fs-extra';
-import cnpm from 'npminstall/lib/local_install';
-import npmuninstall from 'npminstall/lib/uninstall';
+import npminstall from 'npminstall';
+import npmuninstall from 'npmuninstall';
+// import npmuninstall from 'npminstall/lib/uninstall';
 
 import env from '../env';
 import kill from './kill';
@@ -25,55 +26,55 @@ export const installPkgsWithLog = ({
   sender,
   // sendProgress = () => {},
 }) => {
-  // const options = {
-  //   targetDir: opt.root,
-  //   storeDir: join(opt.root, 'node_modules', '.npminstall'),
-  //   timeout: 5 * 60000,
-  //   ignoreScripts: true,
-  //   cacheDir: null,
-  //   ...opt
-  // };
+  const options = {
+    targetDir: opt.root,
+    storeDir: join(opt.root, 'node_modules', '.npminstall'),
+    timeout: 5 * 60000,
+    ignoreScripts: true,
+    cacheDir: null,
+    ...opt
+  };
 
-  // console.log(options);
+  console.log(options);
 
-  // if (sender) {
-  //   options.console = new Logger(sender);
-  // }
+  if (sender) {
+    options.console = new Logger(sender);
+  }
 
-  // let timer;
-  // let percent = 0;
+  let timer;
+  let percent = 0;
 
-  // return co(function* () {
-  //   timer = setInterval(() => {
-  //     const progresses = options.progresses;
-  //     const percent = getTruePercent(progresses);
-  //     // percent = fake
-  //     //   ? getFakePercent(progresses, percent, opt.pkgs.length)
-  //     //   : getTruePercent(progresses);
-  //     console.log('percent', percent);
+  return co(function* () {
+    timer = setInterval(() => {
+      const progresses = options.progresses;
+      const percent = getTruePercent(progresses);
+      // percent = fake
+      //   ? getFakePercent(progresses, percent, opt.pkgs.length)
+      //   : getTruePercent(progresses);
+      console.log('percent', percent);
 
-  //     if (percent >= 100) {
-  //       clearInterval(timer);
-  //     }
-  //     // if (sender) {
-  //       mainWin.send(`${sender}-progress`, percent);
-  //     // } else {
-  //     //   sendProgress(percent);
-  //     // }
-  //   }, 1000);
+      if (percent >= 100) {
+        clearInterval(timer);
+      }
+      // if (sender) {
+        mainWin.send(`${sender}-progress`, percent);
+      // } else {
+      //   sendProgress(percent);
+      // }
+    }, 1000);
 
-  //   yield npminstall(options);
+    yield npminstall(options);
 
-  //   console.log('end install');
-  //   mainWin.send(`${sender}-finished`);
+    console.log('end install');
+    mainWin.send(`${sender}-finished`);
 
-  //   return { err: false };
-  // }).catch((err) => {
-  //   log.error(err);
-  //   clearInterval(timer);
-  //   if (sender) mainWin.send(`${sender}-failed`, err.message);
-  //   return { err: err.message };
-  // });
+    return { err: false };
+  }).catch((err) => {
+    log.error(err);
+    clearInterval(timer);
+    if (sender) mainWin.send(`${sender}-failed`, err.message);
+    return { err: err.message };
+  });
 };
 
 // 安装依赖，不提供日志, 只安装具体的依赖
@@ -161,7 +162,7 @@ export const loggingInstall = ({ root, registry, sender }) => {
         mainWin.send(`${sender}-logging`, log);
       });
       term.stderr.on('data', data => {
-        console.log(data.toString());
+        // console.log(data.toString());
         log += data.toString();
         mainWin.send(`${sender}-failed`, log);
       });

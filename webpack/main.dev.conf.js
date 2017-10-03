@@ -19,6 +19,9 @@ module.exports = webpackMerge(webpackCommon,
       filename: 'main.js',
     },
     externals: {
+      // npminstall: 'npminstall'
+      npminstall: 'commonjs npminstall',
+      npmuninstall: 'commonjs npminstall/lib/uninstall',
       // npm: 'commonjs npm'
       // pnpm: 'commonjs pnpm'
     },

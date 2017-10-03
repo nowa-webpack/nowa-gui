@@ -24,13 +24,13 @@ class Log extends Component {
     };
     this.timer = null;
     this.onReceiveLog = this.onReceiveLog.bind(this);
-    // this.onReceiveProgress = this.onReceiveProgress.bind(this);
+    this.onReceiveProgress = this.onReceiveProgress.bind(this);
     this.onReceiveFailed = this.onReceiveFailed.bind(this);
   }
 
   componentDidMount() {
     ipcRenderer.on('import-logging', this.onReceiveLog);
-    // ipcRenderer.on('import-progress', this.onReceiveProgress);
+    ipcRenderer.on('import-progress', this.onReceiveProgress);
     ipcRenderer.on('import-failed', this.onReceiveFailed);
     this.timer = setInterval(() => {
       const { percent } = this.state;
@@ -46,26 +46,31 @@ class Log extends Component {
   // 组件不存在之后，import-logging 的监听没有停止
   componentWillUnmount() {
     ipcRenderer.removeAllListeners('import-logging');
-    // ipcRenderer.removeAllListeners('import-progress');
+    ipcRenderer.removeAllListeners('import-progress');
     ipcRenderer.removeAllListeners('import-failed');
     clearInterval(this.timer);
   }
 
   onReceiveLog(event, log) {
+    console.log('log', log);
     this.setState({
       log: ansiHTML(log.replace(/\n/g, '<br />'))
+      // log: ansiHTML(log.join('<br>'))
     }, () => this.scrollToBottom());
   }
 
-  // onReceiveProgress(event, percent) {
-  //   console.log(percent);
-  //   this.setState({ percent });
-  // }
+  onReceiveProgress(event, percent) {
+    console.log(percent);
+    this.setState({ percent });
+  }
 
   onReceiveFailed(event, log) {
-    clearInterval(this.timer);
+    // const { log } = this.state;
+
+    // clearInterval(this.timer);
     this.setState({
       log: ansiHTML(log.replace(/\n/g, '<br />'))
+      // log: log + '<br />' + errmsg
     }, () => this.scrollToBottom());
   }
 
@@ -92,7 +97,7 @@ class Log extends Component {
   clearTerm() {
     this.setState({
       log: '',
-      errmsg: '',
+      // errmsg: '',
       percent: 0,
     });
   }

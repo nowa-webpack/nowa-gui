@@ -45,14 +45,14 @@ class PreinitPage extends Component {
       this.setState({ visibility: 'visible', percent: 1 });
     }
 
-    this.timer = setInterval(() => {
-      const { percent } = this.state;
-      if (percent < 100) {
-        this.setState({ percent: percent + 1 });
-      } else {
-        clearInterval(this.timer);
-      }
-    }, 1000);
+    // this.timer = setInterval(() => {
+    //   const { percent } = this.state;
+    //   if (percent < 100) {
+    //     this.setState({ percent: percent + 1 });
+    //   } else {
+    //     clearInterval(this.timer);
+    //   }
+    // }, 1000);
   }
 
   componentWillUnmount() {
@@ -65,10 +65,10 @@ class PreinitPage extends Component {
 
   installProgress(event, percent) {
     if (percent) {
-      if (percent === 100) {
-        const { dispatch } = this.props;
-        setTimeout(() => dispatch({ type: 'layout/afterInit', }), 1000);
-      }
+      // if (percent === 100) {
+        // const { dispatch } = this.props;
+        // setTimeout(() => dispatch({ type: 'layout/afterInit', }), 1000);
+      // }
       this.setState({ percent: +percent });
     }
   }

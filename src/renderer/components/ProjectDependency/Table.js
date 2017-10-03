@@ -288,10 +288,19 @@ class DependencyTable extends Component {
       registry,
       type
     };
+    // const opt = {
+    //   opt: {
+    //     root: projPath,
+    //     pkgs,
+    //     registry,
+    //   },
+    //   // type
+    // };
 
     console.log(opt);
     // const { err } = await commands.install({ opt });
     const { err } = await commands.noLoggingInstall(opt);
+    // const { err } = await commands.installPkgsWithLog(opt);
 
     if (err) {
       msgError(i18n('msg.installFail'));
