@@ -16,26 +16,26 @@ export const getTruePercent = ({ installTasks, finishedInstallTasks }) => {
   return parseInt(finishedInstallTasks / installTasks * 100);
 }
 
-// export const getFakePercent = (progress, curper, size) => {
-//   const truePercent = getTruePercent(progress);
-//   console.log('truePercent', truePercent)
+export const getFakePercent = (progress, curper, size) => {
+  const truePercent = getTruePercent(progress);
+  console.log('truePercent', truePercent)
 
-//   // const peak = size * 10 > 80 ? 80 : size * 10;
-//   const peak = size * 10 > 80 ? 20 : (100 - size * 10);
+  // const peak = size * 10 > 80 ? 80 : size * 10;
+  const peak = size * 10 > 80 ? 20 : (100 - size * 10);
 
-//   let percent = curper;
+  let percent = curper;
 
-//   if (truePercent < peak && curper < peak) {
-//     // percent += parseInt(Math.random() * ((100 - peak) / size));
-//     percent += parseInt(Math.random() * (peak / size));
-//   } else if (truePercent > peak) {
-//     percent = truePercent;
-//   }
+  if (truePercent < peak && curper < peak) {
+    // percent += parseInt(Math.random() * ((100 - peak) / size));
+    percent += parseInt(Math.random() * (peak / size));
+  } else if (truePercent > peak) {
+    percent = truePercent;
+  }
 
-//   console.log('inner percent', percent);
+  console.log('inner percent', percent);
 
-//   return percent > 100 ? 100 : parseInt(percent);
-// };
+  return percent > 100 ? 100 : parseInt(percent);
+};
 
 // export const getFakePercent = (size, curper) => {
 //   const totalSen = size * 20;

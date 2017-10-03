@@ -1,4 +1,4 @@
 # zh
-* 添加模板搜索条
+* 修复更新 nowa 依赖失败的问题，可能导致丢包
 # en
-* Add templates search bar
+* Fix the bug nowa dependencies updating failed.

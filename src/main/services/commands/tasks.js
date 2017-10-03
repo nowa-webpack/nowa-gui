@@ -18,7 +18,7 @@ import Logger from './logger';
 import tasklog from '../tasklog';
 import mainWin from '../windowManager';
 import { APP_PATH, NPM_PATH } from '../paths';
-import { getTruePercent } from './utils';
+import { getFakePercent } from './utils';
 
 export const installPkgsWithLog = ({
   opt,
@@ -47,7 +47,7 @@ export const installPkgsWithLog = ({
   return co(function* () {
     timer = setInterval(() => {
       const progresses = options.progresses;
-      const percent = getTruePercent(progresses);
+      const percent = getFakePercent(progresses, percent, opt.pkgs.length);
       // percent = fake
       //   ? getFakePercent(progresses, percent, opt.pkgs.length)
       //   : getTruePercent(progresses);
