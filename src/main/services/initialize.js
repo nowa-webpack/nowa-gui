@@ -20,19 +20,19 @@ import { APP_PATH, BIN_PATH, NODE_PATH, DOT_NOWA_PATH, NPM_BIN_PATH, APP_NODE_VE
   electron 打包 node_modules 后会丢失 .bin 目录
   所以必须手动复制一份到node_modules下并赋权
 */
-try {
-  if (!existsSync(NPM_BIN_PATH)) {
-    console.log('copy npm .bin folder');
-    copySync(join(APP_PATH, 'task', '.bin'), NPM_BIN_PATH);
-    if (!isWin) {
-      execSync(`chmod 755 *`, { cwd: NPM_BIN_PATH });
-    }
-  }
+// try {
+//   if (!existsSync(NPM_BIN_PATH)) {
+//     console.log('copy npm .bin folder');
+//     copySync(join(APP_PATH, 'task', '.bin'), NPM_BIN_PATH);
+//     if (!isWin) {
+//       execSync(`chmod 755 *`, { cwd: NPM_BIN_PATH });
+//     }
+//   }
 
   
-} catch (e) {
-  console.log(e);
-}
+// } catch (e) {
+//   console.log(e);
+// }
 
 const setEncode = () => {
   const encodeMap = {

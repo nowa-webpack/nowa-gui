@@ -122,7 +122,7 @@
     "git-config": "0.0.7",
     "i18n-helper": "^1.2.0",
     "npm-run-path": "^2.0.2",
-    "npminstall": "^3.0.1",
+    "npminstall": "^3.1.4",
     "portscanner": "^2.1.1",
     "react": "^15.4.2",
     "react-dom": "^15.5.4",

@@ -24,7 +24,7 @@ class PreinitPage extends Component {
     this.timer = null;
     this.installFinished = this.installFinished.bind(this);
     this.installFailed = this.installFailed.bind(this);
-    // this.getNewPercent = this.getNewPercent.bind(this);
+    this.installProgress = this.installProgress.bind(this);
   }
 
   async componentDidMount() {
@@ -38,7 +38,7 @@ class PreinitPage extends Component {
     if (!needInstall) {
       this.installFinished();
     } else {
-      // ipcRenderer.on('nowa-install-progress', this.getNewPercent);
+      ipcRenderer.on('nowa-install-progress', this.installProgress);
       ipcRenderer.on('nowa-install-failed', this.installFailed);
       ipcRenderer.on('nowa-install-finished', this.installFinished);
       nowa.installNowaPkgs();
@@ -63,16 +63,15 @@ class PreinitPage extends Component {
     clearInterval(this.timer);
   }
 
-  // getNewPercent(event, percent) {
-  //   if (percent) {
-  //     // if (percent === 100) {
-  //     //   const { dispatch } = this.props;
-  //     //   setTimeout(() => dispatch({ type: 'layout/afterInit', }), 1000);
-  //     //   ;
-  //     // }
-  //     this.setState({ percent: +percent });
-  //   }
-  // }
+  installProgress(event, percent) {
+    if (percent) {
+      if (percent === 100) {
+        const { dispatch } = this.props;
+        setTimeout(() => dispatch({ type: 'layout/afterInit', }), 1000);
+      }
+      this.setState({ percent: +percent });
+    }
+  }
 
   installFailed(event, errmsg) {
     if (errmsg) {

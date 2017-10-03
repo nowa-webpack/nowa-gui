@@ -11,10 +11,10 @@ export const newLog = (oldLog, str) => oldLog + ansiHTML(str.replace(/\n/g, '<br
   return parseInt(c[1][1] / c[0][1] * 100);
 };*/
 
-// export const getTruePercent = ({ installTasks, finishedInstallTasks }) => {
-//   console.log(installTasks, finishedInstallTasks);
-//   return parseInt(finishedInstallTasks / installTasks * 100);
-// }
+export const getTruePercent = ({ installTasks, finishedInstallTasks }) => {
+  console.log(installTasks, finishedInstallTasks);
+  return parseInt(finishedInstallTasks / installTasks * 100);
+}
 
 // export const getFakePercent = (progress, curper, size) => {
 //   const truePercent = getTruePercent(progress);

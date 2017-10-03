@@ -22,8 +22,8 @@ class Nowa {
       });
       this.needInstallPkgs = [...set, ...localNeedUpdatePkgs];
     } else {
-      // this.needInstallPkgs = [...this.iwant, 'npm'];
-      this.needInstallPkgs = this.iwant;
+      this.needInstallPkgs = [...this.iwant, 'npm'];
+      // this.needInstallPkgs = this.iwant;
     }
     this.pkgSize = this.needInstallPkgs.length;
     console.log('needInstallPkgs', this.needInstallPkgs, this.pkgSize);
@@ -39,20 +39,22 @@ class Nowa {
   // 安装组件
   async installNowaPkgs() {
     if (this.pkgSize > 0) {
-      const pkgs = this.needInstallPkgs.map(name => ({ name, version: '^1' }));
+      const pkgs = this.needInstallPkgs.map(name => ({ name, version: 'latest' }));
       const installOpt = getInstallOpt(pkgs);
       installOpt.noSave = true;
-      const { err } = await commands.noLoggingInstall(installOpt);
+      const { err } = await commands.installPkgsWithLog(installOpt);
+      // const { err } = await commands.noLoggingInstall(installOpt);
 
       if (!err) {
         // 安装结束后保存新版本
-        // saveNewPkg(this.needInstallPkgs.filter(name => name !== 'npm'));
-        saveNewPkg(this.needInstallPkgs);
+        saveNewPkg(this.needInstallPkgs.filter(name => name !== 'npm'));
+        // saveNewPkg(this.needInstallPkgs);
         console.log('saveNewNowaJSON');
-        mainWin.send('nowa-install-finished');
-      } else {
-        mainWin.send('nowa-install-failed', err);
-      }
+        // mainWin.send('nowa-install-finished');
+      } 
+      // else {
+      //   mainWin.send('nowa-install-failed', err);
+      // }
     }
   }
 
