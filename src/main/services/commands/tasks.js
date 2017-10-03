@@ -47,7 +47,8 @@ export const installPkgsWithLog = ({
   return co(function* () {
     timer = setInterval(() => {
       const progresses = options.progresses;
-      const percent = getFakePercent(progresses, percent, opt.pkgs.length);
+      percent = getFakePercent(progresses, percent, opt.pkgs.length);
+
       // percent = fake
       //   ? getFakePercent(progresses, percent, opt.pkgs.length)
       //   : getTruePercent(progresses);
