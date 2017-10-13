@@ -1,4 +1,4 @@
 # zh
-* 修复更新 nowa 依赖失败的问题，可能导致丢包
+* 修复 npm：command not found 报错
 # en
-* Fix the bug nowa dependencies updating failed.
+* Fix npm：command not found error
