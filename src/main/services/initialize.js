@@ -23,7 +23,7 @@ import { APP_PATH, BIN_PATH, NODE_PATH, DOT_NOWA_PATH, NPM_BIN_PATH, APP_NODE_VE
 try {
   if (!existsSync(NPM_BIN_PATH)) {
     console.log('copy npm .bin folder');
-    copySync(join(APP_PATH, 'task', '.bin'), NPM_BIN_PATH);
+    copySync(join(APP_PATH, 'task', 'bin'), NPM_BIN_PATH);
     if (!isWin) {
       execSync(`chmod 755 *`, { cwd: NPM_BIN_PATH });
     }
