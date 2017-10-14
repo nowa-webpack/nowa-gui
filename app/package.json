@@ -1,6 +1,6 @@
 {
   "name": "nowa-gui-version",
-  "version": "1.9.6",
+  "version": "1.9.7",
   "description": "A tool for nowa developement.",
   "productName": "NowaGUI",
   "main": "./main.js",
@@ -19,7 +19,7 @@
     "linux": "https://alixux.org/downloads/nowa-gui.deb"
   },
   "node": "v8.2.1",
-  "innerUpdate": true,
+  "innerUpdate": false,
   "license": "ISC",
   "dependencies": {
     "npm": "^5.4.2",
