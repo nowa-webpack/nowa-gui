@@ -101,12 +101,14 @@ export const noLoggingInstall = ({
     }
   }
 
-  const name = pkgs.map(({ name, version }) => `${name}@${version}`);
+  const name = pkgs.map(({ name, version }) => version ? `${name}@${version}` : name );
+
+  console.log('install proj packages', name.join(' '))
 
   return new Promise((resolve) => {
     try {
       const term = fork(NPM_PATH, [
-        'install', ...name,
+        'install', name.join(' '),
         `${noSave ? '--no-save' : (type === 'dependencies' ? '-S' : '-D')}`,
         '--no-optional',
         `--registry=${registry}`,

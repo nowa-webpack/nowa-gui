@@ -8,6 +8,8 @@ import Table from 'antd/lib/table';
 import Popconfirm from 'antd/lib/popconfirm';
 import Input from 'antd/lib/input';
 import { join } from 'path';
+// import semverDiff from 'semver-diff';
+import { lt, gt } from 'semver';
 
 import i18n from 'i18n-renderer-nowa';
 import {
@@ -92,7 +94,7 @@ class DependencyTable extends Component {
         dataIndex: 'needUpdate',
         render: (needUpdate, record) => {
           let updateDiv;
-
+          // console.log(record);
           if (needUpdate) {
             if (record.updateType !== 'major') {
               updateDiv = (
@@ -100,9 +102,17 @@ class DependencyTable extends Component {
                   size="default"
                   type="primary"
                   className="project-dependency-action"
-                  onClick={() => this.updatePackage(record)}
+                  onClick={() => {
+                    if (record.installedVersion !== 'null') {
+                      this.updatePackage(record);
+                    } else {
+                      this.installPackage({ name: record.name}, false);
+                    }
+                  }}
                 >
-                  {i18n('table.action.update')}
+                  {record.installedVersion !== 'null' 
+                    ? i18n('table.action.update')
+                    : i18n('table.action.install')}
                 </Button>
               );
             } else {
@@ -272,13 +282,14 @@ class DependencyTable extends Component {
   }
 
   // 安装依赖
-  async installPackage({ name }) {
+  async installPackage({ name }, isNew = true) {
     const { projPath, type, dispatch, registry } = this.props;
+    const { dataSource } = this.state;
     const set = new Set(name.split(',').filter(n => n.trim()));
     // const pkgs = [...set].map(item => ({ name: item.trim(), version: 'latest' }));
     const pkgs = [...set].map(item => {
       const str = item.trim().split('@');
-      return { name: str[0], version: str[1] ? str[1] : 'latest' };
+      return { name: str[0], version: str[1] ? str[1] : null };
     });
     this.setState({ loading: true, showModal: false });
 
@@ -306,26 +317,53 @@ class DependencyTable extends Component {
       msgError(i18n('msg.installFail'));
       this.setState({ loading: false });
     } else {
-      const data = pkgs.map(pkg => {
-        const { version } = readPkgJson(
-          join(projPath, 'node_modules', pkg.name)
-        );
-        return {
-          name: pkg.name,
-          version: `^${version}`,
-          installedVersion: version,
-          latestVersion: version,
-          needUpdate: false,
-        };
-      });
-      const newDataSource = this.state.dataSource.concat(data);
+      if (isNew) {
+        const data = pkgs.map(pkg => {
+          const { version } = readPkgJson(
+            join(projPath, 'node_modules', pkg.name)
+          );
+          return {
+            name: pkg.name,
+            version: `^${version}`,
+            installedVersion: version,
+            latestVersion: version,
+            needUpdate: false,
+          };
+        });
+        const newDataSource = dataSource.concat(data);
 
-      dispatch({
-        type: 'project/updateDepencies',
-        payload: { type, data },
-      });
-      msgSuccess(i18n('msg.installSuccess'));
-      this.setState({ dataSource: newDataSource, loading: false });
+        dispatch({
+          type: 'project/updateDepencies',
+          payload: { type, data },
+        });
+        msgSuccess(i18n('msg.installSuccess'));
+        this.setState({ dataSource: newDataSource, loading: false });
+      } else {
+        const data = dataSource.map(item => {
+          const filter = pkgs.filter(p => p.name === item.name);
+          if (filter.length > 0) {
+            // if (item.updateType === 'major') {
+              // item.version = `^${item.version}`;
+            // }
+            item.installedVersion = item.version;
+            if (/^\d/.test(item.version)) {
+              item.needUpdate = gt(item.latestVersion, item.version);
+            } else {
+              item.needUpdate = gt(item.latestVersion, item.version.slice(1));
+              console.log(item);
+
+            }
+          }
+          return item;
+        });
+        dispatch({
+          type: 'project/updateDepencies',
+          payload: { data, type },
+        });
+        msgSuccess(i18n('msg.updateSuccess'));
+        this.setState({ loading: false, dataSource: data, selectedRowKeys: [] });
+      }
+      
     }
   }
 

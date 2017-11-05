@@ -1,3 +1,18 @@
+1.9.8 / 2017-11-9
+==================
+# zh
+* 修复 npm：command not found 报错
+# en
+* Fix npm：command not found error
+
+
+1.9.7 / 2017-10-15
+==================
+# zh
+* 修复 npm：command not found 报错
+# en
+* Fix npm：command not found error
+
 1.9.4 / 2017-09-01
 ==================
 # zh

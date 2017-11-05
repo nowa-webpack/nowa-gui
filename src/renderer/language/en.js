@@ -195,6 +195,7 @@ module.exports = {
   'table.empty': 'No data.',
   'table.action.del': 'delete',
   'table.action.update': 'update',
+  'table.action.install': 'install',
 
   'feedback.modal.title': 'Feedback',
   'feedback.name': "What's your name?",

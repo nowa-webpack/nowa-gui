@@ -192,6 +192,7 @@ module.exports = {
   'table.empty': '暂无数据',
   'table.action.del': '移除',
   'table.action.update': '更新',
+  'table.action.install': '安装',
 
   'feedback.modal.title': '反馈',
   'feedback.name': '怎么称呼您？',
