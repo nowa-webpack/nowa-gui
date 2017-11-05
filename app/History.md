@@ -1,9 +1,10 @@
 1.9.8 / 2017-11-9
 ==================
 # zh
-* 修复 npm：command not found 报错
+* Issue: 未安装的依赖出现"更新"字样, 更换为"安装"
 # en
-* Fix npm：command not found error
+* Issue: the "update" button showed when one package not installed, it should be a install button.
+
 
 
 1.9.7 / 2017-10-15
