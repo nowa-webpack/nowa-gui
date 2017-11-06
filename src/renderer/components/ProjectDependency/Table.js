@@ -9,8 +9,8 @@ import Popconfirm from 'antd/lib/popconfirm';
 import Input from 'antd/lib/input';
 import { join } from 'path';
 // import semverDiff from 'semver-diff';
-import { lt, gt } from 'semver';
-
+import { lt, gt, diff } from 'semver';
+import { checkver } from 'shared-nowa';
 import i18n from 'i18n-renderer-nowa';
 import {
   openUrl,
@@ -96,7 +96,8 @@ class DependencyTable extends Component {
           let updateDiv;
           // console.log(record);
           if (needUpdate) {
-            if (record.updateType !== 'major') {
+            // if (record.updateType !== 'major') {
+            if (!record.updateType) {
               updateDiv = (
                 <Button
                   size="default"
@@ -345,13 +346,15 @@ class DependencyTable extends Component {
             // if (item.updateType === 'major') {
               // item.version = `^${item.version}`;
             // }
-            item.installedVersion = item.version;
+            // item.installedVersion = item.version;
+            item.installedVersion = checkver.checkLocalVerison(item, projPath).installedVersion;
+            item.updateType = checkver.checkDiff(item.latestVersion, item.installedVersion);
+
             if (/^\d/.test(item.version)) {
               item.needUpdate = gt(item.latestVersion, item.version);
             } else {
               item.needUpdate = gt(item.latestVersion, item.version.slice(1));
               console.log(item);
-
             }
           }
           return item;

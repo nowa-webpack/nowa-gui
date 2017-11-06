@@ -1,9 +1,14 @@
-import { lt } from 'semver';
+import { lt, satisfies, validRange, diff } from 'semver';
 import semverDiff from 'semver-diff';
 import { readJsonSync } from 'fs-extra';
 import { join } from 'path';
 
 import request from './request';
+
+const checkDiff = (latesetVersion, localVersion) => {
+  return !satisfies(latesetVersion, `^${localVersion}`);
+  // return diff(latesetVersion, `${localVersion}`);
+};
 
 /*
 * 获取源上最新版本
@@ -20,10 +25,12 @@ const checkNpmLatest = async function (item, registry) {
   if (!err) {
     item.latestVersion = data.version;
     if (item.installedVersion !== 'null') {
-      item.updateType = semverDiff(item.installedVersion, data.version);
+      item.updateType = checkDiff(data.version, item.installedVersion);
+      // item.updateType = diff(item.installedVersion, data.version);
       item.needUpdate = lt(item.installedVersion, data.version);
     } else {
-      item.updateType = 'patch';
+      item.updateType = false;
+      // item.updateType = 'patch';
       item.needUpdate = true;
     }
   } else {
@@ -60,5 +67,5 @@ const checkLocalVerison = (item, folder) => {
   }
 };
 
-export default { checkNpmLatest, checkLocalVerison };
+export default { checkNpmLatest, checkLocalVerison, checkDiff };
 
