@@ -274,13 +274,11 @@ class DependencyTable extends Component {
       this.setState({ loading: true });
       this.columns = this.getOnlineColumns();
       const dataSource = await checkLatestVersion(source, projPath, registry);
-      console.log(source, projPath, registry)
       dataSource.forEach((item) => {
         if (item.installedVersion !== 'null') {
           item.updateType = !checkver.satisfies(item.latestVersion, `^${item.installedVersion}`) || !checkver.satisfies(item.latestVersion,item.version);
         }
       });
-      console.log(JSON.parse(JSON.stringify(dataSource)))
       this.setState({ dataSource, loading: false });
     } else {
       this.columns = this.getOfflineColumns();
