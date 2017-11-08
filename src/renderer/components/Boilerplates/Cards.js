@@ -83,7 +83,7 @@ class Cards extends Component {
           />
           </Col></Row><br />
         <div className="boilerplate-cards">
-          
+
           { remoteBoilerplates.length > 0
             && remoteBoilerplates.map(item =>
               <RemoteCard
@@ -126,7 +126,7 @@ class Cards extends Component {
                 dispatch={dispatch}
               />)
           }
-          <Tooltip placement="left" title={i18n('project.new.addTempldate')} >
+          <Tooltip placement="left" title={i18n('project.new.addTemplate')} >
             <div
               className="boilerplate-card-add"
               onClick={() => dispatch({
@@ -160,7 +160,7 @@ class Cards extends Component {
       />
       </Col></Row><br />
     <div className="boilerplate-cards">
-      
+
       { remoteBoilerplates.length > 0
         && remoteBoilerplates.map(item =>
           <RemoteCard
@@ -203,7 +203,7 @@ class Cards extends Component {
             dispatch={dispatch}
           />)
       }
-      <Tooltip placement="left" title={i18n('project.new.addTempldate')} >
+      <Tooltip placement="left" title={i18n('project.new.addTemplate')} >
         <div
           className="boilerplate-card-add"
           onClick={() => dispatch({

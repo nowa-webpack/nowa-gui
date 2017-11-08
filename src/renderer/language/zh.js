@@ -58,7 +58,7 @@ module.exports = {
   'project.new.log.error': '安装过程中出现错误, 如有需要请查看下方日志',
   'project.new.empty': '当前无模版',
   'project.new.log.retry': '重试',
-  'project.new.addTempldate': '添加自定义模版',
+  'project.new.addTemplate': '添加自定义模版',
   'project.new.networkTip': '创建项目需要网络，请联网后继续',
 
   'project.import.title': '项目导入初始化',

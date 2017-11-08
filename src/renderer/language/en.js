@@ -60,13 +60,13 @@ module.exports = {
   'project.new.log.error': 'Install failed, please check the log below',
   'project.new.log.retry': 'Retry',
   'project.new.empty': 'No templates.',
-  'project.new.addTempldate': 'Add Custom Template',
+  'project.new.addTemplate': 'Add Custom Template',
   'project.new.networkTip':
     'Internet connection is required during creating a project, please check your network',
 
   'project.import.title': 'Initializing for Project Import',
   'project.import.info':
-    'Some dependencies of this project are uninstalled, please choose an appropriate NPM registry to install from.',
+    'Some dependencies of this project are not installed, please choose an appropriate NPM registry to install from.',
   'project.import.install': 'Installing Dependencies',
 
   'template.modal.title': 'Custom Template Setting',
