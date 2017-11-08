@@ -111,7 +111,7 @@ class DependencyTable extends Component {
                     }
                   }}
                 >
-                  {record.installedVersion !== 'null' 
+                  {record.installedVersion !== 'null'
                     ? i18n('table.action.update')
                     : i18n('table.action.install')}
                 </Button>
@@ -274,6 +274,13 @@ class DependencyTable extends Component {
       this.setState({ loading: true });
       this.columns = this.getOnlineColumns();
       const dataSource = await checkLatestVersion(source, projPath, registry);
+      console.log(source, projPath, registry)
+      dataSource.forEach((item) => {
+        if (item.installedVersion !== 'null') {
+          item.updateType = !checkver.satisfies(item.latestVersion, `^${item.installedVersion}`) || !checkver.satisfies(item.latestVersion,item.version);
+        }
+      });
+      console.log(JSON.parse(JSON.stringify(dataSource)))
       this.setState({ dataSource, loading: false });
     } else {
       this.columns = this.getOfflineColumns();
@@ -347,15 +354,9 @@ class DependencyTable extends Component {
               // item.version = `^${item.version}`;
             // }
             // item.installedVersion = item.version;
-            item.installedVersion = checkver.checkLocalVerison(item, projPath).installedVersion;
-            item.updateType = checkver.checkDiff(item.latestVersion, item.installedVersion);
-
-            if (/^\d/.test(item.version)) {
-              item.needUpdate = gt(item.latestVersion, item.version);
-            } else {
-              item.needUpdate = gt(item.latestVersion, item.version.slice(1));
-              console.log(item);
-            }
+            item.installedVersion = checkver.checkLocalVersion(item, projPath).installedVersion;
+            item.updateType = !checkver.satisfies(item.latestVersion, `^${item.installedVersion}`);
+            item.needUpdate = item.latestVersion !== item.installedVersion;
           }
           return item;
         });
@@ -363,10 +364,10 @@ class DependencyTable extends Component {
           type: 'project/updateDepencies',
           payload: { data, type },
         });
-        msgSuccess(i18n('msg.updateSuccess'));
+        msgSuccess(i18n('msg.installSuccess'));
         this.setState({ loading: false, dataSource: data, selectedRowKeys: [] });
       }
-      
+
     }
   }
 

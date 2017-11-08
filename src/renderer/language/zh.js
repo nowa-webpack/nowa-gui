@@ -187,7 +187,7 @@ module.exports = {
   'package.action': '操作',
   'package.btn.updateAll': '批量更新',
   'package.btn.install': '安装新依赖',
-  'package.update.tip': '确认更新到该版本吗？',
+  'package.update.tip': '此更新可能使项目不能正常工作，确认更新此依赖包吗？',
 
   'table.empty': '暂无数据',
   'table.action.del': '移除',

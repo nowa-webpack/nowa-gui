@@ -133,7 +133,7 @@ export const getSpiltDependencies = pkgJson => {
 };
 
 export const checkInstalledVersion = (pkgs, folder) =>
-  pkgs.map(pkg => checkver.checkLocalVerison(pkg, folder));
+  pkgs.map(pkg => checkver.checkLocalVersion(pkg, folder));
 
 export const checkLatestVersion = async function(pkgs, folder, registry) {
   const locals = await checkInstalledVersion(pkgs, folder);

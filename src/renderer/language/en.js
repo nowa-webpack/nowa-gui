@@ -190,7 +190,7 @@ module.exports = {
   'package.action': 'Action',
   'package.btn.updateAll': 'Batch Update',
   'package.btn.install': 'Add New Dependency',
-  'package.update.tip': 'Are you sure to update this package?',
+  'package.update.tip': 'This update may break your project. \n Are you sure to update this package?',
 
   'table.empty': 'No data.',
   'table.action.del': 'delete',

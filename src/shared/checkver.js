@@ -48,7 +48,7 @@ const checkNpmLatest = async function (item, registry) {
   version: string
 }
 */
-const checkLocalVerison = (item, folder) => {
+const checkLocalVersion = (item, folder) => {
 
   const pkgPath = join(folder, 'node_modules', item.name, 'package.json');
 
@@ -67,5 +67,5 @@ const checkLocalVerison = (item, folder) => {
   }
 };
 
-export default { checkNpmLatest, checkLocalVerison, checkDiff };
+export default { checkNpmLatest, checkLocalVersion, checkDiff, satisfies };
 
