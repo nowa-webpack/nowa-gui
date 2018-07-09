@@ -66,7 +66,7 @@
   },
   "author": "Poling <466681097@qq.com>",
   "homepage": "https://github.com/nowa-webpack/nowa-gui",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
