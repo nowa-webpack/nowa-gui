@@ -230,7 +230,7 @@ export default {
         dot: true
       }).forEach((source) => {
         const subDir = source.replace(/__(\w+)__/g, (match, offset) => initSetting[offset]);
-        const target = join(initSetting.projPath, subDir);
+        const target = join(initSetting.projPath, subDir).replace(/\.npmignore$/, '.gitignore');
         if (existsSync(target)) {
           overwriteFiles.push(source);
         }
@@ -276,7 +276,7 @@ export default {
         }
         const subDir = source.replace(/__(\w+)__/g, (match, offset) => initSetting[offset]);
 
-        const target = join(initSetting.projPath, subDir);
+        const target = join(initSetting.projPath, subDir).replace(/\.npmignore$/, '.gitignore');
 
         mkdirp.sync(dirname(target));
 
