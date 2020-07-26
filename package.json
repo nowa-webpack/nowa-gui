@@ -83,7 +83,7 @@
     "clean-webpack-plugin": "^0.1.16",
     "cross-env": "^4.0.0",
     "css-loader": "^0.28.1",
-    "electron": "1.6.8",
+    "electron": "9.1.1",
     "electron-builder": "^13.11.1",
     "electron-is": "^2.4.0",
     "electron-log": "^2.2.4",
