@@ -106,7 +106,7 @@
     "uglifyjs-webpack-plugin": "^0.4.3",
     "url-loader": "^0.5.8",
     "webpack": "^2",
-    "webpack-bundle-analyzer": "^2.8.1",
+    "webpack-bundle-analyzer": "^3.8.0",
     "webpack-bundle-size-analyzer": "^2.6.0",
     "webpack-dev-server": "^2.4.5",
     "webpack-merge": "^4.1.0"
